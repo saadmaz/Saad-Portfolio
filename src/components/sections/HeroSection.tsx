@@ -75,7 +75,7 @@ export function HeroSection() {
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                 Hi, I'm{" "}
                 <span className="relative">
-                  <span className="relative z-10">Saad Mazhar - WADHA</span>
+                  <span className="relative z-10">Saad Mazhar</span>
                   <span className="absolute bottom-2 left-0 w-full h-3 bg-accent/20 -z-0" />
                 </span>
               </h1>
