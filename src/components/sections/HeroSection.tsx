@@ -61,7 +61,7 @@ export function HeroSection() {
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium">
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                Currently building at Startup XYZ
+                Currently building Tank Sudda & Stopwash
               </span>
             </motion.div>
 
