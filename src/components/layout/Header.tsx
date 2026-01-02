@@ -96,7 +96,7 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900">
+                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900 active:text-blue-900 data-[state=open]:text-blue-900">
                       Work
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -123,7 +123,7 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900 active:text-blue-900 data-[state=open]:text-blue-900">
                       Skills
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -150,7 +150,7 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900 active:text-blue-900 data-[state=open]:text-blue-900">
                       About
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -177,7 +177,7 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900 active:text-blue-900 data-[state=open]:text-blue-900">
                       Insights
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
