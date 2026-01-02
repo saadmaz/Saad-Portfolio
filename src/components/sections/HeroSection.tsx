@@ -136,24 +136,19 @@ export function HeroSection() {
                   Download Resume
                 </a>
               </Button>
-              
+
+              {/* This button triggers a smooth color transition to dark blue on hover, */}
+              {/* affecting the background, text, and border for a cohesive branded feel. */}
               <Button 
-              asChild 
-              variant="outline" 
-              className="btn-outline gap-2 transition-colors hover:text-blue-900 hover:border-blue-900 hover:bg-transparent"
-              >
-                <Link to="/contact">
-                Get in Touch
-                <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
-              
-              {/* <Button asChild variant="outline" className="btn-outline gap-2">
-                <Link to="/contact">
+                asChild 
+                variant="outline" 
+                className="btn-outline gap-2 transition-all duration-300 hover:bg-blue-900 hover:text-white hover:border-blue-900"
+                >
+                  <Link to="/contact">
                   Get in Touch
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button> */}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+              </Button>
             </motion.div>
 
             {/* Social Media Links with hover transitions */}
