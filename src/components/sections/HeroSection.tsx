@@ -1,45 +1,65 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Instagram, Facebook,  Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { ArrowRight, Download, Instagram, Facebook, Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
 import { useRef } from "react";
 
 export function HeroSection() {
+  // --- 1. REF & MOTION VALUES ---
+  // useRef tracks the actual HTML element of the profile image for coordinate math
   const ref = useRef<HTMLDivElement>(null);
+  
+  // useMotionValue creates "reactive" numbers that Framer Motion can track without re-renders
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
+  // useSpring smooths out the raw mouse numbers so the movement feels "organic" and bouncy
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
   
+  // useTransform maps the mouse position (-0.5 to 0.5) to a rotation degree (-5deg to 5deg)
+  // This creates the 3D "tilt" effect based on where the cursor is
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
 
+  // --- 2. EVENT HANDLERS ---
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
+    
+    // Calculate the bounding box of the image container
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
+    
+    // Calculate mouse position relative to the center of the image
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
+    
+    // Convert pixels to a percentage (-0.5 is left/top, 0.5 is right/bottom)
     const xPct = mouseX / width - 0.5;
     const yPct = mouseY / height - 0.5;
+    
     x.set(xPct);
     y.set(yPct);
   };
 
   const handleMouseLeave = () => {
+    // Reset image to flat position when mouse leaves
     x.set(0);
     y.set(0);
   };
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Background Pattern */}
+      
+      {/* --- BACKGROUND DECORATION --- */}
       <div className="absolute inset-0 -z-10">
+        {/* Main background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/30" />
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-soft/30 to-transparent" />
+        
+        {/* The Dot Grid Pattern using radial-gradient */}
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -51,9 +71,11 @@ export function HeroSection() {
 
       <div className="section-container w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Content */}
+          
+          {/* --- LEFT COLUMN: TEXT & CONTENT --- */}
           <div className="space-y-8 order-2 lg:order-1">
-            {/* Status Badge */}
+            
+            {/* Status Badge: Animates in from bottom with a pulse dot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -65,7 +87,7 @@ export function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Main Heading */}
+            {/* Main Heading: Uses a relative span to create a custom underline effect */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,6 +98,7 @@ export function HeroSection() {
                 Hi, I'm{" "}
                 <span className="relative">
                   <span className="relative z-10">Saad Mazhar</span>
+                  {/* Decorative highlight behind name */}
                   <span className="absolute bottom-2 left-0 w-full h-3 bg-accent/20 -z-0" />
                 </span>
               </h1>
@@ -84,7 +107,7 @@ export function HeroSection() {
               </p>
             </motion.div>
 
-            {/* Mission Statement */}
+            {/* Short Bio Paragraph */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -95,7 +118,7 @@ export function HeroSection() {
               of technology, design, and business. Always learning, always shipping.
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons: One Download and one Link to contact */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -116,7 +139,7 @@ export function HeroSection() {
               </Button>
             </motion.div>
 
-            {/* Social Links */}
+            {/* Social Media Links with hover transitions */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -125,7 +148,7 @@ export function HeroSection() {
             >
               <span className="text-sm text-muted-foreground">Connect:</span>
               <div className="flex items-center gap-2">
-
+                {/* Social Icon Template */}
                 <a 
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
@@ -134,58 +157,18 @@ export function HeroSection() {
                   aria-label="Instagram Profile"
                 >
                   <Instagram className="w-5 h-5" />
-                </a>  
-
-                <a 
-                  href="https://facebook.com/saadmazhar03" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  aria-label="Facebook Profile"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-
-                <a 
-                  href="https://github.com/saadmaz/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  aria-label="GitHub Profile"
-                >
-                  <Github className="w-5 h-5" />
-                </a>
-
-                <a 
-                  href="https://linkedin.com/in/saadmazhar-" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  aria-label="LinkedIn Profile"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-                <a 
-                  href="https://x.com/SaadMazhar_" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  aria-label="Twitter Profile"
-                >
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a 
-                  href="mailto:saadmazaa@gmail.com"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  aria-label="Send Email"
-                >
-                  <Mail className="w-5 h-5" />
-                </a>
+                </a> 
+                {/* ... (Repeat for FB, GitHub, LinkedIn, Twitter, Mail) */}
+                <a href="https://facebook.com/saadmazhar03" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Facebook Profile"><Facebook className="w-5 h-5" /></a>
+                <a href="https://github.com/saadmaz/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="GitHub Profile"><Github className="w-5 h-5" /></a>
+                <a href="https://linkedin.com/in/saadmazhar-" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="LinkedIn Profile"><Linkedin className="w-5 h-5" /></a>
+                <a href="https://x.com/SaadMazhar_" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Twitter Profile"><Twitter className="w-5 h-5" /></a>
+                <a href="mailto:saadmazaa@gmail.com" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Send Email"><Mail className="w-5 h-5" /></a>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Content - Profile Image */}
+          {/* --- RIGHT COLUMN: INTERACTIVE PROFILE IMAGE --- */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -197,30 +180,29 @@ export function HeroSection() {
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               className="relative"
-              style={{ perspective: "1000px" }}
+              style={{ perspective: "1000px" }} // Required for 3D CSS transforms to have depth
             >
-              {/* Decorative Elements */}
+              {/* Soft colorful glows behind the image */}
               <div className="absolute -top-8 -left-8 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-blue-soft rounded-full blur-2xl" />
               
-              {/* Profile Image Container */}
+              {/* The Container that actually tilts */}
               <motion.div
                 style={{ rotateX, rotateY }}
                 className="relative"
               >
-                {/* Main Image */}
+                {/* Main Image with rounded corners and shadow */}
                 <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
                   <motion.img
                     src={profilePhoto}
-                    alt="Saad Mazhar - Professional Portrait"
+                    alt="Saad Mazhar"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    whileHover={{ scale: 1.02 }}
                   />
-                  {/* Subtle overlay on hover */}
+                  {/* Overlay that appears only on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Floating Stats Card */}
+                {/* Floating Stats Card: Shows "Years Coding" and "Projects" */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -232,6 +214,7 @@ export function HeroSection() {
                       <p className="text-2xl font-display font-bold text-foreground">5+</p>
                       <p className="text-xs text-muted-foreground">Years Coding</p>
                     </div>
+                    {/* Vertical Divider */}
                     <div className="w-px h-10 bg-border" />
                     <div className="text-center">
                       <p className="text-2xl font-display font-bold text-foreground">10+</p>
@@ -240,7 +223,7 @@ export function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* Currently Building Badge */}
+                {/* Small Floating "Currently Building" Badge */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
