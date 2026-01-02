@@ -19,7 +19,7 @@ const exploreLinks = [
 ];
 
 const personalLinks = [
-  { title: "Events", href: "/about#events" },
+  { title: "Events & Hosting", href: "/events" },
   { title: "Volunteer", href: "/about#volunteer" },
   { title: "Extra-Curricular", href: "/about#extracurricular" },
   { title: "Sports", href: "/about#sports" },
@@ -47,7 +47,7 @@ export function Footer() {
             {/* Identity Column */}
             <div className="lg:col-span-1">
               <h3 className="font-display text-xl font-bold text-foreground mb-4">
-                John Doe
+                Saad Mazhar
               </h3>
               <p className="text-muted-foreground text-sm mb-4">
                 CS Undergraduate. Startup Operator. Tech Entrepreneur.
@@ -114,11 +114,11 @@ export function Footer() {
               <ul className="space-y-3">
                 <li>
                   <a 
-                    href="mailto:john@example.com" 
+                    href="mailto:saad@example.com" 
                     className="footer-link flex items-center gap-2"
                   >
                     <Mail className="w-4 h-4" />
-                    john@example.com
+                    saad@example.com
                   </a>
                 </li>
                 <li>
@@ -167,7 +167,7 @@ export function Footer() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <span>© {new Date().getFullYear()} John Doe</span>
+              <span>© {new Date().getFullYear()} Saad Mazhar</span>
               <span className="mx-2">·</span>
               <span className="flex items-center gap-1">
                 Built with <Heart className="w-3 h-3 text-destructive" /> using React & Tailwind

@@ -36,7 +36,7 @@ const skillsItems = [
 
 const aboutItems = [
   { title: "Education", href: "/about#education", description: "Academic background" },
-  { title: "Events", href: "/about#events", description: "Speaking and attending" },
+  { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" },
   { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" },
   { title: "Extra-Curricular", href: "/about#extracurricular", description: "Activities and interests" },
   { title: "Sports", href: "/about#sports", description: "Athletic pursuits" },
@@ -81,7 +81,7 @@ export function Header() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
               <span className="font-display text-xl font-bold text-foreground">
-                John Doe
+                Saad Mazhar
               </span>
             </Link>
 

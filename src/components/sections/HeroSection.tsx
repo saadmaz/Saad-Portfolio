@@ -1,9 +1,39 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Download, Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import profilePhoto from "@/assets/profile-photo.jpg";
+import { useRef } from "react";
 
 export function HeroSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
+  
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background Pattern */}
@@ -20,9 +50,9 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
-          <div className="space-y-8">
+          <div className="space-y-8 order-2 lg:order-1">
             {/* Status Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -45,7 +75,7 @@ export function HeroSection() {
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                 Hi, I'm{" "}
                 <span className="relative">
-                  <span className="relative z-10">John Doe</span>
+                  <span className="relative z-10">Saad Mazhar</span>
                   <span className="absolute bottom-2 left-0 w-full h-3 bg-accent/20 -z-0" />
                 </span>
               </h1>
@@ -120,7 +150,7 @@ export function HeroSection() {
                   <Twitter className="w-5 h-5" />
                 </a>
                 <a 
-                  href="mailto:john@example.com"
+                  href="mailto:saad@example.com"
                   className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 >
                   <Mail className="w-5 h-5" />
@@ -129,55 +159,83 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right Content - Profile Image / Illustration */}
+          {/* Right Content - Profile Image */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative hidden lg:block"
+            className="relative order-1 lg:order-2 flex justify-center lg:justify-end"
           >
-            <div className="relative">
+            <div 
+              ref={ref}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              className="relative"
+              style={{ perspective: "1000px" }}
+            >
               {/* Decorative Elements */}
               <div className="absolute -top-8 -left-8 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-blue-soft rounded-full blur-2xl" />
               
-              {/* Main Card */}
-              <div className="relative bg-card rounded-2xl shadow-xl border border-border overflow-hidden p-8">
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-6">
-                  <StatCard number="5+" label="Years Coding" />
-                  <StatCard number="15+" label="Projects Built" />
-                  <StatCard number="3" label="Startups Founded" />
-                  <StatCard number="10+" label="Technologies" />
+              {/* Profile Image Container */}
+              <motion.div
+                style={{ rotateX, rotateY }}
+                className="relative"
+              >
+                {/* Main Image */}
+                <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
+                  <motion.img
+                    src={profilePhoto}
+                    alt="Saad Mazhar - Professional Portrait"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    whileHover={{ scale: 1.02 }}
+                  />
+                  {/* Subtle overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Now Building Section */}
-                <div className="mt-8 pt-6 border-t border-border">
-                  <p className="text-sm text-muted-foreground mb-3">Currently building:</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent/60 flex items-center justify-center text-accent-foreground font-bold">
+                {/* Floating Stats Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="absolute -bottom-6 -left-6 md:-left-10 bg-card rounded-xl shadow-xl border border-border p-4 backdrop-blur-sm"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-display font-bold text-foreground">5+</p>
+                      <p className="text-xs text-muted-foreground">Years Coding</p>
+                    </div>
+                    <div className="w-px h-10 bg-border" />
+                    <div className="text-center">
+                      <p className="text-2xl font-display font-bold text-foreground">15+</p>
+                      <p className="text-xs text-muted-foreground">Projects</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Currently Building Badge */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  className="absolute -top-4 -right-4 md:-right-8 bg-card rounded-xl shadow-xl border border-border p-3 backdrop-blur-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/60 flex items-center justify-center text-accent-foreground font-bold text-sm">
                       S
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Startup XYZ</p>
-                      <p className="text-xs text-muted-foreground">AI-powered productivity tool</p>
+                      <p className="text-xs font-medium text-foreground">Building</p>
+                      <p className="text-[10px] text-muted-foreground">Startup XYZ</p>
                     </div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
       </div>
     </section>
-  );
-}
-
-function StatCard({ number, label }: { number: string; label: string }) {
-  return (
-    <div className="text-center p-4 rounded-xl bg-secondary/50">
-      <p className="text-3xl font-display font-bold text-foreground">{number}</p>
-      <p className="text-sm text-muted-foreground mt-1">{label}</p>
-    </div>
   );
 }

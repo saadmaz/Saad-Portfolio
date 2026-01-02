@@ -339,6 +339,36 @@
     }
   }
   
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  
   /* Scroll Reveal */
   .reveal {
     opacity: 0;
@@ -349,5 +379,29 @@
   .reveal.active {
     opacity: 1;
     transform: translateY(0);
+  }
+  
+  /* Premium Toggle Styles */
+  .toggle-professional {
+    @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full;
+    @apply transition-all duration-300 ease-out;
+    background: hsl(var(--primary));
+  }
+  
+  .toggle-professional[data-state="unchecked"] {
+    background: hsl(var(--muted));
+  }
+  
+  .toggle-professional-thumb {
+    @apply pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg;
+    @apply transition-transform duration-300 ease-out;
+  }
+  
+  .toggle-professional[data-state="checked"] .toggle-professional-thumb {
+    transform: translateX(20px);
+  }
+  
+  .toggle-professional[data-state="unchecked"] .toggle-professional-thumb {
+    transform: translateX(2px);
   }
 }
