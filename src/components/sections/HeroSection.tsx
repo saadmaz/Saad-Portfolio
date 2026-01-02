@@ -125,7 +125,8 @@ export function HeroSection() {
             >
               <span className="text-sm text-muted-foreground">Connect:</span>
               <div className="flex items-center gap-2">
-                <a 
+
+                {/* <a 
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -136,14 +137,14 @@ export function HeroSection() {
                 </a>  
 
                 <a 
-                  href="https://facebook.com/saadmazhar03" 
+                  href="https://facebook.com/saadmazhar033" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                   aria-label="Facebook Profile"
                 >
                   <Facebook className="w-5 h-5" />
-                </a>
+                </a> */}
 
                 <a 
                   href="https://github.com/saadmaz/" 
