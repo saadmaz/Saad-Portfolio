@@ -101,23 +101,27 @@ export function ContactSection() {
             </Link>
 
             {/* SCHEDULE CARD: Direct link to Cal.com for booking. */}
+            {/* The card container uses 'group' so we can trigger text changes when the whole box is hovered */}
             <a 
               href="https://cal.com/saad-mazhar" 
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 transition-all group"
+              className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-blue-900 transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-accent" />
+                  {/* text-white ensures it starts pure white. group-hover:text-blue-900 changes it on hover */}
+                  <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white transition-colors group-hover:text-blue-900">
+                    {/* The icon also transitions to blue to match the text */}
+                    <Calendar className="w-4 h-4 text-accent group-hover:text-blue-900 transition-colors" />
                     Schedule a Call
                   </h3>
-                  <p className="text-primary-foreground/70 text-xs">
+                  <p className="text-primary-foreground/70 text-xs group-hover:text-blue-900/80 transition-colors">
                     Book a 30-minute chat via Cal.com
                   </p>
                 </div>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
+                {/* The arrow icon also turns blue and slides right */}
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 group-hover:text-blue-900 transition-all text-accent" />
               </div>
             </a>
           </motion.div>
