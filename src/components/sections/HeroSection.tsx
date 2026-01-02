@@ -94,14 +94,19 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="space-y-4"
             >
+
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                 Hi, I'm{" "}
                 <span className="relative">
-                  <span className="relative z-10">Saad Mazhar</span>
-                  {/* Decorative highlight behind name */}
+                  {/* We add 'text-blue-900' (or text-secondary) here. 
+                  'z-10' ensures the text sits on top of the decorative highlight.
+                  */}
+                  <span className="relative z-10 text-blue-900">Saad Mazhar</span>    
+                  {/* Decorative highlight behind name - adjusted opacity to make the blue pop */}
                   <span className="absolute bottom-2 left-0 w-full h-3 bg-accent/20 -z-0" />
-                </span>
+                  </span>
               </h1>
+              
               <p className="text-xl md:text-2xl text-muted-foreground font-light">
                 Startup Founder. Tech Speaker. Professional Compere.
               </p>
