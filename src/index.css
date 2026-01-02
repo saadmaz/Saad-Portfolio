@@ -24,9 +24,9 @@
     --primary: 222 47% 11%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Soft Gray */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary - Dark Blue */
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 0 0% 100%;
     
     /* Muted - Light Gray */
     --muted: 220 14% 96%;
