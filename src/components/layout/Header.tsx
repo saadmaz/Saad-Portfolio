@@ -96,7 +96,7 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-blue-900">
                       Work
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
