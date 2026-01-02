@@ -126,7 +126,7 @@ export function HeroSection() {
               <span className="text-sm text-muted-foreground">Connect:</span>
               <div className="flex items-center gap-2">
 
-                {/* <a 
+                <a 
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -144,7 +144,7 @@ export function HeroSection() {
                   aria-label="Facebook Profile"
                 >
                   <Facebook className="w-5 h-5" />
-                </a> */}
+                </a>
 
                 <a 
                   href="https://github.com/saadmaz/" 
