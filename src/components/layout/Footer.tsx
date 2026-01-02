@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { 
+  Instagram,
+  Facebook,
   Github, 
   Linkedin, 
-  Twitter, 
+  X, 
   Mail, 
   Phone,
   ArrowUp,
@@ -134,30 +136,57 @@ export function Footer() {
               
               {/* Social Icons */}
               <div className="flex items-center gap-3 mt-6">
+
                 <a 
-                  href="https://github.com" 
+                  href="https://www.instagram.com/saaadmaz/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  aria-label="Instagram Profile"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>  
+
+                <a 
+                  href="https://facebook.com/saadmazhar03" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  aria-label="Facebook Profile"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+
+                <a 
+                  href="https://github.com/saadmaz" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                  aria-label="GitHub Profile"
                 >
                   <Github className="w-5 h-5" />
                 </a>
+
                 <a 
-                  href="https://linkedin.com" 
+                  href="https://linkedin.com/in/saadmazhar-" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                  aria-label="LinkedIn Profile"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
+
                 <a 
-                  href="https://twitter.com" 
+                  href="https://x.com/SaadMazhar_" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                  aria-label="X Profile"
                 >
-                  <Twitter className="w-5 h-5" />
+                  <X className="w-5 h-5" />
                 </a>
+
               </div>
             </div>
           </div>
