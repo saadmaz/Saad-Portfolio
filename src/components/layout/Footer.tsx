@@ -194,13 +194,11 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="py-6 border-t border-border">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+            <div className="hidden md:block"></div>
+            <div className="flex justify-center items-center text-sm text-muted-foreground">
               <span>© {new Date().getFullYear()} Saad Mazhar</span>
               <span className="mx-2">·</span>
-              <span className="flex items-center gap-1">
-                Built with <Heart className="w-3 h-3 text-destructive" /> using React & Tailwind
-              </span>
             </div>
             
             <button
