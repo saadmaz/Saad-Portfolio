@@ -1,73 +1,151 @@
-# Welcome to your Lovable project
+🧑‍💼 HERO SECTION ENHANCEMENT (OPENING PAGE)
 
-## Project info
+Add a professional profile photograph on the opening (hero) section.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+The image should:
 
-## How can I edit this code?
+Be high-quality and professionally styled
 
-There are several ways of editing your application.
+Use a clean or neutral background
 
-**Use Lovable**
+Be placed beside the intro text (right-aligned preferred)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Have subtle depth (soft shadow or border)
 
-Changes made via Lovable will be committed automatically to this repo.
+Include a light hover or parallax-style micro-animation to add life without distraction.
 
-**Use your preferred IDE**
+📜 CERTIFICATES PREVIEW ON HOMEPAGE
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Add a horizontal scrolling certificates carousel on the homepage.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Display only top 5–7 key certificates.
 
-Follow these steps:
+Each certificate card should show:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Issuing organization logo
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Certificate title
 
-# Step 3: Install the necessary dependencies.
-npm i
+Year (small metadata)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Include a clear “See All Certificates →” button at the end of the carousel.
 
-**Edit a file directly in GitHub**
+Clicking the button must route users to the Certificates / Licenses & Courses page.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Add smooth horizontal scroll animations and hover feedback.
 
-**Use GitHub Codespaces**
+🎤 EVENTS, HOSTING & COMPERE SECTION
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Explicitly include Event Hosting / Compere roles as a first-class content type.
 
-## What technologies are used for this project?
+Create an Events & Hosting system with:
 
-This project is built with:
+Event title
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Event image (required)
 
-## How can I deploy this project?
+Role label (Host / Compere / Speaker / Organizer)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Year
 
-## Can I connect a custom domain to my Lovable project?
+Events must support image galleries on the detailed event page.
 
-Yes, you can!
+Use professional image layouts suitable for public-facing events.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+🏠 EVENTS PREVIEW ON HOMEPAGE
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Add an Events Preview section on the homepage.
+
+Display 2–3 event cards only:
+
+Event image
+
+Event title
+
+Role (Host / Compere / Speaker / Organizer)
+
+Include a “See All Events →” CTA that navigates to the full Events page.
+
+This section should visually balance technical content and human presence.
+
+🎞️ ANIMATION & INTERACTION ENHANCEMENTS
+
+Enhance animations across the site while maintaining professionalism.
+
+Use animations for:
+
+Section entrance transitions (fade + slide)
+
+Card hover states
+
+Carousel motion
+
+Toggle transitions
+
+Avoid excessive motion, bounce effects, or delays.
+
+Animation style should feel premium and intentional (Apple / Stripe / Linear-inspired).
+
+🎚️ TOGGLE DESIGN IMPROVEMENTS
+
+All toggles (e.g., Recruiter View / Full Profile) must:
+
+Use darker colors (dark blue base)
+
+Have clear contrast for active/inactive states
+
+Include smooth animated transitions
+
+Toggles should feel functional and deliberate, not decorative.
+
+🖼️ IMAGE USAGE & GALLERIES
+
+Allow image-based sections where relevant:
+
+Events
+
+Hosting / Compere activities
+
+Selected project showcases (if applicable)
+
+Image grids and galleries must:
+
+Be responsive
+
+Load efficiently
+
+Maintain consistent aspect ratios
+
+Avoid clutter by limiting images per section and using expandable galleries.
+
+🧠 UX & CONTENT PRIORITIZATION RULES
+
+Homepage must surface:
+
+Identity
+
+Featured work
+
+Certificates preview
+
+Events preview
+
+Deeper details must live on dedicated pages.
+
+Maintain clear visual hierarchy at all times.
+
+Every preview section must include a clear CTA to its full page.
+
+🎯 FINAL UX GOAL
+
+These enhancements should:
+
+Humanize the portfolio
+
+Highlight public presence and communication skills
+
+Improve visual engagement
+
+Preserve a clean, recruiter-friendly experience
+
+The website should still feel calm, confident, and highly professional — never busy or flashy.
