@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Instagram, Facebook, Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { ArrowRight, Download, Instagram, Facebook, Github, Linkedin, X, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
@@ -218,9 +218,9 @@ export function HeroSection() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="Twitter Profile"
+                  aria-label="X Profile"
                 >
-                  <Twitter className="w-5 h-5" />
+                  <X className="w-5 h-5" />
                 </a>
 
                 {/* Changes Email icon to white and background to dark blue on hover. */}
@@ -285,7 +285,7 @@ export function HeroSection() {
                     {/* Vertical Divider */}
                     <div className="w-px h-10 bg-border" />
                     <div className="text-center">
-                      <p className="text-2xl font-display font-bold text-foreground">10+</p>
+                      <p className="text-2xl font-display font-bold text-foreground">20+</p>
                       <p className="text-xs text-muted-foreground">Projects</p>
                     </div>
                   </div>
