@@ -7,10 +7,12 @@ import {
   X, 
   Mail, 
   Phone,
-  ArrowUp,
-  Heart
+  ArrowUp
 } from "lucide-react";
 
+/** * DATA ARRAYS: We define these outside the component to keep the 
+ * JSX clean and make it easier to add/remove links in the future.
+ */
 const exploreLinks = [
   { title: "Home", href: "/" },
   { title: "Featured Work", href: "/projects#featured" },
@@ -36,39 +38,49 @@ const knowledgeLinks = [
 ];
 
 export function Footer() {
+  /** * HELPER FUNCTION: Scrolls the user back to the top of the page 
+   * with a smooth animation rather than a sudden jump.
+   */
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  {/* Root footer uses a solid dark grey hex (#1a1a1a) and forces white text. */}
+  {/* The border-t uses white with 10% opacity to create a subtle separation line. */}
   return (
-    <footer className="bg-secondary/50 border-t border-border">
+    <footer className="bg-[#1a1a1a] text-white border-t border-white/10">
       <div className="section-container">
-        {/* Main Footer Content */}
+        
+        {/* MAIN CONTENT GRID: 5 columns on desktop, stacking on mobile. */}
+        {/* We use py-12 to py-20 to give the content plenty of professional "breathing room." */}
         <div className="py-12 md:py-16 lg:py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
-            {/* Identity Column */}
+            
+            {/* COLUMN 1: BRAND IDENTITY */}
+            {/* Highlights your name and roles with high-contrast white and soft grey text. */}
             <div className="lg:col-span-1">
-              <h3 className="font-display text-xl font-bold text-foreground mb-4">
+              <h3 className="font-display text-xl font-bold text-white mb-4">
                 Saad Mazhar
               </h3>
-              <p className="text-muted-foreground text-sm mb-4">
+              <p className="text-zinc-400 text-sm mb-4">
                 CS Undergraduate. Startup Operator. Tech Entrepreneur.
               </p>
-              <p className="text-muted-foreground text-xs leading-relaxed">
+              <p className="text-zinc-500 text-xs leading-relaxed">
                 Building at the intersection of technology and impact. 
-                Passionate about creating solutions that matter.
+                Passion for creating solutions that matter.
               </p>
             </div>
 
-            {/* Explore Column */}
+            {/* COLUMN 2: EXPLORE NAVIGATION */}
+            {/* Maps through the exploreLinks array to create consistent, hoverable navigation. */}
             <div>
-              <h4 className="font-display text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+              <h4 className="font-display text-sm font-semibold text-white uppercase tracking-wider mb-4">
                 Explore
               </h4>
               <ul className="space-y-3">
                 {exploreLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="footer-link">
+                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -76,15 +88,16 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Personal & Community Column */}
+            {/* COLUMN 3: PERSONAL LINKS */}
+            {/* Showcases your diversity of interests using the same clean vertical list style. */}
             <div>
-              <h4 className="font-display text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+              <h4 className="font-display text-sm font-semibold text-white uppercase tracking-wider mb-4">
                 Personal
               </h4>
               <ul className="space-y-3">
                 {personalLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="footer-link">
+                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -92,15 +105,16 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Knowledge Hub Column */}
+            {/* COLUMN 4: KNOWLEDGE HUB */}
+            {/* Highlights your newsletters and blog, critical for building authority. */}
             <div>
-              <h4 className="font-display text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+              <h4 className="font-display text-sm font-semibold text-white uppercase tracking-wider mb-4">
                 Knowledge Hub
               </h4>
               <ul className="space-y-3">
                 {knowledgeLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="footer-link">
+                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -108,90 +122,73 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Connect Column */}
+            {/* COLUMN 5: CONTACT & SOCIALS */}
+            {/* Directly links to your email and phone, followed by branded icon buttons. */}
             <div>
-              <h4 className="font-display text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+              <h4 className="font-display text-sm font-semibold text-white uppercase tracking-wider mb-4">
                 Connect
               </h4>
               <ul className="space-y-3">
                 <li>
-                  <a 
-                    href="mailto:saad@example.com" 
-                    className="footer-link flex items-center gap-2"
-                  >
+                  <a href="mailto:saadmazaa@gmail.com" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
                     <Mail className="w-4 h-4" />
                     saadmazaa@gmail.com
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="tel:+94720135801" 
-                    className="footer-link flex items-center gap-2"
-                  >
+                  <a href="tel:+94720135801" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
                     <Phone className="w-4 h-4" />
                     +94 72-01-358-01
                   </a>
                 </li>
               </ul>
               
-              {/* Social Icons */}
+              {/* SOCIAL BUTTON BAR: These use the white-icon-on-dark-blue hover effect. */}
               <div className="flex items-center gap-3 mt-6">
-
-                {/* Changes Instagram icon to white and background to dark blue on hover. */}
-                {/* Provides a smooth transition for an interactive, professional user experience. */}
+                
+                {/* Instagram: Inverts from grey to white text with a blue-900 background. */}
+                {/* The 'rounded-lg' and 'p-2' ensure the blue background looks like a clean tile. */}
                 <a 
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900"
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900"
                   aria-label="Instagram Profile"
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
 
-                {/* Changes Facebook icon to white and background to dark blue on hover. */}
-                {/* Standardizes the hover state across all social media links in the hero section. */}
-                <a 
-                  href="https://facebook.com/saadmazhar03" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="Facebook Profile"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-
-                {/* Changes GitHub icon to white and background to dark blue on hover. */}
-                {/* Enhances accessibility and visual feedback when the user interacts with the link. */}
+                {/* GitHub: Standardizes the tech profile link with the same interaction logic. */}
+                {/* Uses 'transition-colors' to prevent a jarring visual snap when hovering. */}
                 <a 
                   href="https://github.com/saadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 
                   aria-label="GitHub Profile"
                 >
                   <Github className="w-5 h-5" />
                 </a>
 
-                {/* Changes LinkedIn icon to white and background to dark blue on hover. */}
-                {/* Maintains brand consistency by using the secondary dark blue for hover states. */}
+                {/* LinkedIn: Professional profile link that matches the secondary brand color. */}
+                {/* The 'text-zinc-400' provides a muted state that doesn't distract from the main content. */}
                 <a 
                   href="https://linkedin.com/in/saadmazhar-" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 
                   aria-label="LinkedIn Profile"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
 
-                {/* Changes Twitter icon to white and background to dark blue on hover. */}
-                {/* Utilizes Tailwind's hover modifiers to toggle background and icon colors simultaneously. */}
+                {/* X (Twitter): Updated social icon with the dark blue hover background. */}
+                {/* Uses a w-5 h-5 size to ensure optical alignment with other icons. */}
                 <a 
                   href="https://x.com/SaadMazhar_" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 
                   aria-label="X Profile"
                 >
                   <X className="w-5 h-5" />
@@ -202,18 +199,25 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="py-6 border-t border-border">
+        {/* BOTTOM BAR: COPYRIGHT & UTILITY */}
+        {/* We use a grid-cols-3 to keep the copyright perfectly centered in the layout. */}
+        <div className="py-6 border-t border-white/10">
           <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+            
+            {/* Empty column for grid balancing on desktop. */}
             <div className="hidden md:block"></div>
-            <div className="flex justify-center items-center text-sm text-muted-foreground">
+            
+            {/* Copyright: Centered on screen, showing the current dynamic year. */}
+            <div className="flex justify-center items-center text-sm text-zinc-500">
               <span>© {new Date().getFullYear()} Saad Mazhar</span>
               <span className="mx-2">·</span>
             </div>
             
+            {/* Back to top: Positioned to the right with a Lucide ArrowUp icon. */}
+            {/* On click, it triggers the scrollToTop function defined at the start. */}
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors md:justify-self-end"
             >
               <span>Back to top</span>
               <ArrowUp className="w-4 h-4" />
