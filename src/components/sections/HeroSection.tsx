@@ -160,22 +160,78 @@ export function HeroSection() {
             >
               <span className="text-sm text-muted-foreground">Connect:</span>
               <div className="flex items-center gap-2">
+                
                 {/* Social Icon Template */}
+
+                {/* Changes Instagram icon to white and background to dark blue on hover. */}
+                {/* Provides a smooth transition for an interactive, professional user experience. */}
                 <a 
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900"
                   aria-label="Instagram Profile"
                 >
                   <Instagram className="w-5 h-5" />
-                </a> 
-                {/* ... (Repeat for FB, GitHub, LinkedIn, Twitter, Mail) */}
-                <a href="https://facebook.com/saadmazhar03" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Facebook Profile"><Facebook className="w-5 h-5" /></a>
-                <a href="https://github.com/saadmaz/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="GitHub Profile"><Github className="w-5 h-5" /></a>
-                <a href="https://linkedin.com/in/saadmazhar-" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="LinkedIn Profile"><Linkedin className="w-5 h-5" /></a>
-                <a href="https://x.com/SaadMazhar_" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Twitter Profile"><Twitter className="w-5 h-5" /></a>
-                <a href="mailto:saadmazaa@gmail.com" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Send Email"><Mail className="w-5 h-5" /></a>
+                </a>
+
+                {/* Changes Facebook icon to white and background to dark blue on hover. */}
+                {/* Standardizes the hover state across all social media links in the hero section. */}
+                <a 
+                  href="https://facebook.com/saadmazhar03" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="Facebook Profile"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+
+                {/* Changes GitHub icon to white and background to dark blue on hover. */}
+                {/* Enhances accessibility and visual feedback when the user interacts with the link. */}
+                <a 
+                  href="https://github.com/saadmaz/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="GitHub Profile"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+
+                {/* Changes LinkedIn icon to white and background to dark blue on hover. */}
+                {/* Maintains brand consistency by using the secondary dark blue for hover states. */}
+                <a 
+                  href="https://linkedin.com/in/saadmazhar-" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="LinkedIn Profile"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+
+                {/* Changes Twitter icon to white and background to dark blue on hover. */}
+                {/* Utilizes Tailwind's hover modifiers to toggle background and icon colors simultaneously. */}
+                <a 
+                  href="https://x.com/SaadMazhar_" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="Twitter Profile"
+                >
+                  <Twitter className="w-5 h-5" />
+                </a>
+
+                {/* Changes Email icon to white and background to dark blue on hover. */}
+                {/* Completes the social bar with a uniform interaction style for the contact link. */}
+                <a 
+                  href="mailto:saadmazaa@gmail.com" 
+                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="Send Email"
+                >
+                  <Mail className="w-5 h-5" />
+                </a>
               </div>
             </motion.div>
           </div>
