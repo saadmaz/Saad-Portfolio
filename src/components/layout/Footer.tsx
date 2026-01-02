@@ -120,16 +120,16 @@ export function Footer() {
                     className="footer-link flex items-center gap-2"
                   >
                     <Mail className="w-4 h-4" />
-                    saad@example.com
+                    saadmazaa@gmail.com
                   </a>
                 </li>
                 <li>
                   <a 
-                    href="tel:+1234567890" 
+                    href="tel:+94720135801" 
                     className="footer-link flex items-center gap-2"
                   >
                     <Phone className="w-4 h-4" />
-                    +1 (234) 567-890
+                    +94 72-01-358-01
                   </a>
                 </li>
               </ul>
@@ -141,7 +141,7 @@ export function Footer() {
                   href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
                   aria-label="Instagram Profile"
                 >
                   <Instagram className="w-5 h-5" />
@@ -151,7 +151,7 @@ export function Footer() {
                   href="https://facebook.com/saadmazhar03" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
                   aria-label="Facebook Profile"
                 >
                   <Facebook className="w-5 h-5" />
@@ -161,7 +161,7 @@ export function Footer() {
                   href="https://github.com/saadmaz" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-background hover:bg-accent hover:bg-secondary transition-colors"
+                  className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
                   aria-label="GitHub Profile"
                 >
                   <Github className="w-5 h-5" />
