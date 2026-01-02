@@ -80,7 +80,7 @@ export function HeroSection() {
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground font-light">
-                CS Undergraduate. Startup Operator. Tech Entrepreneur.
+                Startup Founder. Tech Speaker. Professional Compere.
               </p>
             </motion.div>
 
