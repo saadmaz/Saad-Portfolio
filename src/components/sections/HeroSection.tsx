@@ -234,7 +234,7 @@ export function HeroSection() {
                     </div>
                     <div className="w-px h-10 bg-border" />
                     <div className="text-center">
-                      <p className="text-2xl font-display font-bold text-foreground">15+</p>
+                      <p className="text-2xl font-display font-bold text-foreground">10+</p>
                       <p className="text-xs text-muted-foreground">Projects</p>
                     </div>
                   </div>
@@ -253,7 +253,7 @@ export function HeroSection() {
                     </div>
                     <div>
                       <p className="text-xs font-medium text-foreground">Building</p>
-                      <p className="text-[10px] text-muted-foreground">Startup XYZ</p>
+                      <p className="text-[10px] text-muted-foreground">TankSudda & Stopwash</p>
                     </div>
                   </div>
                 </motion.div>
