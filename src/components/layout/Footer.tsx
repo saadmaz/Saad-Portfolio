@@ -161,7 +161,7 @@ export function Footer() {
                   href="https://github.com/saadmaz" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="p-2 rounded-lg bg-background hover:bg-accent hover:bg-secondary transition-colors"
                   aria-label="GitHub Profile"
                 >
                   <Github className="w-5 h-5" />
