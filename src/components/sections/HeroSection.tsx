@@ -136,12 +136,24 @@ export function HeroSection() {
                   Download Resume
                 </a>
               </Button>
-              <Button asChild variant="outline" className="btn-outline gap-2">
+              
+              <Button 
+              asChild 
+              variant="outline" 
+              className="btn-outline gap-2 transition-colors hover:text-blue-900 hover:border-blue-900 hover:bg-transparent"
+              >
+                <Link to="/contact">
+                Get in Touch
+                <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Button>
+              
+              {/* <Button asChild variant="outline" className="btn-outline gap-2">
                 <Link to="/contact">
                   Get in Touch
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-              </Button>
+              </Button> */}
             </motion.div>
 
             {/* Social Media Links with hover transitions */}
