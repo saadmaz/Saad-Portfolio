@@ -11,7 +11,7 @@ const featuredProjects = [
     tech: ["React", "TypeScript", "Node.js", "PostgreSQL", "D3.js"],
     status: "Live",
     liveUrl: "https://techflow.app",
-    githubUrl: "https://github.com/johndoe/techflow",
+    githubUrl: "https://github.com/saadmaz/techflow",
     gradient: "from-accent to-blue-accent",
   },
   {

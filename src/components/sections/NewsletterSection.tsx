@@ -9,7 +9,7 @@ const newsletters = [
     description: "Deep dives into emerging technologies, engineering best practices, and lessons from building products.",
     audience: "Engineers, CTOs, Tech Enthusiasts",
     frequency: "Weekly",
-    subscribers: "2.5K+",
+    subscribers: "6.2K+",
     color: "from-accent to-blue-accent",
   },
   {

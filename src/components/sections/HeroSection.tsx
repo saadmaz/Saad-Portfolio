@@ -166,7 +166,7 @@ export function HeroSection() {
                 {/* Changes Instagram icon to white and background to dark blue on hover. */}
                 {/* Provides a smooth transition for an interactive, professional user experience. */}
                 <a 
-                  href="https://www.instagram.com/saaadmaz/" 
+                  href="https://instagram.com/saaadmaz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900"
