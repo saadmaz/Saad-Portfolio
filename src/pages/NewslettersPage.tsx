@@ -8,14 +8,14 @@ import { toast } from "sonner";
 
 const newsletters = [
   {
-    id: "tech",
-    title: "Tech Insights Weekly",
+    id: "cse-newsroom",
+    title: "CSE Newsroom",
     icon: Zap,
-    description: "Deep dives into emerging technologies, engineering best practices, and lessons from building products at scale.",
-    topics: ["Software Architecture", "AI/ML Trends", "Performance Optimization", "Developer Tools"],
-    audience: "Engineers, CTOs, Tech Enthusiasts",
-    frequency: "Every Tuesday",
-    subscribers: "2,500+",
+    description: "Weekly updates on the Sri Lankan stock market, including company news, sector trends, and investment insights.",
+    topics: ["Stock Market Updates", "Company News", "Sector Analysis", "Investment Insights"],
+    audience: "Investors, Traders, Financial Analysts",
+    frequency: "Every Sunday",
+    subscribers: "6,200+",
     color: "from-accent to-blue-accent",
     latestIssue: {
       title: "Why RAG is Replacing Fine-Tuning",
@@ -69,8 +69,8 @@ const NewslettersPage = () => {
               Newsletters
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              I write two newsletters sharing insights on technology and entrepreneurship. 
-              Join thousands of readers who learn something new every week.
+              I write two newsletters for curious minds.
+              The CSE Newsroom, a weekly update on the Sri Lankan stock market, and Founder Stories, exploring how entrepreneurs built their ventures.
             </p>
           </motion.div>
 
