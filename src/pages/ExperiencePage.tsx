@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Calendar, Building, MapPin, ArrowUpRight } from "lucide-react";
+import { Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 
 const experiences = [
   {
     id: 1,
     role: "Co-Founder & CTO",
     company: "Startup XYZ",
+    companyUrl: "https://startupxyz.com",
+    companyLogo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop&q=80",
     location: "San Francisco, CA",
     period: "2023 - Present",
     type: "Full-time",
@@ -25,6 +27,8 @@ const experiences = [
     id: 2,
     role: "Software Engineer Intern",
     company: "Tech Corp",
+    companyUrl: "https://techcorp.com",
+    companyLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
     location: "Seattle, WA",
     period: "Summer 2023",
     type: "Internship",
@@ -42,6 +46,8 @@ const experiences = [
     id: 3,
     role: "Founding Engineer",
     company: "PreviousStartup",
+    companyUrl: "https://previousstartup.com",
+    companyLogo: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=100&h=100&fit=crop&q=80",
     location: "Remote",
     period: "2022 - 2023",
     type: "Full-time",
@@ -59,6 +65,8 @@ const experiences = [
     id: 4,
     role: "Teaching Assistant",
     company: "University of Technology",
+    companyUrl: "https://university.edu",
+    companyLogo: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&h=100&fit=crop&q=80",
     location: "San Francisco, CA",
     period: "2021 - 2022",
     type: "Part-time",
@@ -115,23 +123,45 @@ const ExperiencePage = () => {
                 <div className="absolute left-0 md:left-1/2 top-8 w-3 h-3 rounded-full bg-accent -translate-x-1/2 hidden md:block" />
 
                 <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8">
-                  {/* Meta Info */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {exp.period}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Building className="w-4 h-4" />
-                      {exp.company}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {exp.location}
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-secondary text-xs">
-                      {exp.type}
-                    </span>
+                  {/* Company Logo & Meta Info */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <a 
+                      href={exp.companyUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
+                    >
+                      <img 
+                        src={exp.companyLogo} 
+                        alt={`${exp.company} logo`}
+                        className="w-full h-full object-cover"
+                      />
+                    </a>
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-2">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {exp.period}
+                        </span>
+                        <a 
+                          href={exp.companyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 hover:text-accent transition-colors"
+                        >
+                          <Building className="w-4 h-4" />
+                          {exp.company}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          {exp.location}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-secondary text-xs">
+                          {exp.type}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Title & Description */}
