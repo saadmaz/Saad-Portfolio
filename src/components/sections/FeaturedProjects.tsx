@@ -3,6 +3,9 @@ import { ArrowUpRight, Github, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
+/** * DATA ARRAY: We define the projects here to keep the 
+ * component's JSX clean and easily maintainable.
+ */
 const featuredProjects = [
   {
     id: 1,
@@ -36,12 +39,16 @@ const featuredProjects = [
   },
 ];
 
+/** * FRAMER MOTION VARIANTS: 
+ * 'containerVariants' handles the timing of how children appear.
+ * 'itemVariants' defines the individual entrance animation for each card.
+ */
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.15, // Creates a waterfall effect as cards load
     },
   },
 };
@@ -57,15 +64,18 @@ const itemVariants = {
 
 export function FeaturedProjects() {
   return (
-    <section className="section-padding bg-secondary/30">
+    // Changed 'section-padding' to py-12 to reduce vertical space consumption
+    <section className="py-12 bg-secondary/30">
       <div className="section-container">
-        {/* Section Header */}
+        
+        {/* --- SECTION HEADER --- */}
+        {/* Animates vertically when scrolled into view */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-10" // Reduced margin from mb-16 to mb-10
         >
           <span className="section-title">Featured Work</span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -77,7 +87,8 @@ export function FeaturedProjects() {
           </p>
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* --- PROJECTS GRID --- */}
+        {/* Uses CSS Grid for responsiveness: 1 column mobile, 2 tablet, 3 desktop */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -92,15 +103,17 @@ export function FeaturedProjects() {
               className="group"
             >
               <div className="h-full bg-card rounded-xl border border-border card-hover overflow-hidden flex flex-col">
-                {/* Gradient Header */}
+                
+                {/* Visual Header: Uses the unique gradient defined in the data array */}
                 <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
                 
                 <div className="p-6 flex-1 flex flex-col">
-                  {/* Title & Status */}
+                  {/* CARD TITLE & STATUS BADGE */}
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
                       {project.title}
                     </h3>
+                    {/* Status badge logic: Colors change based on project lifecycle stage */}
                     <span className={`status-badge ${
                       project.status === 'Live' ? 'status-live' :
                       project.status === 'MVP' ? 'status-mvp' :
@@ -110,12 +123,12 @@ export function FeaturedProjects() {
                     </span>
                   </div>
 
-                  {/* Description */}
+                  {/* PROJECT DESCRIPTION */}
                   <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
                     {project.description}
                   </p>
 
-                  {/* Tech Stack */}
+                  {/* TECH STACK CHIPS: Displays technologies used as pill-shaped tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
                     {project.tech.map((tech) => (
                       <span key={tech} className="tech-chip">
@@ -124,8 +137,9 @@ export function FeaturedProjects() {
                     ))}
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-border">
+                  {/* --- ACTION BUTTONS --- */}
+                  {/* Links to live deployment and source code repository */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-border">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
@@ -153,13 +167,14 @@ export function FeaturedProjects() {
           ))}
         </motion.div>
 
-        {/* View All Projects CTA */}
+        {/* --- VIEW ALL BUTTON --- */}
+        {/* Positioned at the bottom to lead users to the full project library */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-12"
+          className="text-center mt-10" // Reduced margin from mt-12 to mt-10
         >
           <Button asChild variant="outline" className="btn-outline gap-2">
             <Link to="/projects">
