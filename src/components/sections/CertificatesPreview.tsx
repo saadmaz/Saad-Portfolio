@@ -10,6 +10,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+/**
+ * DATA OBJECT: Array of certification objects.
+ * Storing data outside the JSX makes it easier to manage, 
+ * especially when fetching from an API or CMS later.
+ */
 const certificates = [
   {
     title: "AWS Certified Solutions Architect",
@@ -64,15 +69,18 @@ const certificates = [
 
 export function CertificatesPreview() {
   return (
-    <section className="section-padding bg-secondary/30">
+    // 'py-16' used instead of 'section-padding' to slightly reduce vertical footprint
+    <section className="py-16 bg-secondary/30">
       <div className="section-container">
-        {/* Section Header */}
+        
+        {/* --- SECTION HEADER --- */}
+        {/* Entrance animation using framer-motion's whileInView to trigger when visible */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
+          className="mb-10" // Reduced bottom margin for a tighter layout
         >
           <span className="section-title">Credentials</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -88,7 +96,8 @@ export function CertificatesPreview() {
           </div>
         </motion.div>
 
-        {/* Certificates Carousel */}
+        {/* --- CERTIFICATES CAROUSEL --- */}
+        {/* Wrap in motion.div to provide a smooth fade-in as the section appears */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -98,14 +107,16 @@ export function CertificatesPreview() {
         >
           <Carousel
             opts={{
-              align: "start",
-              loop: true,
+              align: "start", // Keeps the first item aligned to the left
+              loop: true,     // Infinite scrolling for better UX
             }}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
+              {/* Mapping through data to generate individual slides */}
               {certificates.map((cert, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  {/* Internal card animation: Scale and hover translation */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -114,18 +125,20 @@ export function CertificatesPreview() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="h-full"
                   >
+                    {/* The Card: Uses group hover states for the gradient reveal effect */}
                     <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30`}>
-                      {/* Gradient Background */}
+                      
+                      {/* HOVER GRADIENT: Hidden by default, reveals on group-hover */}
                       <div className={`absolute inset-0 bg-gradient-to-br ${cert.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                       
-                      {/* Content */}
+                      {/* CARD CONTENT: Relative z-index to stay above the gradient background */}
                       <div className="relative z-10">
-                        {/* Issuer Logo */}
+                        {/* ISSUER ICON: Simplified placeholder box with an Award icon */}
                         <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 border border-border group-hover:border-accent/30 transition-colors">
                           <Award className="w-6 h-6 text-accent" />
                         </div>
                         
-                        {/* Certificate Info */}
+                        {/* CERTIFICATE TEXT: Line-clamp used to prevent layout break with long titles */}
                         <h4 className="font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
                           {cert.title}
                         </h4>
@@ -137,7 +150,8 @@ export function CertificatesPreview() {
                 </CarouselItem>
               ))}
               
-              {/* See All Card */}
+              {/* --- "SEE ALL" CTA CARD --- */}
+              {/* Last item in carousel leading users to the full skills/certifications page */}
               <CarouselItem className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                 <Link to="/skills#courses" className="block h-full">
                   <div className="h-full bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/30 p-5 flex flex-col items-center justify-center gap-3 hover:bg-accent/15 transition-all duration-300 min-h-[180px] group">
@@ -145,11 +159,14 @@ export function CertificatesPreview() {
                       <ExternalLink className="w-5 h-5 text-accent" />
                     </div>
                     <span className="font-medium text-accent text-center">See All Certificates</span>
+                    {/* Arrow animation to nudge users visually towards the link */}
                     <ArrowRight className="w-4 h-4 text-accent group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               </CarouselItem>
             </CarouselContent>
+            
+            {/* NAVIGATION CONTROLS: Hidden on mobile to save space, visible from 'md' screens up */}
             <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-secondary" />
             <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-secondary" />
           </Carousel>
