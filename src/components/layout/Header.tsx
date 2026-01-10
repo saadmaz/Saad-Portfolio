@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
+import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
@@ -210,11 +211,15 @@ export function Header() {
                   )}
                 </motion.div>
               </button>
-              <Button variant="default" size="sm" className="btn-primary gap-2">
-                <Download className="w-4 h-4" />
-                Download Resume
-              </Button>
-            </div>
+
+              {/* The 'asChild' prop allows the Button to act as a link while keeping its styling. */}
+              {/* The 'download' attribute tells the browser to save the file instead of opening it. */}
+              <Button asChild variant="default" size="sm" className="btn-primary gap-2">
+                <a href={myResume} download="src\assests\Resume\Saad_Mazhar_Resume.pdf">
+                  <Download className="w-4 h-4" />
+                  Download Resume
+                </a>
+              </Button>            </div>
 
             {/* Mobile Toggles */}
             <div className="flex lg:hidden items-center gap-2">
