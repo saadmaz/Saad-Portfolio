@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Calendar, Building } from "lucide-react";
+import { ArrowUpRight, Calendar, Building, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +8,8 @@ const experiences = [
     id: 1,
     role: "Co-Founder & CTO",
     company: "Startup XYZ",
+    companyUrl: "https://startupxyz.com",
+    companyLogo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop&q=80",
     period: "2023 - Present",
     description: "Leading technical strategy and product development for an AI-powered productivity platform serving 10K+ users.",
     highlights: [
@@ -21,6 +23,8 @@ const experiences = [
     id: 2,
     role: "Software Engineer Intern",
     company: "Tech Corp",
+    companyUrl: "https://techcorp.com",
+    companyLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
     period: "Summer 2023",
     description: "Developed key features for the customer-facing dashboard used by Fortune 500 clients.",
     highlights: [
@@ -34,6 +38,8 @@ const experiences = [
     id: 3,
     role: "Founding Engineer",
     company: "PreviousStartup",
+    companyUrl: "https://previousstartup.com",
+    companyLogo: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=100&h=100&fit=crop&q=80",
     period: "2022 - 2023",
     description: "First engineering hire at an early-stage startup focused on developer tools.",
     highlights: [
@@ -62,7 +68,7 @@ export function ExperienceSection() {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
               Where I've Worked
             </h2>
-            <Button asChild variant="ghost" className="text-accent hover:text-accent gap-1 w-fit">
+            <Button asChild variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10 gap-1 w-fit">
               <Link to="/experience">
                 View Full History
                 <ArrowUpRight className="w-4 h-4" />
@@ -85,15 +91,38 @@ export function ExperienceSection() {
               <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8">
                 <div className="grid md:grid-cols-[1fr_2fr] gap-6">
                   {/* Left - Meta Info */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      {exp.period}
+                  <div className="space-y-4">
+                    {/* Company Logo */}
+                    <a 
+                      href={exp.companyUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
+                    >
+                      <img 
+                        src={exp.companyLogo} 
+                        alt={`${exp.company} logo`}
+                        className="w-full h-full object-cover"
+                      />
+                    </a>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="w-4 h-4" />
+                        {exp.period}
+                      </div>
+                      <a 
+                        href={exp.companyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
+                      >
+                        <Building className="w-4 h-4" />
+                        {exp.company}
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Building className="w-4 h-4" />
-                      {exp.company}
-                    </div>
+                    
                     <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
                       {exp.role}
                     </h3>
