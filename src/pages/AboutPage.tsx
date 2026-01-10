@@ -7,13 +7,12 @@ import {
   Calendar, 
   Trophy, 
   Heart,
-  Music,
   Dumbbell, 
   Globe, 
   Star,
   ChevronLeft,
   ChevronRight,
-  ArrowUpRight
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -21,6 +20,8 @@ import { Link } from "react-router-dom";
 const educationList = [
   {
     institution: "University of Technology",
+    institutionUrl: "https://university.edu",
+    institutionLogo: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&h=100&fit=crop&q=80",
     degree: "Bachelor of Science in Computer Science",
     period: "2021 - 2025 (Expected)",
     location: "San Francisco, CA",
@@ -30,6 +31,8 @@ const educationList = [
   },
   {
     institution: "Online Education Platform",
+    institutionUrl: "https://coursera.org",
+    institutionLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
     degree: "Full Stack Development Certificate",
     period: "2022",
     location: "Online",
@@ -38,6 +41,8 @@ const educationList = [
   },
   {
     institution: "High School Name",
+    institutionUrl: "https://highschool.edu",
+    institutionLogo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=100&h=100&fit=crop&q=80",
     degree: "Advanced Level Studies",
     period: "2018 - 2021",
     location: "Colombo, Sri Lanka",
@@ -115,8 +120,32 @@ const AboutPage = () => {
             </div>
             
             <motion.div key={currentEdu} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-card rounded-xl border border-border p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-2">{educationList[currentEdu].institution}</h3>
-              <p className="text-muted-foreground mb-4">{educationList[currentEdu].degree}</p>
+              <div className="flex items-start gap-4 mb-4">
+                <a 
+                  href={educationList[currentEdu].institutionUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
+                >
+                  <img 
+                    src={educationList[currentEdu].institutionLogo} 
+                    alt={`${educationList[currentEdu].institution} logo`}
+                    className="w-full h-full object-cover"
+                  />
+                </a>
+                <div>
+                  <a 
+                    href={educationList[currentEdu].institutionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-xl font-semibold text-foreground hover:text-accent transition-colors mb-1"
+                  >
+                    {educationList[currentEdu].institution}
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <p className="text-muted-foreground">{educationList[currentEdu].degree}</p>
+                </div>
+              </div>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
                 <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{educationList[currentEdu].period}</span>
                 <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{educationList[currentEdu].location}</span>
