@@ -250,7 +250,7 @@ export function Header() {
                   <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Github className="w-6 h-6" />
                   </a>
-                  <a href="https://linkedin.com/in/saadmazhar-" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                  <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Linkedin className="w-6 h-6" />
                   </a>
                   <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors">
