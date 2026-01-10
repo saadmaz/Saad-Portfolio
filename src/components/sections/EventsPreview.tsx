@@ -46,7 +46,7 @@ export function EventsPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
+          className="mb-10"
         >
           <span className="section-title">Public Presence</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
