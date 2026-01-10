@@ -173,7 +173,7 @@ export function Footer() {
                 {/* LinkedIn: Professional profile link that matches the secondary brand color. */}
                 {/* The 'text-zinc-400' provides a muted state that doesn't distract from the main content. */}
                 <a 
-                  href="https://linkedin.com/in/saadmazhar-" 
+                  href="https://linkedin.com/in/saadmaz" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 

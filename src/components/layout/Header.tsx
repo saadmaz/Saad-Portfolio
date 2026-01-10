@@ -23,8 +23,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
+// Vite handles the PDF asset and provides a URL for the final deployment
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
+/** * MENU DATA: Arrays are defined outside the component to prevent 
+ * re-declaration on every render and keep the JSX architecture clean.
+ */
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
   { title: "Featured Projects", href: "/projects#featured", description: "Highlighted work and ventures" },
@@ -58,6 +62,9 @@ export function Header() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
+  /** * SCROLL LISTENER: Monitors the Y-axis to toggle 
+   * background blur and transparency on the header.
+   */
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -66,6 +73,10 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /** * NAVIGATION SYNC: Automatically closes the mobile menu 
+   * when a user clicks a link and prevents body scrolling 
+   * while the full-screen menu is active.
+   */
   useEffect(() => {
     setIsMobileMenuOpen(false);
     if (isMobileMenuOpen) {
@@ -73,7 +84,7 @@ export function Header() {
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [location]);
+  }, [location, isMobileMenuOpen]);
 
   return (
     <>
@@ -87,101 +98,56 @@ export function Header() {
       >
         <div className="section-container">
           <div className="flex items-center justify-between h-16 md:h-20">
+            {/* BRANDING: Clickable logo leading back to index */}
             <Link to="/" className="flex items-center gap-2">
               <span className="font-display text-xl font-bold text-foreground">
                 Saad Mazhar
               </span>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* --- DESKTOP NAVIGATION --- */}
             <nav className="hidden lg:flex items-center gap-1">
               <NavigationMenu>
                 <NavigationMenuList>
+                  {/* Home Link (Direct) */}
                   <NavigationMenuItem>
                     <Link to="/" className="nav-link px-4 py-2">
                       Home
                     </Link>
                   </NavigationMenuItem>
 
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
-                      Work
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[300px] gap-1 p-3 bg-popover rounded-lg shadow-lg">
-                        {workItems.map((item) => (
-                          <li key={item.href}>
-                            <NavigationMenuLink asChild>
-                              <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
-                                <div className="text-sm font-medium text-foreground">{item.title}</div>
-                                <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
-                      Skills
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[300px] gap-1 p-3 bg-popover rounded-lg shadow-lg">
-                        {skillsItems.map((item) => (
-                          <li key={item.href}>
-                            <NavigationMenuLink asChild>
-                              <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
-                                <div className="text-sm font-medium text-foreground">{item.title}</div>
-                                <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
-                      About
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[450px] gap-1 p-3 md:grid-cols-2 bg-popover rounded-lg shadow-lg">
-                        {aboutItems.map((item) => (
-                          <li key={item.href}>
-                            <NavigationMenuLink asChild>
-                              <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
-                                <div className="text-sm font-medium text-foreground">{item.title}</div>
-                                <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
-                      Insights
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[280px] gap-1 p-3 bg-popover rounded-lg shadow-lg">
-                        {insightsItems.map((item) => (
-                          <li key={item.href}>
-                            <NavigationMenuLink asChild>
-                              <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
-                                <div className="text-sm font-medium text-foreground">{item.title}</div>
-                                <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
+                  {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY (Don't Repeat Yourself) */}
+                  {[
+                    { label: "Work", items: workItems },
+                    { label: "Skills", items: skillsItems },
+                    { label: "About", items: aboutItems, wide: true },
+                    { label: "Insights", items: insightsItems }
+                  ].map((menu) => (
+                    <NavigationMenuItem key={menu.label}>
+                      {/* Trigger is the label that opens the dropdown on hover */}
+                      <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
+                        {menu.label}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        {/* Dropdown container styling */}
+                        <ul className={cn(
+                          "grid gap-1 p-3 bg-popover rounded-lg shadow-lg",
+                          menu.wide ? "w-[450px] md:grid-cols-2" : "w-[300px]"
+                        )}>
+                          {menu.items.map((item) => (
+                            <li key={item.href}>
+                              <NavigationMenuLink asChild>
+                                <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
+                                  <div className="text-sm font-medium text-foreground">{item.title}</div>
+                                  <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  ))}
 
                   <NavigationMenuItem>
                     <Link to="/contact" className="nav-link px-4 py-2">
@@ -192,8 +158,9 @@ export function Header() {
               </NavigationMenu>
             </nav>
 
-            {/* Desktop Right Actions */}
+            {/* --- DESKTOP RIGHT ACTIONS --- */}
             <div className="hidden lg:flex items-center gap-3">
+              {/* Theme Toggle Button: Moon/Sun animation using Framer Motion */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300 hover:scale-105"
@@ -204,40 +171,39 @@ export function Header() {
                   animate={{ rotate: theme === "dark" ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {theme === "dark" ? (
-                    <Sun className="w-5 h-5" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
+                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </motion.div>
               </button>
 
-              {/* The 'asChild' prop allows the Button to act as a link while keeping its styling. */}
-              {/* The 'download' attribute tells the browser to save the file instead of opening it. */}
+              {/* PDF DOWNLOAD: Uses 'asChild' to merge Shadcn button styles with a standard HTML anchor link */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
-                <a href={myResume} download="src\assests\Resume\Saad_Mazhar_Resume.pdf">
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
-              </Button>            </div>
+              </Button>
+            </div>
 
-            {/* Mobile Toggles */}
+            {/* --- MOBILE TOGGLES --- */}
             <div className="flex lg:hidden items-center gap-2">
+              {/* Theme toggle for mobile */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300"
+                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? (
-                  <Sun className="w-5 h-5" />
-                ) : (
-                  <Moon className="w-5 h-5" />
-                )}
+                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <Button variant="default" size="sm" className="btn-primary gap-2">
-                <Download className="w-4 h-4" />
-                Resume
+              
+              {/* Compact Resume Download for mobile */}
+              <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
+                  <Download className="w-4 h-4" />
+                  Resume
+                </a>
               </Button>
+
+              {/* Hamburger Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-foreground focus:outline-none"
@@ -250,7 +216,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile Full-Screen Menu */}
+      {/* --- MOBILE FULL-SCREEN MENU OVERLAY --- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -259,6 +225,7 @@ export function Header() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 lg:hidden bg-background overflow-hidden"
           >
+            {/* Frosted Glass Effect Backdrop */}
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
             
             <motion.nav
@@ -267,6 +234,7 @@ export function Header() {
               exit={{ opacity: 0, y: -20 }}
               className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto"
             >
+              {/* Recursive Section rendering for mobile accordions */}
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="Work" items={workItems} />
@@ -276,12 +244,13 @@ export function Header() {
                 <MobileNavSection title="Contact" href="/contact" />
               </div>
 
+              {/* MOBILE MENU FOOTER: Social icons integrated for easy access */}
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex items-center gap-6">
-                  <a href="https://github.com/saadmaz" target="_blank" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Github className="w-6 h-6" />
                   </a>
-                  <a href="https://linkedin.com/in/saadmazhar-" target="_blank" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                  <a href="https://linkedin.com/in/saadmazhar-" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Linkedin className="w-6 h-6" />
                   </a>
                   <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors">
@@ -297,6 +266,9 @@ export function Header() {
   );
 }
 
+/** * MOBILE NAV SECTION: Handles the logic between a single-click 
+ * navigation link and an expandable accordion menu.
+ */
 function MobileNavSection({ 
   title, 
   href, 
@@ -308,6 +280,7 @@ function MobileNavSection({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // If a direct href is provided, render a simple link
   if (href) {
     return (
       <Link 
@@ -319,6 +292,7 @@ function MobileNavSection({
     );
   }
 
+  // If it's a category, render a button that triggers a Framer Motion height animation
   return (
     <div className="border-b border-border/50 pb-2">
       <button
@@ -336,6 +310,7 @@ function MobileNavSection({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
+            {/* Recursive list of links within the accordion */}
             <div className="pt-3 pl-4 space-y-4 border-l-2 border-accent/20 ml-1">
               {items.map((item) => (
                 <Link
