@@ -5,7 +5,7 @@ const education = {
   institution: "University of Technology",
   degree: "Bachelor of Science in Computer Science",
   period: "2021 - 2025 (Expected)",
-  location: "San Francisco, CA",
+  location: "Harrow, United Kingdom",
   gpa: "3.9/4.0",
   courses: ["Data Structures", "Algorithms", "Machine Learning", "Systems Design", "Database Systems"],
 };
