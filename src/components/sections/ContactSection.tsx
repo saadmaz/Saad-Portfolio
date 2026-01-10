@@ -25,7 +25,7 @@ export function ContactSection() {
             </h2>
             
             <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
-              Whether you're looking to collaborate on a project or just want to say hello — I'd love to hear from you.
+              Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
             {/* CONTACT LIST */}
@@ -43,7 +43,7 @@ export function ContactSection() {
                 className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
               >
                 <Phone className="w-4 h-4 text-accent" />
-                <span>+94 72-01-358-01</span>
+                <span>+94 72 01 358 01</span>
               </a>
 
               <div className="flex items-center gap-3 text-muted-foreground text-sm">

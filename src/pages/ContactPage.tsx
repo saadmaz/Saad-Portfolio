@@ -131,17 +131,26 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {/* Schedule Call */}
+              {/* This block renders a call-to-action card for live consultations. */}
+              {/* On click, it triggers a navigation to Calendly for direct meeting scheduling. */}
               <div className="p-6 rounded-xl bg-primary text-primary-foreground">
                 <div className="flex items-center gap-3 mb-3">
                   <Calendar className="w-5 h-5" />
-                  <h4 className="font-semibold">Schedule a Call</h4>
+                  <h4 className="font-semibold text-white">Schedule a Call</h4>
                 </div>
                 <p className="text-sm text-primary-foreground/80 mb-4">
-                  Prefer to chat live? Book a 30-minute call and let's discuss your project.
+                  Prefer to chat live? Book a 30-minute meeting through this link and let's discuss your project.
                 </p>
-                <Button variant="secondary" className="w-full">
-                  Book a Time
+                
+                {/* Using asChild allows the Button to render as an 'a' tag while keeping the secondary styles */}
+                <Button variant="secondary" className="w-full" asChild>
+                  <a 
+                    href="https://calendly.com/saadmaz/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Book a Meeting
+                  </a>
                 </Button>
               </div>
             </motion.div>
