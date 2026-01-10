@@ -22,7 +22,7 @@ const newsletters = [
     subscribers: "6,200+",
     color: "from-blue-600 to-cyan-500",
     // LinkedIn Newsletter direct URL
-    linkedInUrl: "https://www.linkedin.com/newsletters/your-cse-newsletter-id", 
+    linkedInUrl: "Subscribe on LinkedIn https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896", 
     latestIssue: {
       title: "Market Outlook: Banking Sector Rally",
       date: "Dec 24, 2025",
