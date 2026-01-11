@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, ArrowRight, Github, Linkedin, Twitter, Calendar } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function ContactSection() {
@@ -55,9 +55,11 @@ export function ContactSection() {
             {/* SOCIAL LINKS */}
             <div className="flex items-center gap-3">
               {[
+                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
+                { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
                 { Icon: Github, href: "https://github.com/saadmaz" },
                 { Icon: Linkedin, href: "https://linkedin.com/in/saadmazhar-" },
-                { Icon: Twitter, href: "https://x.com/SaadMazhar_" }
+                { Icon: X, href: "https://x.com/SaadMazhar_" }
               ].map((social, index) => (
                 <a 
                   key={index}
@@ -87,7 +89,11 @@ export function ContactSection() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-display text-lg font-semibold mb-1 text-foreground">Send a Message</h3>
+                  <h3 className="font-display text-lg font-semibold mb-1 text-foreground">
+                    <Mail className="w-4 h-4 text-accent" />
+                    Send a Message
+                  </h3>
+                  
                   <p className="text-muted-foreground text-xs">
                     Get a response within 24 hours.
                   </p>
