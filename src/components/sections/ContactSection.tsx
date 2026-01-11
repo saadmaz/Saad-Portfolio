@@ -82,46 +82,61 @@ export function ContactSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-4"
           >
-            {/* SEND MESSAGE CARD */}
-            <Link 
-              to="/contact" 
-              className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-display text-lg font-semibold mb-1 text-foreground">
-                    <Mail className="w-4 h-4 text-accent" />
-                    Send a Message
-                  </h3>
-                  
-                  <p className="text-muted-foreground text-xs">
-                    Get a response within 24 hours.
-                  </p>
-                </div>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
-              </div>
-            </Link>
+            {/* --- CONTACT INTERACTION SECTION --- */}
+            {/* These cards provide two distinct ways for users to reach out. */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            {/* SCHEDULE CARD */}
-            <a 
-              href="https://cal.com/saad-mazhar" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
-                    <Calendar className="w-4 h-4 text-accent" />
-                    Schedule a Call
-                  </h3>
-                  <p className="text-muted-foreground text-xs group-hover:text-foreground transition-colors">
-                    Book a 30-minute chat via Cal.com
-                  </p>
+              {/* SEND MESSAGE CARD: Internal route to the Contact Page */}
+              {/* We use 'group' to trigger coordinated hover animations for the icon, title, and arrow. */}
+              <Link 
+                to="/contact" 
+                className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    {/* Title: Standard text-foreground that shifts to the accent color on parent hover */}
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
+                      <Mail className="w-4 h-4 text-accent" />
+                      Send a Message
+                    </h3>
+                    {/* Description: Subtext providing expectation of response time */}
+                    <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
+                      Get a response within 24 hours.
+                    </p>
+                  </div>
+                  {/* Directional Arrow: Slides slightly to the right on hover to signal interactivity */}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-all text-accent" />
-              </div>
-            </a>
+              </Link>
+
+              {/* SCHEDULE CALL CARD: External link to Cal.com scheduling page */}
+              {/* rel="noopener noreferrer" is included for security when opening external tabs. */}
+              <a 
+                href="https://cal.com/saad-mazhar" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    {/* Title: Synchronized with the 'Send Message' card for visual consistency */}
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
+                      <Calendar className="w-4 h-4 text-accent" />
+                      Schedule a Call
+                    </h3>
+                    {/* Description: Clearly states the platform and meeting duration */}
+                    <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
+                      Book a 30-minute chat via Cal.com
+                    </p>
+                  </div>
+                  {/* Directional Arrow: Synchronized animation with the internal link card */}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
+                </div>
+              </a>
+
+            </div>
+
+
           </motion.div>
         </div>
       </div>
