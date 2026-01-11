@@ -63,7 +63,7 @@ export function Footer() {
                 Saad Mazhar
               </h3>
               <p className="text-zinc-400 text-sm mb-4">
-                CS Undergraduate. Startup Operator. Tech Entrepreneur.
+                CS Undergraduate. Startup Founder. Tech Entrepreneur.
               </p>
               <p className="text-zinc-500 text-xs leading-relaxed">
                 Building at the intersection of technology and impact. 
@@ -210,7 +210,7 @@ export function Footer() {
             {/* Copyright: Centered on screen, showing the current dynamic year. */}
             <div className="flex justify-center items-center text-sm text-zinc-500">
               <span>© {new Date().getFullYear()} Saad Mazhar</span>
-              <span className="mx-2">·</span>
+              {/* <span className="mx-2">·</span> */}
             </div>
             
             {/* Back to top: Positioned to the right with a Lucide ArrowUp icon. */}

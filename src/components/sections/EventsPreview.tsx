@@ -14,6 +14,7 @@ const featuredEvents = [
     location: "San Francisco, CA",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
   },
+
   {
     id: 2,
     title: "Google Developer Summit",
@@ -24,6 +25,7 @@ const featuredEvents = [
     location: "Mountain View, CA",
     image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
   },
+  
   {
     id: 3,
     title: "HackMIT 2024",

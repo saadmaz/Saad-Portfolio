@@ -58,7 +58,7 @@ const ContactPage = () => {
                 <ul className="space-y-4">
                   <li>
                     <a 
-                      href="mailto:john@example.com"
+                      href="mailto:saadmazaa@gmail.com"
                       className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent/50 transition-colors"
                     >
                       <div className="p-3 rounded-lg bg-accent/10">
@@ -66,13 +66,13 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="font-medium text-foreground">john@example.com</p>
+                        <p className="font-medium text-foreground">saadmazaa@gmail.com</p>
                       </div>
                     </a>
                   </li>
                   <li>
                     <a 
-                      href="tel:+1234567890"
+                      href="tel:+94720135801"
                       className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent/50 transition-colors"
                     >
                       <div className="p-3 rounded-lg bg-accent/10">
@@ -80,7 +80,7 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Phone</p>
-                        <p className="font-medium text-foreground">+1 (234) 567-890</p>
+                        <p className="font-medium text-foreground">+(94) 720 135 801</p>
                       </div>
                     </a>
                   </li>
@@ -91,7 +91,7 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Location</p>
-                        <p className="font-medium text-foreground">San Francisco, CA</p>
+                        <p className="font-medium text-foreground">Colombo, Sri Lanka</p>
                       </div>
                     </div>
                   </li>
@@ -105,15 +105,17 @@ const ContactPage = () => {
                 </h4>
                 <div className="flex items-center gap-3">
                   <a 
-                    href="https://github.com" 
+                    href="https://github.com/saaadmaz" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
                   >
                     <Github className="w-5 h-5" />
                   </a>
+
+
                   <a 
-                    href="https://linkedin.com" 
+                    href="https://linkedin.com/in/saadmaz" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
@@ -183,7 +185,7 @@ const ContactPage = () => {
                       <Input
                         id="email"
                         type="email"
-                        placeholder="saadmazaa@gmail.com"
+                        placeholder="name@youremail.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
