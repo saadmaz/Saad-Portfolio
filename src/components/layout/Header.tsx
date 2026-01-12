@@ -74,18 +74,16 @@ export function Header() {
   }, []);
 
   /** * NAVIGATION SYNC: Automatically closes the mobile menu 
-   * when a user clicks a link and prevents body scrolling 
-   * while the full-screen menu is active.
+   * when a user clicks a link and prevents body scrolling.
    */
   useEffect(() => {
-    // We only force-close if it was already open to prevent logic loops
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
     }
   }, [location]);
 
-  /** * BODY LOCK: Separate effect to handle the scroll lock 
-   * to ensure cleanup happens correctly.
+  /** * BODY LOCK: Handles the scroll lock to ensure 
+   * cleanup happens correctly when menu is open.
    */
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -121,14 +119,12 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               <NavigationMenu>
                 <NavigationMenuList>
-                  {/* Home Link (Direct) */}
                   <NavigationMenuItem>
                     <Link to="/" className="nav-link px-4 py-2">
                       Home
                     </Link>
                   </NavigationMenuItem>
 
-                  {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY */}
                   {[
                     { label: "About", items: aboutItems, wide: true },
                     { label: "Work", items: workItems },
@@ -181,34 +177,21 @@ export function Header() {
 
             {/* --- DESKTOP RIGHT ACTIONS --- */}
             <div className="hidden lg:flex items-center gap-3">
+              {/* THEME TOGGLE: Transparent bg, icon darkens on hover */}
               <button
                 onClick={toggleTheme}
-                /* 1. Changed 'bg-secondary/50' to 'bg-transparent' to remove the box.
-                  2. Removed 'hover:bg-secondary'.
-                  3. Added 'text-foreground/70' as the base color.
-                  4. Added 'hover:text-foreground' to make the icon "pop" or darken on hover.
-                */
                 className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all duration-300 hover:scale-110"
                 aria-label="Toggle theme"
               >
                 <motion.div
                   initial={false}
-                  /* Rotates the icon 180 degrees when switching themes */
                   animate={{ rotate: theme === "dark" ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {/* The icon now inherits the text-color darkening from the parent button */}
-                  {theme === "dark" ? (
-                    <Sun className="w-5 h-5" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
+                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </motion.div>
               </button>
               
-              {/* Rest of your action components... */}
-            </div>
-
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -219,16 +202,14 @@ export function Header() {
 
             {/* --- MOBILE TOGGLES --- */}
             <div className="flex lg:hidden items-center gap-2 relative z-[60]">
-              {/* Theme toggle for mobile */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all"
+                className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
-              {/* Compact Resume Download for mobile */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -236,7 +217,6 @@ export function Header() {
                 </a>
               </Button>
 
-              {/* Hamburger Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-foreground focus:outline-none"
@@ -259,7 +239,6 @@ export function Header() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[45] lg:hidden"
           >
-            {/* Background Backdrop - now separated from the clickable nav to prevent event bubbling issues */}
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
             
             <motion.nav
@@ -269,7 +248,6 @@ export function Header() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]"
             >
-              {/* Recursive Section rendering for mobile accordions */}
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -279,7 +257,6 @@ export function Header() {
                 <MobileNavSection title="Contact" href="/contact" />
               </div>
 
-              {/* MOBILE MENU FOOTER: Social icons integrated for easy access */}
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex items-center gap-6">
                   <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
@@ -301,9 +278,6 @@ export function Header() {
   );
 }
 
-/** * MOBILE NAV SECTION: Handles the logic between a single-click 
- * navigation link and an expandable accordion menu.
- */
 function MobileNavSection({ 
   title, 
   href, 
@@ -315,7 +289,6 @@ function MobileNavSection({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // If a direct href is provided, render a simple link
   if (href) {
     return (
       <Link 
@@ -327,7 +300,6 @@ function MobileNavSection({
     );
   }
 
-  // If it's a category, render a button that triggers a Framer Motion height animation
   return (
     <div className="border-b border-border/50 pb-2 relative z-[51]">
       <button
@@ -345,7 +317,6 @@ function MobileNavSection({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            {/* Recursive list of links within the accordion */}
             <div className="pt-3 pl-4 space-y-4 border-l-2 border-accent/20 ml-1">
               {items.map((item) => (
                 <Link
