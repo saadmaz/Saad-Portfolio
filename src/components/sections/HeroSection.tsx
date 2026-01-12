@@ -92,7 +92,7 @@ export function HeroSection() {
                 Hi, I'm{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-blue-900">Saad Mazhar</span>    
-                  <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-3 bg-accent/20 -z-0" />
+                  <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-2 bg-accent/20 -z-0" />
                 </span>
               </h1>
               
