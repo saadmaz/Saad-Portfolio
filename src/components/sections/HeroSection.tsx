@@ -97,7 +97,7 @@ export function HeroSection() {
               </h1>
               
               <p className="text-lg md:text-2xl text-muted-foreground font-light">
-                Startup Founder • Tech Speaker • Compere
+                • Startup Founder • Tech Speaker • Compere
               </p>
             </motion.div>
 

@@ -296,17 +296,17 @@ export function Header() {
                   <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Mail className="w-6 h-6" />
                   </a>
-                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
-                    <Instagram className="w-6 h-6" />
-                  </a>
-                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
-                    <Facebook className="w-6 h-6" />
-                  </a>
                   <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Linkedin className="w-6 h-6" />
                   </a>
                   <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Github className="w-6 h-6" />
+                  </a>
+                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Instagram className="w-6 h-6" />
+                  </a>
+                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Facebook className="w-6 h-6" />
                   </a>
                   <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <X className="w-6 h-6" />
