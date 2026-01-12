@@ -183,17 +183,31 @@ export function Header() {
             <div className="hidden lg:flex items-center gap-3">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300 hover:scale-105"
+                /* 1. Changed 'bg-secondary/50' to 'bg-transparent' to remove the box.
+                  2. Removed 'hover:bg-secondary'.
+                  3. Added 'text-foreground/70' as the base color.
+                  4. Added 'hover:text-foreground' to make the icon "pop" or darken on hover.
+                */
+                className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all duration-300 hover:scale-110"
                 aria-label="Toggle theme"
               >
                 <motion.div
                   initial={false}
+                  /* Rotates the icon 180 degrees when switching themes */
                   animate={{ rotate: theme === "dark" ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  {/* The icon now inherits the text-color darkening from the parent button */}
+                  {theme === "dark" ? (
+                    <Sun className="w-5 h-5" />
+                  ) : (
+                    <Moon className="w-5 h-5" />
+                  )}
                 </motion.div>
               </button>
+              
+              {/* Rest of your action components... */}
+            </div>
 
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
