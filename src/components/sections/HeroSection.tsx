@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Instagram, Facebook, Github, Linkedin, X, Mail } from "lucide-react";
+import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X,} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
@@ -148,12 +148,13 @@ export function HeroSection() {
               <span className="text-sm text-muted-foreground">Connect with me:</span>
               <div className="flex flex-wrap justify-center gap-2">
                 {[
+                  { icon: Phone, href: "tel:+94720135801" , label: "Phone" },
+                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" },
+                  { icon: Linkedin, href: "https://linkedin.com/in/saadmaz/", label: "LinkedIn" },
+                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" },                  
                   { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" },
                   { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" },
-                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" },
-                  { icon: Linkedin, href: "https://linkedin.com/in/saadmazhar-", label: "LinkedIn" },
                   { icon: X, href: "https://x.com/SaadMazhar_", label: "X" },
-                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" },
                 ].map((social, i) => (
                   <a 
                     key={i}
