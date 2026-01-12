@@ -124,20 +124,34 @@ export function Header() {
                     { label: "Insights", items: insightsItems }
                   ].map((menu) => (
                     <NavigationMenuItem key={menu.label}>
-                      {/* Trigger is the label that opens the dropdown on hover */}
-                      <NavigationMenuTrigger className="nav-link bg-transparent hover:bg-transparent focus:bg-transparent transition-colors hover:text-accent active:text-accent data-[state=open]:text-accent">
+                      {/* MODIFICATION: Removed 'hover:bg-transparent'. 
+                          ADDED: 'hover:bg-black/10' (adds a dark tint) or 'hover:bg-accent/10'.
+                          The 'data-[state=open]:bg-accent/10' ensures it stays dark while the menu is active.
+                      */}
+                      <NavigationMenuTrigger 
+                        className={cn(
+                          "nav-link bg-transparent transition-colors",
+                          "hover:bg-black/5 dark:hover:bg-white/5", // Subtle darkening effect
+                          "hover:text-accent active:text-accent",
+                          "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
+                          "focus:bg-black/5 focus:text-accent outline-none"
+                        )}
+                      >
                         {menu.label}
                       </NavigationMenuTrigger>
+                      
                       <NavigationMenuContent>
-                        {/* Dropdown container styling */}
                         <ul className={cn(
-                          "grid gap-1 p-3 bg-popover rounded-lg shadow-lg",
+                          "grid gap-1 p-3 bg-popover rounded-lg shadow-lg border border-border",
                           menu.wide ? "w-[450px] md:grid-cols-2" : "w-[300px]"
                         )}>
                           {menu.items.map((item) => (
                             <li key={item.href}>
                               <NavigationMenuLink asChild>
-                                <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10">
+                                <Link 
+                                  to={item.href} 
+                                  className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10"
+                                >
                                   <div className="text-sm font-medium text-foreground">{item.title}</div>
                                   <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
                                 </Link>
