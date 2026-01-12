@@ -5,11 +5,15 @@ import {
   Menu, 
   ChevronDown, 
   Download,
+  Phone,
+  Facebook,
+  Instagram,
   Github,
   Linkedin,
   Mail,
   Moon,
   Sun,
+  X,
   X as LucideX
 } from "lucide-react"; // Icons for various UI elements
 import {
@@ -141,26 +145,22 @@ export function Header() {
                       {/* Trigger: The clickable text that opens the dropdown. */}
                       <NavigationMenuTrigger 
                         className={cn(
-                          /* * 1. Remove 'bg-transparent' and replace with 'bg-none' to ensure no hidden backgrounds.
-                          * 2. Remove standard Shadcn hover backgrounds.
-                          */
+                          // 1. Remove 'bg-transparent' and replace with 'bg-none' to ensure no hidden backgrounds.
+                          // 2. Remove standard Shadcn hover backgrounds.
                           "nav-link bg-none transition-all duration-300 px-4 py-2", 
                           
-                          /* * HOVER STATE: Only change the text color. 
-                          * We use a slightly darker version of your accent color or the foreground.
-                          */
+                          // HOVER STATE: Only change the text color. 
+                          // We use a slightly darker version of your accent color or the foreground.
                           "hover:text-accent active:text-accent hover:bg-transparent focus:bg-transparent",
                           
-                          /* * OPEN STATE (When the dropdown is active):
-                          * We remove the 'bg-black/5' or 'bg-blue' container entirely.
-                          * Instead, we just keep the text highlighted in the accent color.
-                          */
+                          // OPEN STATE (When the dropdown is active):
+                          // We remove the 'bg-black/5' or 'bg-blue' container entirely.
+                          // Instead, we just keep the text highlighted in the accent color.
                           "data-[state=open]:bg-transparent data-[state=open]:text-accent",
                           
-                          /* * OPTIONAL: If you want a VERY subtle darkening of the text area 
-                          * without a sharp "container" look, you can use a text-shadow 
-                          * or a very faint bottom border instead.
-                          */
+                          // OPTIONAL: If you want a VERY subtle darkening of the text area 
+                          // without a sharp "container" look, you can use a text-shadow 
+                          // or a very faint bottom border instead.
                           "focus:text-accent outline-none border-none shadow-none"
                         )}
                       >
@@ -290,14 +290,26 @@ export function Header() {
               {/* SOCIAL FOOTER: Links for quick social access at the bottom of the menu. */}
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex items-center gap-6">
-                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
-                    <Github className="w-6 h-6" />
+                  <a href="tel:+94720135801" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Phone className="w-6 h-6" />
+                  </a>
+                  <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Mail className="w-6 h-6" />
+                  </a>
+                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Instagram className="w-6 h-6" />
+                  </a>
+                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Facebook className="w-6 h-6" />
                   </a>
                   <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
                     <Linkedin className="w-6 h-6" />
                   </a>
-                  <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors">
-                    <Mail className="w-6 h-6" />
+                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <Github className="w-6 h-6" />
+                  </a>
+                  <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
+                    <X className="w-6 h-6" />
                   </a>
                 </div>
               </div>

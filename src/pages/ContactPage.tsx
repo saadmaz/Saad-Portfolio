@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, Calendar } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Github, Linkedin, X, Send, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -123,12 +123,12 @@ const ContactPage = () => {
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <a 
-                    href="https://twitter.com" 
+                    href="https://x.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
                   >
-                    <Twitter className="w-5 h-5" />
+                    <X className="w-5 h-5" />
                   </a>
                 </div>
               </div>
