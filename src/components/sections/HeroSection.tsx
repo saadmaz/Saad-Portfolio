@@ -7,59 +7,48 @@ import { useRef } from "react";
 
 export function HeroSection() {
   // --- 1. REF & MOTION VALUES ---
-  // useRef tracks the actual HTML element of the profile image for coordinate math
   const ref = useRef<HTMLDivElement>(null);
   
-  // useMotionValue creates "reactive" numbers that Framer Motion can track without re-renders
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
-  // useSpring smooths out the raw mouse numbers so the movement feels "organic" and bouncy
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
   
-  // useTransform maps the mouse position (-0.5 to 0.5) to a rotation degree (-5deg to 5deg)
-  // This creates the 3D "tilt" effect based on where the cursor is
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
 
   // --- 2. EVENT HANDLERS ---
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
-    
-    // Calculate the bounding box of the image container
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    
-    // Calculate mouse position relative to the center of the image
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
-    // Convert pixels to a percentage (-0.5 is left/top, 0.5 is right/bottom)
     const xPct = mouseX / width - 0.5;
     const yPct = mouseY / height - 0.5;
-    
     x.set(xPct);
     y.set(yPct);
   };
 
   const handleMouseLeave = () => {
-    // Reset image to flat position when mouse leaves
     x.set(0);
     y.set(0);
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    /**
+     * ALIGNMENT FIX: Added 'pt-24 md:pt-0' 
+     * This ensures the Hero content starts below your fixed header on mobile 
+     * and centers vertically on larger desktops.
+     */
+    <section className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
       
       {/* --- BACKGROUND DECORATION --- */}
       <div className="absolute inset-0 -z-10">
-        {/* Main background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/30" />
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-soft/30 to-transparent" />
-        
-        {/* The Dot Grid Pattern using radial-gradient */}
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -70,168 +59,113 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
+        {/* MOBILE FIX: Changed gap-8 to gap-12 for better vertical breathing room.
+          Elements are ordered so Text (Left) comes after Image (Right) on mobile 
+          for a more standard landing page flow.
+        */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* --- LEFT COLUMN: TEXT & CONTENT --- */}
-          <div className="space-y-8 order-2 lg:order-1">
+          <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left">
             
-            {/* Status Badge: Animates in from bottom with a pulse dot */}
+            {/* Status Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              className="flex justify-center lg:justify-start"
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-xs md:text-sm font-medium">
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                 Currently building Tank Sudda & Stopwash
               </span>
             </motion.div>
 
-            {/* Main Heading: Uses a relative span to create a custom underline effect */}
+            {/* Main Heading */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
               className="space-y-4"
             >
-
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
                 Hi, I'm{" "}
-                <span className="relative">
-                  {/* We add 'text-blue-900' (or text-secondary) here. 
-                  'z-10' ensures the text sits on top of the decorative highlight.
-                  */}
+                <span className="relative inline-block">
                   <span className="relative z-10 text-blue-900">Saad Mazhar</span>    
-                  {/* Decorative highlight behind name - adjusted opacity to make the blue pop */}
-                  <span className="absolute bottom-2 left-0 w-full h-3 bg-accent/20 -z-0" />
-                  </span>
+                  <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-3 bg-accent/20 -z-0" />
+                </span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-muted-foreground font-light">
-                Startup Founder. Tech Speaker. Professional Compere.
+              <p className="text-lg md:text-2xl text-muted-foreground font-light">
+                Startup Founder • Tech Speaker • Compere
               </p>
             </motion.div>
 
-            {/* Short Bio Paragraph */}
+            {/* Short Bio */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg text-muted-foreground max-w-lg leading-relaxed"
+              className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed"
             >
               I build solutions that solve real problems. Passionate about the intersection 
               of technology, design, and business. Always learning, always shipping.
             </motion.p>
 
-            {/* CTA Buttons: One Download and one Link to contact */}
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
             >
-              <Button asChild className="btn-primary gap-2">
+              <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
                 <a href="/resume.pdf" download>
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
               </Button>
 
-              {/* This button triggers a smooth color transition to dark blue on hover, */}
-              {/* affecting the background, text, and border for a cohesive branded feel. */}
               <Button 
                 asChild 
                 variant="outline" 
-                className="btn-outline gap-2 transition-all duration-300 hover:bg-blue-900 hover:text-white hover:border-blue-900"
-                >
-                  <Link to="/contact">
+                className="btn-outline gap-2 w-full sm:w-auto transition-all duration-300 hover:bg-blue-900 hover:text-white hover:border-blue-900"
+              >
+                <Link to="/contact">
                   Get in Touch
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </Button>
             </motion.div>
 
-            {/* Social Media Links with hover transitions */}
+            {/* Social Media Links */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex items-center gap-4 pt-4"
+              className="flex flex-col items-center lg:items-start gap-4 pt-4"
             >
-              <span className="text-sm text-muted-foreground">Connect:</span>
-              <div className="flex items-center gap-2">
-                
-                {/* Social Icon Template */}
-
-                {/* Changes Instagram icon to white and background to dark blue on hover. */}
-                {/* Provides a smooth transition for an interactive, professional user experience. */}
-                <a 
-                  href="https://instagram.com/saaadmaz/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900"
-                  aria-label="Instagram Profile"
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-
-                {/* Changes Facebook icon to white and background to dark blue on hover. */}
-                {/* Standardizes the hover state across all social media links in the hero section. */}
-                <a 
-                  href="https://facebook.com/saadmazhar03" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="Facebook Profile"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-
-                {/* Changes GitHub icon to white and background to dark blue on hover. */}
-                {/* Enhances accessibility and visual feedback when the user interacts with the link. */}
-                <a 
-                  href="https://github.com/saadmaz/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="GitHub Profile"
-                >
-                  <Github className="w-5 h-5" />
-                </a>
-
-                {/* Changes LinkedIn icon to white and background to dark blue on hover. */}
-                {/* Maintains brand consistency by using the secondary dark blue for hover states. */}
-                <a 
-                  href="https://linkedin.com/in/saadmazhar-" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="LinkedIn Profile"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-
-                {/* Changes Twitter icon to white and background to dark blue on hover. */}
-                {/* Utilizes Tailwind's hover modifiers to toggle background and icon colors simultaneously. */}
-                <a 
-                  href="https://x.com/SaadMazhar_" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="X Profile"
-                >
-                  <X className="w-5 h-5" />
-                </a>
-
-                {/* Changes Email icon to white and background to dark blue on hover. */}
-                {/* Completes the social bar with a uniform interaction style for the contact link. */}
-                <a 
-                  href="mailto:saadmazaa@gmail.com" 
-                  className="p-2 rounded-lg text-muted-foreground transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="Send Email"
-                >
-                  <Mail className="w-5 h-5" />
-                </a>
+              <span className="text-sm text-muted-foreground">Connect with me:</span>
+              <div className="flex flex-wrap justify-center gap-2">
+                {[
+                  { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" },
+                  { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" },
+                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" },
+                  { icon: Linkedin, href: "https://linkedin.com/in/saadmazhar-", label: "LinkedIn" },
+                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" },
+                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" },
+                ].map((social, i) => (
+                  <a 
+                    key={i}
+                    href={social.href}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-lg text-muted-foreground transition-all hover:text-white hover:bg-blue-900 active:scale-95"
+                    aria-label={social.label}
+                  >
+                    <social.icon className="w-5 h-5" />
+                  </a>
+                ))}
               </div>
             </motion.div>
           </div>
@@ -241,70 +175,70 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative order-1 lg:order-2 flex justify-center lg:justify-end"
+            /* ALIGNMENT FIX: Added mb-8 on mobile to prevent text from hitting the image */
+            className="relative order-1 lg:order-2 flex justify-center lg:justify-end mb-8 lg:mb-0"
           >
             <div 
               ref={ref}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               className="relative"
-              style={{ perspective: "1000px" }} // Required for 3D CSS transforms to have depth
+              style={{ perspective: "1000px" }}
             >
-              {/* Soft colorful glows behind the image */}
-              <div className="absolute -top-8 -left-8 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-blue-soft rounded-full blur-2xl" />
+              {/* Soft colorful glows */}
+              <div className="absolute -top-8 -left-8 w-48 h-48 md:w-72 md:h-72 bg-accent/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-64 md:h-64 bg-blue-soft rounded-full blur-2xl" />
               
-              {/* The Container that actually tilts */}
               <motion.div
                 style={{ rotateX, rotateY }}
                 className="relative"
               >
-                {/* Main Image with rounded corners and shadow */}
-                <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
+                {/* MOBILE IMAGE SIZE: Slightly reduced for mobile (w-64) 
+                  to ensure the stats cards don't overflow the screen width.
+                */}
+                <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
                   <motion.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Overlay that appears only on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Floating Stats Card: Shows "Years Coding" and "Projects" */}
+                {/* Floating Stats Card */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
-                  className="absolute -bottom-6 -left-6 md:-left-10 bg-card rounded-xl shadow-xl border border-border p-4 backdrop-blur-sm"
+                  className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-10 bg-card rounded-xl shadow-xl border border-border p-3 md:p-4 backdrop-blur-sm"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 md:gap-4">
                     <div className="text-center">
-                      <p className="text-2xl font-display font-bold text-foreground">5+</p>
-                      <p className="text-xs text-muted-foreground">Years Coding</p>
+                      <p className="text-xl md:text-2xl font-display font-bold text-foreground">5+</p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground">Years Coding</p>
                     </div>
-                    {/* Vertical Divider */}
-                    <div className="w-px h-10 bg-border" />
+                    <div className="w-px h-8 md:h-10 bg-border" />
                     <div className="text-center">
-                      <p className="text-2xl font-display font-bold text-foreground">20+</p>
-                      <p className="text-xs text-muted-foreground">Projects</p>
+                      <p className="text-xl md:text-2xl font-display font-bold text-foreground">20+</p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground">Projects</p>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Small Floating "Currently Building" Badge */}
+                {/* Building Badge */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.8 }}
-                  className="absolute -top-4 -right-4 md:-right-8 bg-card rounded-xl shadow-xl border border-border p-3 backdrop-blur-sm"
+                  className="absolute -top-4 -right-2 md:-right-8 bg-card rounded-xl shadow-xl border border-border p-2 md:p-3 backdrop-blur-sm max-w-[140px] md:max-w-none"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/60 flex items-center justify-center text-accent-foreground font-bold text-sm">
+                    <div className="hidden xs:flex w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/60 items-center justify-center text-accent-foreground font-bold text-sm">
                       S
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-foreground">Building</p>
-                      <p className="text-[10px] text-muted-foreground">TankSudda & Stopwash</p>
+                      <p className="text-[10px] md:text-xs font-medium text-foreground">Building</p>
+                      <p className="text-[8px] md:text-[10px] text-muted-foreground truncate">TankSudda & Stopwash</p>
                     </div>
                   </div>
                 </motion.div>

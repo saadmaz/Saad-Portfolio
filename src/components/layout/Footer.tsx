@@ -138,7 +138,7 @@ export function Footer() {
                 <li>
                   <a href="tel:+94720135801" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
                     <Phone className="w-4 h-4" />
-                    +94 72-01-358-01
+                    +(94) 72 01 358 01
                   </a>
                 </li>
               </ul>
