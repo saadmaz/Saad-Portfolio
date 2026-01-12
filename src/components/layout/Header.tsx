@@ -5,6 +5,8 @@ import {
   Menu, 
   ChevronDown, 
   Download,
+  Instagram,
+  Facebook,
   Github,
   Linkedin,
   Mail,
@@ -31,13 +33,11 @@ import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
  */
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
-  { title: "Featured Projects", href: "/projects#featured", description: "Highlighted work and ventures" },
-  { title: "All Projects", href: "/projects", description: "Complete project portfolio" },
+  { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" },
 ];
 
 const skillsItems = [
   { title: "Skills Overview", href: "/skills", description: "Technical competencies" },
-  { title: "Tech Stack", href: "/skills#stack", description: "Tools and technologies" },
   { title: "Licenses & Courses", href: "/skills#courses", description: "Certifications and learning" },
 ];
 
@@ -237,9 +237,9 @@ export function Header() {
               {/* Recursive Section rendering for mobile accordions */}
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
+                <MobileNavSection title="About" items={aboutItems} />
                 <MobileNavSection title="Work" items={workItems} />
                 <MobileNavSection title="Skills" items={skillsItems} />
-                <MobileNavSection title="About" items={aboutItems} />
                 <MobileNavSection title="Insights" items={insightsItems} />
                 <MobileNavSection title="Contact" href="/contact" />
               </div>
