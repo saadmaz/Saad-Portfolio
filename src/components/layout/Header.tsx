@@ -118,9 +118,9 @@ export function Header() {
 
                   {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY (Don't Repeat Yourself) */}
                   {[
+                    { label: "About", items: aboutItems, wide: true },
                     { label: "Work", items: workItems },
                     { label: "Skills", items: skillsItems },
-                    { label: "About", items: aboutItems, wide: true },
                     { label: "Insights", items: insightsItems }
                   ].map((menu) => (
                     <NavigationMenuItem key={menu.label}>
