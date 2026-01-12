@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation } from "react-router-dom"; // Hooks for routing and detecting current URL
+import { motion, AnimatePresence } from "framer-motion"; // Library for smooth React animations
 import { 
   Menu, 
   ChevronDown, 
   Download,
-  Instagram,
-  Facebook,
   Github,
   Linkedin,
   Mail,
   Moon,
   Sun,
   X as LucideX
-} from "lucide-react";
+} from "lucide-react"; // Icons for various UI elements
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -21,16 +19,16 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/useTheme";
-// Vite handles the PDF asset and provides a URL for the final deployment
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
+} from "@/components/ui/navigation-menu"; // Shadcn UI components for the dropdown system
+import { Button } from "@/components/ui/button"; // Standardized button component
+import { cn } from "@/lib/utils"; // Utility to merge Tailwind classes conditionally
+import { useTheme } from "@/hooks/useTheme"; // Custom hook to manage Dark/Light mode
+import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf"; // Importing PDF asset for download
 
-/** * MENU DATA: Arrays are defined outside the component to prevent 
- * re-declaration on every render and keep the JSX architecture clean.
- */
+// NAVIGATION DATA OBJECTS:
+// We define these outside the component to prevent them from being 
+// recreated in memory on every single render.
+
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
   { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" },
@@ -57,24 +55,27 @@ const insightsItems = [
 ];
 
 export function Header() {
+  // STATE: Tracks if the user has scrolled down (to change header style)
   const [isScrolled, setIsScrolled] = useState(false);
+  // STATE: Controls the visibility of the full-screen mobile menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
+  
+  const location = useLocation(); // Detects URL changes
+  const { theme, toggleTheme } = useTheme(); // Accesses theme state and toggle function
 
-  /** * SCROLL LISTENER: Monitors the Y-axis to toggle 
-   * background blur and transparency on the header.
-   */
+  // SCROLL LISTENER: 
+  //   Adds an event listener to the window. If the user scrolls more than 10px, 
+  //   'isScrolled' becomes true, triggering the glass-morphism effect.
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll); // Cleanup on unmount
   }, []);
 
-  /** * NAVIGATION SYNC: Automatically closes the mobile menu 
-   * when a user clicks a link and prevents body scrolling.
+  /** * NAVIGATION SYNC: 
+   * Closes the mobile menu automatically whenever the URL path changes.
    */
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -82,8 +83,8 @@ export function Header() {
     }
   }, [location]);
 
-  /** * BODY LOCK: Handles the scroll lock to ensure 
-   * cleanup happens correctly when menu is open.
+  /** * BODY SCROLL LOCK: 
+   * Prevents the background content from scrolling when the mobile menu is open.
    */
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -92,12 +93,13 @@ export function Header() {
       document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "unset"; // Ensure scroll is restored if component breaks
     };
   }, [isMobileMenuOpen]);
 
   return (
     <>
+      {/* HEADER WRAPPER: Fixed to top. Switches from transparent to blurred background on scroll. */}
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
@@ -108,7 +110,8 @@ export function Header() {
       >
         <div className="section-container">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* BRANDING: Clickable logo leading back to index */}
+            
+            {/* BRANDING: Logo link. z-[60] keeps it above the mobile menu overlay. */}
             <Link to="/" className="flex items-center gap-2 relative z-[60]">
               <span className="font-display text-xl font-bold text-foreground">
                 Saad Mazhar
@@ -116,15 +119,18 @@ export function Header() {
             </Link>
 
             {/* --- DESKTOP NAVIGATION --- */}
+            {/* Hidden on mobile (lg:flex). gap-1 provides spacing between nav items. */}
             <nav className="hidden lg:flex items-center gap-1">
               <NavigationMenu>
                 <NavigationMenuList>
+                  {/* Static link for Home */}
                   <NavigationMenuItem>
                     <Link to="/" className="nav-link px-4 py-2">
                       Home
                     </Link>
                   </NavigationMenuItem>
 
+                  {/* DROP-DOWN RENDERER: Iterates through menu data to build complex dropdowns. */}
                   {[
                     { label: "About", items: aboutItems, wide: true },
                     { label: "Work", items: workItems },
@@ -132,17 +138,36 @@ export function Header() {
                     { label: "Insights", items: insightsItems }
                   ].map((menu) => (
                     <NavigationMenuItem key={menu.label}>
+                      {/* Trigger: The clickable text that opens the dropdown. */}
                       <NavigationMenuTrigger 
                         className={cn(
-                          // "nav-link bg-transparent transition-colors",
-                          // "hover:text-accent active:text-accent",
-                          // "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
-                          // "focus:bg-black/5 focus:text-accent outline-none"
+                          /* * 1. Remove 'bg-transparent' and replace with 'bg-none' to ensure no hidden backgrounds.
+                          * 2. Remove standard Shadcn hover backgrounds.
+                          */
+                          "nav-link bg-none transition-all duration-300 px-4 py-2", 
+                          
+                          /* * HOVER STATE: Only change the text color. 
+                          * We use a slightly darker version of your accent color or the foreground.
+                          */
+                          "hover:text-accent active:text-accent hover:bg-transparent focus:bg-transparent",
+                          
+                          /* * OPEN STATE (When the dropdown is active):
+                          * We remove the 'bg-black/5' or 'bg-blue' container entirely.
+                          * Instead, we just keep the text highlighted in the accent color.
+                          */
+                          "data-[state=open]:bg-transparent data-[state=open]:text-accent",
+                          
+                          /* * OPTIONAL: If you want a VERY subtle darkening of the text area 
+                          * without a sharp "container" look, you can use a text-shadow 
+                          * or a very faint bottom border instead.
+                          */
+                          "focus:text-accent outline-none border-none shadow-none"
                         )}
                       >
                         {menu.label}
                       </NavigationMenuTrigger>
                       
+                      {/* Content: The actual dropdown box containing sub-links. */}
                       <NavigationMenuContent>
                         <ul className={cn(
                           "grid gap-1 p-3 bg-popover rounded-lg shadow-lg border border-border",
@@ -166,6 +191,7 @@ export function Header() {
                     </NavigationMenuItem>
                   ))}
 
+                  {/* Static link for Contact */}
                   <NavigationMenuItem>
                     <Link to="/contact" className="nav-link px-4 py-2">
                       Contact
@@ -175,9 +201,9 @@ export function Header() {
               </NavigationMenu>
             </nav>
 
-            {/* --- DESKTOP RIGHT ACTIONS --- */}
+            {/* DESKTOP RIGHT ACTIONS */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* THEME TOGGLE: Transparent bg, icon darkens on hover */}
+              {/* THEME TOGGLE: Animates a 180-degree rotation when clicked. */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all duration-300 hover:scale-110"
@@ -192,6 +218,7 @@ export function Header() {
                 </motion.div>
               </button>
               
+              {/* RESUME BUTTON: Renders as an 'a' tag to allow native PDF downloading. */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -201,11 +228,11 @@ export function Header() {
             </div>
 
             {/* --- MOBILE TOGGLES --- */}
+            {/* relative z-[60] ensures buttons stay clickable on top of the menu overlay. */}
             <div className="flex lg:hidden items-center gap-2 relative z-[60]">
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all"
-                aria-label="Toggle theme"
               >
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -217,10 +244,10 @@ export function Header() {
                 </a>
               </Button>
 
+              {/* HAMBURGER BUTTON: Toggles the boolean state of 'isMobileMenuOpen'. */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-foreground focus:outline-none"
-                aria-label="Toggle Navigation Menu"
               >
                 {isMobileMenuOpen ? <LucideX className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -239,8 +266,10 @@ export function Header() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[45] lg:hidden"
           >
+            {/* BACKDROP: Provides the blurred dark/light background. */}
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
             
+            {/* NAV CONTENT: Animates sliding in from the top. */}
             <motion.nav
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -248,6 +277,7 @@ export function Header() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]"
             >
+              {/* MOBILE ACCORDIONS: Renders the sub-menus for mobile users. */}
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -257,6 +287,7 @@ export function Header() {
                 <MobileNavSection title="Contact" href="/contact" />
               </div>
 
+              {/* SOCIAL FOOTER: Links for quick social access at the bottom of the menu. */}
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex items-center gap-6">
                   <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
@@ -278,6 +309,9 @@ export function Header() {
   );
 }
 
+// MOBILE NAV SECTION COMPONENT: 
+//  Handles logic for mobile links. If it has 'items', it renders an expandable 
+//  accordion. If it has an 'href', it renders a direct link.
 function MobileNavSection({ 
   title, 
   href, 
@@ -287,8 +321,9 @@ function MobileNavSection({
   href?: string; 
   items?: { title: string; href: string; description: string }[] 
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Controls local accordion state
 
+  // DIRECT LINK VERSION
   if (href) {
     return (
       <Link 
@@ -300,16 +335,20 @@ function MobileNavSection({
     );
   }
 
+  // ACCORDION VERSION
   return (
     <div className="border-b border-border/50 pb-2 relative z-[51]">
+      {/* Category Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2 focus:outline-none"
       >
         {title}
+        {/* Chevron icon rotates 180deg when the section is open */}
         <ChevronDown className={cn("w-6 h-6 transition-transform duration-300", isOpen && "rotate-180 text-accent")} />
       </button>
       <AnimatePresence>
+        {/* Animated Sub-links list */}
         {isOpen && items && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
