@@ -78,13 +78,25 @@ export function Header() {
    * while the full-screen menu is active.
    */
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    // We only force-close if it was already open to prevent logic loops
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [location]);
+
+  /** * BODY LOCK: Separate effect to handle the scroll lock 
+   * to ensure cleanup happens correctly.
+   */
+  useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [location, isMobileMenuOpen]);
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -99,7 +111,7 @@ export function Header() {
         <div className="section-container">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* BRANDING: Clickable logo leading back to index */}
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2 relative z-[60]">
               <span className="font-display text-xl font-bold text-foreground">
                 Saad Mazhar
               </span>
@@ -116,7 +128,7 @@ export function Header() {
                     </Link>
                   </NavigationMenuItem>
 
-                  {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY (Don't Repeat Yourself) */}
+                  {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY */}
                   {[
                     { label: "About", items: aboutItems, wide: true },
                     { label: "Work", items: workItems },
@@ -124,14 +136,9 @@ export function Header() {
                     { label: "Insights", items: insightsItems }
                   ].map((menu) => (
                     <NavigationMenuItem key={menu.label}>
-                      {/* MODIFICATION: Removed 'hover:bg-transparent'. 
-                          ADDED: 'hover:bg-black/10' (adds a dark tint) or 'hover:bg-accent/10'.
-                          The 'data-[state=open]:bg-accent/10' ensures it stays dark while the menu is active.
-                      */}
                       <NavigationMenuTrigger 
                         className={cn(
                           "nav-link bg-transparent transition-colors",
-                          // "hover:bg-black/5 dark:hover:bg-white/5", // Subtle darkening effect
                           "hover:text-accent active:text-accent",
                           "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
                           "focus:bg-black/5 focus:text-accent outline-none"
@@ -174,7 +181,6 @@ export function Header() {
 
             {/* --- DESKTOP RIGHT ACTIONS --- */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* Theme Toggle Button: Moon/Sun animation using Framer Motion */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300 hover:scale-105"
@@ -189,7 +195,6 @@ export function Header() {
                 </motion.div>
               </button>
 
-              {/* PDF DOWNLOAD: Uses 'asChild' to merge Shadcn button styles with a standard HTML anchor link */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -199,7 +204,7 @@ export function Header() {
             </div>
 
             {/* --- MOBILE TOGGLES --- */}
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex lg:hidden items-center gap-2 relative z-[60]">
               {/* Theme toggle for mobile */}
               <button
                 onClick={toggleTheme}
@@ -237,16 +242,18 @@ export function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 lg:hidden bg-background overflow-hidden"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[45] lg:hidden"
           >
-            {/* Frosted Glass Effect Backdrop */}
+            {/* Background Backdrop - now separated from the clickable nav to prevent event bubbling issues */}
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
             
             <motion.nav
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto"
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]"
             >
               {/* Recursive Section rendering for mobile accordions */}
               <div className="space-y-6">
@@ -299,7 +306,7 @@ function MobileNavSection({
     return (
       <Link 
         to={href} 
-        className="block text-2xl font-bold text-foreground hover:text-accent transition-colors py-2"
+        className="relative block text-2xl font-bold text-foreground hover:text-accent transition-colors py-2 z-[55]"
       >
         {title}
       </Link>
@@ -308,10 +315,10 @@ function MobileNavSection({
 
   // If it's a category, render a button that triggers a Framer Motion height animation
   return (
-    <div className="border-b border-border/50 pb-2">
+    <div className="border-b border-border/50 pb-2 relative z-[51]">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2"
+        className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2 focus:outline-none"
       >
         {title}
         <ChevronDown className={cn("w-6 h-6 transition-transform duration-300", isOpen && "rotate-180 text-accent")} />
@@ -330,7 +337,7 @@ function MobileNavSection({
                 <Link
                   key={item.href}
                   to={item.href}
-                  className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors"
+                  className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors py-1 z-[55]"
                 >
                   {item.title}
                 </Link>
