@@ -5,6 +5,8 @@ import {
   Menu, 
   ChevronDown, 
   Download,
+  Instagram,
+  Facebook,
   Github,
   Linkedin,
   Mail,
@@ -23,11 +25,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
-// Vite processes the PDF and generates a persistent URL for deployment
+// Vite handles the PDF asset and provides a URL for the final deployment
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
-/** * DATA STRUCTURES: Standardized arrays to populate dropdowns and mobile menus.
- * Defined outside the component to prevent unnecessary re-calculation on re-renders.
+/** * MENU DATA: Arrays are defined outside the component to prevent 
+ * re-declaration on every render and keep the JSX architecture clean.
  */
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
@@ -60,22 +62,28 @@ export function Header() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  /** * SCROLL SENSOR: Monitors scroll position.
-   * If Y > 10, the header gains a backdrop blur and border.
+  /** * SCROLL LISTENER: Monitors the Y-axis to toggle 
+   * background blur and transparency on the header.
    */
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /** * NAVIGATION MANAGEMENT: 
-   * 1. Closes mobile menu on route change.
-   * 2. Locks body scroll when the mobile overlay is open to prevent "scroll-leaking".
+  /** * NAVIGATION SYNC: Automatically closes the mobile menu 
+   * when a user clicks a link and prevents body scrolling 
+   * while the full-screen menu is active.
    */
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
   }, [location, isMobileMenuOpen]);
 
   return (
@@ -90,8 +98,7 @@ export function Header() {
       >
         <div className="section-container">
           <div className="flex items-center justify-between h-16 md:h-20">
-            
-            {/* BRANDING: Direct link to the homepage */}
+            {/* BRANDING: Clickable logo leading back to index */}
             <Link to="/" className="flex items-center gap-2">
               <span className="font-display text-xl font-bold text-foreground">
                 Saad Mazhar
@@ -102,11 +109,14 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               <NavigationMenu>
                 <NavigationMenuList>
+                  {/* Home Link (Direct) */}
                   <NavigationMenuItem>
-                    <Link to="/" className="nav-link px-4 py-2">Home</Link>
+                    <Link to="/" className="nav-link px-4 py-2">
+                      Home
+                    </Link>
                   </NavigationMenuItem>
 
-                  {/* DROP-DOWN MAPPER: Dynamically creates menus from the data arrays above */}
+                  {/* DROP-DOWN RENDERER: We loop through menu groups to keep code DRY (Don't Repeat Yourself) */}
                   {[
                     { label: "About", items: aboutItems, wide: true },
                     { label: "Work", items: workItems },
@@ -114,31 +124,34 @@ export function Header() {
                     { label: "Insights", items: insightsItems }
                   ].map((menu) => (
                     <NavigationMenuItem key={menu.label}>
-                      {/* HOVER LOGIC: 
-                          - Removed hover:bg-accent to avoid blocky colors.
-                          - Added hover:bg-black/[0.03] for a subtle "darkening" tint.
-                          - Added data-[state=open] styles to keep the tint active when the menu is open.
+                      {/* MODIFICATION: Removed 'hover:bg-transparent'. 
+                          ADDED: 'hover:bg-black/10' (adds a dark tint) or 'hover:bg-accent/10'.
+                          The 'data-[state=open]:bg-accent/10' ensures it stays dark while the menu is active.
                       */}
                       <NavigationMenuTrigger 
                         className={cn(
-                          "nav-link bg-transparent transition-all duration-200",
-                          "hover:bg-black/[0.04] dark:hover:bg-white/[0.04]", 
+                          "nav-link bg-transparent transition-colors",
+                          // "hover:bg-black/5 dark:hover:bg-white/5", // Subtle darkening effect
                           "hover:text-accent active:text-accent",
-                          "data-[state=open]:bg-black/[0.06] dark:data-[state=open]:bg-white/[0.06] data-[state=open]:text-accent",
-                          "focus:bg-transparent focus:text-accent outline-none"
+                          "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
+                          "focus:bg-black/5 focus:text-accent outline-none"
                         )}
                       >
                         {menu.label}
                       </NavigationMenuTrigger>
+                      
                       <NavigationMenuContent>
                         <ul className={cn(
-                          "grid gap-1 p-3 bg-popover rounded-lg shadow-xl border border-border/50",
+                          "grid gap-1 p-3 bg-popover rounded-lg shadow-lg border border-border",
                           menu.wide ? "w-[450px] md:grid-cols-2" : "w-[300px]"
                         )}>
                           {menu.items.map((item) => (
                             <li key={item.href}>
                               <NavigationMenuLink asChild>
-                                <Link to={item.href} className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10">
+                                <Link 
+                                  to={item.href} 
+                                  className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10"
+                                >
                                   <div className="text-sm font-medium text-foreground">{item.title}</div>
                                   <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
                                 </Link>
@@ -151,29 +164,32 @@ export function Header() {
                   ))}
 
                   <NavigationMenuItem>
-                    <Link to="/contact" className="nav-link px-4 py-2">Contact</Link>
+                    <Link to="/contact" className="nav-link px-4 py-2">
+                      Contact
+                    </Link>
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
             </nav>
 
-            {/* --- DESKTOP ACTIONS --- */}
+            {/* --- DESKTOP RIGHT ACTIONS --- */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* Theme Toggle with smooth rotation animation */}
+              {/* Theme Toggle Button: Moon/Sun animation using Framer Motion */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300"
+                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all duration-300 hover:scale-105"
                 aria-label="Toggle theme"
               >
                 <motion.div
                   initial={false}
                   animate={{ rotate: theme === "dark" ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </motion.div>
               </button>
 
-              {/* Functional Resume Download Link */}
+              {/* PDF DOWNLOAD: Uses 'asChild' to merge Shadcn button styles with a standard HTML anchor link */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -184,14 +200,16 @@ export function Header() {
 
             {/* --- MOBILE TOGGLES --- */}
             <div className="flex lg:hidden items-center gap-2">
+              {/* Theme toggle for mobile */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/50 text-foreground"
+                className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary text-foreground transition-all"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
+              {/* Compact Resume Download for mobile */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
@@ -199,10 +217,11 @@ export function Header() {
                 </a>
               </Button>
 
+              {/* Hamburger Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-foreground focus:outline-none"
-                aria-label="Toggle Menu"
+                aria-label="Toggle Navigation Menu"
               >
                 {isMobileMenuOpen ? <LucideX className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -220,6 +239,7 @@ export function Header() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 lg:hidden bg-background overflow-hidden"
           >
+            {/* Frosted Glass Effect Backdrop */}
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
             
             <motion.nav
@@ -228,6 +248,7 @@ export function Header() {
               exit={{ opacity: 0, y: -20 }}
               className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto"
             >
+              {/* Recursive Section rendering for mobile accordions */}
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -237,7 +258,7 @@ export function Header() {
                 <MobileNavSection title="Contact" href="/contact" />
               </div>
 
-              {/* Mobile Footer with Social Connections */}
+              {/* MOBILE MENU FOOTER: Social icons integrated for easy access */}
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex items-center gap-6">
                   <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors">
@@ -259,31 +280,58 @@ export function Header() {
   );
 }
 
-/** * MOBILE COMPONENT: Handles single links or nested accordion sections.
+/** * MOBILE NAV SECTION: Handles the logic between a single-click 
+ * navigation link and an expandable accordion menu.
  */
-function MobileNavSection({ title, href, items }: { title: string; href?: string; items?: { title: string; href: string }[] }) {
+function MobileNavSection({ 
+  title, 
+  href, 
+  items 
+}: { 
+  title: string; 
+  href?: string; 
+  items?: { title: string; href: string; description: string }[] 
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // If a direct href is provided, render a simple link
   if (href) {
     return (
-      <Link to={href} className="block text-2xl font-bold text-foreground hover:text-accent transition-colors py-2">
+      <Link 
+        to={href} 
+        className="block text-2xl font-bold text-foreground hover:text-accent transition-colors py-2"
+      >
         {title}
       </Link>
     );
   }
 
+  // If it's a category, render a button that triggers a Framer Motion height animation
   return (
     <div className="border-b border-border/50 pb-2">
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2"
+      >
         {title}
         <ChevronDown className={cn("w-6 h-6 transition-transform duration-300", isOpen && "rotate-180 text-accent")} />
       </button>
       <AnimatePresence>
         {isOpen && items && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            {/* Recursive list of links within the accordion */}
             <div className="pt-3 pl-4 space-y-4 border-l-2 border-accent/20 ml-1">
               {items.map((item) => (
-                <Link key={item.href} to={item.href} className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors">
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors"
+                >
                   {item.title}
                 </Link>
               ))}
