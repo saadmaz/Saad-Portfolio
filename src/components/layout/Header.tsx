@@ -134,10 +134,10 @@ export function Header() {
                     <NavigationMenuItem key={menu.label}>
                       <NavigationMenuTrigger 
                         className={cn(
-                          "nav-link bg-transparent transition-colors",
-                          "hover:text-accent active:text-accent",
-                          "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
-                          "focus:bg-black/5 focus:text-accent outline-none"
+                          // "nav-link bg-transparent transition-colors",
+                          // "hover:text-accent active:text-accent",
+                          // "data-[state=open]:bg-black/5 dark:data-[state=open]:bg-white/5 data-[state=open]:text-accent",
+                          // "focus:bg-black/5 focus:text-accent outline-none"
                         )}
                       >
                         {menu.label}
