@@ -155,7 +155,7 @@ export function HeroSection() {
                   { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" }, // Github link           
                   { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" }, // Instagram link
                   { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" }, // Facebook link
-                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" }, // X (formerly Twitter) link
+                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" }, // X (Twitter) link
                 ].map((social, i) => (
                   <a 
                     key={i}
