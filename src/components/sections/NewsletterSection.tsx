@@ -30,8 +30,8 @@ const newsletters = [
 export function NewsletterSection() {
   return (
 // --- NEWSLETTER SECTION: Knowledge Hub ---
-<section className="py-16 bg-secondary/30"> // Newsletter section with a subtle secondary background
-      <div className="section-container"> // Container for consistent horizontal padding
+<section className="py-16 bg-secondary/30">
+      <div className="section-container"> 
         
         // Title, subtitle, and description centered with reduced margins for a compact layout
         <motion.div
