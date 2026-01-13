@@ -14,7 +14,6 @@ const featuredEvents = [
     location: "San Francisco, CA",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
   },
-
   {
     id: 2,
     title: "Google Developer Summit",
@@ -25,7 +24,6 @@ const featuredEvents = [
     location: "Mountain View, CA",
     image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
   },
-  
   {
     id: 3,
     title: "HackMIT 2024",
@@ -42,7 +40,6 @@ export function EventsPreview() {
   return (
     <section className="section-padding">
       <div className="section-container">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -61,16 +58,13 @@ export function EventsPreview() {
                 building community and sharing knowledge.
               </p>
             </div>
+            {/* FIXED: Removed whitespace inside asChild */}
             <Button asChild variant="ghost" className="text-accent hover:text-accent gap-1 w-fit">
-              <Link to="/events">
-                See All Events
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <Link to="/events">See All Events<ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </div>
         </motion.div>
 
-        {/* Events Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredEvents.map((event, index) => (
             <motion.div
@@ -82,27 +76,21 @@ export function EventsPreview() {
             >
               <Link to={`/events/${event.id}`} className="group block h-full">
                 <div className="bg-card rounded-xl border border-border overflow-hidden h-full card-hover">
-                  {/* Event Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={event.image}
                       alt={event.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    {/* Role Badge */}
                     <div className="absolute top-4 left-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${event.roleColor} shadow-lg`}>
-                        {event.role === "Host" && <Mic2 className="w-3 h-3" />}
-                        {event.role === "Speaker" && <Mic2 className="w-3 h-3" />}
+                        {(event.role === "Host" || event.role === "Speaker") && <Mic2 className="w-3 h-3" />}
                         {event.role === "Organizer" && <Users className="w-3 h-3" />}
                         {event.role}
                       </span>
                     </div>
-                    {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                   </div>
-
-                  {/* Event Content */}
                   <div className="p-5">
                     <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-accent transition-colors">
                       {event.title}
@@ -110,17 +98,9 @@ export function EventsPreview() {
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                       {event.description}
                     </p>
-                    
-                    {/* Meta Info */}
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {event.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5" />
-                        {event.location}
-                      </span>
+                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{event.date}</span>
+                      <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{event.location}</span>
                     </div>
                   </div>
                 </div>
