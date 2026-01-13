@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
 import { useRef } from "react";
+import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 export function HeroSection() {
   // --- 1. REF & MOTION VALUES ---
@@ -120,7 +121,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
             >
               <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
-                <a href="/resume.pdf" download>
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
@@ -140,21 +141,21 @@ export function HeroSection() {
 
             {/* Social Media Links */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col items-center lg:items-start gap-4 pt-4"
+              initial={{ opacity: 0, y: 20 }} // Initial state: slightly below and transparent
+              animate={{ opacity: 1, y: 0 }} // Final state: in place and fully visible
+              transition={{ duration: 0.5, delay: 0.4 }} // Smooth transition with delay
+              className="flex flex-col items-center lg:items-start gap-4 pt-4" // Added padding-top for spacing
             >
-              <span className="text-sm text-muted-foreground">Connect with me:</span>
-              <div className="flex flex-wrap justify-center gap-2">
+              <span className="text-sm text-muted-foreground">Connect with me:</span> {/* Intro text for social links */}
+              <div className="flex flex-wrap justify-center gap-2"> {/* Flex container for social icons */}
                 {[
-                  { icon: Phone, href: "tel:+94720135801" , label: "Phone" },
-                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" },
-                  { icon: Linkedin, href: "https://linkedin.com/in/saadmaz/", label: "LinkedIn" },
-                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" },                  
-                  { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" },
-                  { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" },
-                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" },
+                  { icon: Phone, href: "tel:+94720135801" , label: "Phone" }, // Phone contact
+                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" }, // Email contact
+                  { icon: Linkedin, href: "https://linkedin.com/in/saadmaz/", label: "LinkedIn" }, // Linkedin link
+                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" }, // Github link           
+                  { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" }, // Instagram link
+                  { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" }, // Facebook link
+                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" }, // X (formerly Twitter) link
                 ].map((social, i) => (
                   <a 
                     key={i}

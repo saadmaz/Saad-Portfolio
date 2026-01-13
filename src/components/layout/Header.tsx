@@ -209,7 +209,7 @@ export function Header() {
               </button>
               
               <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
-                <a href={myResume} download="@assets/Resume/Saad_Mazhar_Resume.pdf">
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Resume
                 </a>
