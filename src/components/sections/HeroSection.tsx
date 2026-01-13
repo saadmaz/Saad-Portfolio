@@ -110,7 +110,7 @@ export function HeroSection() {
               className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed"
             >
               I build solutions that solve real problems. Passionate about the intersection 
-              of technology, design, and business. Always learning, always shipping.
+              of technology, design, and business. Always learning, always shipping. 
             </motion.p>
 
             {/* CTA Buttons */}
