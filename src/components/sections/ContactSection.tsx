@@ -1,35 +1,40 @@
-import { motion } from "framer-motion"; // For scroll-triggered animations
-import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
-import { Link } from "react-router-dom"; // For internal navigation links
+import { motion } from "framer-motion"; // Imports motion for scroll-triggered and state-based animations
+import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react"; // SVG icons for contact methods and social media
+import { Link } from "react-router-dom"; // Hook for client-side routing within the application
 
 export function ContactSection() {
   return (
-    // Reduced vertical padding (py-12 instead of section-padding) to make the section smaller.
-    <section className="py-12 bg-secondary"> // Contact section with a secondary background color
-      <div className="section-container"> // Container for consistent horizontal padding
-        <div className="grid lg:grid-cols-2 gap-12 items-center"> // Two-column grid layout for larger screens
+    // MAIN SECTION WRAPPER: py-12 provides vertical padding; bg-secondary applies the theme's secondary background color
+    <section className="py-12 bg-secondary"> 
+      <div className="section-container"> {/* Utility class for centered horizontal alignment and standard gutters */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center"> {/* Establishes a 2-column grid on large screens, centered vertically */}
           
           {/* --- LEFT COLUMN: COMPACT CONTACT INFO --- */}
+          {/* motion.div: Handles the entry animation (fading in and sliding from the left) when the section enters the viewport */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, x: -20 }} // Animation start state
+            whileInView={{ opacity: 1, x: 0 }} // Animation end state triggered by scroll
+            viewport={{ once: true }} // Ensures the animation only plays the first time the section is seen
+            transition={{ duration: 0.5 }} // Half-second animation speed
           >
+            {/* SUBTITLE: Small, bold, uppercase accent text to introduce the section */}
             <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
               Get in Touch
             </span>
             
+            {/* PRIMARY HEADING: Uses font-display for brand-consistent typography */}
             <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-foreground">
               Let's Build Something Great Together
             </h2>
             
+            {/* SUPPORTING TEXT: Muted color with a max-width for optimal readability on wider screens */}
             <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
-            {/* CONTACT LIST */}
+            {/* CONTACT METHOD LIST: Vertical list of interactive communication links */}
             <div className="space-y-3 mb-6">
+              {/* Email Link: Uses 'mailto' protocol to trigger default email clients */}
               <a 
                 href="mailto:saadmazaa@gmail.com" 
                 className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
@@ -38,6 +43,7 @@ export function ContactSection() {
                 <span>saadmazaa@gmail.com</span>
               </a>
 
+              {/* Phone Link: Uses 'tel' protocol for mobile interactivity */}
               <a 
                 href="tel:+94720135801" 
                 className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
@@ -46,28 +52,28 @@ export function ContactSection() {
                 <span>+94 72 01 358 01</span>
               </a>
 
+              {/* Physical Location: Non-link item providing geographic context */}
               <div className="flex items-center gap-3 text-muted-foreground text-sm">
                 <MapPin className="w-4 h-4 text-accent" />
                 <span>Colombo, Sri Lanka</span>
               </div>
             </div>
 
-            {/* SOCIAL LINKS */}
+            {/* SOCIAL MEDIA LINKS: Horizontal row of branded icon buttons */}
             <div className="flex items-center gap-3">
               {[
-                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" }, // Added Linkedin back
-                { Icon: Github, href: "https://github.com/saadmaz" }, // Added Github back
-                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" }, // Instagram link
-                { Icon: Facebook, href: "https://facebook.com/saadmazhar" }, // Facebook link
-                { Icon: X, href: "https://x.com/SaadMazhar_" } // X (formerly Twitter) link
+                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
+                { Icon: Github, href: "https://github.com/saadmaz" },
+                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
+                { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
+                { Icon: X, href: "https://x.com/SaadMazhar_" }
               ].map((social, index) => (
                 <a 
                   key={index}
-                  href={social.href} // Open social links in a new tab
-                  target="_blank" // Security best practice for external links
-                  rel="noopener noreferrer" // Security best practice for external links
+                  href={social.href}
+                  target="_blank" // Opens link in a new browser tab
+                  rel="noopener noreferrer" // Essential security attribute for external links
                   className="p-2 rounded-md bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all" 
-                  // Hover effects for interactivity
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -76,6 +82,7 @@ export function ContactSection() {
           </motion.div>
 
           {/* --- RIGHT COLUMN: COMPACT CTA CARDS --- */}
+          {/* motion.div: Animates in from the right with a slight delay after the left column */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -83,35 +90,31 @@ export function ContactSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-4"
           >
-            {/* --- CONTACT INTERACTION SECTION --- */}
-            {/* These cards provide two distinct ways for users to reach out. */}
+            {/* GRID FOR CTA CARDS: Stacks on mobile, side-by-side on tablet/medium screens */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* SEND MESSAGE CARD: Internal route to the Contact Page */}
-              {/* We use 'group' to trigger coordinated hover animations for the icon, title, and arrow. */}
+              {/* SEND MESSAGE CARD: Navigates to a deeper contact form page within the React app */}
               <Link 
                 to="/contact" 
                 className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    {/* Title: Standard text-foreground that shifts to the accent color on parent hover */}
+                    {/* Header: Changes color smoothly when the parent card is hovered via 'group-hover' */}
                     <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
                       <Mail className="w-4 h-4 text-accent" />
                       Send a Message
                     </h3>
-                    {/* Description: Subtext providing expectation of response time */}
                     <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
                       Get a response within 24 hours.
                     </p>
                   </div>
-                  {/* Directional Arrow: Slides slightly to the right on hover to signal interactivity */}
+                  {/* Visual Cue: Arrow translates 4 pixels to the right on hover to indicate forward motion */}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
               </Link>
 
-              {/* SCHEDULE CALL CARD: External link to Cal.com scheduling page */}
-              {/* rel="noopener noreferrer" is included for security when opening external tabs. */}
+              {/* SCHEDULE CALL CARD: External link to an appointment booking service (Cal.com) */}
               <a 
                 href="https://cal.com/saad-mazhar" 
                 target="_blank"
@@ -120,24 +123,19 @@ export function ContactSection() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    {/* Title: Synchronized with the 'Send Message' card for visual consistency */}
                     <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
                       <Calendar className="w-4 h-4 text-accent" />
                       Schedule a Call
                     </h3>
-                    {/* Description: Clearly states the platform and meeting duration */}
                     <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
                       Book a 30-minute chat via Cal.com
                     </p>
                   </div>
-                  {/* Directional Arrow: Synchronized animation with the internal link card */}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
               </a>
 
             </div>
-
-
           </motion.div>
         </div>
       </div>
