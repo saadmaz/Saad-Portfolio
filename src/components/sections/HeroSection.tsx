@@ -1,9 +1,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X,} from "lucide-react";
+import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
 import { useRef } from "react";
+import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 export function HeroSection() {
   // --- 1. REF & MOTION VALUES ---
@@ -38,11 +39,6 @@ export function HeroSection() {
   };
 
   return (
-    /**
-     * ALIGNMENT FIX: Added 'pt-24 md:pt-0' 
-     * This ensures the Hero content starts below your fixed header on mobile 
-     * and centers vertically on larger desktops.
-     */
     <section className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
       
       {/* --- BACKGROUND DECORATION --- */}
@@ -59,10 +55,6 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
-        {/* MOBILE FIX: Changed gap-8 to gap-12 for better vertical breathing room.
-          Elements are ordered so Text (Left) comes after Image (Right) on mobile 
-          for a more standard landing page flow.
-        */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* --- LEFT COLUMN: TEXT & CONTENT --- */}
@@ -120,7 +112,8 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
             >
               <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
-                <a href="/src/assets/Resume/Saad_Mazhar_Resume.pdf" download="Saad_Mazhar_Resume.pdf">
+                {/* FIX: Changed href to use the imported 'myResume' variable */}
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
@@ -140,21 +133,21 @@ export function HeroSection() {
 
             {/* Social Media Links */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }} // Initial state: slightly below and transparent
-              animate={{ opacity: 1, y: 0 }} // Final state: in place and fully visible
-              transition={{ duration: 0.5, delay: 0.4 }} // Smooth transition with delay
-              className="flex flex-col items-center lg:items-start gap-4 pt-4" // Added padding-top for spacing
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex flex-col items-center lg:items-start gap-4 pt-4"
             >
-              <span className="text-sm text-muted-foreground">Connect with me:</span> {/* Intro text for social links */}
-              <div className="flex flex-wrap justify-center gap-2"> {/* Flex container for social icons */}
+              <span className="text-sm text-muted-foreground">Connect with me:</span>
+              <div className="flex flex-wrap justify-center gap-2">
                 {[
-                  { icon: Phone, href: "tel:+94720135801" , label: "Phone" }, // Phone contact
-                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" }, // Email contact
-                  { icon: Linkedin, href: "https://linkedin.com/in/saadmaz/", label: "LinkedIn" }, // Linkedin link
-                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" }, // Github link           
-                  { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" }, // Instagram link
-                  { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" }, // Facebook link
-                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" }, // X (Twitter) link
+                  { icon: Phone, href: "tel:+94720135801" , label: "Phone" },
+                  { icon: Mail, href: "mailto:saadmazaa@gmail.com", label: "Email" },
+                  { icon: Linkedin, href: "https://linkedin.com/in/saadmaz/", label: "LinkedIn" },
+                  { icon: Github, href: "https://github.com/saadmaz/", label: "GitHub" },           
+                  { icon: Instagram, href: "https://instagram.com/saaadmaz/", label: "Instagram" },
+                  { icon: Facebook, href: "https://facebook.com/saadmazhar03", label: "Facebook" },
+                  { icon: X, href: "https://x.com/SaadMazhar_", label: "X" },
                 ].map((social, i) => (
                   <a 
                     key={i}
@@ -176,7 +169,6 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            /* ALIGNMENT FIX: Added mb-8 on mobile to prevent text from hitting the image */
             className="relative order-1 lg:order-2 flex justify-center lg:justify-end mb-8 lg:mb-0"
           >
             <div 
@@ -186,7 +178,6 @@ export function HeroSection() {
               className="relative"
               style={{ perspective: "1000px" }}
             >
-              {/* Soft colorful glows */}
               <div className="absolute -top-8 -left-8 w-48 h-48 md:w-72 md:h-72 bg-accent/10 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-64 md:h-64 bg-blue-soft rounded-full blur-2xl" />
               
@@ -194,9 +185,6 @@ export function HeroSection() {
                 style={{ rotateX, rotateY }}
                 className="relative"
               >
-                {/* MOBILE IMAGE SIZE: Slightly reduced for mobile (w-64) 
-                  to ensure the stats cards don't overflow the screen width.
-                */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
                   <motion.img
                     src={profilePhoto}
