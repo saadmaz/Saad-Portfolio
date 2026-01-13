@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { HeroSection } from "@/components/sections/HeroSection";
+// import { HeroSection } from "@/components/sections/HeroSection";
 import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { CertificatesPreview } from "@/components/sections/CertificatesPreview";
 import { EventsPreview } from "@/components/sections/EventsPreview";
@@ -13,7 +13,7 @@ import { ContactSection } from "@/components/sections/ContactSection";
 const Index = () => {
   return (
     <Layout>
-      <HeroSection />
+      {/* <HeroSection /> */}
       <FeaturedProjects />
       <CertificatesPreview />
       <EventsPreview />
