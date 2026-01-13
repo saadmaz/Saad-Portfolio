@@ -1,13 +1,13 @@
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // For scroll-triggered animations
 import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // For internal navigation links
 
 export function ContactSection() {
   return (
     // Reduced vertical padding (py-12 instead of section-padding) to make the section smaller.
-    <section className="py-12 bg-secondary">
-      <div className="section-container">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className="py-12 bg-secondary"> // Contact section with a secondary background color
+      <div className="section-container"> // Container for consistent horizontal padding
+        <div className="grid lg:grid-cols-2 gap-12 items-center"> // Two-column grid layout for larger screens
           
           {/* --- LEFT COLUMN: COMPACT CONTACT INFO --- */}
           <motion.div
@@ -55,18 +55,19 @@ export function ContactSection() {
             {/* SOCIAL LINKS */}
             <div className="flex items-center gap-3">
               {[
-                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
-                { Icon: Github, href: "https://github.com/saadmaz" },
-                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
-                { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
-                { Icon: X, href: "https://x.com/SaadMazhar_" }
+                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" }, // Added Linkedin back
+                { Icon: Github, href: "https://github.com/saadmaz" }, // Added Github back
+                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" }, // Instagram link
+                { Icon: Facebook, href: "https://facebook.com/saadmazhar" }, // Facebook link
+                { Icon: X, href: "https://x.com/SaadMazhar_" } // X (formerly Twitter) link
               ].map((social, index) => (
                 <a 
                   key={index}
-                  href={social.href}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all"
+                  href={social.href} // Open social links in a new tab
+                  target="_blank" // Security best practice for external links
+                  rel="noopener noreferrer" // Security best practice for external links
+                  className="p-2 rounded-md bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all" 
+                  // Hover effects for interactivity
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
