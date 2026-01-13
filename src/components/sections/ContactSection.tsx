@@ -55,10 +55,10 @@ export function ContactSection() {
             {/* SOCIAL LINKS */}
             <div className="flex items-center gap-3">
               {[
+                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
+                { Icon: Github, href: "https://github.com/saadmaz" },
                 { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
                 { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
-                { Icon: Github, href: "https://github.com/saadmaz" },
-                { Icon: Linkedin, href: "https://linkedin.com/in/saadmazhar-" },
                 { Icon: X, href: "https://x.com/SaadMazhar_" }
               ].map((social, index) => (
                 <a 
