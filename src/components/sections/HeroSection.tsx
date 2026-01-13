@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
 import { useRef } from "react";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 export function HeroSection() {
   // --- 1. REF & MOTION VALUES ---
@@ -121,7 +120,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
             >
               <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
+                <a href="/src/assets/Resume/Saad_Mazhar_Resume.pdf" download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
