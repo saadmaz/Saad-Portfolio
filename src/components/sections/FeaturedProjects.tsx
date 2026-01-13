@@ -1,21 +1,21 @@
-import { motion } from "framer-motion";
-import { ArrowUpRight, Github, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion"; // For scroll-triggered animations
+import { ArrowUpRight, Github, ExternalLink } from "lucide-react"; // Icons for links and GitHub
+import { Link } from "react-router-dom"; // For internal navigation links
+import { Button } from "@/components/ui/button"; // Reusable button component
 
-/** * DATA ARRAY: We define the projects here to keep the 
- * component's JSX clean and easily maintainable.
- */
+// DATA ARRAY: We define the projects here to keep the component's JSX clean and easily maintainable.
+
+// Each project includes title, description, tech stack, status, URLs, and gradient for styling.
 const featuredProjects = [
   {
-    id: 1,
-    title: "TechFlow Analytics", 
+    id: 1, // Unique identifier for the project
+    title: "TechFlow Analytics", // Project title
     description: "A real-time analytics dashboard for SaaS businesses. Track user behavior, revenue metrics, and growth trends with beautiful visualizations.",
     tech: ["React", "TypeScript", "Node.js", "PostgreSQL", "D3.js"],
-    status: "Live",
-    liveUrl: "https://techflow.app",
-    githubUrl: "https://github.com/saadmaz/techflow", 
-    gradient: "from-accent to-blue-accent",
+    status: "Live", // Project status badge
+    liveUrl: "https://techflow.app", // URL to the live project
+    githubUrl: "https://github.com/saadmaz/techflow", // GitHub repository URL
+    gradient: "from-accent to-blue-accent", // Gradient colors for the card header
   },
   {
     id: 2,
@@ -39,28 +39,27 @@ const featuredProjects = [
   },
 ];
 
-/** * FRAMER MOTION VARIANTS: 
- * 'containerVariants' handles the timing of how children appear.
- * 'itemVariants' defines the individual entrance animation for each card.
- */
+// FRAMER MOTION VARIANTS: containerVariants' handles the timing of how children appear.
+
+// Creates a staggered fade-in effect for child elements
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
+  hidden: { opacity: 0 }, // Initial state: fully transparent
+  visible: { // Final state: fully opaque
+    opacity: 1, // Sets opacity to 1
+    transition: { // Transition settings for child animations
       staggerChildren: 0.15, // Creates a waterfall effect as cards load
     },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5 }
-  },
-};
+const itemVariants = { // Individual project card animation variants
+  hidden: { opacity: 0, y: 30 }, // Initial state: slightly below and transparent
+  visible: { // Final state: in place and fully visible
+    opacity: 1, // Sets opacity to 1
+    y: 0, // Moves to original position
+    transition: { duration: 0.5 } // Smooth transition over half a second
+  }, // End of itemVariants
+}; // End of itemVariants
 
 export function FeaturedProjects() {
   return (
