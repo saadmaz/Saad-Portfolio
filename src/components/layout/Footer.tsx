@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // For internal navigation links
 import { 
   Linkedin, 
   Github,
@@ -8,36 +8,36 @@ import {
   Mail, 
   Phone,
   ArrowUp
-} from "lucide-react";
+} from "lucide-react"; // Social and utility icons
 
 /** * DATA ARRAYS: We define these outside the component to keep the 
  * JSX clean and make it easier to add/remove links in the future.
  */
 const exploreLinks = [
-  { title: "Home", href: "/" },
-  { title: "Featured Work", href: "/projects#featured" },
-  { title: "All Projects", href: "/projects" },
-  { title: "Work Experience", href: "/experience" },
-  { title: "Skills & Tech Stack", href: "/skills" },
-  { title: "Education", href: "/about#education" },
+  { title: "Home", href: "/" }, // Main landing page
+  { title: "Featured Work", href: "/projects#featured" }, // Direct link to featured projects section
+  { title: "All Projects", href: "/projects" }, // Full projects overview
+  { title: "Work Experience", href: "/experience" }, // Professional experience page
+  { title: "Skills & Tech Stack", href: "/skills" }, // Skills overview page
+  { title: "Education", href: "/about#education" }, // Education section on About page
 ];
 
 const personalLinks = [
-  { title: "Events & Hosting", href: "/events" },
-  { title: "Volunteer", href: "/about#volunteer" },
-  { title: "Extra-Curricular", href: "/about#extracurricular" },
-  { title: "Sports", href: "/about#sports" },
-  { title: "Awards", href: "/about#awards" },
-  { title: "Languages", href: "/about#languages" },
+  { title: "Events & Hosting", href: "/events" }, // Events and speaking engagements
+  { title: "Volunteer", href: "/about#volunteer" }, // Volunteer work section
+  { title: "Extra-Curricular", href: "/about#extracurricular" }, // Extra-curricular activities
+  { title: "Sports", href: "/about#sports" }, // Sports involvement section
+  { title: "Awards", href: "/about#awards" }, // Awards and recognitions
+  { title: "Languages", href: "/about#languages" }, // Languages spoken section
 ];
 
 const knowledgeLinks = [
-  { title: "Blog / Insights", href: "/blog" },
-  { title: "Tech Newsletter", href: "/newsletters#tech" },
-  { title: "Startup Newsletter", href: "/newsletters#startup" },
+  { title: "Blog / Insights", href: "/blog" }, // Main blog page
+  { title: "Tech Newsletter", href: "/newsletters#tech" }, // Tech-focused newsletter
+  { title: "Startup Newsletter", href: "/newsletters#startup" }, // Startup-focused newsletter
 ];
 
-export function Footer() {
+export function Footer() { 
   /** * HELPER FUNCTION: Scrolls the user back to the top of the page 
    * with a smooth animation rather than a sudden jump.
    */
@@ -48,7 +48,7 @@ export function Footer() {
   {/* Root footer uses a solid dark grey hex (#1a1a1a) and forces white text. */}
   {/* The border-t uses white with 10% opacity to create a subtle separation line. */}
   return (
-    <footer className="bg-[#1a1a1a] text-white border-t border-white/10">
+    <footer className="bg-[#1a1a1a] text-white border-t border-white/10"> 
       <div className="section-container">
         
         {/* MAIN CONTENT GRID: 5 columns on desktop, stacking on mobile. */}
@@ -62,7 +62,7 @@ export function Footer() {
               <h3 className="font-display text-xl font-bold text-white mb-4">
                 Saad Mazhar
               </h3>
-              <p className="text-zinc-400 text-sm mb-4">
+              <p className="text-zinc-400 text-sm mb-4"> 
                 CS Undergraduate. Startup Founder. Tech Entrepreneur.
               </p>
               <p className="text-zinc-500 text-xs leading-relaxed">

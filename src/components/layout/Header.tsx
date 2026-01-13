@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; // React hooks for state and lifecycle management
 import { Link, useLocation } from "react-router-dom"; // Hooks for routing and detecting current URL
 import { motion, AnimatePresence } from "framer-motion"; // Library for smooth React animations
 import { 
@@ -34,28 +34,28 @@ import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf"; // Importing PDF 
 // recreated in memory on every single render.
 
 const workItems = [
-  { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
-  { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" },
+  { title: "Work Experience", href: "/experience", description: "Professional journey and roles" }, // Main work experience page
+  { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" }, // Projects overview
 ];
 
-const skillsItems = [
-  { title: "Skills Overview", href: "/skills", description: "Technical competencies" },
-  { title: "Licenses & Courses", href: "/skills#courses", description: "Certifications and learning" },
+const skillsItems = [ // Skills-related navigation links
+  { title: "Skills Overview", href: "/skills", description: "Technical competencies" }, // Main skills page
+  { title: "Licenses & Courses", href: "/skills#courses", description: "Certifications and learning" },  // Courses and licenses
 ];
 
 const aboutItems = [
-  { title: "Education", href: "/about#education", description: "Academic background" },
-  { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" },
-  { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" },
-  { title: "Extra-Curricular", href: "/about#extracurricular", description: "Activities and interests" },
-  { title: "Sports", href: "/about#sports", description: "Athletic pursuits" },
-  { title: "Languages", href: "/about#languages", description: "Communication abilities" },
-  { title: "Awards", href: "/about#awards", description: "Recognition and honors" },
+  { title: "Education", href: "/about#education", description: "Academic background" }, //  Education section
+  { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" }, // Events page
+  { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" }, // Volunteer section
+  { title: "Extra-Curricular", href: "/about#extracurricular", description: "Activities and interests" },   // Extra-curriculars
+  { title: "Sports", href: "/about#sports", description: "Athletic pursuits" }, // Sports section
+  { title: "Languages", href: "/about#languages", description: "Communication abilities" }, // Languages section
+  { title: "Awards", href: "/about#awards", description: "Recognition and honors" }, // Awards section
 ];
 
 const insightsItems = [
-  { title: "Blog / Thoughts", href: "/blog", description: "Articles and perspectives" },
-  { title: "Newsletters", href: "/newsletters", description: "Knowledge hub subscriptions" },
+  { title: "Blog / Thoughts", href: "/blog", description: "Articles and perspectives" }, // Blog main page
+  { title: "Newsletters", href: "/newsletters", description: "Knowledge hub subscriptions" }, // Newsletters overview
 ];
 
 export function Header() {

@@ -9,17 +9,17 @@ import { Button } from "@/components/ui/button";
 const featuredProjects = [
   {
     id: 1,
-    title: "TechFlow Analytics",
+    title: "TechFlow Analytics", 
     description: "A real-time analytics dashboard for SaaS businesses. Track user behavior, revenue metrics, and growth trends with beautiful visualizations.",
     tech: ["React", "TypeScript", "Node.js", "PostgreSQL", "D3.js"],
     status: "Live",
     liveUrl: "https://techflow.app",
-    githubUrl: "https://github.com/saadmaz/techflow",
+    githubUrl: "https://github.com/saadmaz/techflow", 
     gradient: "from-accent to-blue-accent",
   },
   {
     id: 2,
-    title: "DevConnect Platform",
+    title: "DevConnect Platform", 
     description: "A networking platform for developers to connect, collaborate, and find opportunities. Features real-time chat and project matching.",
     tech: ["Next.js", "Prisma", "Tailwind", "Socket.io", "AWS"],
     status: "MVP",
