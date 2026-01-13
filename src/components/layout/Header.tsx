@@ -1,38 +1,22 @@
 import { useState, useEffect } from "react"; // React hooks for state and lifecycle management
 import { Link, useLocation } from "react-router-dom"; // Hooks for routing and detecting current URL
 import { motion, AnimatePresence } from "framer-motion"; // Library for smooth React animations
-import { 
-  Menu, 
-  ChevronDown, 
-  Download,
-  Phone,
-  Mail,
-  Linkedin,
-  Github,
-  Facebook,
-  Instagram,
-  X,
-  Moon,
-  Sun,
-  X as LucideX
+import { Menu, ChevronDown, Download, Phone, Mail, Linkedin, Github, Facebook, Instagram, X, Moon, Sun, X as LucideX
 } from "lucide-react"; // Icons for various UI elements
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
+  NavigationMenu, // Root navigation menu component
+  NavigationMenuContent, // Container for dropdown content
+  NavigationMenuItem, // Individual navigation item
+  NavigationMenuLink, // Link wrapper for navigation items
+  NavigationMenuList, // List container for navigation items
+  NavigationMenuTrigger, // Trigger button for dropdowns
 } from "@/components/ui/navigation-menu"; // Shadcn UI components for the dropdown system
 import { Button } from "@/components/ui/button"; // Standardized button component
 import { cn } from "@/lib/utils"; // Utility to merge Tailwind classes conditionally
 import { useTheme } from "@/hooks/useTheme"; // Custom hook to manage Dark/Light mode
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf"; // Importing PDF asset for download
 
-// NAVIGATION DATA OBJECTS:
-// We define these outside the component to prevent them from being 
-// recreated in memory on every single render.
-
+// Each array contains objects representing navigation links and their metadata.
 const workItems = [
   { title: "Work Experience", href: "/experience", description: "Professional journey and roles" }, // Main work experience page
   { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" }, // Projects overview
@@ -92,28 +76,28 @@ export function Header() {
    */
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "hidden"; // Disable background scrolling
+    } else { 
+      document.body.style.overflow = "unset"; // Re-enable scrolling
     }
     return () => {
       document.body.style.overflow = "unset"; // Ensure scroll is restored if component breaks
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen]); // End of BODY SCROLL LOCK
 
   return (
     <>
       {/* HEADER WRAPPER: Fixed to top. Switches from transparent to blurred background on scroll. */}
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300", // Fixed positioning with smooth transitions
           isScrolled
-            ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border"
-            : "bg-transparent"
+            ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border" // Glass-morphism effect when scrolled
+            : "bg-transparent" // Transparent when at the top
         )}
       >
-        <div className="section-container">
-          <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="section-container"> {/* Container for consistent horizontal padding */}
+          <div className="flex items-center justify-between h-16 md:h-20"> {/* Flex container for header content */}
             
             {/* BRANDING: Logo link. z-[60] keeps it above the mobile menu overlay. */}
             <Link to="/" className="flex items-center gap-2 relative z-[60]">
@@ -145,23 +129,10 @@ export function Header() {
                       {/* Trigger: The clickable text that opens the dropdown. */}
                       <NavigationMenuTrigger 
                         className={cn(
-                          // 1. Remove 'bg-transparent' and replace with 'bg-none' to ensure no hidden backgrounds.
-                          // 2. Remove standard Shadcn hover backgrounds.
-                          "nav-link bg-none transition-all duration-300 px-4 py-2", 
-                          
-                          // HOVER STATE: Only change the text color. 
-                          // We use a slightly darker version of your accent color or the foreground.
-                          "hover:text-accent active:text-accent hover:bg-transparent focus:bg-transparent",
-                          
-                          // OPEN STATE (When the dropdown is active):
-                          // We remove the 'bg-black/5' or 'bg-blue' container entirely.
-                          // Instead, we just keep the text highlighted in the accent color.
-                          "data-[state=open]:bg-transparent data-[state=open]:text-accent",
-                          
-                          // OPTIONAL: If you want a VERY subtle darkening of the text area 
-                          // without a sharp "container" look, you can use a text-shadow 
-                          // or a very faint bottom border instead.
-                          "focus:text-accent outline-none border-none shadow-none"
+                          "nav-link bg-none transition-all duration-300 px-4 py-2", // Base styles for nav links
+                          "hover:text-accent active:text-accent hover:bg-transparent focus:bg-transparent", // Hover and active states
+                          "data-[state=open]:bg-transparent data-[state=open]:text-accent", // Open state styles
+                          "focus:text-accent outline-none border-none shadow-none" // Focus styles
                         )}
                       >
                         {menu.label}
@@ -220,7 +191,7 @@ export function Header() {
               
               {/* RESUME BUTTON: Renders as an 'a' tag to allow native PDF downloading. */}
               <Button asChild variant="default" size="sm" className="btn-primary gap-2">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf"> {/* Fixed filename for download */}
                   <Download className="w-4 h-4" />
                   Download Resume
                 </a>
@@ -238,7 +209,7 @@ export function Header() {
               </button>
               
               <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
+                <a href={myResume} download="@assets/Resume/Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Resume
                 </a>
@@ -279,12 +250,12 @@ export function Header() {
             >
               {/* MOBILE ACCORDIONS: Renders the sub-menus for mobile users. */}
               <div className="space-y-6">
-                <MobileNavSection title="Home" href="/" />
-                <MobileNavSection title="About" items={aboutItems} />
-                <MobileNavSection title="Work" items={workItems} />
-                <MobileNavSection title="Skills" items={skillsItems} />
-                <MobileNavSection title="Insights" items={insightsItems} />
-                <MobileNavSection title="Contact" href="/contact" />
+                <MobileNavSection title="Home" href="/" /> {/* Direct link for Home */}
+                <MobileNavSection title="About" items={aboutItems} /> {/* Accordion for About */}
+                <MobileNavSection title="Work" items={workItems} /> {/* Accordion for Work */}
+                <MobileNavSection title="Skills" items={skillsItems} /> {/* Accordion for Skills */}
+                <MobileNavSection title="Insights" items={insightsItems} /> {/* Accordion for Insights */}
+                <MobileNavSection title="Contact" href="/contact" /> {/* Direct link for Contact */}
               </div>
 
               {/* SOCIAL FOOTER: Links for quick social access at the bottom of the menu. */}
