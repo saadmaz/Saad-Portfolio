@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { 
+  Linkedin, 
+  Github,
   Instagram,
   Facebook,
-  Github, 
-  Linkedin, 
   X, 
   Mail, 
   Phone,
@@ -145,17 +145,17 @@ export function Footer() {
               
               {/* SOCIAL BUTTON BAR: These use the white-icon-on-dark-blue hover effect. */}
               <div className="flex items-center gap-3 mt-6">
-                
-                {/* Instagram: Inverts from grey to white text with a blue-900 background. */}
-                {/* The 'rounded-lg' and 'p-2' ensure the blue background looks like a clean tile. */}
+
+                {/* LinkedIn: Professional profile link that matches the secondary brand color. */}
+                {/* The 'text-zinc-400' provides a muted state that doesn't distract from the main content. */}
                 <a 
-                  href="https://www.instagram.com/saaadmaz/" 
+                  href="https://linkedin.com/in/saadmaz" 
                   target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900"
-                  aria-label="Instagram Profile"
+                  rel="noopener noreferrer" 
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 
+                  aria-label="LinkedIn Profile"
                 >
-                  <Instagram className="w-5 h-5" />
+                  <Linkedin className="w-5 h-5" />
                 </a>
 
                 {/* GitHub: Standardizes the tech profile link with the same interaction logic. */}
@@ -170,16 +170,28 @@ export function Footer() {
                   <Github className="w-5 h-5" />
                 </a>
 
-                {/* LinkedIn: Professional profile link that matches the secondary brand color. */}
-                {/* The 'text-zinc-400' provides a muted state that doesn't distract from the main content. */}
+                {/* Instagram: Inverts from grey to white text with a blue-900 background. */}
+                {/* The 'rounded-lg' and 'p-2' ensure the blue background looks like a clean tile. */}
                 <a 
-                  href="https://linkedin.com/in/saadmaz" 
+                  href="https://www.instagram.com/saaadmaz/" 
                   target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900" 
-                  aria-label="LinkedIn Profile"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900"
+                  aria-label="Instagram Profile"
                 >
-                  <Linkedin className="w-5 h-5" />
+                  <Instagram className="w-5 h-5" />
+                </a>
+
+                {/* Facebook: Inverts from grey to white text with a blue-900 background. */}
+                {/* The 'rounded-lg' and 'p-2' ensure the blue background looks like a clean tile. */}
+                <a 
+                  href="https://www.facebook.com/saaadmazhar03/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-zinc-400 transition-colors hover:text-white hover:bg-blue-900"
+                  aria-label="Facebook Profile"
+                >
+                  <Facebook className="w-5 h-5" />
                 </a>
 
                 {/* X (Twitter): Updated social icon with the dark blue hover background. */}

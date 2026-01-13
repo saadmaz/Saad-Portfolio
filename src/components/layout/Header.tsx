@@ -6,14 +6,14 @@ import {
   ChevronDown, 
   Download,
   Phone,
+  Mail,
+  Linkedin,
+  Github,
   Facebook,
   Instagram,
-  Github,
-  Linkedin,
-  Mail,
+  X,
   Moon,
   Sun,
-  X,
   X as LucideX
 } from "lucide-react"; // Icons for various UI elements
 import {
