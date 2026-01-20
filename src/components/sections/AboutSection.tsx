@@ -1,49 +1,11 @@
 import { motion } from "framer-motion";
-import { GraduationCap, MapPin, Calendar, Trophy, Users, Dumbbell, Globe, Heart, Star, ExternalLink, ArrowRight } from "lucide-react";
+import { GraduationCap, MapPin, Calendar, Trophy, Users, Dumbbell, Globe, Heart, ArrowRight } from "lucide-react";
 import { educationList } from "@/data/education";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { events, volunteer, sports, languages, awards } from "@/data/about";
+import { EducationDialog } from "@/components/education/EducationDialog";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
-const events = [
-  { title: "TechCrunch Disrupt", type: "Speaker", year: "2024" },
-  { title: "Google I/O", type: "Attended", year: "2024" },
-  { title: "HackMIT", type: "Organized", year: "2023" },
-];
-
-const volunteer = [
-  { org: "Code for Good", role: "Lead Mentor", impact: "Taught 50+ students to code" },
-  { org: "Tech4Youth", role: "Volunteer Instructor", impact: "Weekly coding workshops" },
-];
-
-const sports = [
-  { name: "Basketball", skill: "Teamwork & Communication" },
-  { name: "Swimming", skill: "Discipline & Endurance" },
-  { name: "Chess", skill: "Strategic Thinking" },
-];
-
-const languages = [
-  { name: "English", level: "Native" },
-  { name: "Spanish", level: "Fluent" },
-  { name: "Mandarin", level: "Conversational" },
-  { name: "Sinhala", level: "Native" },
-  { name: "Tamil", level: "Conversational" },
-];
-
-const awards = [
-  { title: "Dean's List", issuer: "University of Technology", year: "2023-2024" },
-  { title: "Best Hack Award", issuer: "HackMIT", year: "2023" },
-  { title: "Google Developer Scholarship", issuer: "Google", year: "2022" },
-];
 
 export function AboutSection() {
   const latestEducation = [...educationList].sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())[0];
@@ -78,145 +40,50 @@ export function AboutSection() {
           className="mb-12"
           id="education"
         >
-          <Dialog>
-            <DialogTrigger asChild>
-              <div className="bg-card rounded-xl border border-border p-8 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md group">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-accent/10">
-                      <GraduationCap className="w-6 h-6 text-accent" />
-                    </div>
-                    <h3 className="font-display text-2xl font-bold text-foreground">Education</h3>
+          <EducationDialog education={latestEducation}>
+            <div className="bg-card rounded-xl border border-border p-8 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md group">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-accent/10">
+                    <GraduationCap className="w-6 h-6 text-accent" />
                   </div>
-                  <Badge variant="secondary" className="group-hover:bg-accent group-hover:text-accent-foreground transition-colors">Latest</Badge>
+                  <h3 className="font-display text-2xl font-bold text-foreground">Education</h3>
                 </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h4 className="text-xl font-semibold text-foreground mb-2">{latestEducation.institution}</h4>
-                    <p className="text-muted-foreground mb-4">{latestEducation.degree}</p>
-                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                <Badge variant="secondary" className="group-hover:bg-accent group-hover:text-accent-foreground transition-colors">Latest</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-xl font-semibold text-foreground mb-2">{latestEducation.institution}</h4>
+                  <p className="text-muted-foreground mb-4">{latestEducation.degree}</p>
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      {latestEducation.period}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      {latestEducation.location}
+                    </span>
+                    {latestEducation.gpa && (
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {latestEducation.period}
+                        <Trophy className="w-4 h-4" />
+                        GPA: {latestEducation.gpa}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {latestEducation.location}
-                      </span>
-                      {latestEducation.gpa && (
-                        <span className="flex items-center gap-1">
-                          <Trophy className="w-4 h-4" />
-                          GPA: {latestEducation.gpa}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-3">Relevant Coursework:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {latestEducation.courses.map((course) => (
-                        <span key={course} className="tech-chip">{course}</span>
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-4 text-right">Click for details</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-3">Relevant Coursework:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {latestEducation.courses.map((course) => (
+                      <span key={course} className="tech-chip">{course}</span>
+                    ))}
                   </div>
+                  <p className="text-xs text-muted-foreground mt-4 text-right">Click for details</p>
                 </div>
               </div>
-            </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[85vh] p-0 flex flex-col gap-0 overflow-hidden">
-              <DialogHeader className="p-6 pb-2 shrink-0">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-border">
-                    <img src={latestEducation.institutionLogo} alt={latestEducation.institution} className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <DialogTitle className="text-2xl">{latestEducation.institution}</DialogTitle>
-                      <a
-                        href={latestEducation.institutionUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-accent transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                    <p className="text-accent font-medium">{latestEducation.degree}</p>
-                  </div>
-                </div>
-                <DialogDescription className="text-base flex items-center gap-2">
-                  {latestEducation.period} • {latestEducation.location}
-                </DialogDescription>
-              </DialogHeader>
-
-              <ScrollArea className="flex-1 min-h-0 p-6 pt-2">
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="font-semibold text-lg mb-2">About</h4>
-                    <p className="text-muted-foreground leading-relaxed">{latestEducation.description}</p>
-                  </div>
-
-                  {latestEducation.skills && latestEducation.skills.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                        <Dumbbell className="w-4 h-4" /> Skills Acquired
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {latestEducation.skills.map(skill => (
-                          <Badge key={skill} variant="outline" className="text-sm py-1">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {latestEducation.associatedProjects && latestEducation.associatedProjects.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                        <Globe className="w-4 h-4" /> Associated Projects
-                      </h4>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-1">
-                        {latestEducation.associatedProjects.map(project => (
-                          <li key={project}>{project}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {latestEducation.associatedAwards && latestEducation.associatedAwards.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                        <Trophy className="w-4 h-4" /> Awards & Honors
-                      </h4>
-                      <ul className="grid sm:grid-cols-2 gap-3">
-                        {latestEducation.associatedAwards.map(award => (
-                          <li key={award} className="bg-secondary/30 p-3 rounded-lg text-sm text-foreground flex items-center gap-2 border border-border/50">
-                            <Star className="w-3 h-3 text-accent" /> {award}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {latestEducation.courses && latestEducation.courses.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                        <GraduationCap className="w-4 h-4" /> Coursework
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {latestEducation.courses.map(course => (
-                          <span key={course} className="text-xs border border-border px-2 py-1 rounded bg-secondary/10">
-                            {course}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
+            </div>
+          </EducationDialog>
 
           <div className="flex justify-center mt-6">
             <Link to="/about#education">

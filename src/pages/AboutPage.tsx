@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import {
@@ -9,49 +8,12 @@ import {
   Dumbbell,
   Globe,
   Star,
-  ExternalLink
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { educationList } from "@/data/education";
-
-const languages = [
-  { name: "English", level: "Native", stars: 5 },
-  { name: "Sinhala", level: "Native", stars: 5 },
-  { name: "Tamil", level: "Conversational", stars: 3 },
-];
-
-const volunteer = [
-  { org: "Code for Good", role: "Lead Mentor", period: "2022 - Present", description: "Teaching coding to underserved students", impact: "Taught 50+ students" },
-  { org: "Tech4Youth", role: "Instructor", period: "2021 - 2022", description: "Weekly coding workshops", impact: "Led 40+ workshops" },
-];
-
-const extracurricular = [
-  { name: "Photography Club", role: "Member", description: "Street and landscape photography" },
-  { name: "Entrepreneurship Club", role: "President", description: "Organizing startup events" },
-];
-
-const sports = [
-  { name: "Basketball", skill: "Teamwork", level: "Recreational" },
-  { name: "Swimming", skill: "Discipline", level: "Competitive" },
-  { name: "Chess", skill: "Strategic Thinking", level: "Club Level" },
-];
-
-const awards = [
-  { title: "Dean's List", issuer: "University", year: "2023-2024", description: "Academic excellence" },
-  { title: "Best Hack Award", issuer: "HackMIT", year: "2023", description: "Winner among 200+ teams" },
-];
+import { languages, volunteer, sports, awards } from "@/data/about";
+import { EducationDialog } from "@/components/education/EducationDialog";
 
 const StarRating = ({ filled }: { filled: number }) => (
   <div className="flex gap-1">
@@ -87,142 +49,47 @@ const AboutPage = () => {
               {[...educationList]
                 .sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())
                 .map((edu, index) => (
-                  <Dialog key={index}>
-                    <DialogTrigger asChild>
-                      <motion.div
-                        whileHover={{ scale: 1.01 }}
-                        className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
-                      >
-                        <div className="flex flex-col md:flex-row gap-6 items-start">
-                          <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border">
-                            <img
-                              src={edu.institutionLogo}
-                              alt={`${edu.institution} logo`}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 space-y-2">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                              <div>
-                                <h3 className="text-xl font-bold text-foreground">{edu.institution}</h3>
-                                <p className="text-accent font-medium">{edu.degree}</p>
-                              </div>
-                              <Badge variant="secondary" className="w-fit">{edu.period}</Badge>
-                            </div>
-
-                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{edu.location}</span>
-                              {edu.gpa && <span className="flex items-center gap-1"><Trophy className="w-4 h-4" />GPA: {edu.gpa}</span>}
-                            </div>
-
-                            <div className="pt-2 flex flex-wrap gap-2">
-                              {edu.skills.slice(0, 4).map(skill => (
-                                <span key={skill} className="text-xs px-2 py-1 bg-secondary rounded text-muted-foreground">{skill}</span>
-                              ))}
-                              {edu.skills.length > 4 && (
-                                <span className="text-xs px-2 py-1 text-muted-foreground">+{edu.skills.length - 4} more</span>
-                              )}
-                            </div>
-
-                            <p className="text-sm text-muted-foreground pt-2">Click to view details</p>
-                          </div>
+                  <EducationDialog key={index} education={edu}>
+                    <motion.div
+                      whileHover={{ scale: 1.01 }}
+                      className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex flex-col md:flex-row gap-6 items-start">
+                        <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border">
+                          <img
+                            src={edu.institutionLogo}
+                            alt={`${edu.institution} logo`}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
-                      </motion.div>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-3xl max-h-[85vh] p-0 flex flex-col gap-0 overflow-hidden">
-                      <DialogHeader className="p-6 pb-2 shrink-0">
-                        <div className="flex items-center gap-4 mb-2">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden border border-border">
-                            <img src={edu.institutionLogo} alt={edu.institution} className="w-full h-full object-cover" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <DialogTitle className="text-2xl">{edu.institution}</DialogTitle>
-                              <a
-                                href={edu.institutionUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-accent transition-colors"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
+                        <div className="flex-1 space-y-2">
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <div>
+                              <h3 className="text-xl font-bold text-foreground">{edu.institution}</h3>
+                              <p className="text-accent font-medium">{edu.degree}</p>
                             </div>
-                            <p className="text-accent font-medium">{edu.degree}</p>
+                            <Badge variant="secondary" className="w-fit">{edu.period}</Badge>
                           </div>
+
+                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{edu.location}</span>
+                            {edu.gpa && <span className="flex items-center gap-1"><Trophy className="w-4 h-4" />GPA: {edu.gpa}</span>}
+                          </div>
+
+                          <div className="pt-2 flex flex-wrap gap-2">
+                            {edu.skills.slice(0, 4).map(skill => (
+                              <span key={skill} className="text-xs px-2 py-1 bg-secondary rounded text-muted-foreground">{skill}</span>
+                            ))}
+                            {edu.skills.length > 4 && (
+                              <span className="text-xs px-2 py-1 text-muted-foreground">+{edu.skills.length - 4} more</span>
+                            )}
+                          </div>
+
+                          <p className="text-sm text-muted-foreground pt-2">Click to view details</p>
                         </div>
-                        <DialogDescription className="text-base flex items-center gap-2">
-                          {edu.period} • {edu.location}
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <ScrollArea className="flex-1 min-h-0 p-6 pt-2">
-                        <div className="space-y-6">
-                          <div>
-                            <h4 className="font-semibold text-lg mb-2">About</h4>
-                            <p className="text-muted-foreground leading-relaxed">{edu.description}</p>
-                          </div>
-
-                          {edu.skills.length > 0 && (
-                            <div>
-                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <Dumbbell className="w-4 h-4" /> Skills Acquired
-                              </h4>
-                              <div className="flex flex-wrap gap-2">
-                                {edu.skills.map(skill => (
-                                  <Badge key={skill} variant="outline" className="text-sm py-1">
-                                    {skill}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {edu.associatedProjects && edu.associatedProjects.length > 0 && (
-                            <div>
-                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <Globe className="w-4 h-4" /> Associated Projects
-                              </h4>
-                              <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-1">
-                                {edu.associatedProjects.map(project => (
-                                  <li key={project}>{project}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {edu.associatedAwards && edu.associatedAwards.length > 0 && (
-                            <div>
-                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <Trophy className="w-4 h-4" /> Awards & Honors
-                              </h4>
-                              <ul className="grid sm:grid-cols-2 gap-3">
-                                {edu.associatedAwards.map(award => (
-                                  <li key={award} className="bg-secondary/30 p-3 rounded-lg text-sm text-foreground flex items-center gap-2 border border-border/50">
-                                    <Star className="w-3 h-3 text-accent" /> {award}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {edu.courses && edu.courses.length > 0 && (
-                            <div>
-                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <GraduationCap className="w-4 h-4" /> Coursework
-                              </h4>
-                              <div className="flex flex-wrap gap-2">
-                                {edu.courses.map(course => (
-                                  <span key={course} className="text-xs border border-border px-2 py-1 rounded bg-secondary/10">
-                                    {course}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </DialogContent>
-                  </Dialog>
+                      </div>
+                    </motion.div>
+                  </EducationDialog>
                 ))}
             </div>
           </div>
@@ -232,10 +99,10 @@ const AboutPage = () => {
             <div id="languages" className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-6"><Globe className="w-5 h-5 text-accent" /><h3 className="font-display text-xl font-semibold text-foreground">Languages</h3></div>
               <ul className="space-y-5">
-                {languages.map((lang) => (
+                {languages.filter(l => l.stars).map((lang) => ( // ensuring we only show ones with stars if intended, or just map all. The data has stars.
                   <li key={lang.name} className="flex items-center justify-between">
                     <div><span className="font-medium text-foreground">{lang.name}</span><p className="text-xs text-muted-foreground">{lang.level}</p></div>
-                    <StarRating filled={lang.stars} />
+                    {lang.stars && <StarRating filled={lang.stars} />}
                   </li>
                 ))}
               </ul>
