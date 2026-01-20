@@ -52,8 +52,8 @@ export function EducationDialog({ education, children }: EducationDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <ScrollArea className="flex-1 min-h-0 p-6 pt-2">
-                    <div className="space-y-6">
+                <ScrollArea className="flex-1 min-h-0">
+                    <div className="p-6 pt-2 space-y-6">
                         <div>
                             <h4 className="font-semibold text-lg mb-2">About</h4>
                             <p className="text-muted-foreground leading-relaxed">{education.description}</p>
