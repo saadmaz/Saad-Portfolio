@@ -1,12 +1,12 @@
 export const educationList = [
     {
-        institution: "University of Technology",
+        institution: "University of Westminster",
         institutionUrl: "https://university.edu",
         institutionLogo: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&h=100&fit=crop&q=80",
         degree: "Bachelor of Science in Computer Science",
         period: "2021 - 2025 (Expected)",
         startDate: "2021-09-01",
-        location: "San Francisco, CA",
+        location: "London, UK",
         gpa: "3.9/4.0",
         description: "Specializing in software engineering and artificial intelligence. Leading student initiatives and contributing to open source projects alongside academic studies.",
         skills: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems", "Java", "Python", "React"],

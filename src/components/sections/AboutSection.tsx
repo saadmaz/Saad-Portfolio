@@ -149,7 +149,7 @@ export function AboutSection() {
                 </DialogDescription>
               </DialogHeader>
 
-              <ScrollArea className="flex-1 p-6 pt-2">
+              <ScrollArea className="flex-1 min-h-0 p-6 pt-2">
                 <div className="space-y-6">
                   <div>
                     <h4 className="font-semibold text-lg mb-2">About</h4>
