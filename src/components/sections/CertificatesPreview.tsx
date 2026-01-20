@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Award, ExternalLink } from "lucide-react";
+import { ArrowRight, Award, ExternalLink, Calendar, Tag, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,53 +17,74 @@ import {
  */
 const certificates = [
   {
+    id: "1",
     title: "AWS Certified Solutions Architect",
     issuer: "Amazon Web Services",
     issuerLogo: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg",
     year: "2024",
     color: "from-orange-500/20 to-amber-500/20",
+    category: "Cloud",
+    tags: ["Cloud", "Architecture"],
   },
   {
+    id: "6",
     title: "Google Cloud Professional Data Engineer",
     issuer: "Google Cloud",
     issuerLogo: "https://www.gstatic.com/devrel-devsite/prod/v0e0f589edd85502a40d78d7d0825db8ea5ef3b99ab4070381ee86977c9168730/cloud/images/cloud-logo.svg",
     year: "2024",
     color: "from-blue-500/20 to-cyan-500/20",
+    category: "Cloud",
+    tags: ["Big Data", "GCP"],
   },
   {
+    id: "meta-frontend", // Mapped ID if needed, using generic for now implies new IDs in SkillsPage would be needed to match these if they differ.
     title: "Meta Front-End Developer",
     issuer: "Meta",
     issuerLogo: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png",
     year: "2023",
     color: "from-indigo-500/20 to-blue-500/20",
+    category: "Frontend",
+    tags: ["React", "UI/UX"],
   },
   {
+    id: "tensorflow",
     title: "TensorFlow Developer Certificate",
     issuer: "Google",
     issuerLogo: "https://www.gstatic.com/devrel-devsite/prod/v0e0f589edd85502a40d78d7d0825db8ea5ef3b99ab4070381ee86977c9168730/cloud/images/cloud-logo.svg",
     year: "2023",
     color: "from-yellow-500/20 to-orange-500/20",
+    category: "AI/ML",
+    tags: ["Machine Learning", "Python"],
   },
   {
+    id: "mongo",
     title: "MongoDB Certified Developer",
     issuer: "MongoDB University",
     issuerLogo: "https://webimages.mongodb.com/_com_assets/cms/mongodb_logo1-76twgcu2dm.png",
     year: "2023",
     color: "from-green-500/20 to-emerald-500/20",
+    category: "Database",
+    tags: ["NoSQL", "Data Modeling"],
   },
   {
+    id: "github-actions",
     title: "GitHub Actions Certification",
     issuer: "GitHub",
     issuerLogo: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
     year: "2024",
     color: "from-purple-500/20 to-pink-500/20",
+    category: "DevOps",
+    tags: ["CI/CD", "Automation"],
   },
   {
+    id: "docker",
     title: "Docker Certified Associate",
     issuer: "Docker",
     issuerLogo: "https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png",
     year: "2024",
     color: "from-sky-500/20 to-blue-500/20",
+    category: "DevOps",
+    tags: ["Containers", "Infrastructure"],
   },
 ];
 
@@ -72,7 +93,7 @@ export function CertificatesPreview() {
     // 'py-16' used instead of 'section-padding' to slightly reduce vertical footprint
     <section className="py-16 bg-secondary/30">
       <div className="section-container">
-        
+
         {/* --- SECTION HEADER --- */}
         {/* Entrance animation using framer-motion's whileInView to trigger when visible */}
         <motion.div
@@ -89,7 +110,7 @@ export function CertificatesPreview() {
                 Licenses & Certifications
               </h2>
               <p className="text-muted-foreground max-w-xl">
-                Industry-recognized credentials validating my expertise across cloud, 
+                Industry-recognized credentials validating my expertise across cloud,
                 development, and data engineering.
               </p>
             </div>
@@ -125,31 +146,54 @@ export function CertificatesPreview() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="h-full"
                   >
-                    {/* The Card: Uses group hover states for the gradient reveal effect */}
-                    <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30`}>
-                      
-                      {/* HOVER GRADIENT: Hidden by default, reveals on group-hover */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${cert.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                      
-                      {/* CARD CONTENT: Relative z-index to stay above the gradient background */}
-                      <div className="relative z-10">
-                        {/* ISSUER ICON: Simplified placeholder box with an Award icon */}
-                        <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 border border-border group-hover:border-accent/30 transition-colors">
-                          <Award className="w-6 h-6 text-accent" />
+                    <Link to={`/skills?certId=${cert.id}`} className="block h-full">
+                      {/* The Card: Uses group hover states for the gradient reveal effect */}
+                      <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30 flex flex-col`}>
+
+                        {/* HOVER GRADIENT: Hidden by default, reveals on group-hover */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${cert.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+
+                        {/* CARD CONTENT: Relative z-index to stay above the gradient background */}
+                        <div className="relative z-10 flex-1 flex flex-col">
+                          {/* Header: Logo and Year */}
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-10 h-10 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors">
+                              <Award className="w-5 h-5 text-accent" />
+                            </div>
+                            <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {cert.year}
+                            </span>
+                          </div>
+
+                          {/* CERTIFICATE TEXT */}
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
+                              {cert.title}
+                            </h4>
+                            <p className="text-sm text-muted-foreground mb-3">{cert.issuer}</p>
+                          </div>
+
+                          {/* Footer: Category & Tag */}
+                          <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap gap-2">
+                            <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
+                              <Layers className="w-3 h-3" />
+                              {cert.category}
+                            </div>
+                            {cert.tags[0] && (
+                              <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
+                                <Tag className="w-3 h-3" />
+                                {cert.tags[0]}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        
-                        {/* CERTIFICATE TEXT: Line-clamp used to prevent layout break with long titles */}
-                        <h4 className="font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
-                          {cert.title}
-                        </h4>
-                        <p className="text-sm text-muted-foreground mb-2">{cert.issuer}</p>
-                        <span className="text-xs text-muted-foreground">{cert.year}</span>
                       </div>
-                    </div>
+                    </Link>
                   </motion.div>
                 </CarouselItem>
               ))}
-              
+
               {/* --- "SEE ALL" CTA CARD --- */}
               {/* Last item in carousel leading users to the full skills/certifications page */}
               <CarouselItem className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
@@ -165,7 +209,7 @@ export function CertificatesPreview() {
                 </Link>
               </CarouselItem>
             </CarouselContent>
-            
+
             {/* NAVIGATION CONTROLS: Hidden on mobile to save space, visible from 'md' screens up */}
             <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-secondary" />
             <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-secondary" />

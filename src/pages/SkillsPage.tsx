@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Award, ExternalLink, Calendar, FileText, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -162,6 +163,61 @@ const certificates = [
     tags: ["AI/ML", "Neural Networks"],
     category: "AI/ML",
   },
+  {
+    id: "meta-frontend",
+    title: "Meta Front-End Developer",
+    name: "Meta Front-End Developer", // Map title to name for consistency if needed, assuming 'name' is the field used in SkillsPage
+    issuer: "Meta",
+    date: "2023",
+    credentialUrl: "#",
+    pdfUrl: "/certificates/meta-frontend.pdf",
+    tags: ["React", "UI/UX"],
+    category: "Frontend",
+  },
+  {
+    id: "tensorflow",
+    title: "TensorFlow Developer Certificate",
+    name: "TensorFlow Developer Certificate",
+    issuer: "Google",
+    date: "2023",
+    credentialUrl: "#",
+    pdfUrl: "/certificates/tensorflow.pdf",
+    tags: ["Machine Learning", "Python"],
+    category: "AI/ML",
+  },
+  {
+    id: "mongo",
+    title: "MongoDB Certified Developer",
+    name: "MongoDB Certified Developer",
+    issuer: "MongoDB University",
+    date: "2023",
+    credentialUrl: "#",
+    pdfUrl: "/certificates/mongodb.pdf",
+    tags: ["NoSQL", "Data Modeling"],
+    category: "Databases", // Note: Category name might need to match existing categories in SkillsPage
+  },
+  {
+    id: "github-actions",
+    title: "GitHub Actions Certification",
+    name: "GitHub Actions Certification",
+    issuer: "GitHub",
+    date: "2024",
+    credentialUrl: "#",
+    pdfUrl: "/certificates/github-actions.pdf",
+    tags: ["CI/CD", "Automation"],
+    category: "DevOps",
+  },
+  {
+    id: "docker",
+    title: "Docker Certified Associate",
+    name: "Docker Certified Associate",
+    issuer: "Docker",
+    date: "2024",
+    credentialUrl: "#",
+    pdfUrl: "/certificates/docker.pdf",
+    tags: ["Containers", "Infrastructure"],
+    category: "DevOps",
+  },
 ];
 
 const levelColors: Record<string, string> = {
@@ -177,12 +233,29 @@ const SkillsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllCerts, setShowAllCerts] = useState(false);
   const [selectedCert, setSelectedCert] = useState<typeof certificates[0] | null>(null);
+  const [searchParams] = useSearchParams();
+
+  // Check for certId in URL and open corresponding certificate
+  useEffect(() => {
+    const certId = searchParams.get("certId");
+    if (certId) {
+      const cert = certificates.find(c => c.id === certId);
+      if (cert) {
+        setSelectedCert(cert);
+        // Clean up the URL?? Maybe not needed if we want it shareable. 
+        // But if we want to reset... let's keep it shareable.
+
+        // Ensure "All" certificates or the specific category is visible if needed? 
+        // For now, the dialog is improved, it opens on top regardless of list filtering.
+      }
+    }
+  }, [searchParams]);
 
   const filteredCertificates = certificates.filter(cert => {
     const matchesCategory = selectedCategory === "All" || cert.category === selectedCategory;
     const matchesSearch = cert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         cert.issuer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         cert.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      cert.issuer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cert.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
@@ -204,7 +277,7 @@ const SkillsPage = () => {
               Technical Toolkit
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              A comprehensive overview of my technical skills, organized by category. 
+              A comprehensive overview of my technical skills, organized by category.
               I'm always learning and expanding my expertise.
             </p>
           </motion.div>
@@ -224,7 +297,7 @@ const SkillsPage = () => {
                   </h3>
                   <ul className="space-y-3">
                     {category.skills.map((skill) => (
-                      <li 
+                      <li
                         key={skill.name}
                         className="flex items-center justify-between gap-2"
                       >
@@ -291,11 +364,10 @@ const SkillsPage = () => {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
-                      selectedCategory === category
-                        ? "bg-accent text-accent-foreground"
-                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                    }`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${selectedCategory === category
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      }`}
                   >
                     {category}
                   </button>
@@ -317,7 +389,7 @@ const SkillsPage = () => {
                   >
                     <Dialog>
                       <DialogTrigger asChild>
-                        <div 
+                        <div
                           className="bg-card rounded-xl border border-border p-5 card-hover cursor-pointer group"
                           onClick={() => setSelectedCert(cert)}
                         >
