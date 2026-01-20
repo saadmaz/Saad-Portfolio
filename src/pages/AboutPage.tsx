@@ -24,55 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const educationList = [
-  {
-    institution: "University of Technology",
-    institutionUrl: "https://university.edu",
-    institutionLogo: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&h=100&fit=crop&q=80",
-    degree: "Bachelor of Science in Computer Science",
-    period: "2021 - 2025 (Expected)",
-    startDate: "2021-09-01",
-    location: "San Francisco, CA",
-    gpa: "3.9/4.0",
-    description: "Specializing in software engineering and artificial intelligence. Leading student initiatives and contributing to open source projects alongside academic studies.",
-    skills: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems", "Java", "Python", "React"],
-    associatedProjects: ["Distributed Key-Value Store", "Neural Network from Scratch", "Campus Event Manager"],
-    associatedAwards: ["Dean's List (2022, 2023)", "HackMIT Best Hack 2023"],
-    courses: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems"], // Keeping for backward compat if needed, usually moved to skills
-    activities: ["CS Student Association - VP", "ACM Chapter - Member"],
-  },
-  {
-    institution: "Online Education Platform",
-    institutionUrl: "https://coursera.org",
-    institutionLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
-    degree: "Full Stack Development Certificate",
-    period: "2022",
-    startDate: "2022-01-01",
-    location: "Online",
-    description: "Intensive 6-month bootcamp covering modern web development technologies including the MERN stack.",
-    skills: ["React", "Node.js", "GraphQL", "MongoDB", "Express", "Redux"],
-    associatedProjects: ["E-commerce Platform", "Task Management App"],
-    associatedAwards: ["Top 5% of Cohort"],
-    courses: ["React", "Node.js", "GraphQL", "MongoDB"],
-    activities: ["Top 5% of cohort"],
-  },
-  {
-    institution: "High School Name",
-    institutionUrl: "https://highschool.edu",
-    institutionLogo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=100&h=100&fit=crop&q=80",
-    degree: "Advanced Level Studies",
-    period: "2018 - 2021",
-    startDate: "2018-01-01",
-    location: "Colombo, Sri Lanka",
-    gpa: "4.0/4.0",
-    description: "Focused on physical sciences and mathematics. Graduated with high honors.",
-    skills: ["Mathematics", "Physics", "Computer Science", "Problem Solving"],
-    associatedProjects: ["Science Fair Robotics Project"],
-    associatedAwards: ["Science Olympiad Winner", "School Prefect"],
-    courses: ["Mathematics", "Physics", "Computer Science"],
-    activities: ["Debate Club President", "Science Olympiad Winner"],
-  },
-];
+import { educationList } from "@/data/education";
 
 const languages = [
   { name: "English", level: "Native", stars: 5 },
