@@ -91,6 +91,8 @@ const eventsData: Record<string, {
     attendees: "500+",
     organizer: "Google Developers",
   },
+
+  
   "3": {
     id: "3",
     title: "HackMIT 2024",

@@ -7,7 +7,7 @@ const blogPosts = [
   {
     id: 1,
     title: "Building AI-First Products: Lessons from the Trenches",
-    excerpt: "What I learned from building three AI-powered products, including common pitfalls and how to avoid them.",
+    excerpt: "What I learned from building three AI-powered products.",
     date: "December 15, 2024",
     readTime: "8 min read",
     tags: ["AI", "Product", "Startups"],
