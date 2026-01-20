@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { 
-  GraduationCap, 
-  MapPin, 
-  Calendar, 
-  Trophy, 
+import {
+  GraduationCap,
+  MapPin,
+  Trophy,
   Heart,
-  Dumbbell, 
-  Globe, 
+  Dumbbell,
+  Globe,
   Star,
-  ChevronLeft,
-  ChevronRight,
   ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const educationList = [
   {
@@ -24,9 +31,14 @@ const educationList = [
     institutionLogo: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&h=100&fit=crop&q=80",
     degree: "Bachelor of Science in Computer Science",
     period: "2021 - 2025 (Expected)",
+    startDate: "2021-09-01",
     location: "San Francisco, CA",
     gpa: "3.9/4.0",
-    courses: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems"],
+    description: "Specializing in software engineering and artificial intelligence. Leading student initiatives and contributing to open source projects alongside academic studies.",
+    skills: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems", "Java", "Python", "React"],
+    associatedProjects: ["Distributed Key-Value Store", "Neural Network from Scratch", "Campus Event Manager"],
+    associatedAwards: ["Dean's List (2022, 2023)", "HackMIT Best Hack 2023"],
+    courses: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems"], // Keeping for backward compat if needed, usually moved to skills
     activities: ["CS Student Association - VP", "ACM Chapter - Member"],
   },
   {
@@ -35,7 +47,12 @@ const educationList = [
     institutionLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
     degree: "Full Stack Development Certificate",
     period: "2022",
+    startDate: "2022-01-01",
     location: "Online",
+    description: "Intensive 6-month bootcamp covering modern web development technologies including the MERN stack.",
+    skills: ["React", "Node.js", "GraphQL", "MongoDB", "Express", "Redux"],
+    associatedProjects: ["E-commerce Platform", "Task Management App"],
+    associatedAwards: ["Top 5% of Cohort"],
     courses: ["React", "Node.js", "GraphQL", "MongoDB"],
     activities: ["Top 5% of cohort"],
   },
@@ -45,8 +62,13 @@ const educationList = [
     institutionLogo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=100&h=100&fit=crop&q=80",
     degree: "Advanced Level Studies",
     period: "2018 - 2021",
+    startDate: "2018-01-01",
     location: "Colombo, Sri Lanka",
     gpa: "4.0/4.0",
+    description: "Focused on physical sciences and mathematics. Graduated with high honors.",
+    skills: ["Mathematics", "Physics", "Computer Science", "Problem Solving"],
+    associatedProjects: ["Science Fair Robotics Project"],
+    associatedAwards: ["Science Olympiad Winner", "School Prefect"],
     courses: ["Mathematics", "Physics", "Computer Science"],
     activities: ["Debate Club President", "Science Olympiad Winner"],
   },
@@ -91,8 +113,6 @@ const StarRating = ({ filled }: { filled: number }) => (
 );
 
 const AboutPage = () => {
-  const [currentEdu, setCurrentEdu] = useState(0);
-
   return (
     <Layout>
       <section className="section-padding">
@@ -102,61 +122,156 @@ const AboutPage = () => {
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">Beyond the Code</h1>
           </motion.div>
 
-          {/* Education Slideshow */}
+          {/* Education List with Dialogs */}
           <div className="mb-16" id="education">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-accent/10"><GraduationCap className="w-6 h-6 text-accent" /></div>
-                <h2 className="font-display text-2xl font-bold text-foreground">Education</h2>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-lg bg-accent/10">
+                <GraduationCap className="w-6 h-6 text-accent" />
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon" onClick={() => setCurrentEdu(Math.max(0, currentEdu - 1))} disabled={currentEdu === 0} className="rounded-full">
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={() => setCurrentEdu(Math.min(educationList.length - 1, currentEdu + 1))} disabled={currentEdu === educationList.length - 1} className="rounded-full">
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
+              <h2 className="font-display text-2xl font-bold text-foreground">Education</h2>
             </div>
-            
-            <motion.div key={currentEdu} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-card rounded-xl border border-border p-8">
-              <div className="flex items-start gap-4 mb-4">
-                <a 
-                  href={educationList[currentEdu].institutionUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
-                >
-                  <img 
-                    src={educationList[currentEdu].institutionLogo} 
-                    alt={`${educationList[currentEdu].institution} logo`}
-                    className="w-full h-full object-cover"
-                  />
-                </a>
-                <div>
-                  <a 
-                    href={educationList[currentEdu].institutionUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xl font-semibold text-foreground hover:text-accent transition-colors mb-1"
-                  >
-                    {educationList[currentEdu].institution}
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                  <p className="text-muted-foreground">{educationList[currentEdu].degree}</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
-                <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{educationList[currentEdu].period}</span>
-                <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{educationList[currentEdu].location}</span>
-                {educationList[currentEdu].gpa && <span className="flex items-center gap-1"><Trophy className="w-4 h-4" />GPA: {educationList[currentEdu].gpa}</span>}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {educationList[currentEdu].courses.map((course) => <span key={course} className="tech-chip">{course}</span>)}
-              </div>
-            </motion.div>
-            <div className="flex justify-center gap-2 mt-4">
-              {educationList.map((_, i) => <button key={i} onClick={() => setCurrentEdu(i)} className={`w-2 h-2 rounded-full transition-colors ${i === currentEdu ? "bg-accent" : "bg-border"}`} />)}
+
+            <div className="space-y-6">
+              {[...educationList]
+                .sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())
+                .map((edu, index) => (
+                  <Dialog key={index}>
+                    <DialogTrigger asChild>
+                      <motion.div
+                        whileHover={{ scale: 1.01 }}
+                        className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
+                      >
+                        <div className="flex flex-col md:flex-row gap-6 items-start">
+                          <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border">
+                            <img
+                              src={edu.institutionLogo}
+                              alt={`${edu.institution} logo`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                              <div>
+                                <h3 className="text-xl font-bold text-foreground">{edu.institution}</h3>
+                                <p className="text-accent font-medium">{edu.degree}</p>
+                              </div>
+                              <Badge variant="secondary" className="w-fit">{edu.period}</Badge>
+                            </div>
+
+                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                              <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{edu.location}</span>
+                              {edu.gpa && <span className="flex items-center gap-1"><Trophy className="w-4 h-4" />GPA: {edu.gpa}</span>}
+                            </div>
+
+                            <div className="pt-2 flex flex-wrap gap-2">
+                              {edu.skills.slice(0, 4).map(skill => (
+                                <span key={skill} className="text-xs px-2 py-1 bg-secondary rounded text-muted-foreground">{skill}</span>
+                              ))}
+                              {edu.skills.length > 4 && (
+                                <span className="text-xs px-2 py-1 text-muted-foreground">+{edu.skills.length - 4} more</span>
+                              )}
+                            </div>
+
+                            <p className="text-sm text-muted-foreground pt-2">Click to view details</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl max-h-[85vh] p-0 flex flex-col gap-0 overflow-hidden">
+                      <DialogHeader className="p-6 pb-2 shrink-0">
+                        <div className="flex items-center gap-4 mb-2">
+                          <div className="w-12 h-12 rounded-lg overflow-hidden border border-border">
+                            <img src={edu.institutionLogo} alt={edu.institution} className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <DialogTitle className="text-2xl">{edu.institution}</DialogTitle>
+                              <a
+                                href={edu.institutionUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-muted-foreground hover:text-accent transition-colors"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            </div>
+                            <p className="text-accent font-medium">{edu.degree}</p>
+                          </div>
+                        </div>
+                        <DialogDescription className="text-base flex items-center gap-2">
+                          {edu.period} • {edu.location}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <ScrollArea className="flex-1 p-6 pt-2">
+                        <div className="space-y-6">
+                          <div>
+                            <h4 className="font-semibold text-lg mb-2">About</h4>
+                            <p className="text-muted-foreground leading-relaxed">{edu.description}</p>
+                          </div>
+
+                          {edu.skills.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                                <Dumbbell className="w-4 h-4" /> Skills Acquired
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {edu.skills.map(skill => (
+                                  <Badge key={skill} variant="outline" className="text-sm py-1">
+                                    {skill}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {edu.associatedProjects && edu.associatedProjects.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                                <Globe className="w-4 h-4" /> Associated Projects
+                              </h4>
+                              <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-1">
+                                {edu.associatedProjects.map(project => (
+                                  <li key={project}>{project}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {edu.associatedAwards && edu.associatedAwards.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                                <Trophy className="w-4 h-4" /> Awards & Honors
+                              </h4>
+                              <ul className="grid sm:grid-cols-2 gap-3">
+                                {edu.associatedAwards.map(award => (
+                                  <li key={award} className="bg-secondary/30 p-3 rounded-lg text-sm text-foreground flex items-center gap-2 border border-border/50">
+                                    <Star className="w-3 h-3 text-accent" /> {award}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {edu.courses && edu.courses.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                                <GraduationCap className="w-4 h-4" /> Coursework
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {edu.courses.map(course => (
+                                  <span key={course} className="text-xs border border-border px-2 py-1 rounded bg-secondary/10">
+                                    {course}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </ScrollArea>
+                    </DialogContent>
+                  </Dialog>
+                ))}
             </div>
           </div>
 
