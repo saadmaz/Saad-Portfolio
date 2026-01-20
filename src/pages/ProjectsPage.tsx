@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const allProjects = [
+  // TechFlow Analytics
   {
     id: 1,
     title: "TechFlow Analytics",
@@ -35,9 +36,10 @@ const allProjects = [
     category: "AI/ML",
     status: "In Progress",
     liveUrl: null,
-    githubUrl: "https://github.com/johndoe/ai-code",
+    githubUrl: "https://github.com/saadmaz/",
     featured: true,
   },
+
   {
     id: 4,
     title: "CLI Task Manager",
@@ -49,6 +51,7 @@ const allProjects = [
     githubUrl: "https://github.com/johndoe/cli-tasks",
     featured: false,
   },
+
   {
     id: 5,
     title: "React Component Library",
@@ -60,6 +63,7 @@ const allProjects = [
     githubUrl: "https://github.com/johndoe/react-components",
     featured: false,
   },
+
   {
     id: 6,
     title: "Budget Tracker API",
@@ -68,7 +72,7 @@ const allProjects = [
     category: "API",
     status: "Live",
     liveUrl: null,
-    githubUrl: "https://github.com/johndoe/budget-api",
+    githubUrl: "https://github.com/saadmaz/",
     featured: false,
   },
 ];
@@ -77,9 +81,9 @@ const categories = ["All", "Web App", "AI/ML", "CLI Tool", "Library", "API"];
 
 const ProjectsPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  
-  const filteredProjects = activeCategory === "All" 
-    ? allProjects 
+
+  const filteredProjects = activeCategory === "All"
+    ? allProjects
     : allProjects.filter(p => p.category === activeCategory);
 
   return (
@@ -98,7 +102,7 @@ const ProjectsPage = () => {
               Things I've Built
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              A collection of projects ranging from web applications to CLI tools. 
+              A collection of projects ranging from web applications to CLI tools.
               Each one represents a problem I wanted to solve or a technology I wanted to explore.
             </p>
           </motion.div>
@@ -114,11 +118,10 @@ const ProjectsPage = () => {
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground hover:bg-muted"
-                }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${activeCategory === category
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-secondary-foreground hover:bg-muted"
+                  }`}
               >
                 {category}
               </button>
@@ -149,11 +152,10 @@ const ProjectsPage = () => {
                           {project.category}
                         </span>
                       </div>
-                      <span className={`status-badge ${
-                        project.status === 'Live' ? 'status-live' :
+                      <span className={`status-badge ${project.status === 'Live' ? 'status-live' :
                         project.status === 'MVP' ? 'status-mvp' :
-                        'status-progress'
-                      }`}>
+                          'status-progress'
+                        }`}>
                         {project.status}
                       </span>
                     </div>
