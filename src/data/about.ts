@@ -1,4 +1,3 @@
-
 export const languages = [
     { name: "English", level: "Native", stars: 5 },
     { name: "Sinhala", level: "Native", stars: 5 },
