@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { BlogMetadata } from "../types/blog";
 
 // 1. Define the internal module structure for Vite's glob/import
