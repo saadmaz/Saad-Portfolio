@@ -1,49 +1,58 @@
-import React from 'react';
-import './skills.css';
+import React, { useState, useEffect } from 'react';
+import '../styles/skills.css';
 
 const Skills = () => {
-    const skills = {
-        softSkills: ['Communication', 'Teamwork', 'Problem Solving'],
-        peopleSkills: ['Empathy', 'Active Listening', 'Conflict Resolution'],
-        frontEnd: ['HTML', 'CSS', 'JavaScript', 'React'],
-        backEnd: ['Node.js', 'Express', 'MongoDB'],
-        devOps: ['Docker', 'Kubernetes', 'CI/CD']
-    };
+    const [skills, setSkills] = useState(null);
 
-    return (
-        <div className="skills-container">
-            <h1>Skills</h1>
-            <div className="skills-category">
-                <h2>Soft Skills</h2>
-                <ul>
-                    {skills.softSkills.map(skill => <li key={skill}>{skill}</li>)}
-                </ul>
-            </div>
-            <div className="skills-category">
-                <h2>People Skills</h2>
-                <ul>
-                    {skills.peopleSkills.map(skill => <li key={skill}>{skill}</li>)}
-                </ul>
-            </div>
-            <div className="skills-category">
-                <h2>Front-End Skills</h2>
-                <ul>
-                    {skills.frontEnd.map(skill => <li key={skill}>{skill}</li>)}
-                </ul>
-            </div>
-            <div className="skills-category">
-                <h2>Back-End Skills</h2>
-                <ul>
-                    {skills.backEnd.map(skill => <li key={skill}>{skill}</li>)}
-                </ul>
-            </div>
-            <div className="skills-category">
-                <h2>DevOps Skills</h2>
-                <ul>
-                    {skills.devOps.map(skill => <li key={skill}>{skill}</li>)}
-                </ul>
+    useEffect(() => {
+        fetch('/src/assets/data.json')
+            .then(res => res.json())
+            .then(data => setSkills(data.skills))
+            .catch(err => console.error('Error loading skills data:', err));
+    }, []);
+
+    if (!skills) return <div>Loading...</div>;
+
+    const SkillCategory = ({ title, skillsList }) => (
+        <div className="skill-category">
+            <h3 className="category-title">{title}</h3>
+            <div className="skills-list">
+                {skillsList.map(skill => (
+                    <div key={skill.id} className="skill-item">
+                        <div className="skill-header">
+                            <span className="skill-name">{skill.skill}</span>
+                            <span className="skill-level">{skill.level}/5</span>
+                        </div>
+                        <div className="skill-bar">
+                            <div 
+                                className="skill-progress" 
+                                style={{ width: `${(skill.level / 5) * 100}%` }}
+                            ></div>
+                        </div>
+                        {skill.description && (
+                            <p className="skill-description">{skill.description}</p>
+                        )}
+                        {skill.years && (
+                            <p className="skill-years">{skill.years} years experience</p>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
+    );
+
+    return (
+        <section id="skills" className="skills-section">
+            <div className="container">
+                <h2 className="section-title">Skills</h2>
+                <div className="skills-grid">
+                    <SkillCategory title="Soft Skills" skillsList={skills.softSkills} />
+                    <SkillCategory title="Frontend" skillsList={skills.frontend} />
+                    <SkillCategory title="Backend" skillsList={skills.backend} />
+                    <SkillCategory title="DevOps" skillsList={skills.devops} />
+                </div>
+            </div>
+        </section>
     );
 };
 

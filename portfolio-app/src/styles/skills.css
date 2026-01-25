@@ -15,20 +15,66 @@
 }
 
 .skills-list {
-    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     padding: 0;
 }
 
 .skill-item {
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    padding: 10px;
+    background: #252525;
+    border-radius: 6px;
+    padding: 1rem;
     margin: 5px 0;
     transition: background-color 0.3s;
 }
 
 .skill-item:hover {
     background-color: #d0d0d0;
+}
+
+.skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.skill-name {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.skill-level {
+    color: #3b82f6;
+    font-size: 0.9rem;
+}
+
+.skill-bar {
+    width: 100%;
+    height: 6px;
+    background: #3a3a3a;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #1e40af);
+    transition: width 0.3s ease;
+}
+
+.skill-description {
+    font-size: 0.85rem;
+    color: #888888;
+    margin: 0.5rem 0 0 0;
+}
+
+.skill-years {
+    font-size: 0.8rem;
+    color: #666666;
+    margin: 0.3rem 0 0 0;
 }
 
 @media (max-width: 600px) {

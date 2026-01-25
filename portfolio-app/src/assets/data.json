@@ -1,47 +1,92 @@
 {
-  "blogs": [
-    {
-      "id": 1,
-      "title": "Understanding JavaScript Closures",
-      "content": "Closures are a fundamental concept in JavaScript that allow functions to maintain access to their lexical scope.",
-      "date": "2023-10-01"
-    },
-    {
-      "id": 2,
-      "title": "A Guide to CSS Flexbox",
-      "content": "Flexbox is a layout model that allows you to design complex layouts with ease.",
-      "date": "2023-10-05"
-    }
-  ],
   "education": [
     {
-      "institution": "University of Technology",
-      "degree": "Bachelor of Science in Computer Science",
-      "year": "2022"
-    },
-    {
-      "institution": "Online Academy",
-      "degree": "Full Stack Development Certificate",
-      "year": "2023"
+      "id": 1,
+      "school": "University Name",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "startDate": "2018",
+      "endDate": "2022",
+      "description": "Relevant coursework and achievements",
+      "gpa": "3.8"
     }
   ],
   "experience": [
     {
-      "company": "Tech Solutions Inc.",
-      "role": "Front-End Developer",
-      "duration": "2022 - Present"
-    },
-    {
-      "company": "Web Innovations",
-      "role": "Intern",
-      "duration": "2021 - 2022"
+      "id": 1,
+      "company": "Company Name",
+      "position": "Senior Developer",
+      "startDate": "2022-01",
+      "endDate": "Present",
+      "description": "Key responsibilities and achievements",
+      "technologies": ["React", "Node.js", "AWS"]
     }
   ],
   "skills": {
-    "softSkills": ["Communication", "Teamwork", "Problem Solving"],
-    "peopleSkills": ["Empathy", "Active Listening"],
-    "frontEnd": ["HTML", "CSS", "JavaScript", "React"],
-    "backEnd": ["Node.js", "Express", "MongoDB"],
-    "devOps": ["Docker", "AWS", "CI/CD"]
-  }
+    "softSkills": [
+      {
+        "id": 1,
+        "skill": "Leadership",
+        "level": 4,
+        "description": "Team management and mentoring"
+      },
+      {
+        "id": 2,
+        "skill": "Communication",
+        "level": 5,
+        "description": "Clear and effective communication"
+      }
+    ],
+    "frontend": [
+      {
+        "id": 1,
+        "skill": "React",
+        "level": 5,
+        "years": 3
+      },
+      {
+        "id": 2,
+        "skill": "TypeScript",
+        "level": 4,
+        "years": 2
+      }
+    ],
+    "backend": [
+      {
+        "id": 1,
+        "skill": "Node.js",
+        "level": 4,
+        "years": 2
+      }
+    ],
+    "devops": [
+      {
+        "id": 1,
+        "skill": "Docker",
+        "level": 3,
+        "years": 1
+      }
+    ]
+  },
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Blog Title",
+      "excerpt": "Short description",
+      "date": "2024-01-15",
+      "category": "React",
+      "readTime": "5 min read",
+      "link": "/blog/blog-slug"
+    }
+  ],
+  "newsletters": [
+    {
+      "id": 1,
+      "title": "Newsletter #1",
+      "date": "2024-01-20",
+      "linkedinUrl": "https://linkedin.com/...",
+      "content": "Newsletter content here",
+      "isLatest": true
+    }
+  ]
 }
