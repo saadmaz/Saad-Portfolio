@@ -18,11 +18,11 @@ const newsletters = [
     description: "Your weekly pulse on the Sri Lankan stock market. I break down Colombo Stock Exchange trends, company earnings, and investment opportunities in plain English.",
     topics: ["Market Trends", "CSE Analysis", "Equity Research", "Investor Education"],
     audience: "Investors, Traders, & Finance Students",
-    frequency: "Every Sunday",
+    frequency: "Weekly",
     subscribers: "6,200+",
     color: "from-blue-600 to-cyan-500",
     // LinkedIn Newsletter direct URL
-    linkedInUrl: "Subscribe on LinkedIn https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896", 
+    linkedInUrl: "https://www.linkedin.com/newsletters/7337874498160848896/", 
     latestIssue: {
       title: "Market Outlook: Banking Sector Rally",
       date: "Dec 24, 2025",
@@ -198,12 +198,13 @@ const NewslettersPage = () => {
               Browse the Archives
             </h3>
             <p className="text-muted-foreground mb-8">
-              Every issue is a permanent resource. You can browse through the full history 
-              of deep dives and market updates directly on my LinkedIn profile.
+              More than just an update, each issue is a building block for your market knowledge. 
+              Browse through my full history of newsletters on LinkedIn to see how we track the evolution of the 
+              Sri Lankan startup and financial ecosystems.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button variant="outline" className="btn-outline h-12 px-8" asChild>
-                <a href="https://linkedin.com/in/yourprofile" target="_blank">
+                <a href="https://www.linkedin.com/newsletters/cse-news-room-7337874498160848896/" target="_blank">
                   View Full Archive <ArrowRight className="ml-2 w-4 h-4" />
                 </a>
               </Button>
