@@ -1,27 +1,24 @@
 import { BlogMetadata } from "../types/blog";
-import { ArrowLeft, Calendar, User, Edit } from "lucide-react";
+import { ArrowLeft, Calendar, User, Edit, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import "./BlogTemplate.css"; // We'll create this
+import "./BlogTemplate.css";
 
 interface BlogTemplateProps {
   metadata: BlogMetadata;
   content: React.ReactNode;
 }
 
-export const BlogTemplate: React.FC<BlogTemplateProps> = ({
-  metadata,
-  content,
-}) => {
+export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content }) => {
   return (
-    <article className="blog-template">
-      {/* Header */}
+    <article className="blog-template-container">
+      {/* HEADER SECTION */}
       <header className="blog-header">
         <Link to="/blogs" className="back-button">
-          <ArrowLeft size={20} />
-          Back to Blogs
+          <ArrowLeft size={18} />
+          <span>Back to Articles</span>
         </Link>
 
-        <div className="blog-cover">
+        <div className="blog-cover-wrapper">
           <img
             src={metadata.coverImage}
             alt={metadata.title}
@@ -29,58 +26,53 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({
           />
         </div>
 
-        <div className="blog-meta-header">
+        <div className="blog-title-area">
           <h1 className="blog-title">{metadata.title}</h1>
 
-          <div className="blog-info">
-            <div className="info-item">
-              <User size={16} />
-              <span>{metadata.author}</span>
-            </div>
-
-            <div className="info-item">
-              <Calendar size={16} />
-              <span>
-                Published: {new Date(metadata.publishedDate).toLocaleDateString()}
-              </span>
-            </div>
-
-            {metadata.updatedDate && (
-              <div className="info-item">
-                <Edit size={16} />
-                <span>
-                  Updated: {new Date(metadata.updatedDate).toLocaleDateString()}
-                </span>
+          <div className="blog-meta-grid">
+            <div className="meta-group">
+              <div className="meta-item">
+                <User size={14} />
+                <span>{metadata.author}</span>
               </div>
-            )}
+              <div className="meta-item">
+                <Calendar size={14} />
+                <span>{new Date(metadata.publishedDate).toLocaleDateString()}</span>
+              </div>
+            </div>
+
+            {/* Added Read Time for better UX */}
+            <div className="meta-item">
+              <Clock size={14} />
+              <span>5 min read</span>
+            </div>
           </div>
 
-          {metadata.tags && metadata.tags.length > 0 && (
-            <div className="blog-tags">
+          {metadata.tags && (
+            <div className="blog-tags-list">
               {metadata.tags.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                </span>
+                <span key={tag} className="blog-tag-pill">{tag}</span>
               ))}
             </div>
           )}
         </div>
       </header>
 
-      {/* Content */}
-      <div className="blog-content">{content}</div>
+      {/* CONTENT SECTION: Uses the CSS fluid typography */}
+      <div className="blog-body-content">
+        {content}
+      </div>
 
-      {/* Footer */}
-      <footer className="blog-footer">
-        <div className="author-info">
-          <p>Written by {metadata.author}</p>
+      {/* FOOTER SECTION */}
+      <footer className="blog-footer-area">
+        <div className="author-signature">
+          <p className="author-name">Written by <strong>{metadata.author}</strong></p>
           {metadata.updatedDate && (
-            <p>Last updated: {new Date(metadata.updatedDate).toLocaleDateString()}</p>
+            <p className="update-date">Last revised: {new Date(metadata.updatedDate).toLocaleDateString()}</p>
           )}
         </div>
-
-        <Link to="/blogs" className="back-button-footer">
-          ← Back to All Blogs
+        <Link to="/blogs" className="footer-back-link">
+          ← See all thoughts & insights
         </Link>
       </footer>
     </article>
