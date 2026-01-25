@@ -192,13 +192,12 @@ const NewslettersPage = () => {
                           className="btn-primary w-full h-12 gap-2 text-md shadow-lg shadow-accent/20"
                         >
                           <a 
-                            href={latestIssue.linkedinUrl}
+                            href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896"
                             target="_blank" 
                             rel="noopener noreferrer"
-                            onClick={() => handleRedirect(latestIssue.linkedinUrl, config.title)}
+                            onClick={() => handleRedirect("https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896", config.title)}
                           ><ExternalLink className="w-4 h-4" />Read & Subscribe on LinkedIn</a>
-                        </Button>
-                        <p className="text-center text-[10px] text-muted-foreground mt-3 uppercase tracking-tighter">
+                        </Button>                        <p className="text-center text-[10px] text-muted-foreground mt-3 uppercase tracking-tighter">
                           Joins {config.subscribers} professionals
                         </p>
                       </div>
