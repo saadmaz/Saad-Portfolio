@@ -3,7 +3,6 @@ import '../styles/newsletter.css';
 
 const Newsletter = () => {
     const [newsletters, setNewsletters] = useState([]);
-    const [selectedNewsletter, setSelectedNewsletter] = useState(null);
 
     useEffect(() => {
         fetch('/src/assets/data.json')
@@ -13,55 +12,34 @@ const Newsletter = () => {
                     new Date(b.date) - new Date(a.date)
                 );
                 setNewsletters(sorted);
-                if (sorted.length > 0) setSelectedNewsletter(sorted[0]);
-            })
-            .catch(err => console.error('Error loading newsletters:', err));
+            });
     }, []);
 
     return (
         <section id="newsletter" className="newsletter-section">
             <div className="container">
                 <h2 className="section-title">LinkedIn Newsletters</h2>
-                <div className="newsletter-container">
-                    <div className="newsletter-main">
-                        {selectedNewsletter && (
-                            <div className="newsletter-display">
-                                <h3>{selectedNewsletter.title}</h3>
-                                <p className="newsletter-date">
-                                    {new Date(selectedNewsletter.date).toLocaleDateString()}
-                                </p>
-                                <div className="newsletter-content">
-                                    {selectedNewsletter.content}
-                                </div>
-                                <a 
-                                    href={selectedNewsletter.linkedinUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="linkedin-btn"
-                                >
-                                    View on LinkedIn
-                                </a>
-                            </div>
-                        )}
-                    </div>
-                    <div className="newsletter-sidebar">
-                        <h4>All Newsletters</h4>
-                        <div className="newsletter-list">
-                            {newsletters.map(nl => (
-                                <div 
-                                    key={nl.id}
-                                    className={`newsletter-item ${selectedNewsletter?.id === nl.id ? 'active' : ''}`}
-                                    onClick={() => setSelectedNewsletter(nl)}
-                                >
-                                    <p className="nl-title">{nl.title}</p>
-                                    <p className="nl-date">
-                                        {new Date(nl.date).toLocaleDateString()}
-                                    </p>
-                                    {nl.isLatest && <span className="latest-badge">Latest</span>}
-                                </div>
-                            ))}
+                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="subscribe-btn">
+                    Subscribe on LinkedIn
+                </a>
+
+                <div className="newsletters-grid">
+                    {newsletters.map(nl => (
+                        <div key={nl.id} className="newsletter-card">
+                            <h3>{nl.title}</h3>
+                            <p className="date">{new Date(nl.date).toLocaleDateString()}</p>
+                            <p className="excerpt">{nl.excerpt}</p>
+                            <a href={nl.linkedinUrl} 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               className="read-btn">
+                                Read on LinkedIn →
+                            </a>
                         </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>
