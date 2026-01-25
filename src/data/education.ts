@@ -32,7 +32,7 @@ export const educationList = [
     },
     {
         institution: "Isipathana College",
-        institutionUrl: "https://highschool.edu",
+        institutionUrl: "https://isipathanacollege.lk",
         institutionLogo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=100&h=100&fit=crop&q=80",
         degree: "Advanced Level Studies",
         period: "2018 - 2021",
