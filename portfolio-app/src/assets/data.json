@@ -1,0 +1,47 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Understanding JavaScript Closures",
+      "content": "Closures are a fundamental concept in JavaScript that allow functions to maintain access to their lexical scope.",
+      "date": "2023-10-01"
+    },
+    {
+      "id": 2,
+      "title": "A Guide to CSS Flexbox",
+      "content": "Flexbox is a layout model that allows you to design complex layouts with ease.",
+      "date": "2023-10-05"
+    }
+  ],
+  "education": [
+    {
+      "institution": "University of Technology",
+      "degree": "Bachelor of Science in Computer Science",
+      "year": "2022"
+    },
+    {
+      "institution": "Online Academy",
+      "degree": "Full Stack Development Certificate",
+      "year": "2023"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Tech Solutions Inc.",
+      "role": "Front-End Developer",
+      "duration": "2022 - Present"
+    },
+    {
+      "company": "Web Innovations",
+      "role": "Intern",
+      "duration": "2021 - 2022"
+    }
+  ],
+  "skills": {
+    "softSkills": ["Communication", "Teamwork", "Problem Solving"],
+    "peopleSkills": ["Empathy", "Active Listening"],
+    "frontEnd": ["HTML", "CSS", "JavaScript", "React"],
+    "backEnd": ["Node.js", "Express", "MongoDB"],
+    "devOps": ["Docker", "AWS", "CI/CD"]
+  }
+}
