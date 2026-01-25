@@ -59,15 +59,15 @@ export default function BlogDetailPage() {
 
   return (
     <Layout>
-      <article className="section-padding">
-        <div className="max-w-3xl mx-auto">
+      <article className="blog-detail-page">
+        <div className="blog-detail-container">
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="blog-back-button"
           >
-            <Link to="/blog" className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors">
+            <Link to="/blog" className="back-link">
               <ArrowLeft className="w-4 h-4" />
               Back to Blog
             </Link>
@@ -79,12 +79,12 @@ export default function BlogDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mb-8 rounded-xl overflow-hidden"
+              className="blog-cover-wrapper"
             >
               <img
                 src={metadata.coverImage}
                 alt={metadata.title}
-                className="w-full h-96 object-cover"
+                className="blog-cover-image"
               />
             </motion.div>
           )}
@@ -94,25 +94,25 @@ export default function BlogDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mb-8"
+            className="blog-header-section"
           >
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
+            <h1 className="blog-title">
               {metadata.title}
             </h1>
 
             {/* Metadata */}
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4" />
+            <div className="blog-metadata">
+              <div className="metadata-item">
+                <User className="metadata-icon" />
                 <span>{metadata.author}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+              <div className="metadata-item">
+                <Calendar className="metadata-icon" />
                 <span>Published: {new Date(metadata.publishedDate).toLocaleDateString()}</span>
               </div>
               {metadata.updatedDate && (
-                <div className="flex items-center gap-2">
-                  <Edit className="w-4 h-4" />
+                <div className="metadata-item">
+                  <Edit className="metadata-icon" />
                   <span>Updated: {new Date(metadata.updatedDate).toLocaleDateString()}</span>
                 </div>
               )}
@@ -120,12 +120,9 @@ export default function BlogDetailPage() {
 
             {/* Tags */}
             {metadata.tags && metadata.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="blog-tags">
                 {metadata.tags.map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="inline-block bg-secondary text-muted-foreground px-3 py-1 rounded-full text-sm"
-                  >
+                  <span key={tag} className="blog-tag">
                     {tag}
                   </span>
                 ))}
@@ -138,25 +135,7 @@ export default function BlogDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="prose dark:prose-invert max-w-none mb-12"
-            style={{
-              "--tw-prose-body": "var(--foreground)",
-              "--tw-prose-headings": "var(--foreground)",
-              "--tw-prose-lead": "var(--muted-foreground)",
-              "--tw-prose-links": "var(--accent)",
-              "--tw-prose-bold": "var(--foreground)",
-              "--tw-prose-counters": "var(--accent)",
-              "--tw-prose-bullets": "var(--accent)",
-              "--tw-prose-hr": "var(--border)",
-              "--tw-prose-quotes": "var(--muted-foreground)",
-              "--tw-prose-quote-borders": "var(--accent)",
-              "--tw-prose-captions": "var(--muted-foreground)",
-              "--tw-prose-code": "var(--foreground)",
-              "--tw-prose-pre-code": "var(--foreground)",
-              "--tw-prose-pre-bg": "var(--muted)",
-              "--tw-prose-th-borders": "var(--border)",
-              "--tw-prose-td-borders": "var(--border)",
-            } as React.CSSProperties}
+            className="blog-content-wrapper"
           >
             <div className="blog-content">
               {content}
@@ -168,21 +147,18 @@ export default function BlogDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="border-t border-border pt-8"
+            className="blog-footer-section"
           >
-            <div className="mb-6">
-              <p className="text-muted-foreground mb-2">Written by {metadata.author}</p>
+            <div className="blog-footer-info">
+              <p className="blog-footer-author">Written by {metadata.author}</p>
               {metadata.updatedDate && (
-                <p className="text-sm text-muted-foreground">
+                <p className="blog-footer-date">
                   Last updated: {new Date(metadata.updatedDate).toLocaleDateString()}
                 </p>
               )}
             </div>
 
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors"
-            >
+            <Link to="/blog" className="back-link">
               <ArrowLeft className="w-4 h-4" />
               Back to All Posts
             </Link>
@@ -191,45 +167,471 @@ export default function BlogDetailPage() {
       </article>
 
       <style>{`
+        /* Main Container */
+        .blog-detail-page {
+          width: 100%;
+          background: var(--background);
+          color: var(--foreground);
+        }
+
+        .blog-detail-container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 2rem 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+          .blog-detail-container {
+            padding: 1.5rem 1rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .blog-detail-container {
+            padding: 1rem 0.75rem;
+          }
+        }
+
+        /* Back Button */
+        .blog-back-button {
+          margin-bottom: 2rem;
+        }
+
+        .back-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--accent);
+          text-decoration: none;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          font-size: 0.95rem;
+        }
+
+        .back-link:hover {
+          color: var(--accent);
+          opacity: 0.8;
+          transform: translateX(-2px);
+        }
+
+        /* Cover Image */
+        .blog-cover-wrapper {
+          margin-bottom: 2.5rem;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .blog-cover-image {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 16 / 9;
+          object-fit: cover;
+          display: block;
+        }
+
+        @media (max-width: 768px) {
+          .blog-cover-wrapper {
+            margin-bottom: 2rem;
+          }
+
+          .blog-cover-image {
+            aspect-ratio: 4 / 3;
+          }
+        }
+
+        /* Header Section */
+        .blog-header-section {
+          margin-bottom: 2.5rem;
+          padding-bottom: 2rem;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .blog-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin: 0 0 1.5rem 0;
+          color: var(--foreground);
+          letter-spacing: -0.02em;
+        }
+
+        @media (max-width: 768px) {
+          .blog-title {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .blog-title {
+            font-size: 1.5rem;
+            line-height: 1.3;
+          }
+        }
+
+        /* Metadata */
+        .blog-metadata {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1.5rem;
+          margin-bottom: 1.5rem;
+          font-size: 0.95rem;
+          color: var(--muted-foreground);
+        }
+
+        .metadata-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .metadata-icon {
+          width: 16px;
+          height: 16px;
+          flex-shrink: 0;
+          color: var(--accent);
+        }
+
+        @media (max-width: 480px) {
+          .blog-metadata {
+            gap: 1rem;
+            font-size: 0.9rem;
+          }
+
+          .metadata-item {
+            gap: 0.375rem;
+          }
+        }
+
+        /* Tags */
+        .blog-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 1.25rem;
+        }
+
+        .blog-tag {
+          display: inline-block;
+          background: var(--secondary);
+          color: var(--accent);
+          padding: 0.375rem 0.875rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          border: 1px solid var(--border);
+          transition: all 0.2s ease;
+        }
+
+        .blog-tag:hover {
+          background: var(--accent);
+          color: var(--secondary);
+        }
+
+        /* Content Wrapper */
+        .blog-content-wrapper {
+          margin-bottom: 3rem;
+        }
+
+        /* Blog Content Styles */
+        .blog-content {
+          font-size: 1.1rem;
+          line-height: 1.8;
+          letter-spacing: 0.3px;
+          color: var(--foreground);
+        }
+
+        /* Headings */
+        .blog-content h1 {
+          font-size: 2.2rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin: 2rem 0 1rem;
+          color: var(--foreground);
+          letter-spacing: -0.01em;
+        }
+
         .blog-content h2 {
-          @apply text-2xl font-bold mt-8 mb-4 text-foreground;
+          font-size: 1.8rem;
+          font-weight: 700;
+          line-height: 1.3;
+          margin: 2.5rem 0 1rem;
+          color: var(--foreground);
+          letter-spacing: -0.01em;
         }
 
         .blog-content h3 {
-          @apply text-xl font-semibold mt-6 mb-3 text-foreground;
+          font-size: 1.4rem;
+          font-weight: 600;
+          line-height: 1.4;
+          margin: 1.75rem 0 0.75rem;
+          color: var(--foreground);
+          letter-spacing: -0.005em;
         }
 
+        .blog-content h4 {
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin: 1.5rem 0 0.75rem;
+          color: var(--foreground);
+        }
+
+        @media (max-width: 768px) {
+          .blog-content {
+            font-size: 1rem;
+            line-height: 1.75;
+          }
+
+          .blog-content h1 {
+            font-size: 2rem;
+          }
+
+          .blog-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 0.75rem;
+          }
+
+          .blog-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .blog-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            letter-spacing: 0.2px;
+          }
+
+          .blog-content h1 {
+            font-size: 1.75rem;
+          }
+
+          .blog-content h2 {
+            font-size: 1.35rem;
+          }
+
+          .blog-content h3 {
+            font-size: 1.1rem;
+          }
+        }
+
+        /* Paragraphs */
         .blog-content p {
-          @apply text-foreground/90 mb-4 leading-relaxed;
+          margin: 1.25rem 0;
+          color: var(--foreground);
+          line-height: 1.8;
         }
 
+        /* Lists */
         .blog-content ul,
         .blog-content ol {
-          @apply ml-6 mb-4;
+          margin: 1.5rem 0;
+          padding-left: 2rem;
+          line-height: 1.8;
         }
 
         .blog-content li {
-          @apply mb-2 text-foreground/90;
+          margin: 0.75rem 0;
+          color: var(--foreground);
+          line-height: 1.8;
         }
 
+        .blog-content ul li {
+          list-style-type: disc;
+        }
+
+        .blog-content ol li {
+          list-style-type: decimal;
+        }
+
+        @media (max-width: 480px) {
+          .blog-content ul,
+          .blog-content ol {
+            padding-left: 1.5rem;
+            margin: 1.25rem 0;
+          }
+
+          .blog-content li {
+            margin: 0.5rem 0;
+          }
+        }
+
+        /* Images */
         .blog-content img {
-          @apply rounded-lg my-6 max-w-full;
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
+          margin: 2rem 0;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          display: block;
         }
 
+        @media (max-width: 768px) {
+          .blog-content img {
+            margin: 1.5rem 0;
+            border-radius: 6px;
+          }
+        }
+
+        /* Blockquotes */
         .blog-content blockquote {
-          @apply border-l-4 border-accent pl-4 py-2 italic text-muted-foreground my-6 bg-secondary/50 rounded-r;
+          border-left: 4px solid var(--accent);
+          background: var(--secondary);
+          padding: 1.25rem 1.5rem;
+          margin: 2rem 0;
+          border-radius: 0 6px 6px 0;
+          font-style: italic;
+          color: var(--foreground);
+          line-height: 1.8;
+          letter-spacing: 0.3px;
         }
 
+        .blog-content blockquote p {
+          margin: 0;
+          padding: 0;
+        }
+
+        @media (max-width: 480px) {
+          .blog-content blockquote {
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+          }
+        }
+
+        /* Code */
         .blog-content code {
-          @apply bg-secondary px-2 py-1 rounded text-sm font-mono text-foreground;
+          background: var(--secondary);
+          color: var(--accent);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-family: 'Courier New', 'Monaco', monospace;
+          font-size: 0.9em;
+          border: 1px solid var(--border);
+          word-break: break-word;
         }
 
+        /* Code Blocks */
         .blog-content pre {
-          @apply bg-secondary p-4 rounded-lg overflow-x-auto my-6;
+          background: var(--muted);
+          color: var(--foreground);
+          padding: 1.5rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          margin: 2rem 0;
+          border: 1px solid var(--border);
+          font-size: 0.9rem;
+          line-height: 1.5;
+          letter-spacing: 0.5px;
         }
 
         .blog-content pre code {
-          @apply bg-transparent p-0 text-foreground;
+          background: none;
+          color: inherit;
+          padding: 0;
+          border: none;
+          font-size: inherit;
+        }
+
+        @media (max-width: 768px) {
+          .blog-content pre {
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+
+        /* Horizontal Rule */
+        .blog-content hr {
+          border: none;
+          border-top: 1px solid var(--border);
+          margin: 2.5rem 0;
+        }
+
+        /* Strong & Bold */
+        .blog-content strong,
+        .blog-content b {
+          font-weight: 700;
+          color: var(--foreground);
+        }
+
+        /* Links */
+        .blog-content a {
+          color: var(--accent);
+          text-decoration: underline;
+          text-decoration-thickness: 1.5px;
+          text-underline-offset: 4px;
+          transition: all 0.2s ease;
+        }
+
+        .blog-content a:hover {
+          color: var(--accent);
+          opacity: 0.8;
+        }
+
+        /* Tables */
+        .blog-content table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 2rem 0;
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .blog-content th,
+        .blog-content td {
+          padding: 1rem;
+          text-align: left;
+          border: 1px solid var(--border);
+        }
+
+        .blog-content th {
+          background: var(--secondary);
+          font-weight: 600;
+          color: var(--foreground);
+        }
+
+        .blog-content tbody tr:nth-child(even) {
+          background: var(--secondary);
+          opacity: 0.5;
+        }
+
+        /* Footer Section */
+        .blog-footer-section {
+          border-top: 1px solid var(--border);
+          padding-top: 2rem;
+        }
+
+        .blog-footer-info {
+          margin-bottom: 1.5rem;
+        }
+
+        .blog-footer-author {
+          color: var(--muted-foreground);
+          margin: 0 0 0.5rem 0;
+          font-size: 0.95rem;
+        }
+
+        .blog-footer-date {
+          color: var(--muted-foreground);
+          font-size: 0.85rem;
+          margin: 0;
+        }
+
+        @media (max-width: 480px) {
+          .blog-footer-section {
+            padding-top: 1.5rem;
+          }
+
+          .blog-footer-author {
+            font-size: 0.9rem;
+          }
         }
       `}</style>
     </Layout>
