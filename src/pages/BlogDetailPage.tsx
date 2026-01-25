@@ -141,28 +141,6 @@ export default function BlogDetailPage() {
               {content}
             </div>
           </motion.div>
-
-          {/* Footer */}
-          <motion.footer
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="blog-footer-section"
-          >
-            <div className="blog-footer-info">
-              <p className="blog-footer-author">Written by {metadata.author}</p>
-              {metadata.updatedDate && (
-                <p className="blog-footer-date">
-                  Last updated: {new Date(metadata.updatedDate).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-
-            <Link to="/blog" className="back-link">
-              <ArrowLeft className="w-4 h-4" />
-              Back to All Posts
-            </Link>
-          </motion.footer>
         </div>
       </article>
 
@@ -308,25 +286,33 @@ export default function BlogDetailPage() {
         .blog-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.75rem;
-          margin-top: 1.25rem;
+          gap: 0.875rem;
+          margin-top: 1.5rem;
         }
 
         .blog-tag {
           display: inline-block;
-          background: var(--secondary);
-          color: var(--accent);
-          padding: 0.375rem 0.875rem;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 500;
-          border: 1px solid var(--border);
-          transition: all 0.2s ease;
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+          color: #60a5fa;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border: 1.5px solid rgba(59, 130, 246, 0.35);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+          white-space: nowrap;
         }
 
         .blog-tag:hover {
-          background: var(--accent);
-          color: var(--secondary);
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+          border-color: rgba(59, 130, 246, 0.6);
+          color: #93c5fd;
+          transform: scale(1.08);
+          box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
         }
 
         /* Content Wrapper */
@@ -600,38 +586,6 @@ export default function BlogDetailPage() {
         .blog-content tbody tr:nth-child(even) {
           background: var(--secondary);
           opacity: 0.5;
-        }
-
-        /* Footer Section */
-        .blog-footer-section {
-          border-top: 1px solid var(--border);
-          padding-top: 2rem;
-        }
-
-        .blog-footer-info {
-          margin-bottom: 1.5rem;
-        }
-
-        .blog-footer-author {
-          color: var(--muted-foreground);
-          margin: 0 0 0.5rem 0;
-          font-size: 0.95rem;
-        }
-
-        .blog-footer-date {
-          color: var(--muted-foreground);
-          font-size: 0.85rem;
-          margin: 0;
-        }
-
-        @media (max-width: 480px) {
-          .blog-footer-section {
-            padding-top: 1.5rem;
-          }
-
-          .blog-footer-author {
-            font-size: 0.9rem;
-          }
         }
       `}</style>
     </Layout>

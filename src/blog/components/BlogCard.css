@@ -102,21 +102,41 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.card-mini-tag {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.6rem;
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 6px;
-  font-weight: 600;
+.card-tags-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
-.card-arrow {
+/* Enhanced Tag Styling - Premium Look */
+.card-mini-tag {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.8rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+  color: #60a5fa;
+  border: 1.5px solid rgba(59, 130, 246, 0.35);
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: inline-block;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+}
+
+.card-mini-tag:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #93c5fd;
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+}
+
+.card-read-more {
   color: #3b82f6;
   transition: transform 0.3s ease;
-}
-
-.blog-card-wrapper:hover .card-arrow {
-  transform: translateX(6px);
+  flex-shrink: 0;
 }
