@@ -1,0 +1,41 @@
+/* Container & Spacing */
+.blog-index-wrapper {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.blog-header-area {
+  text-align: left;
+}
+
+/* The Responsive Grid */
+.blog-main-grid {
+  display: grid;
+  /* 1 column for mobile */
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+  .blog-main-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Large Desktop: 3 columns */
+@media (min-width: 1100px) {
+  .blog-main-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Loading & Empty States */
+.loading-state, .empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.1rem;
+}

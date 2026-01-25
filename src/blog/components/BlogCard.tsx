@@ -12,15 +12,24 @@ interface BlogCardProps {
 export const BlogCard: React.FC<BlogCardProps> = ({ slug, metadata }) => {
   return (
     <Link to={`/blog/${slug}`} className="blog-card-wrapper">
+      {/* Aspect ratio container prevents layout shift during image load */}
       <div className="card-image-aspect">
-        <img src={metadata.coverImage} alt={metadata.title} loading="lazy" />
+        <img 
+          src={metadata.coverImage} 
+          alt={metadata.title} 
+          loading="lazy" 
+        />
       </div>
 
       <div className="card-body">
         <div className="card-meta-top">
-          <span className="card-date">
+          <span className="card-meta-item">
             <Calendar size={12} />
             {formatDate(metadata.publishedDate)}
+          </span>
+          <span className="card-meta-item">
+            <User size={12} />
+            {metadata.author}
           </span>
         </div>
 
@@ -33,7 +42,9 @@ export const BlogCard: React.FC<BlogCardProps> = ({ slug, metadata }) => {
               <span key={tag} className="card-mini-tag">{tag}</span>
             ))}
           </div>
-          <ArrowRight size={16} className="card-arrow" />
+          <div className="card-read-more">
+            <ArrowRight size={18} />
+          </div>
         </div>
       </div>
     </Link>
