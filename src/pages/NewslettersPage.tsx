@@ -1,39 +1,57 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { 
-  TrendingUp, 
-  Rocket, 
-  BookOpen, 
-  ArrowRight, 
-  ExternalLink 
-} from "lucide-react";
+import { TrendingUp, Rocket, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 // ----------------------------------------------------------------------
-// 1. DATA IMPORT & DYNAMIC SCRAPING LOGIC
+// 1. TYPE DEFINITIONS
 // ----------------------------------------------------------------------
-// We import your JSON file which you will update manually.
+// These interfaces tell TypeScript exactly what the JSON structure looks like.
+interface NewsletterIssue {
+  id: number;
+  title: string;
+  date: string;
+  linkedinUrl: string;
+  content: string;
+  isLatest: boolean;
+}
 
-import newsletterUpdates from "@Portfolio\portfolio-app\src\assets\Newsletter\data.json;
+interface NewsletterData {
+  newsletters: NewsletterIssue[];
+}
+
+// ----------------------------------------------------------------------
+// 2. DATA IMPORT & DYNAMIC SCRAPING LOGIC
+// ----------------------------------------------------------------------
+/** * Importing from the workplace portfolio-app. 
+ * 'as NewsletterData' fixes the type error: Property 'newsletters' does not exist on type '{}'.
+ */
+import newsletterRawData from "../../portfolio-app/src/assets/Newsletter/data.json";
+const newsletterData = newsletterRawData as NewsletterData;
 
 /**
- * findLatestIssue: Helper function to scrape the dynamic JSON data.
- * It finds the latest entry for a specific newsletter ID.
+ * getDynamicLatestIssue: 
+ * Scrapes the imported JSON for the entry marked 'isLatest: true'.
+ * If multiple exist, or none, it falls back to the highest ID.
  */
-const getDynamicLatestIssue = (id: string) => {
-  const updates = newsletterUpdates
-    .filter((item) => item.newsletterId === id)
-    // Sort by date (Assuming YYYY-MM-DD format) to get the most recent
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const getDynamicLatestIssue = () => {
+  const list = newsletterData.newsletters || [];
+  
+  // 1. Try to find the specific item marked as latest by the boolean flag
+  const latestByFlag = list.find(item => item.isLatest === true);
+  if (latestByFlag) return latestByFlag;
 
-  return updates[0] || { title: "Latest issue coming soon", date: "" };
+  // 2. Fallback: Sort by ID descending if no flag is set and take the first item
+  const sorted = [...list].sort((a, b) => b.id - a.id);
+  
+  return sorted[0] || { title: "Latest issue coming soon", date: "TBD" };
 };
 
 // ----------------------------------------------------------------------
-// 2. STATIC CONFIGURATION (The "Shell" of your cards)
+// 3. STATIC COMPONENT CONFIGURATION
 // ----------------------------------------------------------------------
-const newsletters = [
+const newsletterConfigs = [
   {
     id: "cse-newsroom",
     title: "The CSE Newsroom",
@@ -62,19 +80,22 @@ const newsletters = [
 
 const NewslettersPage = () => {
   // ----------------------------------------------------------------------
-  // 3. UTILITY HANDLERS
+  // 4. UTILITY HANDLERS
   // ----------------------------------------------------------------------
   const handleSubscribeRedirect = (url: string, title: string) => {
     toast.info(`Opening ${title} on LinkedIn...`);
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  // Fetch the latest issue data from the JSON file
+  const latestIssue = getDynamicLatestIssue();
+
   return (
     <Layout>
       <section className="section-padding">
         <div className="section-container">
           
-          {/* --- PAGE HEADER --- */}
+          {/* PAGE HEADER: Defines the 'Knowledge Hub' intent */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -92,109 +113,105 @@ const NewslettersPage = () => {
             </p>
           </motion.div>
 
-          {/* --- NEWSLETTER CARDS GRID --- */}
+          {/* NEWSLETTER CARDS GRID: Side-by-side comparison */}
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {newsletters.map((newsletter, index) => {
-              // SCRAPE THE LATEST DATA FOR THIS SPECIFIC CARD
-              const latestIssue = getDynamicLatestIssue(newsletter.id);
-
-              return (
-                <motion.div
-                  key={newsletter.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.15 }}
-                  className="group"
-                >
-                  <div className="bg-card rounded-2xl border border-border overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:border-accent/30">
-                    
-                    {/* Visual Top-Bar */}
-                    <div className={`h-2 bg-gradient-to-r ${newsletter.color}`} />
-                    
-                    <div className="p-8 flex-1 flex flex-col">
-                      {/* Header Section: Icon & Title */}
-                      <div className="flex items-start gap-4 mb-6">
-                        <div className="p-4 rounded-2xl bg-accent/5 group-hover:bg-accent/10 transition-colors">
-                          <newsletter.icon className="w-8 h-8 text-accent" />
-                        </div>
-                        <div>
-                          <h2 className="font-display text-2xl font-bold text-foreground mb-1">
-                            {newsletter.title}
-                          </h2>
-                          <p className="text-sm font-medium text-accent">{newsletter.frequency}</p>
-                        </div>
+            {newsletterConfigs.map((newsletter, index) => (
+              <motion.div
+                key={newsletter.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                className="group"
+              >
+                <div className="bg-card rounded-2xl border border-border overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:border-accent/30">
+                  
+                  {/* Visual Top-Bar using config color */}
+                  <div className={`h-2 bg-gradient-to-r ${newsletter.color}`} />
+                  
+                  <div className="p-8 flex-1 flex flex-col">
+                    {/* Header: Icon & Title */}
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="p-4 rounded-2xl bg-accent/5 group-hover:bg-accent/10 transition-colors">
+                        <newsletter.icon className="w-8 h-8 text-accent" />
                       </div>
+                      <div>
+                        <h2 className="font-display text-2xl font-bold text-foreground mb-1">
+                          {newsletter.title}
+                        </h2>
+                        <p className="text-sm font-medium text-accent">{newsletter.frequency}</p>
+                      </div>
+                    </div>
 
-                      {/* Content: Description */}
-                      <p className="text-muted-foreground mb-6 leading-relaxed">
-                        {newsletter.description}
+                    {/* Content: Mission Description */}
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
+                      {newsletter.description}
+                    </p>
+
+                    {/* Content: Focus Area Chips */}
+                    <div className="mb-8">
+                      <p className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-3">Focus Areas</p>
+                      <div className="flex flex-wrap gap-2">
+                        {newsletter.topics.map((topic) => (
+                          <span key={topic} className="px-3 py-1 text-xs rounded-full bg-secondary text-secondary-foreground border border-border">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Meta: Audience & Subscriber Stats */}
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      <div className="p-4 rounded-xl bg-secondary/30 border border-border/50">
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Target Audience</p>
+                        <p className="text-xs font-medium text-foreground">{newsletter.audience}</p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-secondary/30 border border-border/50">
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Subscribers</p>
+                        <p className="text-sm font-bold text-accent">{newsletter.subscribers}</p>
+                      </div>
+                    </div>
+
+                    {/* Dynamic Section: Scraped Latest Edition from data.json */}
+                    <div className="p-5 rounded-xl border border-dashed border-border mb-8 bg-accent/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <BookOpen className="w-3 h-3 text-accent" />
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground">Most Recent Edition</p>
+                      </div>
+                      <p className="font-semibold text-foreground text-sm group-hover:text-accent transition-colors">
+                        {latestIssue.title}
                       </p>
+                      <p className="text-[11px] text-muted-foreground mt-1">
+                        Released on {latestIssue.date}
+                      </p>
+                    </div>
 
-                      {/* Content: Topic Tags */}
-                      <div className="mb-8">
-                        <p className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-3">Focus Areas</p>
-                        <div className="flex flex-wrap gap-2">
-                          {newsletter.topics.map((topic) => (
-                            <span key={topic} className="px-3 py-1 text-xs rounded-full bg-secondary text-secondary-foreground border border-border">
-                              {topic}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Meta: Audience & Subscriber Stats */}
-                      <div className="grid grid-cols-2 gap-4 mb-8">
-                        <div className="p-4 rounded-xl bg-secondary/30 border border-border/50">
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Target Audience</p>
-                          <p className="text-xs font-medium text-foreground">{newsletter.audience}</p>
-                        </div>
-                        <div className="p-4 rounded-xl bg-secondary/30 border border-border/50">
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Subscribers</p>
-                          <p className="text-sm font-bold text-accent">{newsletter.subscribers}</p>
-                        </div>
-                      </div>
-
-                      {/* Dynamic Scraped Area: Most Recent Edition */}
-                      <div className="p-5 rounded-xl border border-dashed border-border mb-8 bg-accent/5">
-                        <div className="flex items-center gap-2 mb-2">
-                          <BookOpen className="w-3 h-3 text-accent" />
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground">Most Recent Edition</p>
-                        </div>
-                        <p className="font-semibold text-foreground text-sm group-hover:text-accent transition-colors">
-                          {latestIssue.title}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground mt-1">{latestIssue.date}</p>
-                      </div>
-
-                      {/* Call to Action Section */}
-                      <div className="mt-auto">
-                        {/* STRICT SYNTAX: No spaces between tags inside Button asChild
-                          to prevent "React.Children.only" Production Crash.
-                        */}
-                        <Button 
-                          asChild
-                          className="btn-primary w-full h-12 gap-2 text-md shadow-lg shadow-accent/20"
-                        >
-                          <a 
-                            href={newsletter.linkedInUrl}
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            onClick={() => handleSubscribeRedirect(newsletter.linkedInUrl, newsletter.title)}
-                          ><ExternalLink className="w-4 h-4" />Read & Subscribe on LinkedIn</a>
-                        </Button>
-                        <p className="text-center text-[10px] text-muted-foreground mt-3 uppercase tracking-tighter">
-                          Joins {newsletter.subscribers} professionals
-                        </p>
-                      </div>
-
+                    {/* CTA Section */}
+                    <div className="mt-auto">
+                      {/* STRICT SYNTAX: No spaces between <Button> and <a> tags 
+                        to prevent the "React.Children.only" crash in production.
+                      */}
+                      <Button 
+                        asChild
+                        className="btn-primary w-full h-12 gap-2 text-md shadow-lg shadow-accent/20"
+                      >
+                        <a 
+                          href={newsletter.linkedInUrl}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          onClick={() => handleSubscribeRedirect(newsletter.linkedInUrl, newsletter.title)}
+                        ><ExternalLink className="w-4 h-4" />Read & Subscribe on LinkedIn</a>
+                      </Button>
+                      <p className="text-center text-[10px] text-muted-foreground mt-3 uppercase tracking-tighter">
+                        Joins {newsletter.subscribers} professionals
+                      </p>
                     </div>
                   </div>
-                </motion.div>
-              );
-            })}
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {/* --- BOTTOM ARCHIVE SECTION --- */}
+          {/* FOOTER ARCHIVE: Directs users to the full history on LinkedIn */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
