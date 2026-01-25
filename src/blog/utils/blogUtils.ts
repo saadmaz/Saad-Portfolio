@@ -1,27 +1,24 @@
 /// <reference types="vite/client" />
 import { BlogMetadata } from "../types/blog";
 
-// 1. Define the internal module structure for Vite's glob/import
+// Define the module structure for blog files
 interface BlogModule {
   metadata: BlogMetadata;
-  // In Vite/React dynamic imports, the JSX component is usually the default export
-  default: React.ReactNode; 
+  content: React.ReactNode;
 }
 
 /**
  * Dynamically import all blog posts from the posts directory.
- * Includes explicit generic typing for the glob to prevent 'metadata' type errors.
  */
 export async function getAllBlogs(): Promise<
   { slug: string; metadata: BlogMetadata }[]
 > {
-  // We pass <BlogModule> to the glob to tell Vite what each file exports
   const modules = import.meta.glob<BlogModule>("../posts/*.tsx", {
     eager: true,
   });
 
   const blogs = Object.entries(modules).map(([path, module]) => {
-    // Extract slug from filename: "../posts/my-post.tsx" → "my-post"
+    // Extract slug from filename: "../posts/2025-01-02-the-case-for-typescript.tsx" → "2025-01-02-the-case-for-typescript"
     const filename = path.split("/").pop()?.replace(".tsx", "") || "";
 
     return {
@@ -41,16 +38,12 @@ export async function getAllBlogs(): Promise<
 
 /**
  * Get a single blog post by slug.
- * Uses type-casting to ensure TypeScript recognizes the 'metadata' and 'default' exports.
  */
 export async function getBlogBySlug(
   slug: string
 ): Promise<BlogModule | null> {
   try {
-    // Vite requires dynamic imports to be relatively static for analysis
     const module = await import(`../posts/${slug}.tsx`);
-    
-    // Casting to BlogModule ensures we can access 'metadata' safely
     return module as BlogModule;
   } catch (error) {
     console.error(`Blog not found: ${slug}`, error);
