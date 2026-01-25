@@ -1,8 +1,12 @@
-/* Card Container */
+/* ==========================================================================
+   BLOG CARD MASTER STYLES
+   Fixes: Icon alignment, Mobile Padding, and Standard Line-Clamping
+   ========================================================================== */
+
 .blog-card-wrapper {
   display: flex;
   flex-direction: column;
-  background: rgba(30, 41, 59, 0.5); /* Frosted Glass */
+  background: rgba(30, 41, 59, 0.5); /* Frosted Glass Look */
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1); /* Permanent border line */
   overflow: hidden;
@@ -19,6 +23,7 @@
   box-shadow: 0 12px 24px -10px rgba(59, 130, 246, 0.4);
 }
 
+/* Image Section with Aspect Ratio */
 .card-image-aspect {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -38,6 +43,7 @@
   transform: scale(1.08);
 }
 
+/* Body Content Alignment */
 .card-body {
   padding: 1.5rem;
   display: flex;
@@ -45,7 +51,7 @@
   flex-grow: 1;
 }
 
-/* THE ICON ALIGNMENT FIX */
+/* THE ICON ALIGNMENT FIX: Vertically centers Lucide icons with text */
 .card-meta-top {
   display: flex;
   flex-wrap: wrap;
@@ -58,7 +64,7 @@
 
 .card-meta-item {
   display: flex;
-  align-items: center; /* This forces the icon to line up exactly with the text center */
+  align-items: center; /* Forces vertical alignment */
   gap: 0.4rem;
   line-height: 1;
 }
@@ -68,31 +74,44 @@
   flex-shrink: 0;
 }
 
-/* STRICT TRUNCATION: Keeps the grid perfectly even */
+/* STRICT TRUNCATION: TITLE
+   Includes standard 'line-clamp' and Webkit fallbacks 
+*/
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
   line-height: 1.3;
   color: #f8fafc;
+  
+  /* Standard & Compatibility Properties */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-clamp: 2; 
   overflow: hidden;
 }
 
+/* STRICT TRUNCATION: DESCRIPTION
+   Keeps the grid perfectly even 
+*/
 .card-description {
   font-size: 0.95rem;
   color: #cbd5e1;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   flex-grow: 1;
+
+  /* Standard & Compatibility Properties */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  line-clamp: 3;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Footer & Tag Alignment */
 .card-footer-info {
   display: flex;
   justify-content: space-between;
@@ -100,6 +119,7 @@
   margin-top: auto;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 1rem;
 }
 
 .card-tags-row {
@@ -139,4 +159,20 @@
   color: #3b82f6;
   transition: transform 0.3s ease;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.blog-card-wrapper:hover .card-read-more {
+  transform: translateX(6px);
+}
+
+/* Mobile Alignment Fix: Prevents content from hitting edges */
+@media (max-width: 640px) {
+  .card-body {
+    padding: 1.25rem;
+  }
+  .card-title {
+    font-size: 1.15rem;
+  }
 }
