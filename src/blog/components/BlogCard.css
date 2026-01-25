@@ -1,7 +1,8 @@
+/* Card Container */
 .blog-card-wrapper {
   display: flex;
   flex-direction: column;
-  background: rgba(30, 41, 59, 0.5); /* Glassmorphism effect */
+  background: rgba(30, 41, 59, 0.5); /* Frosted Glass */
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1); /* Permanent border line */
   overflow: hidden;
@@ -42,6 +43,29 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+/* THE ICON ALIGNMENT FIX */
+.card-meta-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center; /* This forces the icon to line up exactly with the text center */
+  gap: 0.4rem;
+  line-height: 1;
+}
+
+.card-meta-item svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 /* STRICT TRUNCATION: Keeps the grid perfectly even */
@@ -95,112 +119,4 @@
 
 .blog-card-wrapper:hover .card-arrow {
   transform: translateX(6px);
-}
-
-.blog-card-wrapper {
-  display: flex;
-  flex-direction: column;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 100%;
-  backdrop-filter: blur(10px);
-}
-
-.blog-card-wrapper:hover {
-  transform: translateY(-8px);
-  border-color: #3b82f6;
-  box-shadow: 0 12px 24px -10px rgba(59, 130, 246, 0.4);
-}
-
-.card-image-aspect {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  position: relative;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.card-image-aspect img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.card-body {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-/* THE ICON ALIGNMENT FIX */
-.card-meta-top {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  margin-bottom: 0.85rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-}
-
-.card-meta-item {
-  display: flex;
-  align-items: center; /* This forces the icon to line up with the text */
-  gap: 0.4rem;
-  line-height: 1; /* Ensures text doesn't have extra baseline height */
-}
-
-.card-meta-item svg {
-  display: block; /* Prevents inline spacing issues */
-  flex-shrink: 0;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-  line-height: 1.3;
-  color: #f8fafc;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-description {
-  font-size: 0.95rem;
-  color: #cbd5e1;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-footer-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.card-mini-tag {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.6rem;
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 6px;
-  font-weight: 600;
 }
