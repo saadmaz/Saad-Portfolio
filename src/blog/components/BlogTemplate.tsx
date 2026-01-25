@@ -1,5 +1,5 @@
 import { BlogMetadata } from "../types/blog";
-import { ArrowLeft, Calendar, User, Edit, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./BlogTemplate.css";
 
@@ -10,7 +10,7 @@ interface BlogTemplateProps {
 
 export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content }) => {
   return (
-    <article className="blog-template-container">
+    <article className="blog-article-wrapper">
       {/* HEADER SECTION */}
       <header className="blog-header">
         <Link to="/blogs" className="back-button">
@@ -18,7 +18,7 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
           <span>Back to Articles</span>
         </Link>
 
-        <div className="blog-cover-wrapper">
+        <div className="blog-cover-container">
           <img
             src={metadata.coverImage}
             alt={metadata.title}
@@ -29,7 +29,7 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
         <div className="blog-title-area">
           <h1 className="blog-title">{metadata.title}</h1>
 
-          <div className="blog-meta-grid">
+          <div className="blog-meta-flex">
             <div className="meta-group">
               <div className="meta-item">
                 <User size={14} />
@@ -41,7 +41,6 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
               </div>
             </div>
 
-            {/* Added Read Time for better UX */}
             <div className="meta-item">
               <Clock size={14} />
               <span>5 min read</span>
@@ -58,7 +57,7 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
         </div>
       </header>
 
-      {/* CONTENT SECTION: Uses the CSS fluid typography */}
+      {/* CONTENT SECTION */}
       <div className="blog-body-content">
         {content}
       </div>
