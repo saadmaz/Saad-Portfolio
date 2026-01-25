@@ -1,0 +1,20 @@
+{
+  "newsletters": [
+    {
+      "id": 1,
+      "title": "Founders’ Brief – The Art of the Pivot",
+      "date": "2026-01-15",
+      "linkedinUrl": "https://www.linkedin.com/newsletters/your-founder-newsletter-id",
+      "content": "How local startups are navigating the current funding winter.",
+      "isLatest": false
+    },
+    {
+      "id": 2,
+      "title": "Founders’ Brief – Scaling Beyond Sri Lanka",
+      "date": "2026-01-24",
+      "linkedinUrl": "https://www.linkedin.com/newsletters/your-founder-newsletter-id",
+      "content": "Deep dive into the journey of moving from a local MVP to a global product.",
+      "isLatest": true
+    }
+  ]
+}
