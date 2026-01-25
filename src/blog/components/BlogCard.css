@@ -1,10 +1,9 @@
 .blog-card-wrapper {
   display: flex;
   flex-direction: column;
-  background: rgba(30, 41, 59, 0.5); /* Frosted glass */
+  background: rgba(30, 41, 59, 0.5); /* Glassmorphism effect */
   border-radius: 16px;
-  /* Permanent subtle border line */
-  border: 1px solid rgba(255, 255, 255, 0.1); 
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Permanent border line */
   overflow: hidden;
   text-decoration: none;
   color: inherit;
@@ -15,8 +14,8 @@
 
 .blog-card-wrapper:hover {
   transform: translateY(-8px);
-  border-color: #3b82f6; /* Your requested blue border glow */
-  box-shadow: 0 12px 24px -10px rgba(59, 130, 246, 0.5);
+  border-color: #3b82f6; /* Blue border glow on hover */
+  box-shadow: 0 12px 24px -10px rgba(59, 130, 246, 0.4);
 }
 
 .card-image-aspect {
@@ -45,7 +44,7 @@
   flex-grow: 1;
 }
 
-/* STRICT LINE-CLAMPING: Keeps card heights uniform in the grid */
+/* STRICT TRUNCATION: Keeps the grid perfectly even */
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
@@ -87,4 +86,13 @@
   border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: 6px;
   font-weight: 600;
+}
+
+.card-arrow {
+  color: #3b82f6;
+  transition: transform 0.3s ease;
+}
+
+.blog-card-wrapper:hover .card-arrow {
+  transform: translateX(6px);
 }
