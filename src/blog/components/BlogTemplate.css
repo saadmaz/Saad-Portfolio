@@ -1,21 +1,25 @@
-/* Core Article Layout */
-.blog-template {
-  max-width: 800px;
+/* Container & Layout */
+.blog-template-container {
+  max-width: 820px; /* Slightly wider than cards for breathing room */
   margin: 0 auto;
-  /* Fluid padding: smaller on mobile, larger on desktop */
-  padding: 1.5rem 1rem;
+  /* Fluid padding prevents text from hitting phone edges */
+  padding: 1.5rem 1.25rem; 
   width: 100%;
   box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
-  .blog-template {
-    padding: 3rem 2rem;
+  .blog-template-container {
+    padding: 4rem 2rem;
   }
 }
 
+/* Glassmorphism Header Section */
 .blog-header {
   margin-bottom: 2.5rem;
+  /* Subtle bottom border to define the header area */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 2.5rem;
 }
 
 /* Responsive Navigation */
@@ -28,15 +32,21 @@
   font-weight: 500;
   margin-bottom: 2rem;
   font-size: 0.95rem;
+  transition: transform 0.2s ease;
 }
 
-/* Image Optimization */
-.blog-cover {
+.back-button:hover {
+  transform: translateX(-4px);
+}
+
+/* Premium Image Display */
+.blog-cover-wrapper {
   margin: 1.5rem 0;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  background: #f3f4f6;
-  aspect-ratio: 16 / 9; /* Maintains shape on all screens */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  aspect-ratio: 16 / 9;
+  background: #1e293b;
 }
 
 .cover-image {
@@ -46,66 +56,109 @@
   display: block;
 }
 
-/* Dynamic Typography */
+/* Dynamic Typography Scaling */
 .blog-title {
-  /* Scales title between 1.8rem and 2.75rem based on screen size */
-  font-size: clamp(1.8rem, 5vw, 2.75rem);
+  /* Fluid sizing between 2rem and 2.75rem */
+  font-size: clamp(2rem, 6vw, 2.75rem);
   font-weight: 800;
-  margin: 1rem 0;
+  margin: 1.25rem 0;
   line-height: 1.2;
-  color: #111827;
+  color: #f8fafc;
   letter-spacing: -0.02em;
 }
 
-.blog-info {
+.blog-meta-grid {
   display: flex;
   flex-wrap: wrap;
   column-gap: 1.5rem;
   row-gap: 0.75rem;
-  margin: 1.5rem 0;
-  color: #6b7280;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
   font-size: 0.9rem;
 }
 
-.info-item {
+.meta-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* Content & Mobile Readability */
-.blog-content {
-  font-size: 1.1rem;
-  line-height: 1.75;
-  color: #374151;
+/* Tag Pills */
+.blog-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.blog-tag-pill {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Content Body & Mobile Readability */
+.blog-body-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #cbd5e1;
   word-wrap: break-word;
 }
 
-.blog-content h2 {
-  font-size: clamp(1.5rem, 4vw, 1.8rem);
-  margin: 2.5rem 0 1rem;
-  color: #111827;
+.blog-body-content h2 {
+  font-size: clamp(1.5rem, 4vw, 1.85rem);
+  font-weight: 700;
+  margin: 2.5rem 0 1.25rem;
+  color: #f8fafc;
+  /* Visual accent for section headers */
+  border-left: 3px solid #3b82f6;
+  padding-left: 1rem;
 }
 
-.blog-content p {
+.blog-body-content p {
   margin-bottom: 1.5rem;
 }
 
+/* Styled Blockquotes */
+.blog-body-content blockquote {
+  padding: 1.5rem;
+  background: rgba(30, 41, 59, 0.5);
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #94a3b8;
+}
+
 /* Mobile-Safe Code Blocks */
-.blog-content pre {
-  background: #1f2937;
+.blog-body-content pre {
+  background: #0f172a;
   color: #f3f4f6;
   padding: 1.25rem;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
-  /* Allow horizontal scroll without breaking layout */
-  max-width: 100%; 
 }
 
-.blog-footer {
+/* Footer Section */
+.blog-footer-area {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.author-signature {
+  margin-bottom: 2rem;
+  color: #94a3b8;
+}
+
+.footer-back-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
 }
