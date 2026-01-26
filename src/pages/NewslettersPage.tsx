@@ -52,7 +52,7 @@ const newsletterConfigs = [
     id: "founders-brief",
     title: "Founders’ Brief",
     icon: Rocket,
-    description: "Deep dives into the journeys of Sri Lankan and global entrepreneurs. No fluff—just the raw stories of how they built, failed, and eventually scaled.",
+    description: "Deep dives into the journeys of Sri Lankan and global entrepreneurs. No fluff just the raw stories of how they built, failed, and eventually scaled.",
     topics: ["Founder Interviews", "Pivot Stories", "Fundraising"],
     audience: "Aspiring Founders & Operators",
     frequency: "Bi-weekly Fridays",
