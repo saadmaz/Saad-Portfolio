@@ -305,18 +305,18 @@ export default function BlogDetailPage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: hsl(var(--accent) / 0.1);
+          background: hsl(var(--accent) / 0.08);
           color: hsl(var(--accent));
-          padding: 0.5rem 0.95rem;
-          border-radius: 6px;
-          font-size: 0.8rem;
-          font-weight: 600;
+          padding: 0.35rem 0.8rem;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          font-weight: 500;
           text-transform: uppercase;
-          letter-spacing: 0.4px;
-          border: 1.5px solid hsl(var(--accent) / 0.3);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          letter-spacing: 0.3px;
+          border: 1px solid hsl(var(--accent) / 0.25);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
-          box-shadow: 0 2px 8px hsl(var(--accent) / 0.08);
+          box-shadow: none;
           white-space: nowrap;
           line-height: 1;
           height: fit-content;
@@ -324,16 +324,15 @@ export default function BlogDetailPage() {
         }
 
         .blog-tag:hover {
-          background: hsl(var(--accent) / 0.15);
-          border-color: hsl(var(--accent) / 0.6);
+          background: hsl(var(--accent) / 0.12);
+          border-color: hsl(var(--accent) / 0.4);
           color: hsl(var(--accent));
-          transform: scale(1.05);
-          box-shadow: 0 4px 16px hsl(var(--accent) / 0.2);
+          transform: translateY(-1px);
         }
 
         .blog-tag:focus {
-          outline: 2px solid hsl(var(--accent));
-          outline-offset: 2px;
+          outline: 1.5px solid hsl(var(--accent));
+          outline-offset: 1px;
         }
 
         /* Content Wrapper */
