@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
@@ -13,6 +13,7 @@ interface BlogModule {
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [blog, setBlog] = useState<BlogModule | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -38,6 +39,10 @@ export default function BlogDetailPage() {
 
     loadBlog();
   }, [slug]);
+
+  const handleTagClick = (tag: string) => {
+    navigate(`/blog?tag=${encodeURIComponent(tag)}`);
+  };
 
   if (loading) {
     return (
@@ -122,9 +127,14 @@ export default function BlogDetailPage() {
             {metadata.tags && metadata.tags.length > 0 && (
               <div className="blog-tags">
                 {metadata.tags.map((tag: string) => (
-                  <span key={tag} className="blog-tag">
+                  <button
+                    key={tag}
+                    className="blog-tag"
+                    onClick={() => handleTagClick(tag)}
+                    type="button"
+                  >
                     {tag}
-                  </span>
+                  </button>
                 ))}
               </div>
             )}
@@ -286,33 +296,44 @@ export default function BlogDetailPage() {
         .blog-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.875rem;
+          gap: 0.75rem;
           margin-top: 1.5rem;
+          align-items: center;
         }
 
         .blog-tag {
-          display: inline-block;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
-          color: #60a5fa;
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-          font-size: 0.875rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: hsl(var(--accent) / 0.1);
+          color: hsl(var(--accent));
+          padding: 0.5rem 0.95rem;
+          border-radius: 6px;
+          font-size: 0.8rem;
           font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
-          border: 1.5px solid rgba(59, 130, 246, 0.35);
+          letter-spacing: 0.4px;
+          border: 1.5px solid hsl(var(--accent) / 0.3);
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+          box-shadow: 0 2px 8px hsl(var(--accent) / 0.08);
           white-space: nowrap;
+          line-height: 1;
+          height: fit-content;
+          text-decoration: none;
         }
 
         .blog-tag:hover {
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
-          border-color: rgba(59, 130, 246, 0.6);
-          color: #93c5fd;
-          transform: scale(1.08);
-          box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+          background: hsl(var(--accent) / 0.15);
+          border-color: hsl(var(--accent) / 0.6);
+          color: hsl(var(--accent));
+          transform: scale(1.05);
+          box-shadow: 0 4px 16px hsl(var(--accent) / 0.2);
+        }
+
+        .blog-tag:focus {
+          outline: 2px solid hsl(var(--accent));
+          outline-offset: 2px;
         }
 
         /* Content Wrapper */
