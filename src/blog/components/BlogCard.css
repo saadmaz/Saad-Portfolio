@@ -138,45 +138,44 @@
 /* Enhanced Tag Styling - Premium Look */
 .card-mini-tag {
   font-size: 0.65rem;
-  padding: 0.3rem 0.6rem;
-  background: hsl(var(--accent) / 0.08);
-  color: hsl(var(--accent));
-  border: 1px solid hsl(var(--accent) / 0.25);
-  border-radius: 4px;
-  font-weight: 500;
-  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: hsl(var(--accent));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
   letter-spacing: 0.3px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   display: inline-block;
   white-space: nowrap;
-  box-shadow: none;
+  box-shadow: 0 2px 6px hsl(var(--accent) / 0.25);
   line-height: 1;
   height: fit-content;
 }
 
 .card-mini-tag:hover {
-  background: hsl(var(--accent) / 0.12);
-  border-color: hsl(var(--accent) / 0.4);
-  color: hsl(var(--accent));
-  transform: translateY(-1px);
+  background: hsl(var(--accent) / 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--accent) / 0.35);
 }
 
 .card-mini-tag:focus {
   outline: 1.5px solid hsl(var(--accent));
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 /* More Tags Button */
 .card-more-tags-btn {
   font-size: 0.65rem;
-  padding: 0.3rem 0.55rem;
-  background: hsl(var(--accent) / 0.06);
+  padding: 0.35rem 0.65rem;
+  background: hsl(var(--accent) / 0.15);
   color: hsl(var(--accent));
-  border: 1px solid hsl(var(--accent) / 0.2);
-  border-radius: 4px;
-  font-weight: 500;
-  text-transform: uppercase;
+  border: 1.5px solid hsl(var(--accent) / 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
   letter-spacing: 0.3px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -184,22 +183,22 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  box-shadow: none;
+  box-shadow: 0 2px 6px hsl(var(--accent) / 0.08);
   line-height: 1;
   height: fit-content;
   min-width: fit-content;
 }
 
 .card-more-tags-btn:hover {
-  background: hsl(var(--accent) / 0.1);
-  border-color: hsl(var(--accent) / 0.35);
+  background: hsl(var(--accent) / 0.2);
+  border-color: hsl(var(--accent) / 0.5);
   color: hsl(var(--accent));
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .card-more-tags-btn:focus {
   outline: 1.5px solid hsl(var(--accent));
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 .card-read-more {
@@ -217,7 +216,7 @@
 /* Mobile Alignment Fix: Prevents content from hitting edges */
 @media (max-width: 640px) {
   .card-body {
-    padding: 1.25rem;
+    padding: 1.25rem 1.75rem;
   }
   .card-title {
     font-size: 1.15rem;

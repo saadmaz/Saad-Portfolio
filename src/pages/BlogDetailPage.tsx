@@ -305,18 +305,18 @@ export default function BlogDetailPage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: hsl(var(--accent) / 0.08);
-          color: hsl(var(--accent));
-          padding: 0.35rem 0.8rem;
-          border-radius: 4px;
+          background: hsl(var(--accent));
+          color: white;
+          padding: 0.4rem 0.9rem;
+          border-radius: 12px;
           font-size: 0.75rem;
-          font-weight: 500;
-          text-transform: uppercase;
+          font-weight: 600;
+          text-transform: capitalize;
           letter-spacing: 0.3px;
-          border: 1px solid hsl(var(--accent) / 0.25);
+          border: none;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
-          box-shadow: none;
+          box-shadow: 0 2px 6px hsl(var(--accent) / 0.25);
           white-space: nowrap;
           line-height: 1;
           height: fit-content;
@@ -324,15 +324,14 @@ export default function BlogDetailPage() {
         }
 
         .blog-tag:hover {
-          background: hsl(var(--accent) / 0.12);
-          border-color: hsl(var(--accent) / 0.4);
-          color: hsl(var(--accent));
-          transform: translateY(-1px);
+          background: hsl(var(--accent) / 0.85);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px hsl(var(--accent) / 0.35);
         }
 
         .blog-tag:focus {
           outline: 1.5px solid hsl(var(--accent));
-          outline-offset: 1px;
+          outline-offset: 2px;
         }
 
         /* Content Wrapper */

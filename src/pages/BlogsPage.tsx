@@ -46,8 +46,9 @@ export const BlogsPage: React.FC = () => {
   // Filter blogs when selectedTag changes
   useEffect(() => {
     if (selectedTag) {
+      const decodedTag = decodeURIComponent(selectedTag);
       const filtered = blogs.filter((blog) =>
-        blog.metadata.tags?.includes(decodeURIComponent(selectedTag))
+        blog.metadata.tags?.includes(decodedTag)
       );
       setFilteredBlogs(filtered);
     } else {
@@ -96,10 +97,10 @@ export const BlogsPage: React.FC = () => {
               <button
                 key={tag}
                 className={`tag-filter-button ${
-                  selectedTag === tag ? "active" : ""
+                  selectedTag === encodeURIComponent(tag) ? "active" : ""
                 }`}
                 onClick={() => handleTagClick(tag)}
-                aria-pressed={selectedTag === tag}
+                aria-pressed={selectedTag === encodeURIComponent(tag)}
               >
                 {tag}
               </button>
