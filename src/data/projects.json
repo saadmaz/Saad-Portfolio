@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "title": "Portfolio Website",
+    "description": "A modern, responsive portfolio website built with React and TypeScript",
+    "date": "2025-06",
+    "image": "/assets/projects/portfolio.jpg",
+    "technologies": ["React", "TypeScript", "Tailwind CSS", "Vite"],
+    "link": "https://saadmalik.dev",
+    "github": "https://github.com/saadmalik/portfolio",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "E-commerce Platform",
+    "description": "Full-stack e-commerce platform with payment integration",
+    "date": "2025-03",
+    "image": "/assets/projects/ecommerce.jpg",
+    "technologies": ["React", "Node.js", "MongoDB", "Stripe"],
+    "link": "https://ecommerce-demo.com",
+    "github": "https://github.com/saadmalik/ecommerce",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Task Management App",
+    "description": "Collaborative task management application with real-time updates",
+    "date": "2024-12",
+    "image": "/assets/projects/tasks.jpg",
+    "technologies": ["React", "Firebase", "Tailwind CSS"],
+    "link": "https://task-app.com",
+    "github": "https://github.com/saadmalik/tasks",
+    "featured": true
+  },
+  {
+    "id": 4,
+    "title": "Weather Dashboard",
+    "description": "Real-time weather application with geolocation support",
+    "date": "2024-09",
+    "image": "/assets/projects/weather.jpg",
+    "technologies": ["React", "API Integration", "Chart.js"],
+    "link": "https://weather-dash.com",
+    "github": "https://github.com/saadmalik/weather",
+    "featured": false
+  },
+  {
+    "id": 5,
+    "title": "Blog Engine",
+    "description": "Markdown-based blog engine with SEO optimization",
+    "date": "2024-06",
+    "image": "/assets/projects/blog.jpg",
+    "technologies": ["Next.js", "MDX", "Tailwind CSS"],
+    "link": "https://blog.saadmalik.dev",
+    "github": "https://github.com/saadmalik/blog",
+    "featured": false
+  }
+]

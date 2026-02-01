@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "title": "AWS Solutions Architect",
+    "issuer": "Amazon Web Services",
+    "issueDate": "2025-08",
+    "expiryDate": "2028-08",
+    "credentialId": "AWS-12345",
+    "credentialUrl": "https://aws.amazon.com/verification",
+    "description": "Professional level AWS certification"
+  },
+  {
+    "id": 2,
+    "title": "Google Cloud Professional Data Engineer",
+    "issuer": "Google Cloud",
+    "issueDate": "2025-05",
+    "expiryDate": "2027-05",
+    "credentialId": "GCP-67890",
+    "credentialUrl": "https://cloud.google.com/verify",
+    "description": "Professional level GCP certification"
+  },
+  {
+    "id": 3,
+    "title": "React Advanced Patterns",
+    "issuer": "Frontend Masters",
+    "issueDate": "2025-03",
+    "credentialId": "FM-11111",
+    "credentialUrl": "https://frontendmasters.com",
+    "description": "Advanced React patterns and best practices"
+  },
+  {
+    "id": 4,
+    "title": "Node.js Mastery",
+    "issuer": "Udemy",
+    "issueDate": "2024-12",
+    "credentialId": "UD-22222",
+    "credentialUrl": "https://udemy.com",
+    "description": "Complete Node.js development course"
+  }
+]
