@@ -14,6 +14,7 @@ export const educationList = [
         associatedAwards: ["Dean's List (2022, 2023)", "HackMIT Best Hack 2023"],
         courses: ["Data Structures", "Machine Learning", "Database Systems", "Distributed Systems"],
         activities: ["CS Student Association - VP", "ACM Chapter - Member"],
+        isLatest: true,
     },
     {
         institution: "Online Education Platform",
@@ -29,6 +30,7 @@ export const educationList = [
         associatedAwards: ["Top 5% of Cohort"],
         courses: ["React", "Node.js", "GraphQL", "MongoDB"],
         activities: ["Top 5% of cohort"],
+        isLatest: false,
     },
     {
         institution: "Isipathana College",
@@ -45,5 +47,6 @@ export const educationList = [
         associatedAwards: ["Science Olympiad Winner", "School Prefect"],
         courses: ["Mathematics", "Physics", "Computer Science"],
         activities: ["Debate Club President", "Science Olympiad Winner"],
+        isLatest: false,
     },
 ];

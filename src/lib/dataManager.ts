@@ -22,6 +22,7 @@ export interface Blog {
   readTime: string;
   slug: string;
   author: string;
+  isLatest?: boolean;
 }
 
 export interface WorkExperience {
@@ -34,6 +35,7 @@ export interface WorkExperience {
   description: string;
   technologies: string[];
   achievements: string[];
+  isLatest?: boolean;
 }
 
 export interface Certificate {
@@ -46,6 +48,7 @@ export interface Certificate {
   credentialUrl: string;
   description: string;
   certificatePdfUrl?: string;
+  isLatest?: boolean;
 }
 
 export interface Skill {
@@ -67,7 +70,7 @@ export interface Project {
   technologies: string[];
   link: string;
   github: string;
-  featured: boolean;
+  isLatest?: boolean;
 }
 
 export interface Event {
@@ -91,6 +94,7 @@ export interface Newsletter {
   description: string;
   link: string;
   subscribers: number;
+  isLatest?: boolean;
 }
 
 export interface Hosting {
@@ -103,13 +107,18 @@ export interface Hosting {
   status: string;
   description: string;
   technologies: string[];
+  date?: string;
 }
 
 /**
  * Sort items by date in descending order (latest first)
  */
-const sortByDateDesc = <T extends { date: string }>(items: T[]): T[] => {
-  return [...items].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate?: string }>(items: T[]): T[] => {
+  return [...items].sort((a, b) => {
+    const dateA = (a.date || a.startDate || a.issueDate) as string;
+    const dateB = (b.date || b.startDate || b.issueDate) as string;
+    return new Date(dateB).getTime() - new Date(dateA).getTime();
+  });
 };
 
 /**
@@ -198,7 +207,7 @@ class DataManager {
    * Get featured projects only
    */
   getFeaturedProjects(limit?: number): Project[] {
-    const featured = this.projects.filter((p) => p.featured);
+    const featured = this.projects.filter((p) => p.isLatest);
     return limit ? featured.slice(0, limit) : featured;
   }
 

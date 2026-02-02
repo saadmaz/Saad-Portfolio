@@ -12,7 +12,8 @@
       "Led migration of legacy codebase to React",
       "Reduced load time by 40%",
       "Mentored 3 junior developers"
-    ]
+    ],
+    "isLatest": true
   },
   {
     "id": 2,
@@ -27,7 +28,8 @@
       "Built real-time collaboration features",
       "Improved database query performance by 35%",
       "Implemented CI/CD pipelines"
-    ]
+    ],
+    "isLatest": false
   },
   {
     "id": 3,
@@ -42,6 +44,7 @@
       "Built responsive UI components",
       "Fixed critical bugs in payment module",
       "Participated in agile development process"
-    ]
+    ],
+    "isLatest": false
   }
 ]

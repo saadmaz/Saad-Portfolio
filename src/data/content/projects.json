@@ -8,7 +8,7 @@
     "technologies": ["React", "TypeScript", "Tailwind CSS", "Vite"],
     "link": "https://saadmalik.dev",
     "github": "https://github.com/saadmalik/portfolio",
-    "featured": true
+    "isLatest": true
   },
   {
     "id": 2,
@@ -19,7 +19,7 @@
     "technologies": ["React", "Node.js", "MongoDB", "Stripe"],
     "link": "https://ecommerce-demo.com",
     "github": "https://github.com/saadmalik/ecommerce",
-    "featured": true
+    "isLatest": false
   },
   {
     "id": 3,
@@ -30,7 +30,7 @@
     "technologies": ["React", "Firebase", "Tailwind CSS"],
     "link": "https://task-app.com",
     "github": "https://github.com/saadmalik/tasks",
-    "featured": true
+    "isLatest": false
   },
   {
     "id": 4,
@@ -41,7 +41,7 @@
     "technologies": ["React", "API Integration", "Chart.js"],
     "link": "https://weather-dash.com",
     "github": "https://github.com/saadmalik/weather",
-    "featured": false
+    "isLatest": false
   },
   {
     "id": 5,
@@ -52,6 +52,6 @@
     "technologies": ["Next.js", "MDX", "Tailwind CSS"],
     "link": "https://blog.saadmalik.dev",
     "github": "https://github.com/saadmalik/blog",
-    "featured": false
+    "isLatest": false
   }
 ]
