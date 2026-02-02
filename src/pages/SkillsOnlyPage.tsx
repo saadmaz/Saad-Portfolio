@@ -43,10 +43,10 @@ const SkillsOnlyPage = () => {
           >
             <span className="section-title">Professional Development</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Technical Skills
+            Skills
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              A comprehensive overview of my technical expertise across multiple domains.
+              A comprehensive overview of my expertise across multiple domains.
               I'm continuously learning and expanding my capabilities.
             </p>
           </motion.div>
