@@ -114,6 +114,30 @@ export const BlogsPage: React.FC = () => {
 
         {/* Search & Filter Section */}
         <div className="blogs-search-filter-section">
+          {/* Horizontal Tag Bar */}
+          <div className="blogs-tag-bar-wrapper">
+            <div className="blogs-tag-bar">
+              <button
+                className={`tag-bar-button ${!selectedTag ? "active" : ""}`}
+                onClick={handleClearFilter}
+              >
+                All
+              </button>
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  className={`tag-bar-button ${
+                    selectedTag === tag ? "active" : ""
+                  }`}
+                  onClick={() => handleTagClick(tag)}
+                  aria-pressed={selectedTag === tag}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Search Bar */}
           <div className="blog-search-container">
             <div className="search-input-wrapper">
