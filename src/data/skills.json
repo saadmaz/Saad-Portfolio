@@ -2,11 +2,11 @@
   {
     "category": "Programming Languages",
     "skills": [
-      { "name": "Java", "level": "Expert", "years": 2 },
-      { "name": "Python", "level": "Expert", "years": 3 },
-      { "name": "JavaScript", "level": "Expert", "years": 3 },
+      { "name": "Java", "level": "Beginner", "years": 2 },
+      { "name": "Python", "level": "Intermediate", "years": 3 },
+      { "name": "JavaScript", "level": "Advance", "years": 3 },
       { "name": "TypeScript", "level": "Expert", "years": 4 },
-      { "name": "Rust", "level": "Advanced", "years": 3 }
+      { "name": "Rust", "level": "Advance", "years": 3 }
     ]
   },
 
