@@ -6,7 +6,7 @@
       { "name": "Python", "level": "Expert", "years": 3 },
       { "name": "JavaScript", "level": "Expert", "years": 3 },
       { "name": "TypeScript", "level": "Expert", "years": 4 },
-      { "name": "Rust", "level": "Expert", "years": 3 }
+      { "name": "Rust", "level": "Advanced", "years": 3 }
     ]
   },
 
