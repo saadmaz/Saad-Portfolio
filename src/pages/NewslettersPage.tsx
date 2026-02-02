@@ -20,14 +20,11 @@ interface NewsletterData {
 }
 
 // ----------------------------------------------------------------------
-// 2. DUAL DATA IMPORTS
+// 2. CENTRALIZED DATA IMPORT
 // ----------------------------------------------------------------------
-// Pathing based on your 'portfolio-app' workplace structure
-import cseRawData from "../../portfolio-app/src/assets/Newsletter/cse.json";
-import founderRawData from "../../portfolio-app/src/assets/Newsletter/founder.json";
-
-const cseData = cseRawData as NewsletterData;
-const founderData = founderRawData as NewsletterData;
+// Use the centralized newsletters JSON in `src/data/content`
+import allNewsRaw from "@/data/content/newsletters.json";
+const allNews = allNewsRaw as any[];
 
 // ----------------------------------------------------------------------
 // 3. COMPONENT CONFIGURATION
@@ -74,13 +71,21 @@ const NewslettersPage = () => {
    * getLatestFromSource: Selects correct JSON source and finds the latest entry.
    */
   const getLatestFromSource = (configId: string): NewsletterIssue => {
-    const source = configId === "cse-newsroom" ? cseData : founderData;
-    const list = source.newsletters || [];
-    
-    // Find item with isLatest: true, or fallback to highest ID
-    const latest = list.find(item => item.isLatest === true) || [...list].sort((a, b) => b.id - a.id)[0];
-    
-    return latest || { id: 0, title: "Coming Soon", date: "TBD", linkedinUrl: "#", isLatest: false };
+    const type = configId === "cse-newsroom" ? "cse" : "founder";
+    const list = allNews.filter((n) => n.type === type) || [];
+
+    const latest = list.find((item) => item.isLatest === true) ||
+      [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+
+    if (!latest) return { id: 0, title: "Coming Soon", date: "TBD", linkedinUrl: "#", isLatest: false };
+
+    return {
+      id: latest.id,
+      title: latest.title,
+      date: latest.date,
+      linkedinUrl: latest.link || latest.linkedinUrl || "#",
+      isLatest: !!latest.isLatest,
+    };
   };
 
   const handleRedirect = (url: string, title: string) => {
