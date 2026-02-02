@@ -61,7 +61,7 @@
       { "name": "Third-Party API Integration", "level": "Intermediate", "years": 3 },
       { "name": "API Authentication (JWT, OAuth)", "level": "Advance", "years": 2 },
       { "name": "Webhooks", "level": "Advance", "years": 2 },
-      { "name": "API Documentation (Postman / Swagger)", "level": "Expert", "years": 3 }
+      { "name": "API Documentation (Postman)", "level": "Expert", "years": 3 }
     ]
   },
 
