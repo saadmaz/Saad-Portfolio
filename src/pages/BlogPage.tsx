@@ -20,7 +20,7 @@ const BlogPage = () => {
 
   useEffect(() => {
     const loadBlogs = async () => {
-      try {
+      try {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
         const allBlogs = await getAllBlogs();
         setBlogs(allBlogs);
         setFilteredBlogs(allBlogs);

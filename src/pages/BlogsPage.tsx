@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { BlogCard } from "@/data/blog/components/BlogCard";
 import { getAllBlogs } from "@/data/blog/utils/blogUtils";
 import { BlogMetadata } from "@/data/blog/types/blog";
@@ -18,8 +18,7 @@ export const BlogsPage: React.FC = () => {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  
+
   const selectedTag = searchParams.get("tag");
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export const BlogsPage: React.FC = () => {
         allBlogs.forEach((blog) => {
           blog.metadata.tags?.forEach((tag) => tags.add(tag));
         });
-        // We keep "All" out of the array because it's handled by the empty selectedTag state
         setAllTags(Array.from(tags).sort());
       } catch (error) {
         console.error("Error loading blogs:", error);
@@ -63,19 +61,16 @@ export const BlogsPage: React.FC = () => {
       filtered = filtered.filter((blog) =>
         blog.metadata.title.toLowerCase().includes(query) ||
         blog.metadata.excerpt.toLowerCase().includes(query) ||
-        blog.metadata.category.toLowerCase().includes(query)
+        (blog.metadata.tags?.some((tag) =>
+          tag.toLowerCase().includes(query)
+        ) ?? false)
       );
     }
 
     setFilteredBlogs(filtered);
   }, [selectedTag, searchQuery, blogs]);
 
-  cosetSearchQuery("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery(""
+  const handleTagClick = (tag: string) => {
     // Toggle logic: if clicking the same tag, clear it. Otherwise, set it.
     if (selectedTag === tag) {
       setSearchParams({});
@@ -83,6 +78,10 @@ export const BlogsPage: React.FC = () => {
       setSearchParams({ tag });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
   };
 
   const handleClearFilter = () => {
@@ -107,7 +106,12 @@ export const BlogsPage: React.FC = () => {
 
   return (
     <div className="blogs-page">
-      <heaSearch & Filter Section */}
+      <header className="blogs-header">
+        <h1>Blog</h1>
+        <p>Thoughts, tutorials, and insights from my journey</p>
+      </header>
+
+      {/* Search & Filter Section */}
       <div className="blogs-search-filter-section">
         {/* Search Bar */}
         <div className="blog-search-container">
@@ -132,41 +136,71 @@ export const BlogsPage: React.FC = () => {
           </div>
         </div>
 
-      {/* der className="blogs-header">
-        <h1>Blog</h1>
-        <p>Thoughts, tutorials, and insights from my journey</p>
-      </header>
-
-      {/* Tag Filter Section */}
-      <div className="blogs-filter-section">
-        <div className="filter-container">
-          <div className="filter-header">
-            <h3 className="filter-title">Filter by Tag</h3>
-          </div>
-          <div className="tags-filter-grid">
-            {/* Added "All" button to mirror ProjectsPage functionality */}
-            <button
-              className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
-              onClick={handleClearFilter}
-            >
-              All
-            </button>
-            {allTags.map((tag) => (
-      </div>
+        {/* Tag Filter Section */}
+        <div className="blogs-filter-section">
+          <div className="filter-container">
+            <div className="filter-header">
+              <h3 className="filter-title">Filter by Tag</h3>
+            </div>
+            <div className="tags-filter-grid">
               <button
-                key={tag}
-                className={`tag-filter-button ${
-                  selectedTag === tag ? "active" : ""
-                }`}
-                onClick={() => handleTagClick(tag)}
-                aria-pressed={selectedTag === tag}
+                className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
+                onClick={handleClearFilter}
               >
-             
+                All
+              </button>
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  className={`tag-filter-button ${
+                    selectedTag === tag ? "active" : ""
+                  }`}
+                  onClick={() => handleTagClick(tag)}
+                  aria-pressed={selectedTag === tag}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+
+            {(selectedTag || searchQuery) && (
+              <div className="filter-active-label">
+                <span>
+                  {searchQuery && selectedTag
+                    ? `Filtered by: "${searchQuery}" + ${decodeURIComponent(
+                        selectedTag
+                      )}`
+                    : searchQuery
+                    ? `Search: "${searchQuery}"`
+                    : `Filtered by: ${decodeURIComponent(selectedTag || "")}`}
+                </span>
+                <button
+                  className="filter-clear-button"
+                  onClick={handleClearFilter}
+                  aria-label="Clear filter"
+                >
+                  <X size={16} />
+                  Clear
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Results */}
+      {filteredBlogs.length === 0 ? (
+        <div className="no-blogs-results">
+          <p>
             {searchQuery && selectedTag
-              ? `No blog posts match "${searchQuery}" with tag "${decodeURIComponent(selectedTag)}"`
+              ? `No blog posts match "${searchQuery}" with tag "${decodeURIComponent(
+                  selectedTag
+                )}"`
               : searchQuery
               ? `No blog posts match "${searchQuery}"`
-              : `No blog posts found with tag "${decodeURIComponent(selectedTag || "")}"`}
+              : `No blog posts found with tag "${decodeURIComponent(
+                  selectedTag || ""
+                )}"`}
           </p>
           <button className="reset-filter-link" onClick={handleClearFilter}>
             View all blogs
@@ -174,33 +208,7 @@ export const BlogsPage: React.FC = () => {
         </div>
       ) : (
         <>
-          {(selectedTag || searchQuery)assName="filter-active-label">
-                Filtered by: <strong>{decodeURIComponent(selectedTag)}</strong>
-              </span>
-              <button 
-                className="filter-clear-button"
-                onClick={handleClearFilter}
-                aria-label="Clear filter"
-              >
-                <X size={16} />
-                Clear
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Results */}
-      {filteredBlogs.length === 0 ? (
-        <div className="no-blogs-results">
-          <p>No blog posts found with the tag "{decodeURIComponent(selectedTag || "")}"</p>
-          <button className="reset-filter-link" onClick={handleClearFilter}>
-            View all blogs
-          </button>
-        </div>
-      ) : (
-        <>
-          {selectedTag && (
+          {(selectedTag || searchQuery) && (
             <div className="blogs-results-header">
               <p className="results-count">
                 Found {filteredBlogs.length} {filteredBlogs.length === 1 ? "post" : "posts"}
@@ -209,7 +217,11 @@ export const BlogsPage: React.FC = () => {
           )}
           <div className="blogs-grid">
             {filteredBlogs.map((blog) => (
-              <BlogCard key={blog.slug} slug={blog.slug} metadata={blog.metadata} />
+              <BlogCard
+                key={blog.slug}
+                slug={blog.slug}
+                metadata={blog.metadata}
+              />
             ))}
           </div>
         </>
