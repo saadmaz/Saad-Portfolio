@@ -21,10 +21,10 @@ interface SkillCategory {
  * Beginner: Red, Intermediate: Yellow, Advanced: Green, Expert: Blue
  */
 const levelColors: Record<string, string> = {
-  Beginner: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400",
-  Intermediate: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
-  Advanced: "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
-  Expert: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+    Beginner: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400",
+    Intermediate: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
+    Advance: "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
+    Expert: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
 };
 
 export function SkillsSection() {
