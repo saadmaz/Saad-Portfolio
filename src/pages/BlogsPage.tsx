@@ -106,126 +106,128 @@ export const BlogsPage: React.FC = () => {
 
   return (
     <div className="blogs-page">
-      <header className="blogs-header">
-        <h1>Blog</h1>
-        <p>Thoughts, tutorials, and insights from my journey</p>
-      </header>
+      <div className="blogs-page-container">
+        <header className="blogs-header">
+          <h1>Blog</h1>
+          <p>Thoughts, tutorials, and insights from my journey</p>
+        </header>
 
-      {/* Search & Filter Section */}
-      <div className="blogs-search-filter-section">
-        {/* Search Bar */}
-        <div className="blog-search-container">
-          <div className="search-input-wrapper">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search blogs by title, topic, or keyword..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="blog-search-input"
-            />
-            {searchQuery && (
-              <button
-                onClick={handleClearSearch}
-                className="search-clear-button"
-                aria-label="Clear search"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Tag Filter Section */}
-        <div className="blogs-filter-section">
-          <div className="filter-container">
-            <div className="filter-header">
-              <h3 className="filter-title">Filter by Tag</h3>
-            </div>
-            <div className="tags-filter-grid">
-              <button
-                className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
-                onClick={handleClearFilter}
-              >
-                All
-              </button>
-              {allTags.map((tag) => (
+        {/* Search & Filter Section */}
+        <div className="blogs-search-filter-section">
+          {/* Search Bar */}
+          <div className="blog-search-container">
+            <div className="search-input-wrapper">
+              <Search size={18} className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search blogs by title, topic, or keyword..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="blog-search-input"
+              />
+              {searchQuery && (
                 <button
-                  key={tag}
-                  className={`tag-filter-button ${
-                    selectedTag === tag ? "active" : ""
-                  }`}
-                  onClick={() => handleTagClick(tag)}
-                  aria-pressed={selectedTag === tag}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-
-            {(selectedTag || searchQuery) && (
-              <div className="filter-active-label">
-                <span>
-                  {searchQuery && selectedTag
-                    ? `Filtered by: "${searchQuery}" + ${decodeURIComponent(
-                        selectedTag
-                      )}`
-                    : searchQuery
-                    ? `Search: "${searchQuery}"`
-                    : `Filtered by: ${decodeURIComponent(selectedTag || "")}`}
-                </span>
-                <button
-                  className="filter-clear-button"
-                  onClick={handleClearFilter}
-                  aria-label="Clear filter"
+                  onClick={handleClearSearch}
+                  className="search-clear-button"
+                  aria-label="Clear search"
                 >
                   <X size={16} />
-                  Clear
                 </button>
+              )}
+            </div>
+          </div>
+
+          {/* Tag Filter Section */}
+          <div className="blogs-filter-section">
+            <div className="filter-container">
+              <div className="filter-header">
+                <h3 className="filter-title">Filter by Tag</h3>
+              </div>
+              <div className="tags-filter-grid">
+                <button
+                  className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
+                  onClick={handleClearFilter}
+                >
+                  All
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    className={`tag-filter-button ${
+                      selectedTag === tag ? "active" : ""
+                    }`}
+                    onClick={() => handleTagClick(tag)}
+                    aria-pressed={selectedTag === tag}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+
+              {(selectedTag || searchQuery) && (
+                <div className="filter-active-label">
+                  <span>
+                    {searchQuery && selectedTag
+                      ? `Filtered by: "${searchQuery}" + ${decodeURIComponent(
+                          selectedTag
+                        )}`
+                      : searchQuery
+                      ? `Search: "${searchQuery}"`
+                      : `Filtered by: ${decodeURIComponent(selectedTag || "")}`}
+                  </span>
+                  <button
+                    className="filter-clear-button"
+                    onClick={handleClearFilter}
+                    aria-label="Clear filter"
+                  >
+                    <X size={16} />
+                    Clear
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Results */}
+        {filteredBlogs.length === 0 ? (
+          <div className="no-blogs-results">
+            <p>
+              {searchQuery && selectedTag
+                ? `No blog posts match "${searchQuery}" with tag "${decodeURIComponent(
+                    selectedTag
+                  )}"`
+                : searchQuery
+                ? `No blog posts match "${searchQuery}"`
+                : `No blog posts found with tag "${decodeURIComponent(
+                    selectedTag || ""
+                  )}"`}
+            </p>
+            <button className="reset-filter-link" onClick={handleClearFilter}>
+              View all blogs
+            </button>
+          </div>
+        ) : (
+          <>
+            {(selectedTag || searchQuery) && (
+              <div className="blogs-results-header">
+                <p className="results-count">
+                  Found {filteredBlogs.length} {filteredBlogs.length === 1 ? "post" : "posts"}
+                </p>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Results */}
-      {filteredBlogs.length === 0 ? (
-        <div className="no-blogs-results">
-          <p>
-            {searchQuery && selectedTag
-              ? `No blog posts match "${searchQuery}" with tag "${decodeURIComponent(
-                  selectedTag
-                )}"`
-              : searchQuery
-              ? `No blog posts match "${searchQuery}"`
-              : `No blog posts found with tag "${decodeURIComponent(
-                  selectedTag || ""
-                )}"`}
-          </p>
-          <button className="reset-filter-link" onClick={handleClearFilter}>
-            View all blogs
-          </button>
-        </div>
-      ) : (
-        <>
-          {(selectedTag || searchQuery) && (
-            <div className="blogs-results-header">
-              <p className="results-count">
-                Found {filteredBlogs.length} {filteredBlogs.length === 1 ? "post" : "posts"}
-              </p>
+            <div className="blogs-grid">
+              {filteredBlogs.map((blog) => (
+                <BlogCard
+                  key={blog.slug}
+                  slug={blog.slug}
+                  metadata={blog.metadata}
+                />
+              ))}
             </div>
-          )}
-          <div className="blogs-grid">
-            {filteredBlogs.map((blog) => (
-              <BlogCard
-                key={blog.slug}
-                slug={blog.slug}
-                metadata={blog.metadata}
-              />
-            ))}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
