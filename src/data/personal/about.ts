@@ -2,8 +2,6 @@ export const languages = [
     { name: "English", level: "Native", stars: 5 },
     { name: "Sinhala", level: "Native", stars: 5 },
     { name: "Tamil", level: "Conversational", stars: 3 },
-    { name: "Spanish", level: "Fluent", stars: 4 },
-    { name: "Mandarin", level: "Conversational", stars: 2 },
 ];
 
 export const volunteer = [
