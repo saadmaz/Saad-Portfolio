@@ -1,40 +1,21 @@
-[
-  {
-    "id": 1,
-    "title": "AWS Solutions Architect",
-    "issuer": "Amazon Web Services",
-    "issueDate": "2025-08",
-    "expiryDate": "2028-08",
-    "credentialId": "AWS-12345",
-    "credentialUrl": "https://aws.amazon.com/verification",
-    "description": "Professional level AWS certification"
-  },
-  {
-    "id": 2,
-    "title": "Google Cloud Professional Data Engineer",
-    "issuer": "Google Cloud",
-    "issueDate": "2025-05",
-    "expiryDate": "2027-05",
-    "credentialId": "GCP-67890",
-    "credentialUrl": "https://cloud.google.com/verify",
-    "description": "Professional level GCP certification"
-  },
-  {
-    "id": 3,
-    "title": "React Advanced Patterns",
-    "issuer": "Frontend Masters",
-    "issueDate": "2025-03",
-    "credentialId": "FM-11111",
-    "credentialUrl": "https://frontendmasters.com",
-    "description": "Advanced React patterns and best practices"
-  },
-  {
-    "id": 4,
-    "title": "Node.js Mastery",
-    "issuer": "Udemy",
-    "issueDate": "2024-12",
-    "credentialId": "UD-22222",
-    "credentialUrl": "https://udemy.com",
-    "description": "Complete Node.js development course"
-  }
-]
+{
+  "id": "cert-aws-cloud-foundations",
+  "title": "AWS Cloud Foundations",
+  "issuer": "Amazon Web Services",
+  "platform": "AWS Training & Certification",
+  "issuer_logo": "/logos/aws.svg",
+  "issue_date": "2024-08-15",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "AWS-CF-829374",
+  "credential_url": "https://www.credly.com/badges/example-aws-cloud-foundations",
+  "description": "This certification validates foundational knowledge of cloud computing concepts, AWS core services, security, architecture, pricing models, and best practices for building scalable cloud solutions.",
+  "skills": ["Cloud Computing", "AWS Core Services", "IAM & Security", "Cloud Architecture", "Cost & Pricing Models"],
+  "category": "Cloud & DevOps",
+  "type": "certification",
+  "tags": ["AWS", "Cloud", "DevOps", "Infrastructure"],
+  "pdf_document_link": "/certificates/aws-cloud-foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": true,
+  "colour": "from-orange-500/20 to-amber-500/20"
+}

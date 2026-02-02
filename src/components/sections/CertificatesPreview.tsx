@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Award, ExternalLink, Calendar, Tag, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -9,84 +8,35 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { certificatesData } from "@/data";
 
 /**
- * DATA OBJECT: Array of certification objects.
- * Storing data outside the JSX makes it easier to manage, 
- * especially when fetching from an API or CMS later.
+ * Load and normalize certificate data from JSON
+ * Accepts either an array or single object in the JSON file
  */
-const certificates = [
-  {
-    id: "1",
-    title: "AWS Certified Solutions Architect",
-    issuer: "Amazon Web Services",
-    issuerLogo: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg",
-    year: "2024",
-    color: "from-orange-500/20 to-amber-500/20",
-    category: "Cloud",
-    tags: ["Cloud", "Architecture"],
-  },
-  {
-    id: "6",
-    title: "Google Cloud Professional Data Engineer",
-    issuer: "Google Cloud",
-    issuerLogo: "https://www.gstatic.com/devrel-devsite/prod/v0e0f589edd85502a40d78d7d0825db8ea5ef3b99ab4070381ee86977c9168730/cloud/images/cloud-logo.svg",
-    year: "2024",
-    color: "from-blue-500/20 to-cyan-500/20",
-    category: "Cloud",
-    tags: ["Big Data", "GCP"],
-  },
-  {
-    id: "meta-frontend", // Mapped ID if needed, using generic for now implies new IDs in SkillsPage would be needed to match these if they differ.
-    title: "Meta Front-End Developer",
-    issuer: "Meta",
-    issuerLogo: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png",
-    year: "2023",
-    color: "from-indigo-500/20 to-blue-500/20",
-    category: "Frontend",
-    tags: ["React", "UI/UX"],
-  },
-  {
-    id: "tensorflow",
-    title: "TensorFlow Developer Certificate",
-    issuer: "Google",
-    issuerLogo: "https://www.gstatic.com/devrel-devsite/prod/v0e0f589edd85502a40d78d7d0825db8ea5ef3b99ab4070381ee86977c9168730/cloud/images/cloud-logo.svg",
-    year: "2023",
-    color: "from-yellow-500/20 to-orange-500/20",
-    category: "AI/ML",
-    tags: ["Machine Learning", "Python"],
-  },
-  {
-    id: "mongo",
-    title: "MongoDB Certified Developer",
-    issuer: "MongoDB University",
-    issuerLogo: "https://webimages.mongodb.com/_com_assets/cms/mongodb_logo1-76twgcu2dm.png",
-    year: "2023",
-    color: "from-green-500/20 to-emerald-500/20",
-    category: "Database",
-    tags: ["NoSQL", "Data Modeling"],
-  },
-  {
-    id: "github-actions",
-    title: "GitHub Actions Certification",
-    issuer: "GitHub",
-    issuerLogo: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-    year: "2024",
-    color: "from-purple-500/20 to-pink-500/20",
-    category: "DevOps",
-    tags: ["CI/CD", "Automation"],
-  },
-  {
-    id: "docker",
-    title: "Docker Certified Associate",
-    issuer: "Docker",
-    issuerLogo: "https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png",
-    year: "2024",
-    color: "from-sky-500/20 to-blue-500/20",
-    category: "DevOps",
-    tags: ["Containers", "Infrastructure"],
-  },
-];
+const certificates = (Array.isArray(certificatesData) ? certificatesData : [certificatesData])
+  .map((c: any) => ({
+    id: c.id,
+    title: c.title,
+    issuer: c.issuer,
+    issuerLogo: c.issuer_logo || c.issuerLogo || c.issuerLogoUrl,
+    issueDate: c.issue_date || c.issueDate || c.issue || null,
+    expiryDate: c.expiry_date || c.expiryDate || null,
+    credentialId: c.credential_id || c.credentialId || c.credential,
+    credentialUrl: c.credential_url || c.credentialUrl || c.credential_url,
+    description: c.description,
+    tags: c.tags || [],
+    category: c.category || "",
+    color: c.colour || c.color || "from-accent-500/10 to-accent-400/10",
+    pdf: c.pdf_document_link || c.certificatePdfUrl || c.certificate_pdf || null,
+    isFeatured: c.is_featured || c.isLatest || c.isLatest,
+  }))
+  // Sort by most recent issue date first (newest first)
+  .sort((a: any, b: any) => {
+    const da = a.issueDate ? new Date(a.issueDate) : new Date(0);
+    const db = b.issueDate ? new Date(b.issueDate) : new Date(0);
+    return db.getTime() - da.getTime();
+  });
 
 export function CertificatesPreview() {
   return (
@@ -146,7 +96,7 @@ export function CertificatesPreview() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="h-full"
                   >
-                    <Link to={`/skills?certId=${cert.id}`} className="block h-full">
+                    <Link to={`/certifications/${cert.id}`} className="block h-full">
                       {/* The Card: Uses group hover states for the gradient reveal effect */}
                       <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30 flex flex-col`}>
 
@@ -162,7 +112,7 @@ export function CertificatesPreview() {
                             </div>
                             <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {cert.year}
+                              {cert.issueDate ? cert.issueDate.split("-")[0] : ""}
                             </span>
                           </div>
 
@@ -180,7 +130,7 @@ export function CertificatesPreview() {
                               <Layers className="w-3 h-3" />
                               {cert.category}
                             </div>
-                            {cert.tags[0] && (
+                            {cert.tags && cert.tags[0] && (
                               <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
                                 <Tag className="w-3 h-3" />
                                 {cert.tags[0]}
@@ -197,7 +147,7 @@ export function CertificatesPreview() {
               {/* --- "SEE ALL" CTA CARD --- */}
               {/* Last item in carousel leading users to the full skills/certifications page */}
               <CarouselItem className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                <Link to="/skills#courses" className="block h-full">
+                <Link to="/certifications" className="block h-full">
                   <div className="h-full bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/30 p-5 flex flex-col items-center justify-center gap-3 hover:bg-accent/15 transition-all duration-300 min-h-[180px] group">
                     <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
                       <ExternalLink className="w-5 h-5 text-accent" />

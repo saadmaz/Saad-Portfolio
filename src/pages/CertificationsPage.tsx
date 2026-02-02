@@ -5,7 +5,6 @@ import {
   Award,
   ExternalLink,
   Calendar,
-  FileText,
   ChevronDown,
   ChevronUp,
   Search,
@@ -13,25 +12,20 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import certificatesData from "@/data/certificates.json";
+// Dialog removed: navigating to detail route instead
+import { certificatesData } from "@/data";
 
 interface Certificate {
-  id: number;
+  id: any;
   title: string;
   issuer: string;
-  issueDate: string;
-  expiryDate?: string;
-  credentialId: string;
-  credentialUrl: string;
-  description: string;
-  certificatePdfUrl?: string;
+  issueDate?: string;
+  expiryDate?: string | null;
+  credentialId?: string;
+  credentialUrl?: string;
+  description?: string;
+  certificatePdfUrl?: string | null;
+  pdf?: string | null;
   isLatest?: boolean;
 }
 
@@ -43,7 +37,29 @@ const CertificationsPage = () => {
   const [showAllCerts, setShowAllCerts] = useState(false);
 
   useEffect(() => {
-    setCertificates(certificatesData);
+    // Normalize incoming JSON fields and ensure we have an array
+    const raw = Array.isArray(certificatesData) ? certificatesData : [certificatesData];
+    const normalized = raw.map((c: any) => ({
+      id: c.id,
+      title: c.title,
+      issuer: c.issuer,
+      issueDate: c.issue_date || c.issueDate || c.issue || null,
+      expiryDate: c.expiry_date || c.expiryDate || null,
+      credentialId: c.credential_id || c.credentialId || c.credential || "",
+      credentialUrl: c.credential_url || c.credentialUrl || "",
+      description: c.description || "",
+      certificatePdfUrl: c.pdf_document_link || c.certificatePdfUrl || c.certificatePdfUrl || c.certificatePdfUrl || null,
+      isLatest: c.is_featured || c.isLatest || false,
+    }));
+
+    // Sort newest first by issueDate
+    normalized.sort((a: any, b: any) => {
+      const da = a.issueDate ? new Date(a.issueDate) : new Date(0);
+      const db = b.issueDate ? new Date(b.issueDate) : new Date(0);
+      return db.getTime() - da.getTime();
+    });
+
+    setCertificates(normalized);
     setLoading(false);
   }, []);
 
@@ -168,83 +184,30 @@ const CertificationsPage = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <div className="bg-card rounded-xl border border-border p-5 card-hover cursor-pointer group hover:border-accent/50 transition-colors">
-                            <div className="flex items-start justify-between mb-3">
-                              <h4 className="font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
-                                {cert.title}
-                              </h4>
-                              <Award className="w-4 h-4 text-muted-foreground shrink-0" />
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-3">
-                              {cert.issuer}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-xs text-muted-foreground">
-                                  {cert.description}
-                                </p>
-                              </div>
-                              <span className="text-xs text-muted-foreground flex items-center gap-1 ml-2 shrink-0">
-                                <Calendar className="w-3 h-3" />
-                                {cert.issueDate.split("-")[0]}
-                              </span>
-                            </div>
+                      <a href={`/certifications/${cert.id}`} className="block">
+                        <div className="bg-card rounded-xl border border-border p-5 card-hover cursor-pointer group hover:border-accent/50 transition-colors">
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
+                              {cert.title}
+                            </h4>
+                            <Award className="w-4 h-4 text-muted-foreground shrink-0" />
                           </div>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle className="text-xl">{cert.title}</DialogTitle>
-                            <p className="text-muted-foreground text-sm">
-                              {cert.issuer} • {cert.issueDate}
-                              {cert.expiryDate && ` - ${cert.expiryDate}`}
-                            </p>
-                          </DialogHeader>
-                          <div className="mt-4 space-y-4">
-                            <div>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Description
-                              </p>
-                              <p className="text-sm text-foreground">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {cert.issuer}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <p className="text-xs text-muted-foreground">
                                 {cert.description}
                               </p>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Credential ID
-                              </p>
-                              <p className="text-sm font-mono text-foreground bg-secondary p-2 rounded">
-                                {cert.credentialId}
-                              </p>
-                            </div>
-                            <div className="flex gap-3">
-                              <Button asChild variant="outline" size="sm">
-                                <a
-                                  href={cert.credentialUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="w-4 h-4 mr-2" />
-                                  Verify Credential
-                                </a>
-                              </Button>
-                              {cert.certificatePdfUrl && (
-                                <Button asChild variant="outline" size="sm">
-                                  <a
-                                    href={cert.certificatePdfUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <FileText className="w-4 h-4 mr-2" />
-                                    View PDF
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1 ml-2 shrink-0">
+                              <Calendar className="w-3 h-3" />
+                              {cert.issueDate ? cert.issueDate.split("-")[0] : ""}
+                            </span>
                           </div>
-                        </DialogContent>
-                      </Dialog>
+                        </div>
+                      </a>
                     </motion.div>
                   ))}
                 </AnimatePresence>
