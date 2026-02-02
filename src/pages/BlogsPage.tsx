@@ -32,6 +32,7 @@ export const BlogsPage: React.FC = () => {
         allBlogs.forEach((blog) => {
           blog.metadata.tags?.forEach((tag) => tags.add(tag));
         });
+        // We keep "All" out of the array because it's handled by the empty selectedTag state
         setAllTags(Array.from(tags).sort());
       } catch (error) {
         console.error("Error loading blogs:", error);
@@ -57,7 +58,12 @@ export const BlogsPage: React.FC = () => {
   }, [selectedTag, blogs]);
 
   const handleTagClick = (tag: string) => {
-    setSearchParams({ tag });
+    // Toggle logic: if clicking the same tag, clear it. Otherwise, set it.
+    if (selectedTag === tag) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ tag });
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -73,7 +79,9 @@ export const BlogsPage: React.FC = () => {
   if (blogs.length === 0) {
     return (
       <div className="blogs-page">
-        <h1>Blog</h1>
+        <header className="blogs-header">
+          <h1>Blog</h1>
+        </header>
         <p className="no-blogs">No blogs published yet. Check back soon!</p>
       </div>
     );
@@ -83,7 +91,7 @@ export const BlogsPage: React.FC = () => {
     <div className="blogs-page">
       <header className="blogs-header">
         <h1>Blog</h1>
-        <p>Thoughts, tutorials, and insights from my development journey</p>
+        <p>Thoughts, tutorials, and insights from my journey</p>
       </header>
 
       {/* Tag Filter Section */}
@@ -93,19 +101,27 @@ export const BlogsPage: React.FC = () => {
             <h3 className="filter-title">Filter by Tag</h3>
           </div>
           <div className="tags-filter-grid">
+            {/* Added "All" button to mirror ProjectsPage functionality */}
+            <button
+              className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
+              onClick={handleClearFilter}
+            >
+              All
+            </button>
             {allTags.map((tag) => (
               <button
                 key={tag}
                 className={`tag-filter-button ${
-                  selectedTag === encodeURIComponent(tag) ? "active" : ""
+                  selectedTag === tag ? "active" : ""
                 }`}
                 onClick={() => handleTagClick(tag)}
-                aria-pressed={selectedTag === encodeURIComponent(tag)}
+                aria-pressed={selectedTag === tag}
               >
                 {tag}
               </button>
             ))}
           </div>
+          
           {selectedTag && (
             <div className="filter-active">
               <span className="filter-active-label">
@@ -127,7 +143,7 @@ export const BlogsPage: React.FC = () => {
       {/* Results */}
       {filteredBlogs.length === 0 ? (
         <div className="no-blogs-results">
-          <p>No blog posts found with the tag "{decodeURIComponent(selectedTag)}"</p>
+          <p>No blog posts found with the tag "{decodeURIComponent(selectedTag || "")}"</p>
           <button className="reset-filter-link" onClick={handleClearFilter}>
             View all blogs
           </button>
