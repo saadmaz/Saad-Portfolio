@@ -45,6 +45,7 @@ export interface Certificate {
   credentialId: string;
   credentialUrl: string;
   description: string;
+  certificatePdfUrl?: string;
 }
 
 export interface Skill {

@@ -7,7 +7,8 @@
     "expiryDate": "2028-08",
     "credentialId": "AWS-12345",
     "credentialUrl": "https://aws.amazon.com/verification",
-    "description": "Professional level AWS certification"
+    "description": "Professional level AWS certification",
+    "certificatePdfUrl": "/assets/Certificates/AWS-Solutions-Architect.pdf"
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "expiryDate": "2027-05",
     "credentialId": "GCP-67890",
     "credentialUrl": "https://cloud.google.com/verify",
-    "description": "Professional level GCP certification"
+    "description": "Professional level GCP certification",
+    "certificatePdfUrl": "/assets/Certificates/GCP-Data-Engineer.pdf"
   },
   {
     "id": 3,
@@ -26,7 +28,8 @@
     "issueDate": "2025-03",
     "credentialId": "FM-11111",
     "credentialUrl": "https://frontendmasters.com",
-    "description": "Advanced React patterns and best practices"
+    "description": "Advanced React patterns and best practices",
+    "certificatePdfUrl": "/assets/Certificates/React-Advanced-Patterns.pdf"
   },
   {
     "id": 4,
@@ -34,7 +37,8 @@
     "issuer": "Udemy",
     "issueDate": "2024-12",
     "credentialId": "UD-22222",
-    "credentialUrl": "https://udemy.com",
+    "credentialUrl": "https://udemy.com",,
+    "certificatePdfUrl": "/assets/Certificates/Node-Mastery.pdf"
     "description": "Complete Node.js development course"
   }
 ]
