@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import certificatesData from "@/data/certificates.json";
 
 interface Certificate {
   id: number;
@@ -42,18 +43,8 @@ const CertificationsPage = () => {
   const [showAllCerts, setShowAllCerts] = useState(false);
 
   useEffect(() => {
-    const fetchCertificates = async () => {
-      try {
-        const response = await fetch("/data/certificates.json");
-        const data = await response.json();
-        setCertificates(data);
-      } catch (error) {
-        console.error("Error loading certificates.json:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCertificates();
+    setCertificates(certificatesData);
+    setLoading(false);
   }, []);
 
   // Extract unique categories from certificates

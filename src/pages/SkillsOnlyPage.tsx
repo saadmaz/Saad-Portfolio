@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import skillsData from "@/data/skills.json";
 
 interface Skill {
   name: string;
@@ -24,18 +25,8 @@ const SkillsOnlyPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await fetch("/data/skills.json");
-        const data = await response.json();
-        setSkillCategories(data);
-      } catch (error) {
-        console.error("Error loading skills.json:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSkills();
+    setSkillCategories(skillsData);
+    setLoading(false);
   }, []);
 
   return (
