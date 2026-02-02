@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import skillsData from "@/data/skills.json";
 
 interface Skill {
   name: string;
@@ -25,41 +26,54 @@ const levelColors: Record<string, string> = {
 export function SkillsSection() {
   const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(4);
 
-  // Fetch from /data/skills.json
+  // Load skills data from static JSON import
   useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await fetch("/data/skills.json");
-        const data = await response.json();
-        setSkillCategories(data);
-      } catch (error) {
-        console.error("Error loading skills.json:", error);
-      }
-    };
-    fetchSkills();
+    setSkillCategories(skillsData as SkillCategory[]);
   }, []);
 
-  // Auto-move logic: Change index every 1.5 seconds
+  // Responsive visible count
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setVisibleCount(1);
+      else if (w < 1024) setVisibleCount(2);
+      else setVisibleCount(4);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // Auto-move logic: Change index every 2.5 seconds
   useEffect(() => {
     if (skillCategories.length === 0) return;
-
+    const len = skillCategories.length;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % skillCategories.length);
-    }, 1500);
-
+      setCurrentIndex((prev) => (prev + 1) % len);
+    }, 2500);
     return () => clearInterval(timer);
-  }, [skillCategories]);
+  }, [skillCategories, visibleCount]);
 
-  // Determine which categories to show (e.g., 4 at a time on desktop)
+  // Determine which categories to show based on `visibleCount`
   const getVisibleCategories = () => {
     if (skillCategories.length === 0) return [];
-    const visibleCount = 4;
-    const items = [];
+    const items: SkillCategory[] = [];
     for (let i = 0; i < visibleCount; i++) {
       items.push(skillCategories[(currentIndex + i) % skillCategories.length]);
     }
     return items;
+  };
+
+  const prev = () => {
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prevIdx) => (prevIdx - 1 + len) % len);
+  };
+
+  const next = () => {
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prevIdx) => (prevIdx + 1) % len);
   };
 
   return (
@@ -84,51 +98,63 @@ export function SkillsSection() {
                 interfaces to backend infrastructure.
               </p>
             </div>
-            <Button asChild variant="ghost" className="text-accent hover:text-accent gap-1 w-fit">
-              <Link to="/skills">
-                View All Skills
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2">
+                <button onClick={prev} aria-label="Previous" className="p-2 rounded-md bg-card border border-border hover:bg-border/50">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button onClick={next} aria-label="Next" className="p-2 rounded-md bg-card border border-border hover:bg-border/50">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+              <Button asChild className="bg-accent text-accent-foreground gap-1 w-fit">
+                <Link to="/skills">
+                  View All Skills
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </motion.div>
 
         {/* Sliding Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[350px]">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {getVisibleCategories().map((category, idx) => (
-              <motion.div
-                key={`${category.category}-${currentIndex}-${idx}`}
-                layout
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              >
-                <div className="bg-card rounded-xl border border-border p-6 h-full backdrop-blur-sm border-white/5 hover:border-blue-500/30 transition-colors">
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-                    {category.category}
-                  </h3>
-                  <ul className="space-y-3">
-                    {category.skills.map((skill) => (
-                      <li 
-                        key={skill.name}
-                        className="flex items-center justify-between gap-2"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-foreground">{skill.name}</span>
-                          <span className="text-xs text-muted-foreground">{skill.years}y</span>
-                        </div>
-                        <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
-                          {skill.level}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+        <div className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[350px]">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {getVisibleCategories().map((category, idx) => (
+                <motion.div
+                  key={`${category.category}-${currentIndex}-${idx}`}
+                  layout
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  <div className="bg-card rounded-xl border border-border p-6 h-full backdrop-blur-sm hover:border-blue-500/30 transition-colors">
+                    <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+                      {category.category}
+                    </h3>
+                    <ul className="space-y-3">
+                      {category.skills.map((skill) => (
+                        <li 
+                          key={skill.name}
+                          className="flex items-center justify-between gap-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-foreground">{skill.name}</span>
+                            <span className="text-xs text-muted-foreground">{skill.years}y</span>
+                          </div>
+                          <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
+                            {skill.level}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>
