@@ -35,7 +35,7 @@ const workItems = [
 
 const skillsItems = [
   { title: "Skills Overview", href: "/skills", description: "Technical competencies" },
-  { title: "Licenses & Courses", href: "/skills#courses", description: "Certifications and learning" },
+  { title: "Licenses & Certificates", href: "/certifications", description: "Professional certifications" },
 ];
 
 const aboutItems = [

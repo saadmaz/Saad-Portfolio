@@ -8,7 +8,8 @@ import { ScrollToTop } from "@/hooks/useScrollToTop";
 import Index from "./pages/Index";
 import ProjectsPage from "./pages/ProjectsPage";
 import ExperiencePage from "./pages/ExperiencePage";
-import SkillsPage from "./pages/SkillsPage";
+import SkillsOnlyPage from "./pages/SkillsOnlyPage";
+import CertificationsPage from "./pages/CertificationsPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
@@ -32,7 +33,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/experience" element={<ExperiencePage />} />
-            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/skills" element={<SkillsOnlyPage />} />
+            <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blog" element={<BlogPage />} />
