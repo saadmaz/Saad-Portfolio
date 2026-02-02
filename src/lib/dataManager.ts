@@ -3,14 +3,14 @@
  * Automatically loads data from JSON files and sorts by date (latest first)
  */
 
-import blogsData from "@/data/blogs.json";
-import workExperienceData from "@/data/workExperience.json";
-import certificatesData from "@/data/certificates.json";
-import skillsData from "@/data/skills.json";
-import projectsData from "@/data/projects.json";
-import eventsData from "@/data/events.json";
-import newslettersData from "@/data/newsletters.json";
-import hostingData from "@/data/hosting.json";
+import blogsData from "@/data/content/blogs.json";
+import workExperienceData from "@/data/personal/workExperience.json";
+import certificatesData from "@/data/personal/certificates.json";
+import skillsData from "@/data/personal/skills.json";
+import projectsData from "@/data/content/projects.json";
+import eventsData from "@/data/content/events.json";
+import newslettersData from "@/data/content/newsletters.json";
+import hostingData from "@/data/content/hosting.json";
 
 // Type definitions
 export interface Blog {

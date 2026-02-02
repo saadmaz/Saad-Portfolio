@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { GraduationCap, MapPin, Calendar, Trophy, Users, Dumbbell, Globe, Heart, ArrowRight } from "lucide-react";
-import { educationList } from "@/data/education";
-import { events, volunteer, sports, languages, awards } from "@/data/about";
+import { educationList } from "@/data/personal/education";
+import { events, volunteer, sports, languages, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
