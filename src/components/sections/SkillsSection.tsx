@@ -1,60 +1,69 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-const skillCategories = [
-  {
-    title: "Languages",
-    skills: [
-      { name: "TypeScript", level: "Expert" },
-      { name: "JavaScript", level: "Expert" },
-      { name: "Python", level: "Advanced" },
-      { name: "Go", level: "Intermediate" },
-      { name: "SQL", level: "Advanced" },
-    ],
-  },
-  {
-    title: "Frontend",
-    skills: [
-      { name: "React", level: "Expert" },
-      { name: "Next.js", level: "Advanced" },
-      { name: "Tailwind CSS", level: "Expert" },
-      { name: "Vue.js", level: "Intermediate" },
-      { name: "Framer Motion", level: "Advanced" },
-    ],
-  },
-  {
-    title: "Backend",
-    skills: [
-      { name: "Node.js", level: "Expert" },
-      { name: "FastAPI", level: "Advanced" },
-      { name: "PostgreSQL", level: "Advanced" },
-      { name: "MongoDB", level: "Intermediate" },
-      { name: "Redis", level: "Intermediate" },
-    ],
-  },
-  {
-    title: "DevOps & Tools",
-    skills: [
-      { name: "AWS", level: "Advanced" },
-      { name: "Docker", level: "Advanced" },
-      { name: "Git", level: "Expert" },
-      { name: "CI/CD", level: "Advanced" },
-      { name: "Kubernetes", level: "Intermediate" },
-    ],
-  },
-];
+interface Skill {
+  name: string;
+  level: string;
+  years: number;
+}
+
+interface SkillCategory {
+  category: string;
+  skills: Skill[];
+}
 
 const levelColors: Record<string, string> = {
-  Expert: "bg-accent text-accent-foreground",
-  Advanced: "bg-success/20 text-success",
-  Intermediate: "bg-warning/20 text-warning",
+  Beginner: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400",
+  Intermediate: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
+  Advanced: "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
+  Expert: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
 };
 
 export function SkillsSection() {
+  const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Fetch from /data/skills.json
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch("/data/skills.json");
+        const data = await response.json();
+        setSkillCategories(data);
+      } catch (error) {
+        console.error("Error loading skills.json:", error);
+      }
+    };
+    fetchSkills();
+  }, []);
+
+  // Auto-move logic: Change index every 1.5 seconds
+  useEffect(() => {
+    if (skillCategories.length === 0) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % skillCategories.length);
+    }, 1500);
+
+    return () => clearInterval(timer);
+  }, [skillCategories]);
+
+  // Determine which categories to show (e.g., 4 at a time on desktop)
+  const getVisibleCategories = () => {
+    if (skillCategories.length === 0) return [];
+    const visibleCount = 4;
+    const items = [];
+    for (let i = 0; i < visibleCount; i++) {
+      items.push(skillCategories[(currentIndex + i) % skillCategories.length]);
+    }
+    return items;
+  };
+
   return (
-    <section className="section-padding bg-secondary/30">
+    <section className="section-padding bg-secondary/30 overflow-hidden">
       <div className="section-container">
         {/* Section Header */}
         <motion.div
@@ -84,36 +93,42 @@ export function SkillsSection() {
           </div>
         </motion.div>
 
-        {/* Skills Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <div className="bg-card rounded-xl border border-border p-6 h-full">
-                <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-                  {category.title}
-                </h3>
-                <ul className="space-y-3">
-                  {category.skills.map((skill) => (
-                    <li 
-                      key={skill.name}
-                      className="flex items-center justify-between gap-2"
-                    >
-                      <span className="text-sm text-foreground">{skill.name}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${levelColors[skill.level]}`}>
-                        {skill.level}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          ))}
+        {/* Sliding Skills Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[350px]">
+          <AnimatePresence mode="popLayout" initial={false}>
+            {getVisibleCategories().map((category, idx) => (
+              <motion.div
+                key={`${category.category}-${currentIndex}-${idx}`}
+                layout
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <div className="bg-card rounded-xl border border-border p-6 h-full backdrop-blur-sm border-white/5 hover:border-blue-500/30 transition-colors">
+                  <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+                    {category.category}
+                  </h3>
+                  <ul className="space-y-3">
+                    {category.skills.map((skill) => (
+                      <li 
+                        key={skill.name}
+                        className="flex items-center justify-between gap-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-foreground">{skill.name}</span>
+                          <span className="text-xs text-muted-foreground">{skill.years}y</span>
+                        </div>
+                        <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
+                          {skill.level}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </section>
