@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,6 +16,10 @@ interface SkillCategory {
   skills: Skill[];
 }
 
+/**
+ * Strict color mapping as requested:
+ * Beginner: Red, Intermediate: Yellow, Advanced: Green, Expert: Blue
+ */
 const levelColors: Record<string, string> = {
   Beginner: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400",
   Intermediate: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
@@ -27,59 +31,60 @@ export function SkillsSection() {
   const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(4);
+  const [direction, setDirection] = useState(0); // Track direction for better sliding animation
 
-  // Load skills data from static JSON import
   useEffect(() => {
     setSkillCategories(skillsData as SkillCategory[]);
   }, []);
 
-  // Responsive visible count
+  // Responsive logic to determine how many cards to show per view
   useEffect(() => {
-    const update = () => {
+    const updateCount = () => {
       const w = window.innerWidth;
       if (w < 640) setVisibleCount(1);
       else if (w < 1024) setVisibleCount(2);
       else setVisibleCount(4);
     };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    updateCount();
+    window.addEventListener("resize", updateCount);
+    return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  // Auto-move logic: Change index every 2.5 seconds
+  // Navigation handlers that track direction to ensure smooth CSS transitions
+  const moveNext = useCallback(() => {
+    setDirection(1);
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prev) => (prev + 1) % len);
+  }, [skillCategories.length]);
+
+  const movePrev = useCallback(() => {
+    setDirection(-1);
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prev) => (prev - 1 + len) % len);
+  }, [skillCategories.length]);
+
+  // Auto-play timer
   useEffect(() => {
     if (skillCategories.length === 0) return;
-    const len = skillCategories.length;
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % len);
-    }, 2500);
+    const timer = setInterval(moveNext, 3500); // Increased to 3.5s for readability
     return () => clearInterval(timer);
-  }, [skillCategories, visibleCount]);
+  }, [moveNext, skillCategories.length]);
 
-  // Determine which categories to show based on `visibleCount`
+  // Logic to grab a slice of the categories for a "looping" effect
   const getVisibleCategories = () => {
     if (skillCategories.length === 0) return [];
-    const items: SkillCategory[] = [];
+    const items: { data: SkillCategory; originalIndex: number }[] = [];
     for (let i = 0; i < visibleCount; i++) {
-      items.push(skillCategories[(currentIndex + i) % skillCategories.length]);
+      const idx = (currentIndex + i) % skillCategories.length;
+      items.push({ data: skillCategories[idx], originalIndex: idx });
     }
     return items;
-  };
-
-  const prev = () => {
-    const len = skillCategories.length || 1;
-    setCurrentIndex((prevIdx) => (prevIdx - 1 + len) % len);
-  };
-
-  const next = () => {
-    const len = skillCategories.length || 1;
-    setCurrentIndex((prevIdx) => (prevIdx + 1) % len);
   };
 
   return (
     <section className="section-padding bg-secondary/30 overflow-hidden">
       <div className="section-container">
-        {/* Section Header */}
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -94,57 +99,58 @@ export function SkillsSection() {
                 Tech Stack & Skills
               </h2>
               <p className="text-muted-foreground max-w-xl">
-                Technologies I've worked with across the full stack, from frontend 
-                interfaces to backend infrastructure.
+                Technologies I've worked with across the full stack.
               </p>
             </div>
+            
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-2">
-                <button onClick={prev} aria-label="Previous" className="p-2 rounded-md bg-card border border-border hover:bg-border/50">
+                <button onClick={movePrev} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button onClick={next} aria-label="Next" className="p-2 rounded-md bg-card border border-border hover:bg-border/50">
+                <button onClick={moveNext} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-              <Button asChild className="bg-accent text-accent-foreground gap-1 w-fit">
+              <Button asChild className="bg-accent text-accent-foreground gap-1">
                 <Link to="/skills">
-                  View All Skills
-                  <ArrowUpRight className="w-4 h-4" />
+                  View All Skills <ArrowUpRight className="w-4 h-4" />
                 </Link>
               </Button>
             </div>
           </div>
         </motion.div>
 
-        {/* Sliding Skills Grid */}
+        {/* Sliding Grid with Enhanced Transitions */}
         <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[350px]">
-            <AnimatePresence mode="popLayout" initial={false}>
-              {getVisibleCategories().map((category, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[380px]">
+            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+              {getVisibleCategories().map((item, idx) => (
                 <motion.div
-                  key={`${category.category}-${currentIndex}-${idx}`}
+                  key={`${item.data.category}-${item.originalIndex}`}
                   layout
-                  initial={{ opacity: 0, x: 50 }}
+                  // Custom variant logic to make cards slide smoothly based on direction
+                  initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
+                  transition={{
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.4 }
+                  }}
+                  className="h-full"
                 >
-                  <div className="bg-card rounded-xl border border-border p-6 h-full backdrop-blur-sm hover:border-blue-500/30 transition-colors">
-                    <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-                      {category.category}
+                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-blue-500/30 transition-all duration-300">
+                    <h3 className="font-display text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">
+                      {item.data.category}
                     </h3>
-                    <ul className="space-y-3">
-                      {category.skills.map((skill) => (
-                        <li 
-                          key={skill.name}
-                          className="flex items-center justify-between gap-2"
-                        >
+                    <ul className="space-y-4 flex-grow">
+                      {item.data.skills.map((skill) => (
+                        <li key={skill.name} className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-foreground">{skill.name}</span>
-                            <span className="text-xs text-muted-foreground">{skill.years}y</span>
+                            <span className="text-sm text-foreground font-medium">{skill.name}</span>
+                            <span className="text-[11px] text-muted-foreground">{skill.years}y</span>
                           </div>
-                          <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
+                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
                             {skill.level}
                           </span>
                         </li>
