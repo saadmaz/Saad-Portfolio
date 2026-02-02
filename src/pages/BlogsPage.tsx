@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { BlogCard } from "../blog/components/BlogCard";
-import { getAllBlogs } from "../blog/utils/blogUtils";
-import { BlogMetadata } from "../blog/types/blog";
+import { BlogCard } from "@/data/blog/components/BlogCard";
+import { getAllBlogs } from "@/data/blog/utils/blogUtils";
+import { BlogMetadata } from "@/data/blog/types/blog";
 import { X } from "lucide-react";
 import "./BlogsPage.css";
 

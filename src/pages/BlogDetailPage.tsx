@@ -2,7 +2,7 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { getBlogBySlug } from "@/blog/utils/blogUtils";
+import { getBlogBySlug } from "@/data/blog/utils/blogUtils";
 import { ArrowLeft, Calendar, User, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { getAllBlogs } from "@/blog/utils/blogUtils";
-import { BlogMetadata } from "@/blog/types/blog";
-import { BlogCard } from "@/blog/components/BlogCard";
+import { getAllBlogs } from "@/data/blog/utils/blogUtils";
+import { BlogMetadata } from "@/data/blog/types/blog";
+import { BlogCard } from "@/data/blog/components/BlogCard";
 import { Search, X } from "lucide-react";
 import "./BlogPage.css"; 
 
