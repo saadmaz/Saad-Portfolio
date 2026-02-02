@@ -2,11 +2,11 @@
   {
     "category": "Programming Languages",
     "skills": [
-      { "name": "Java", "level": "Beginner", "years": 2 },
-      { "name": "Python", "level": "Intermediate", "years": 3 },
-      { "name": "JavaScript", "level": "Advance", "years": 3 },
+      { "name": "Java", "level": "Advance", "years": 2 },
+      { "name": "Python", "level": "Advance", "years": 3 },
+      { "name": "JavaScript", "level": "Intermediate", "years": 3 },
       { "name": "TypeScript", "level": "Expert", "years": 4 },
-      { "name": "Rust", "level": "Advance", "years": 3 }
+      { "name": "Rust", "level": "Beginner", "years": 3 }
     ]
   },
 
@@ -15,8 +15,8 @@
     "skills": [
       { "name": "HTML5 & CSS3", "level": "Expert", "years": 4 },
       { "name": "React.js", "level": "Expert", "years": 3 },
-      { "name": "Tailwind CSS", "level": "Expert", "years": 2 },
-      { "name": "Vue.js", "level": "Expert", "years": 4 },
+      { "name": "Tailwind CSS", "level": "Advance", "years": 2 },
+      { "name": "Vue.js", "level": "Beginner", "years": 4 },
       { "name": "Responsive Web Design", "level": "Expert", "years": 2 }
     ]
   },
@@ -24,33 +24,33 @@
   {
     "category": "Backend Development",
     "skills": [
-      { "name": "Node.js", "level": "Expert", "years": 3 },
-      { "name": "Express.js", "level": "Expert", "years": 3 },
-      { "name": "RESTful Services", "level": "Expert", "years": 3 },
-      { "name": "Authentication & Authorization", "level": "Expert", "years": 2 },
-      { "name": "Server-Side Business Logic", "level": "Expert", "years": 3 }
+      { "name": "Node.js", "level": "Advance", "years": 3 },
+      { "name": "Express.js", "level": "Intermediate", "years": 3 },
+      { "name": "RESTful Services", "level": "Advance", "years": 3 },
+      { "name": "Authentication & Authorization", "level": "Intermediate", "years": 2 },
+      { "name": "Server-Side Business Logic", "level": "Intermediate", "years": 3 }
     ]
   },
   
   {
     "category": "Database Technologies",
     "skills": [
-      { "name": "MySQL", "level": "Expert", "years": 3 },
-      { "name": "PostgreSQL", "level": "Expert", "years": 2 },
-      { "name": "MongoDB", "level": "Expert", "years": 2 },
-      { "name": "Firebase", "level": "Expert", "years": 2 },
-      { "name": "Supabase", "level": "Expert", "years": 1 }
+      { "name": "MySQL", "level": "Advance", "years": 3 },
+      { "name": "PostgreSQL", "level": "Intermediate", "years": 2 },
+      { "name": "MongoDB", "level": "Advance", "years": 2 },
+      { "name": "Firebase", "level": "Beginner", "years": 2 },
+      { "name": "Supabase", "level": "Advance", "years": 1 }
     ]
   },
 
   {  
   "category": "DevOps & Cloud",
     "skills": [
-      { "name": "AWS (EC2, S3, IAM)", "level": "Expert", "years": 2 },
-      { "name": "Docker", "level": "Expert", "years": 1 },
-      { "name": "CI/CD Pipelines", "level": "Expert", "years": 1 },
-      { "name": "Environment Configuration", "level": "Expert", "years": 2 },
-      { "name": "Cloud Deployment & Monitoring", "level": "Expert", "years": 1 }
+      { "name": "AWS (EC2, S3, IAM)", "level": "Intermediate", "years": 2 },
+      { "name": "Docker", "level": "Advance", "years": 1 },
+      { "name": "CI/CD Pipelines", "level": "Intermediate", "years": 1 },
+      { "name": "Environment Configuration", "level": "Intermediate", "years": 2 },
+      { "name": "Cloud Deployment & Monitoring", "level": "Beginner", "years": 1 }
     ]
   },
 
@@ -58,9 +58,9 @@
     "category": "API Design & Integration",
     "skills": [
       { "name": "REST API Design", "level": "Expert", "years": 3 },
-      { "name": "Third-Party API Integration", "level": "Expert", "years": 3 },
-      { "name": "API Authentication (JWT, OAuth)", "level": "Expert", "years": 2 },
-      { "name": "Webhooks", "level": "Expert", "years": 2 },
+      { "name": "Third-Party API Integration", "level": "Intermediate", "years": 3 },
+      { "name": "API Authentication (JWT, OAuth)", "level": "Advance", "years": 2 },
+      { "name": "Webhooks", "level": "Advance", "years": 2 },
       { "name": "API Documentation (Postman / Swagger)", "level": "Expert", "years": 3 }
     ]
   },
@@ -69,9 +69,9 @@
     "category": "Prompt Engineering",
     "skills": [
       { "name": "LLM Prompt Structuring", "level": "Expert", "years": 2 },
-      { "name": "AI Workflow Automation", "level": "Expert", "years": 2 },
-      { "name": "Context Optimization", "level": "Expert", "years": 1 },
-      { "name": "Output Evaluation & Iteration", "level": "Expert", "years": 2 },
+      { "name": "AI Workflow Automation", "level": "Advance", "years": 2 },
+      { "name": "Context Optimization", "level": "Beginner", "years": 1 },
+      { "name": "Output Evaluation & Iteration", "level": "Advance", "years": 2 },
       { "name": "AI Tool Integration", "level": "Expert", "years": 2 }
     ]
   },
@@ -82,9 +82,9 @@
       { "name": "Canva / Figma", "level": "Expert", "years": 3 },
       { "name": "Wireframing & Prototyping", "level": "Expert", "years": 2 },
       { "name": "Design Systems", "level": "Expert", "years": 1 },
-      { "name": "UI Consistency & Layout", "level": "Expert", "years": 3 },
-      { "name": "Visual Storytelling", "level": "Expert", "years": 2 },
-      { "name": "UX Optimization for Conversion", "level": "Expert", "years": 2 }
+      { "name": "UI Consistency & Layout", "level": "Advance", "years": 3 },
+      { "name": "Visual Storytelling", "level": "Advance", "years": 2 },
+      { "name": "UX Optimization for Conversion", "level": "Intermediate", "years": 2 }
     ]
   },
 
@@ -92,22 +92,22 @@
     "category": "Business, Startup & Strategy",
     "skills": [
       { "name": "Startup Ideation & Validation", "level": "Expert", "years": 3 },
-      { "name": "Go-To-Market Strategy", "level": "Expert", "years": 2 },
-      { "name": "Product Positioning", "level": "Expert", "years": 2 },
-      { "name": "Business Model Design", "level": "Expert", "years": 3 },
-      { "name": "Strategic Partnerships", "level": "Expert", "years": 2 }
+      { "name": "Go-To-Market Strategy", "level": "Intermediate", "years": 2 },
+      { "name": "Product Positioning", "level": "Intermediate", "years": 2 },
+      { "name": "Business Model Design", "level": "Advance", "years": 3 },
+      { "name": "Strategic Partnerships", "level": "Intermediate", "years": 2 }
     ]
   },
 
   {
     "category": "Market Research & Analysis",
     "skills": [
-      { "name": "Competitive Analysis", "level": "Expert", "years": 3 },
-      { "name": "Industry Trend Analysis", "level": "Expert", "years": 3 },
-      { "name": "Competitor Benchmarking", "level": "Expert", "years": 2 },
-      { "name": "Customer Persona Development", "level": "Expert", "years": 3 },
-      { "name": "Market Sizing (TAM/SAM/SOM)", "level": "Expert", "years": 2 },
-      { "name": "Insight-Driven Decision Making", "level": "Expert", "years": 2 }
+      { "name": "Competitive Analysis", "level": "Intermediate", "years": 3 },
+      { "name": "Industry Trend Analysis", "level": "Intermediate", "years": 3 },
+      { "name": "Competitor Benchmarking", "level": "Beginner", "years": 2 },
+      { "name": "Customer Persona Development", "level": "Beginner", "years": 3 },
+      { "name": "Market Sizing (TAM/SAM/SOM)", "level": "Intermediate", "years": 2 },
+      { "name": "Insight-Driven Decision Making", "level": "Advance", "years": 2 }
     ]
   },
 
@@ -115,9 +115,9 @@
     "category": "Content & Community",
     "skills": [
       { "name": "Newsletter Writing", "level": "Expert", "years": 2 },
-      { "name": "Podcast Production", "level": "Expert", "years": 1 },
+      { "name": "Podcast Production", "level": "Advance", "years": 1 },
       { "name": "Social Media Content Strategy", "level": "Expert", "years": 2 },
-      { "name": "Community Building", "level": "Expert", "years": 2 },
+      { "name": "Community Building", "level": "Intermediate", "years": 2 },
       { "name": "Event Hosting & Moderation", "level": "Expert", "years": 2 }
     ]
   },
@@ -126,10 +126,10 @@
     "category": "Negotiation & Sales",
     "skills": [
       { "name": "Client Pitching", "level": "Expert", "years": 3 },
-      { "name": "Proposal & Deck Creation", "level": "Expert", "years": 3 },
-      { "name": "Pricing Strategy", "level": "Expert", "years": 2 },
-      { "name": "Objection Handling", "level": "Expert", "years": 2 },
-      { "name": "Relationship Management", "level": "Expert", "years": 3 }
+      { "name": "Proposal & Deck Creation", "level": "Advance", "years": 3 },
+      { "name": "Pricing Strategy", "level": "Advance", "years": 2 },
+      { "name": "Objection Handling", "level": "Intermediate", "years": 2 },
+      { "name": "Relationship Management", "level": "Intermediate", "years": 3 }
     ]
   }
 ]
