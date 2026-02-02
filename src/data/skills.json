@@ -1,51 +1,135 @@
 [
   {
-    "category": "Frontend",
+    "category": "Programming Languages",
     "skills": [
-      { "name": "React", "level": 5, "years": 3, "endorsed": 45 },
-      { "name": "TypeScript", "level": 5, "years": 3, "endorsed": 38 },
-      { "name": "Tailwind CSS", "level": 4, "years": 2, "endorsed": 32 },
-      { "name": "Next.js", "level": 4, "years": 2, "endorsed": 28 },
-      { "name": "Vue.js", "level": 3, "years": 1, "endorsed": 15 }
+      { "name": "Java", "level": "Expert", "years": 2 },
+      { "name": "Python", "level": "Expert", "years": 3 },
+      { "name": "JavaScript", "level": "Expert", "years": 3 },
+      { "name": "TypeScript", "level": "Expert", "years": 4 },
+      { "name": "Rust", "level": "Expert", "years": 3 }
     ]
   },
+
   {
-    "category": "Backend",
+    "category": "Frontend Development",
     "skills": [
-      { "name": "Node.js", "level": 5, "years": 3, "endorsed": 42 },
-      { "name": "Express", "level": 5, "years": 3, "endorsed": 35 },
-      { "name": "GraphQL", "level": 4, "years": 2, "endorsed": 28 },
-      { "name": "Python", "level": 3, "years": 1, "endorsed": 18 },
-      { "name": "Django", "level": 3, "years": 1, "endorsed": 12 }
+      { "name": "HTML5 & CSS3", "level": "Expert", "years": 4 },
+      { "name": "React.js", "level": "Expert", "years": 3 },
+      { "name": "Tailwind CSS", "level": "Expert", "years": 2 },
+      { "name": "Vue.js", "level": "Expert", "years": 4 },
+      { "name": "Responsive Web Design", "level": "Expert", "years": 2 }
     ]
   },
+  
   {
-    "category": "Database",
+    "category": "Backend Development",
     "skills": [
-      { "name": "MongoDB", "level": 4, "years": 2, "endorsed": 32 },
-      { "name": "PostgreSQL", "level": 4, "years": 2, "endorsed": 30 },
-      { "name": "Redis", "level": 3, "years": 1, "endorsed": 20 },
-      { "name": "Firebase", "level": 3, "years": 1, "endorsed": 15 }
+      { "name": "Node.js", "level": "Expert", "years": 3 },
+      { "name": "Express.js", "level": "Expert", "years": 3 },
+      { "name": "RESTful Services", "level": "Expert", "years": 3 },
+      { "name": "Authentication & Authorization", "level": "Expert", "years": 2 },
+      { "name": "Server-Side Business Logic", "level": "Expert", "years": 3 }
     ]
   },
+  
   {
-    "category": "DevOps & Tools",
+    "category": "Database Technologies",
     "skills": [
-      { "name": "Docker", "level": 4, "years": 2, "endorsed": 28 },
-      { "name": "AWS", "level": 4, "years": 2, "endorsed": 35 },
-      { "name": "Git", "level": 5, "years": 4, "endorsed": 50 },
-      { "name": "CI/CD", "level": 4, "years": 2, "endorsed": 25 },
-      { "name": "Kubernetes", "level": 3, "years": 1, "endorsed": 18 }
+      { "name": "MySQL", "level": "Expert", "years": 3 },
+      { "name": "PostgreSQL", "level": "Expert", "years": 2 },
+      { "name": "MongoDB", "level": "Expert", "years": 2 },
+      { "name": "Firebase", "level": "Expert", "years": 2 },
+      { "name": "Supabase", "level": "Expert", "years": 1 }
     ]
   },
-  {
-    "category": "Soft Skills",
+
+  {  
+  "category": "DevOps & Cloud",
     "skills": [
-      { "name": "Leadership", "level": 4, "years": 2, "endorsed": 32 },
-      { "name": "Communication", "level": 5, "years": 4, "endorsed": 45 },
-      { "name": "Problem Solving", "level": 5, "years": 5, "endorsed": 48 },
-      { "name": "Mentoring", "level": 4, "years": 2, "endorsed": 28 },
-      { "name": "Agile", "level": 4, "years": 3, "endorsed": 35 }
+      { "name": "AWS (EC2, S3, IAM)", "level": "Expert", "years": 2 },
+      { "name": "Docker", "level": "Expert", "years": 1 },
+      { "name": "CI/CD Pipelines", "level": "Expert", "years": 1 },
+      { "name": "Environment Configuration", "level": "Expert", "years": 2 },
+      { "name": "Cloud Deployment & Monitoring", "level": "Expert", "years": 1 }
+    ]
+  },
+
+  {
+    "category": "API Design & Integration",
+    "skills": [
+      { "name": "REST API Design", "level": "Expert", "years": 3 },
+      { "name": "Third-Party API Integration", "level": "Expert", "years": 3 },
+      { "name": "API Authentication (JWT, OAuth)", "level": "Expert", "years": 2 },
+      { "name": "Webhooks", "level": "Expert", "years": 2 },
+      { "name": "API Documentation (Postman / Swagger)", "level": "Expert", "years": 3 }
+    ]
+  },
+
+  {
+    "category": "Prompt Engineering",
+    "skills": [
+      { "name": "LLM Prompt Structuring", "level": "Expert", "years": 2 },
+      { "name": "AI Workflow Automation", "level": "Expert", "years": 2 },
+      { "name": "Context Optimization", "level": "Expert", "years": 1 },
+      { "name": "Output Evaluation & Iteration", "level": "Expert", "years": 2 },
+      { "name": "AI Tool Integration", "level": "Expert", "years": 2 }
+    ]
+  },
+
+  {
+    "category": "Design & UX",
+    "skills": [
+      { "name": "Canva / Figma", "level": "Expert", "years": 3 },
+      { "name": "Wireframing & Prototyping", "level": "Expert", "years": 2 },
+      { "name": "Design Systems", "level": "Expert", "years": 1 },
+      { "name": "UI Consistency & Layout", "level": "Expert", "years": 3 },
+      { "name": "Visual Storytelling", "level": "Expert", "years": 2 },
+      { "name": "UX Optimization for Conversion", "level": "Expert", "years": 2 }
+    ]
+  },
+
+  {
+    "category": "Business, Startup & Strategy",
+    "skills": [
+      { "name": "Startup Ideation & Validation", "level": "Expert", "years": 3 },
+      { "name": "Go-To-Market Strategy", "level": "Expert", "years": 2 },
+      { "name": "Product Positioning", "level": "Expert", "years": 2 },
+      { "name": "Business Model Design", "level": "Expert", "years": 3 },
+      { "name": "Strategic Partnerships", "level": "Expert", "years": 2 }
+    ]
+  },
+
+  {
+    "category": "Market Research & Analysis",
+    "skills": [
+      { "name": "Competitive Analysis", "level": "Expert", "years": 3 },
+      { "name": "Industry Trend Analysis", "level": "Expert", "years": 3 },
+      { "name": "Competitor Benchmarking", "level": "Expert", "years": 2 },
+      { "name": "Customer Persona Development", "level": "Expert", "years": 3 },
+      { "name": "Market Sizing (TAM/SAM/SOM)", "level": "Expert", "years": 2 },
+      { "name": "Insight-Driven Decision Making", "level": "Expert", "years": 2 }
+    ]
+  },
+
+  {
+    "category": "Content & Community",
+    "skills": [
+      { "name": "Newsletter Writing", "level": "Expert", "years": 2 },
+      { "name": "Podcast Production", "level": "Expert", "years": 1 },
+      { "name": "Social Media Content Strategy", "level": "Expert", "years": 2 },
+      { "name": "Community Building", "level": "Expert", "years": 2 },
+      { "name": "Event Hosting & Moderation", "level": "Expert", "years": 2 }
+    ]
+  },
+
+  {
+    "category": "Negotiation & Sales",
+    "skills": [
+      { "name": "Client Pitching", "level": "Expert", "years": 3 },
+      { "name": "Proposal & Deck Creation", "level": "Expert", "years": 3 },
+      { "name": "Pricing Strategy", "level": "Expert", "years": 2 },
+      { "name": "Objection Handling", "level": "Expert", "years": 2 },
+      { "name": "Relationship Management", "level": "Expert", "years": 3 }
     ]
   }
 ]

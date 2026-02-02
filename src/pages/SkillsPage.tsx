@@ -13,74 +13,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const skillCategories = [
-  {
-    title: "Programming Languages",
-    skills: [
-      { name: "TypeScript", level: "Expert", years: 4 },
-      { name: "JavaScript", level: "Expert", years: 5 },
-      { name: "Python", level: "Advanced", years: 4 },
-      { name: "Go", level: "Intermediate", years: 2 },
-      { name: "SQL", level: "Advanced", years: 4 },
-      { name: "Java", level: "Intermediate", years: 3 },
-    ],
-  },
-  {
-    title: "Frontend",
-    skills: [
-      { name: "React", level: "Expert", years: 4 },
-      { name: "Next.js", level: "Advanced", years: 3 },
-      { name: "Tailwind CSS", level: "Expert", years: 3 },
-      { name: "Vue.js", level: "Intermediate", years: 2 },
-      { name: "Framer Motion", level: "Advanced", years: 2 },
-      { name: "HTML/CSS", level: "Expert", years: 5 },
-    ],
-  },
-  {
-    title: "Backend",
-    skills: [
-      { name: "Node.js", level: "Expert", years: 4 },
-      { name: "FastAPI", level: "Advanced", years: 2 },
-      { name: "Express.js", level: "Expert", years: 4 },
-      { name: "GraphQL", level: "Advanced", years: 3 },
-      { name: "REST APIs", level: "Expert", years: 5 },
-      { name: "WebSockets", level: "Advanced", years: 2 },
-    ],
-  },
-  {
-    title: "Databases",
-    skills: [
-      { name: "PostgreSQL", level: "Advanced", years: 4 },
-      { name: "MongoDB", level: "Advanced", years: 3 },
-      { name: "Redis", level: "Intermediate", years: 2 },
-      { name: "Prisma", level: "Advanced", years: 2 },
-      { name: "DynamoDB", level: "Intermediate", years: 1 },
-    ],
-  },
-  {
-    title: "DevOps & Cloud",
-    skills: [
-      { name: "AWS", level: "Advanced", years: 3 },
-      { name: "Docker", level: "Advanced", years: 3 },
-      { name: "Git", level: "Expert", years: 5 },
-      { name: "CI/CD", level: "Advanced", years: 3 },
-      { name: "Kubernetes", level: "Intermediate", years: 1 },
-      { name: "Terraform", level: "Intermediate", years: 1 },
-    ],
-  },
-  {
-    title: "Tools & Other",
-    skills: [
-      { name: "VS Code", level: "Expert", years: 5 },
-      { name: "Figma", level: "Advanced", years: 3 },
-      { name: "Jira", level: "Advanced", years: 3 },
-      { name: "Notion", level: "Expert", years: 3 },
-      { name: "Linux", level: "Advanced", years: 4 },
-    ],
-  },
-];
+// Define the shape of your JSON data
+interface Skill {
+  name: string;
+  level: string;
+  years: number;
+}
 
-// Sample certificates - you can add 100+ certificates here
+interface SkillCategory {
+  category: string;
+  skills: Skill[];
+}
+
+// Sample certificates
 const certificates = [
   {
     id: "1",
@@ -88,7 +33,7 @@ const certificates = [
     issuer: "Amazon Web Services",
     date: "2024",
     credentialUrl: "#",
-    pdfUrl: "/certificates/aws-sa.pdf", // PDF path for landscape certificate
+    pdfUrl: "/certificates/aws-sa.pdf",
     tags: ["Cloud", "Architecture"],
     category: "Cloud",
   },
@@ -132,7 +77,6 @@ const certificates = [
     tags: ["Fundamentals", "C", "Python"],
     category: "Fundamentals",
   },
-  // Add more certificates as needed...
   {
     id: "6",
     name: "Google Cloud Professional Data Engineer",
@@ -166,7 +110,7 @@ const certificates = [
   {
     id: "meta-frontend",
     title: "Meta Front-End Developer",
-    name: "Meta Front-End Developer", // Map title to name for consistency if needed, assuming 'name' is the field used in SkillsPage
+    name: "Meta Front-End Developer",
     issuer: "Meta",
     date: "2023",
     credentialUrl: "#",
@@ -194,7 +138,7 @@ const certificates = [
     credentialUrl: "#",
     pdfUrl: "/certificates/mongodb.pdf",
     tags: ["NoSQL", "Data Modeling"],
-    category: "Databases", // Note: Category name might need to match existing categories in SkillsPage
+    category: "Databases",
   },
   {
     id: "github-actions",
@@ -229,24 +173,33 @@ const levelColors: Record<string, string> = {
 const categories = ["All", ...Array.from(new Set(certificates.map(c => c.category)))];
 
 const SkillsPage = () => {
+  const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllCerts, setShowAllCerts] = useState(false);
   const [selectedCert, setSelectedCert] = useState<typeof certificates[0] | null>(null);
   const [searchParams] = useSearchParams();
 
-  // Check for certId in URL and open corresponding certificate
+  // New Effect to fetch skills from src/data/skills.json
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch("/src/data/skills.json");
+        const data = await response.json();
+        setSkillCategories(data);
+      } catch (error) {
+        console.error("Error loading skills.json:", error);
+      }
+    };
+    fetchSkills();
+  }, []);
+
   useEffect(() => {
     const certId = searchParams.get("certId");
     if (certId) {
       const cert = certificates.find(c => c.id === certId);
       if (cert) {
         setSelectedCert(cert);
-        // Clean up the URL?? Maybe not needed if we want it shareable. 
-        // But if we want to reset... let's keep it shareable.
-
-        // Ensure "All" certificates or the specific category is visible if needed? 
-        // For now, the dialog is improved, it opens on top regardless of list filtering.
       }
     }
   }, [searchParams]);
@@ -286,14 +239,14 @@ const SkillsPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="stack">
             {skillCategories.map((category, index) => (
               <motion.div
-                key={category.title}
+                key={category.category}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
               >
                 <div className="bg-card rounded-xl border border-border p-6 h-full">
                   <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-                    {category.title}
+                    {category.category}
                   </h3>
                   <ul className="space-y-3">
                     {category.skills.map((skill) => (
@@ -307,7 +260,7 @@ const SkillsPage = () => {
                             {skill.years}y
                           </span>
                         </div>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${levelColors[skill.level]}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${levelColors[skill.level] || "bg-secondary text-muted-foreground"}`}>
                           {skill.level}
                         </span>
                       </li>
@@ -391,7 +344,6 @@ const SkillsPage = () => {
                       <DialogTrigger asChild>
                         <div
                           className="bg-card rounded-xl border border-border p-5 card-hover cursor-pointer group"
-                          onClick={() => setSelectedCert(cert)}
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
@@ -423,7 +375,6 @@ const SkillsPage = () => {
                           <p className="text-muted-foreground">{cert.issuer} • {cert.date}</p>
                         </DialogHeader>
                         <div className="mt-4">
-                          {/* PDF Viewer for landscape certificate */}
                           <div className="aspect-[1.414/1] bg-muted rounded-lg flex items-center justify-center border border-border overflow-hidden">
                             {cert.pdfUrl ? (
                               <iframe
@@ -436,9 +387,6 @@ const SkillsPage = () => {
                                 <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                                 <p className="text-muted-foreground">
                                   Certificate PDF will be displayed here
-                                </p>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                  Upload your certificate to: {cert.pdfUrl || "/certificates/[name].pdf"}
                                 </p>
                               </div>
                             )}
