@@ -178,7 +178,7 @@ const SkillsPage = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await fetch("/src/data/skills.json");
+        const response = await fetch("/data/skills.json");
         const data = await response.json();
         setSkillCategories(data);
       } catch (error) {
