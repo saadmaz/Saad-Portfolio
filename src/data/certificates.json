@@ -207,6 +207,27 @@
   "pdf_document_link": "/Certificates/10 - CertificateOfCompletion_Microsoft Security Essentials Professional Certificate by Microsoft and LinkedIn.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "11",
+  "title": "Generative AI vs. Traditional AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "3b7be946d144b7272ebcc15dc3448ed57ddbe12588eabf6952588f6bab078e50",
+  "credential_url": "https://www.linkedin.com/learning/certificates/3b7be946d144b7272ebcc15dc3448ed57ddbe12588eabf6952588f6bab078e50",
+  "description": "Successfully completed 'Generative AI vs. Traditional AI' by Doug Rose. This course distinguishes between rules-based traditional AI systems and modern generative models, exploring the unique capabilities, underlying architectures, and business use cases for both technologies.",
+  "skills": ["Traditional AI", "Artificial Intelligence (AI)", "Generative AI"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Generative AI", "AI Architecture", "Machine Learning", "Technology Comparison"],
+  "pdf_document_link": "/Certificates/11 - CertificateOfCompletion_Generative AI vs. Traditional AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
