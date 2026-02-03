@@ -17,6 +17,6 @@ export { default as hostingData } from './content/hosting.json';
 // Personal information and credentials
 export { languages, volunteer, extracurricular, sports, awards, events as personalEvents } from './personal/about';
 export { educationList } from './personal/education';
-export { default as skillsData } from './personal/skills.json';
+export { default as skillsData } from './skills.json';
 export { default as workExperienceData } from './personal/workExperience.json';
 export { default as certificatesData } from './certificates.json';
