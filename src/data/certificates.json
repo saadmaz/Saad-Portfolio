@@ -291,6 +291,27 @@
   "pdf_document_link": "/Certificates/14 - CertificateOfCompletion_IT and Cybersecurity Risk Management Essential Training.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "15",
+  "title": "Practical Tips for Demonstrating Accountability as a Leader",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "a0d008e518af4f6213ffabcfac027ab816c8b97ff38b441fde37847e8173b318",
+  "credential_url": "https://www.linkedin.com/learning/certificates/a0d008e518af4f6213ffabcfac027ab816c8b97ff38b441fde37847e8173b318",
+  "description": "Successfully completed 'Practical Tips for Demonstrating Accountability as a Leader' by Dr. Shirley Davis. This course provides actionable strategies for leaders to model accountability, take ownership of outcomes, and foster a culture of responsibility within their teams and organizations.",
+  "skills": ["Leadership Accountability"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Leadership", "Management", "Accountability", "Professional Development"],
+  "pdf_document_link": "/Certificates/15 - CertificateOfCompletion_Practical Tips for Demonstrating Accountability as a Leader.pdf",
+  "is_verifiable": true,
+  "is_featured": false 
  }
 
 
