@@ -19,4 +19,4 @@ export { languages, volunteer, extracurricular, sports, awards, events as person
 export { educationList } from './personal/education';
 export { default as skillsData } from './personal/skills.json';
 export { default as workExperienceData } from './personal/workExperience.json';
-export { default as certificatesData } from './personal/certificates.json';
+export { default as certificatesData } from './certificates.json';

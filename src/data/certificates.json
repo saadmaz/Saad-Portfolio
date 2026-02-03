@@ -1,5 +1,6 @@
-{
-  "id": "cert-aws-cloud-foundations",
+[
+  {
+  "id": "1",
   "title": "AWS Cloud Foundations",
   "issuer": "Amazon Web Services",
   "platform": "AWS Training & Certification",
@@ -19,3 +20,6 @@
   "is_featured": true,
   "colour": "from-orange-500/20 to-amber-500/20"
 }
+
+
+]
