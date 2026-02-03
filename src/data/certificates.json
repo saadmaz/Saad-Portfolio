@@ -375,6 +375,27 @@
   "pdf_document_link": "/Certificates/18 - CertificateOfCompletion_Leadership Transitions.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "19",
+  "title": "Advanced SQL Project: Design and Manage a Database",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7232ccf428d4903fb29b0332893348cae4654c28fe0ceaa62bc8bb684764cf8f",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7232ccf428d4903fb29b0332893348cae4654c28fe0ceaa62bc8bb684764cf8f",
+  "description": "Successfully completed 'Advanced SQL Project: Design and Manage a Database' by Walter Shields. This project-based course covers advanced database design principles, complex SQL querying, and the implementation of Extract, Transform, Load (ETL) processes to manage data effectively.",
+  "skills": ["Database Design", "Extract, Transform, Load (ETL)", "SQL"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["SQL", "Databases", "ETL", "Data Management"],
+  "pdf_document_link": "/Certificates/19 - CertificateOfCompletion_Advanced SQL Project.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
