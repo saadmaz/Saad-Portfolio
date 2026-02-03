@@ -156,9 +156,20 @@ const CertificateDetailPage = () => {
                     <span className="font-bold">{cert.does_not_expire ? "Never" : formatDate(cert.expiry_date)}</span>
                   </div>
 
+                  {/* --- Credential ID Section --- */}
                   <div>
-                    <span className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest block mb-2">Credential ID</span>
-                    <code className="block w-full text-center py-2 bg-secondary/50 rounded-lg text-xs font-mono border border-border/40">
+                    <span className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest block mb-2">
+                      Credential ID
+                    </span>
+                    <code 
+                      className="block w-full text-center py-3 px-4 bg-secondary/50 rounded-xl text-xs font-mono border border-border/40"
+                      style={{ 
+                        wordBreak: 'break-all',     // Forces breaks for long strings with no spaces
+                        overflowWrap: 'anywhere',   // Standard property for modern browser compatibility
+                        whiteSpace: 'normal',       // Allows the text to flow onto a new line
+                        lineHeight: '1.5'           // Provides breathing room if it wraps to 2 lines
+                      }}
+                    >
                       {cert.credential_id || "ID-NOT-SPECIFIED"}
                     </code>
                   </div>
