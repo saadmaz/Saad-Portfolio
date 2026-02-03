@@ -60,5 +60,26 @@
   "pdf_document_link": "/Certificates/3 - CertificateOfCompletion_Everyday AI Concepts.pdf",
   "is_verifiable": true,
   "is_featured": true 
-}
+  },
+
+  {
+  "id": "4",
+  "title": "Copilot in Teams: AI-Powered Collaboration",
+  "issuer": "Microsoft via LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Teams Logo.png",
+  "issue_date": "2025-10-22",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "a91389d1c43c3ecfbff380b5d2b04a16c4854f264d78e657bcd36cf24be61536",
+  "credential_url": "https://www.linkedin.com/learning/certificates/a91389d1c43c3ecfbff380b5d2b04a16c4854f264d78e657bcd36cf24be61536",
+  "description": "Successfully completed 'Copilot in Teams: AI-Powered Collaboration' by Nicholas Brazzi. This course covers the integration of Microsoft Copilot within Teams to enhance productivity, automate routine tasks, and improve team communication through AI-driven insights.",
+  "skills": ["Microsoft Teams", "AI for Business", "Microsoft Copilot"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Microsoft 365", "AI Productivity", "Collaboration Tools", "Teams"],
+  "pdf_document_link": "/Certificates/4 - CertificateOfCompletion_Copilot in Teams AIPowered Collaboration.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+ }
 ] 
