@@ -175,124 +175,91 @@ const CertificationsPage = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
-                      {/* 
-                        CERTIFICATE CARD WRAPPER:
-                        Click this entire card to navigate to detail page with PDF
-                      */}
-                      <a href={`/certifications/${cert.id}`} className="group block h-full relative">
+                      {/* Certificate Card - Click to view details and PDF */}
+                      <a href={`/certifications/${cert.id}`} className="group block h-full">
                         <div className="group relative h-full bg-card rounded-2xl border border-border p-5 md:p-6 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-accent/50 flex flex-col">
                           
-                          {/* 
-                            HOVER GRADIENT OVERLAY:
-                            Subtle gradient background that appears on hover.
-                            Uses the 'colour' field directly from JSON (e.g., 'from-orange-500/20 to-amber-500/20')
-                          */}
+                          {/* Hover Gradient Overlay */}
                           <div className={`absolute inset-0 bg-gradient-to-br ${cert.colour} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
-                          {/* Content container - stays above gradient overlay */}
+                          {/* Content - stays above gradient */}
                           <div className="relative z-10 flex flex-col h-full">
                             
-                            {/* 
-                              HEADER SECTION: Issuer Logo + Verifiable Badge
-                              Logo on left (circular), badge on right (only if is_verifiable = true)
-                            */}
+                            {/* Header: Logo + Verifiable Badge */}
                             <div className="flex items-start justify-between mb-4 pb-4 border-b border-border/30">
-                              
-                              {/* Issuer Logo Circle */}
-                              <div className=\"w-14 h-14 md:w-16 md:h-16 rounded-full bg-background/70 backdrop-blur-md flex items-center justify-center border-2 border-border group-hover:border-accent/50 transition-colors flex-shrink-0\">
+                              {/* Issuer Logo */}
+                              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-background/70 backdrop-blur-md flex items-center justify-center border-2 border-border group-hover:border-accent/50 transition-colors flex-shrink-0">
                                 {cert.issuer_logo ? (
-                                  <img src={cert.issuer_logo} alt={cert.issuer} className=\"w-8 h-8 md:w-10 md:h-10 object-contain\" />
+                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-8 h-8 md:w-10 md:h-10 object-contain" />
                                 ) : (
-                                  <Award className=\"w-6 h-6 md:w-7 md:h-7 text-accent\" />
+                                  <Award className="w-6 h-6 md:w-7 md:h-7 text-accent" />
                                 )}
                               </div>
 
-                              {/* Verifiable Badge - Only show if is_verifiable is true */}
+                              {/* Verifiable Badge */}
                               {cert.is_verifiable && (
-                                <div className=\"flex items-center gap-1 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2.5 py-1.5 rounded-full text-[10px] md:text-xs font-bold whitespace-nowrap\">
-                                  <span className=\"w-1.5 h-1.5 bg-emerald-500 rounded-full\"></span>
+                                <div className="flex items-center gap-1 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2.5 py-1.5 rounded-full text-[10px] md:text-xs font-bold whitespace-nowrap">
+                                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
                                   Verifiable
                                 </div>
                               )}
                             </div>
 
-                            {/* 
-                              TITLE SECTION:
-                              Shows certification title and issuer name
-                            */}
-                            <div className=\"mb-3 flex-shrink-0\">
-                              <h3 className=\"text-lg md:text-xl font-bold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors\">
+                            {/* Title Section */}
+                            <div className="mb-3 flex-shrink-0">
+                              <h3 className="text-lg md:text-xl font-bold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
                                 {cert.title}
                               </h3>
-                              <p className=\"text-xs md:text-sm text-muted-foreground font-medium\">
+                              <p className="text-xs md:text-sm text-muted-foreground font-medium">
                                 {cert.issuer}
                               </p>
                             </div>
 
-                            {/* 
-                              DESCRIPTION SECTION:
-                              Short description of what the certification validates.
-                              Limited to 3 lines to maintain card height balance
-                            */}
-                            <p className=\"text-xs md:text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow\">
+                            {/* Description */}
+                            <p className="text-xs md:text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow">
                               {cert.description}
                             </p>
 
-                            {/* 
-                              SKILLS/TAGS SECTION:
-                              Displays all skills from the JSON as individual pills.
-                              Falls back to tags if skills array is empty.
-                              Each pill is responsive with different text sizes on mobile/desktop.
-                            */}
-                            <div className=\"mb-4 flex flex-wrap gap-2\">
+                            {/* Skills Tags */}
+                            <div className="mb-4 flex flex-wrap gap-2">
                               {cert.skills && cert.skills.length > 0 ? (
                                 cert.skills.map((skill, idx) => (
                                   <span
                                     key={idx}
-                                    className=\"text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap\"
+                                    className="text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap"
                                   >
                                     {skill}
                                   </span>
                                 ))
                               ) : (
-                                cert.tags && cert.tags.length > 0 && (
-                                  cert.tags.map((tag, idx) => (
-                                    <span
-                                      key={idx}
-                                      className=\"text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap\"
-                                    >
-                                      {tag}
-                                    </span>
-                                  ))
-                                )
+                                cert.tags?.map((tag, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))
                               )}
                             </div>
 
-                            {/* 
-                              FOOTER SECTION: Issue Date + Verify Button
-                              - Left side: Issue date from JSON
-                              - Right side: External link button to credential verification URL
-                              - Uses flexbox to maintain spacing on all screen sizes
-                            */}
-                            <div className=\"flex items-center justify-between gap-3 mt-auto pt-4 border-t border-border/30\">
-                              
-                              {/* Issue Date Display */}
-                              <div className=\"flex items-center gap-1 text-xs text-muted-foreground\">
-                                <Calendar className=\"w-4 h-4\" />
+                            {/* Footer: Date + Verify Button */}
+                            <div className="flex items-center justify-between gap-3 mt-auto pt-4 border-t border-border/30">
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Calendar className="w-4 h-4" />
                                 <span>Issued {cert.issue_date}</span>
                               </div>
 
-                              {/* Verify Credential Button - Links to external platform */}
                               {cert.credential_url && (
                                 <a
                                   href={cert.credential_url}
-                                  target=\"_blank\"
-                                  rel=\"noopener noreferrer\"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                   onClick={(e) => e.stopPropagation()}
-                                  className=\"flex items-center gap-1 bg-foreground/10 hover:bg-accent/20 text-accent hover:text-accent font-bold text-xs md:text-sm px-3 py-1.5 rounded-md transition-all duration-200\"
+                                  className="flex items-center gap-1 bg-foreground/10 hover:bg-accent/20 text-accent hover:text-accent font-bold text-xs md:text-sm px-3 py-1.5 rounded-md transition-all duration-200"
                                 >
                                   Verify
-                                  <ExternalLink className=\"w-3.5 h-3.5 md:w-4 md:h-4\" />
+                                  <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 </a>
                               )}
                             </div>
