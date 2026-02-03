@@ -8,9 +8,7 @@ import {
   ChevronDown, 
   ChevronUp, 
   Search, 
-  X,
-  Layers,
-  Tag
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,7 +163,8 @@ const CertificationsPage = () => {
               </div>
 
               {/* --- CERTIFICATES GRID --- */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Responsive grid: 1 col mobile, 2 cols tablet, 3 cols desktop */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <AnimatePresence mode="popLayout">
                   {displayedCertificates.map((cert, index) => (
                     <motion.div
@@ -176,50 +175,125 @@ const CertificationsPage = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
-                      {/* Navigate to Detail Page on Click */}
-                      <a href={`/certifications/${cert.id}`} className="block h-full">
-                        <div className="group relative h-full bg-card rounded-2xl border border-border p-6 cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-accent/40 flex flex-col">
+                      {/* 
+                        CERTIFICATE CARD WRAPPER:
+                        Click this entire card to navigate to detail page with PDF
+                      */}
+                      <a href={`/certifications/${cert.id}`} className="group block h-full relative">
+                        <div className="group relative h-full bg-card rounded-2xl border border-border p-5 md:p-6 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-accent/50 flex flex-col">
                           
-                          {/* GRADIENT OVERLAY: Strictly uses 'colour' field from JSON */}
-                          <div className={`absolute inset-0 bg-gradient-to-br ${cert.colour} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                          {/* 
+                            HOVER GRADIENT OVERLAY:
+                            Subtle gradient background that appears on hover.
+                            Uses the 'colour' field directly from JSON (e.g., 'from-orange-500/20 to-amber-500/20')
+                          */}
+                          <div className={`absolute inset-0 bg-gradient-to-br ${cert.colour} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
-                          <div className="relative z-10 flex-1 flex flex-col">
-                            {/* Card Top: Logo and Date Chip */}
-                            <div className="flex items-start justify-between mb-6">
-                              <div className="w-12 h-12 rounded-xl bg-background/90 backdrop-blur-md flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors">
+                          {/* Content container - stays above gradient overlay */}
+                          <div className="relative z-10 flex flex-col h-full">
+                            
+                            {/* 
+                              HEADER SECTION: Issuer Logo + Verifiable Badge
+                              Logo on left (circular), badge on right (only if is_verifiable = true)
+                            */}
+                            <div className="flex items-start justify-between mb-4 pb-4 border-b border-border/30">
+                              
+                              {/* Issuer Logo Circle */}
+                              <div className=\"w-14 h-14 md:w-16 md:h-16 rounded-full bg-background/70 backdrop-blur-md flex items-center justify-center border-2 border-border group-hover:border-accent/50 transition-colors flex-shrink-0\">
                                 {cert.issuer_logo ? (
-                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-8 h-8 object-contain" />
+                                  <img src={cert.issuer_logo} alt={cert.issuer} className=\"w-8 h-8 md:w-10 md:h-10 object-contain\" />
                                 ) : (
-                                  <Award className="w-6 h-6 text-accent" />
+                                  <Award className=\"w-6 h-6 md:w-7 md:h-7 text-accent\" />
                                 )}
                               </div>
-                              <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground bg-secondary/60 px-2 py-1 rounded-md flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {cert.issue_date.split("-")[0]}
-                              </span>
+
+                              {/* Verifiable Badge - Only show if is_verifiable is true */}
+                              {cert.is_verifiable && (
+                                <div className=\"flex items-center gap-1 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2.5 py-1.5 rounded-full text-[10px] md:text-xs font-bold whitespace-nowrap\">
+                                  <span className=\"w-1.5 h-1.5 bg-emerald-500 rounded-full\"></span>
+                                  Verifiable
+                                </div>
+                              )}
                             </div>
 
-                            {/* Card Content: Title and Platform Info */}
-                            <div className="flex-1">
-                              <h4 className="text-xl font-bold text-foreground mb-1 group-hover:text-accent transition-colors line-clamp-2">
+                            {/* 
+                              TITLE SECTION:
+                              Shows certification title and issuer name
+                            */}
+                            <div className=\"mb-3 flex-shrink-0\">
+                              <h3 className=\"text-lg md:text-xl font-bold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors\">
                                 {cert.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground font-medium mb-4">
-                                {cert.issuer} • <span className="opacity-60">{cert.platform}</span>
+                              </h3>
+                              <p className=\"text-xs md:text-sm text-muted-foreground font-medium\">
+                                {cert.issuer}
                               </p>
                             </div>
 
-                            {/* Card Footer: Category and Tag chips */}
-                            <div className="mt-auto pt-4 border-t border-border/20 flex flex-wrap gap-2">
-                              <div className="flex items-center text-[10px] font-black uppercase text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
-                                <Layers className="w-3 h-3" />
-                                {cert.category}
+                            {/* 
+                              DESCRIPTION SECTION:
+                              Short description of what the certification validates.
+                              Limited to 3 lines to maintain card height balance
+                            */}
+                            <p className=\"text-xs md:text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow\">
+                              {cert.description}
+                            </p>
+
+                            {/* 
+                              SKILLS/TAGS SECTION:
+                              Displays all skills from the JSON as individual pills.
+                              Falls back to tags if skills array is empty.
+                              Each pill is responsive with different text sizes on mobile/desktop.
+                            */}
+                            <div className=\"mb-4 flex flex-wrap gap-2\">
+                              {cert.skills && cert.skills.length > 0 ? (
+                                cert.skills.map((skill, idx) => (
+                                  <span
+                                    key={idx}
+                                    className=\"text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap\"
+                                  >
+                                    {skill}
+                                  </span>
+                                ))
+                              ) : (
+                                cert.tags && cert.tags.length > 0 && (
+                                  cert.tags.map((tag, idx) => (
+                                    <span
+                                      key={idx}
+                                      className=\"text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium whitespace-nowrap\"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))
+                                )
+                              )}
+                            </div>
+
+                            {/* 
+                              FOOTER SECTION: Issue Date + Verify Button
+                              - Left side: Issue date from JSON
+                              - Right side: External link button to credential verification URL
+                              - Uses flexbox to maintain spacing on all screen sizes
+                            */}
+                            <div className=\"flex items-center justify-between gap-3 mt-auto pt-4 border-t border-border/30\">
+                              
+                              {/* Issue Date Display */}
+                              <div className=\"flex items-center gap-1 text-xs text-muted-foreground\">
+                                <Calendar className=\"w-4 h-4\" />
+                                <span>Issued {cert.issue_date}</span>
                               </div>
-                              {cert.tags[0] && (
-                                <div className="flex items-center text-[10px] font-black uppercase text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
-                                  <Tag className="w-3 h-3" />
-                                  {cert.tags[0]}
-                                </div>
+
+                              {/* Verify Credential Button - Links to external platform */}
+                              {cert.credential_url && (
+                                <a
+                                  href={cert.credential_url}
+                                  target=\"_blank\"
+                                  rel=\"noopener noreferrer\"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className=\"flex items-center gap-1 bg-foreground/10 hover:bg-accent/20 text-accent hover:text-accent font-bold text-xs md:text-sm px-3 py-1.5 rounded-md transition-all duration-200\"
+                                >
+                                  Verify
+                                  <ExternalLink className=\"w-3.5 h-3.5 md:w-4 md:h-4\" />
+                                </a>
                               )}
                             </div>
                           </div>
