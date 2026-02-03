@@ -1,24 +1,23 @@
 [
   {
   "id": "1",
-  "title": "AWS Cloud Foundations",
-  "issuer": "Amazon Web Services",
-  "platform": "AWS Training & Certification",
+  "title": "Python Essential Training",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
   "issuer_logo": "/Logo/linkedin.svg",
-  "issue_date": "2024-08-15",
+  "issue_date": "2025-04-19",
   "expiry_date": null,
   "does_not_expire": true,
-  "credential_id": "AWS-CF-829374",
-  "credential_url": "https://www.credly.com/badges/example-aws-cloud-foundations",
-  "description": "This certification validates foundational knowledge of cloud computing concepts, AWS core services, security, architecture, pricing models, and best practices for building scalable cloud solutions.",
-  "skills": ["Cloud Computing", "AWS Core Services", "IAM & Security", "Cloud Architecture", "Cost & Pricing Models"],
-  "category": "Cloud & DevOps",
+  "credential_id": "c6ffcc51328b8100caefbdafafb459d8b55b37261071840aa9bc6d20cec5aa82", 
+  "credential_url": "https://www.linkedin.com/learning/python-essential-training-18764650/",
+  "description": "This certification validates a foundational understanding of Python programming, covering core syntax, data structures, and object-oriented programming principles, while establishing best practices for writing clean, efficient, and maintainable code.",
+  "skills": ["Python (Programming Language)", "Object-Oriented Programming (OOP)", "Data Structures", "Functional Programming", "Error Handling"],
+  "category": "Software Development",
   "type": "certification",
-  "tags": ["AWS", "Cloud", "DevOps", "Infrastructure"],
-  "pdf_document_link": "/Certificates/CertificateOfCompletion_JavaScript Practice ObjectOriented Programming.pdf",
+  "tags": ["Python", "Programming", "Backend", "Scripting"],
+  "pdf_document_link": "/Certificates/1 - CertificateOfCompletion_Python Essential Training.pdf",
   "is_verifiable": true,
-  "is_featured": true,
-  "colour": "from-orange-500/20 to-amber-500/20"
+  "is_featured": true
   },
 
   {
