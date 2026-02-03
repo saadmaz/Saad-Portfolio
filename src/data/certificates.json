@@ -333,6 +333,27 @@
   "pdf_document_link": "/Certificates/16 - CertificateOfCompletion_Networking in the Age of AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "17",
+  "title": "Overcome Communication Challenges: Adapt Your Style for Success",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "3b79054e9e43e7a7cd12c803710a369bc4e5b2e223455afbc353aa03e1423c4d",
+  "credential_url": "https://www.linkedin.com/learning/certificates/3b79054e9e43e7a7cd12c803710a369bc4e5b2e223455afbc353aa03e1423c4d",
+  "description": "Successfully completed 'Overcome Communication Challenges: Adapt Your Style for Success' by Melody Wilding. This course provides strategies for identifying diverse communication styles and adapting personal interactions to resolve conflicts and drive professional success.",
+  "skills": ["Conflict Management", "Interpersonal Communication"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Communication", "Soft Skills", "Leadership", "Professional Success"],
+  "pdf_document_link": "/Certificates/17 - CertificateOfCompletion_Overcome Communication Challenges.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
