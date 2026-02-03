@@ -16,11 +16,7 @@ import { certificatesData } from "@/data";
 
 /**
  * CERTIFICATE DETAIL PAGE
- * * A comprehensive view for individual certificates featuring:
- * - Professional Sidebar with blue-themed issuer branding
- * - Verified status indicators
- * - Landscape-optimized PDF viewer
- * - Detailed skill taxonomy
+ * Fixed Layout version: Enforces strict container boundaries for mobile alignment.
  */
 const CertificateDetailPage = () => {
   const { id } = useParams();
@@ -30,7 +26,7 @@ const CertificateDetailPage = () => {
 
   /**
    * DATA INITIALIZATION
-   * Syncs the URL ID with your central data store.
+   * Mapped strictly to your provided JSON keys.
    */
   useEffect(() => {
     // Standardizing data source as an array for search
@@ -84,8 +80,12 @@ const CertificateDetailPage = () => {
 
   return (
     <Layout>
-      <section className="section-padding bg-secondary/10 min-h-screen">
-        <div className="section-container">
+      {/* NUCLEAR CONTAINER FIX: 
+        Added 'overflow-x-hidden' and strict padding to ensure 
+        no content leaks out of the mobile screen bezel.
+      */}
+      <section className="section-padding bg-secondary/10 min-h-screen overflow-x-hidden">
+        <div className="section-container" style={{ boxSizing: 'border-box' }}>
           
           {/* --- TOP NAVIGATION & TITLE --- */}
           <div className="mb-10 flex flex-col md:flex-row md:items-center gap-6">
@@ -108,7 +108,7 @@ const CertificateDetailPage = () => {
             </div>
           </div>
 
-          {/* --- MAIN PAGE GRID --- */}
+          {/* --- MAIN PAGE GRID: Corrected for 12-column alignment --- */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
             {/* LEFT COLUMN: BRANDING & METADATA (4 Cols) */}
@@ -119,6 +119,7 @@ const CertificateDetailPage = () => {
                 <div className="mb-8 flex flex-col items-center">
                   <div className="relative p-2 rounded-full border-4 border-blue-500/10 bg-blue-500/5 mb-4">
                     <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center border-2 border-blue-200 shadow-md overflow-hidden">
+                      {/* Using the specific JSON key 'issuer_logo' */}
                       {cert.issuer_logo ? (
                         <img src={cert.issuer_logo} alt={cert.issuer} className="w-20 h-20 object-contain" />
                       ) : (
@@ -165,7 +166,8 @@ const CertificateDetailPage = () => {
                   <div>
                     <span className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest block mb-3">Skills & Competencies</span>
                     <div className="flex flex-wrap gap-2">
-                      {(cert.skills || cert.tags || []).map((skill: string, idx: number) => (
+                      {/* Mapping the 'skills' array from your JSON */}
+                      {(cert.skills || []).map((skill: string, idx: number) => (
                         <span key={idx} className="flex items-center gap-1.5 text-[10px] bg-accent/10 text-accent border border-accent/20 px-3 py-1.5 rounded-lg font-bold uppercase tracking-tighter">
                           <Tag className="w-3 h-3" /> {skill}
                         </span>
@@ -205,6 +207,7 @@ const CertificateDetailPage = () => {
                     <FileText className="w-5 h-5 text-accent" />
                     <h2 className="text-lg font-bold">Credential Document</h2>
                   </div>
+                  {/* Using 'pdf_document_link' from JSON */}
                   {cert.pdf_document_link && (
                     <Button variant="secondary" size="sm" asChild className="font-bold">
                       <a href={cert.pdf_document_link} target="_blank" rel="noopener noreferrer">
@@ -214,9 +217,9 @@ const CertificateDetailPage = () => {
                   )}
                 </div>
                 
-                {/* LANDSCAPE OPTIMIZATION:
-                  Using Aspect Ratio padding (pt-[70%]) ensures the container stays 
-                  proportional to landscape PDF dimensions regardless of device width.
+                {/* PDF CONTAINER FIX:
+                  Removed fixed height and applied proportional aspect ratio logic 
+                  to ensure the PDF doesn't overflow or break the container walls.
                 */}
                 <div className="bg-secondary/30 relative w-full pt-[70%]">
                   {cert.pdf_document_link ? (
@@ -229,15 +232,12 @@ const CertificateDetailPage = () => {
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
                       <FileText className="w-20 h-20 text-muted-foreground mb-6 opacity-10" />
                       <p className="text-muted-foreground font-semibold text-xl">Preview Unavailable</p>
-                      <p className="text-sm text-muted-foreground mt-2 max-w-xs">
-                        This credential does not have an associated PDF preview. Please use the verification link.
-                      </p>
                     </div>
                   )}
                 </div>
 
                 <div className="px-8 py-4 bg-muted/10 text-[11px] text-muted-foreground text-center italic border-t border-border">
-                  Note: Document loading depends on your network speed and browser PDF capabilities.
+                  Note: Browser PDF support is required for internal preview.
                 </div>
               </div>
             </div>
