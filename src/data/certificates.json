@@ -15,7 +15,7 @@
   "category": "Cloud & DevOps",
   "type": "certification",
   "tags": ["AWS", "Cloud", "DevOps", "Infrastructure"],
-  "pdf_document_link": "/assets/Certificates/CertificateOfCompletion_JavaScript Practice ObjectOriented Programming.pdf",
+  "pdf_document_link": "/certificates/aws-cloud-foundations.pdf",
   "is_verifiable": true,
   "is_featured": true,
   "colour": "from-orange-500/20 to-amber-500/20"
