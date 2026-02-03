@@ -1,15 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { 
-  Award, 
-  ExternalLink, 
-  Calendar, 
-  ChevronDown, 
-  ChevronUp, 
-  Search, 
-  X
-} from "lucide-react";
+import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // Data import from your central data index
