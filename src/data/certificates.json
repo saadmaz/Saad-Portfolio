@@ -417,6 +417,27 @@
   "pdf_document_link": "/Certificates/20 - CertificateOfCompletion_What No One Tells You About Career Fulfillment with Arthur Brooks.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "21",
+  "title": "People Analytics",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "12c0a6d7cb35861ac62ef7610d42da998da1fb10dd402e390b7196552000a3be",
+  "credential_url": "https://www.linkedin.com/learning/certificates/12c0a6d7cb35861ac62ef7610d42da998da1fb10dd402e390b7196552000a3be",
+  "description": "Successfully completed 'People Analytics' by Josh Bersin. This course explores the use of data-driven insights to manage people more effectively, covering recruitment metrics, performance analysis, and the application of analytics to improve organizational culture and employee retention.",
+  "skills": ["People Analytics"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["HR Analytics", "Data Analysis", "Josh Bersin", "Talent Management"],
+  "pdf_document_link": "/Certificates/21 - CertificateOfCompletion_People Analytics.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
