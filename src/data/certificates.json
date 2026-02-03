@@ -498,10 +498,9 @@
   "category": "AI/ML",
   "type": "course",
   "tags": ["Generative AI", "Research Skills", "AI Writing", "Prompt Engineering"],
-  "pdf_document_link": "/Certificates/24 - CertificateOfCompletion_How to Research and Write Using Generative AI Tools (2023).pdf",
+  "pdf_document_link": "/Certificates/24 - CertificateOfCompletion_How to Research and Write Using Generative AI Tools 2023.pdf",
   "is_verifiable": true,
-  "is_featured": false,
-  "colour": "from-blue-500/20 to-purple-600/20"
+  "is_featured": false
  }
 
 
