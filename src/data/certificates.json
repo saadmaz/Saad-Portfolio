@@ -81,5 +81,32 @@
   "pdf_document_link": "/Certificates/4 - CertificateOfCompletion_Copilot in Teams AIPowered Collaboration.pdf",
   "is_verifiable": true,
   "is_featured": false
- }
+ },
+
+ {
+  "id": "5",
+  "title": "What Is Microsoft Copilot? An Overview of Microsoft’s AI Tools (2024)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/logos/Microsoft_logo.svg",
+  "issue_date": "2025-10-22",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "bd4d926cd73768c25f4234051dbc770f211b414f2fc23b07275b560509232d0c",
+  "credential_url": "https://www.linkedin.com/learning/certificates/bd4d926cd73768c25f4234051dbc770f211b414f2fc23b07275b560509232d0c",
+  "description": "Successfully completed 'What Is Microsoft Copilot? An Overview of Microsoft’s AI Tools (2024)' by Nicholas Brazzi. This course provides a comprehensive overview of Microsoft's AI ecosystem, covering how Copilot integrates across various applications to streamline workflows and enhance business intelligence.",
+  "skills": ["AI for Business", "Microsoft Copilot", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Microsoft 365", "AI Productivity", "Generative AI", "Microsoft Copilot"],
+  "pdf_document_link": "/certificates/microsoft-copilot-overview.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+}
+
+
+
+
+
+
 ] 
