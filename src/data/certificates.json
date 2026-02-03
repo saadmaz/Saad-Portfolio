@@ -19,7 +19,28 @@
   "is_verifiable": true,
   "is_featured": true,
   "colour": "from-orange-500/20 to-amber-500/20"
-}
+  },
 
+  {
+  "id": "2",
+  "title": "AWS Cloud Foundations",
+  "issuer": "Amazon Web Services",
+  "platform": "AWS Training & Certification",
+  "issuer_logo": "/logos/aws.svg",
+  "issue_date": "2024-08-15",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "AWS-CF-829374",
+  "credential_url": "https://www.credly.com/badges/example-aws-cloud-foundations",
+  "description": "This certification validates foundational knowledge of cloud computing concepts, AWS core services, security, architecture, pricing models, and best practices for building scalable cloud solutions.",
+  "skills": ["Cloud Computing", "AWS Core Services", "IAM & Security", "Cloud Architecture", "Cost & Pricing Models"],
+  "category": "Cloud & DevOps",
+  "type": "certification",
+  "tags": ["AWS", "Cloud", "DevOps", "Infrastructure"],
+  "pdf_document_link": "/certificates/aws-cloud-foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": true,
+  "colour": "from-orange-500/20 to-amber-500/20"
+  }
 
-]
+] 
