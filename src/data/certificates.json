@@ -81,9 +81,9 @@
   "pdf_document_link": "/Certificates/4 - CertificateOfCompletion_Copilot in Teams AIPowered Collaboration.pdf",
   "is_verifiable": true,
   "is_featured": false
- },
+  },
 
- {
+  {
   "id": "5",
   "title": "What Is Microsoft Copilot? An Overview of Microsoft’s AI Tools (2024)",
   "issuer": "LinkedIn Learning",
@@ -102,9 +102,9 @@
   "pdf_document_link": "/Certificates/5 - CertificateOfCompletion_What Is Microsoft Copilot An Overview of Microsofts AI Tools 2024.pdf",
   "is_verifiable": true,
   "is_featured": false
-},
+  },
 
-{
+  {
   "id": "6",
   "title": "Generative AI and Workplace Transformation",
   "issuer": "LinkedIn Learning",
@@ -123,11 +123,7 @@
   "pdf_document_link": "/Certificates/6 - CertificateOfCompletion_Generative AI and Workplace Transformation.pdf",
   "is_verifiable": true,
   "is_featured": false
-}
-
-
-
-
+  }
 
 
 ] 
