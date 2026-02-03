@@ -228,6 +228,27 @@
   "pdf_document_link": "/Certificates/11 - CertificateOfCompletion_Generative AI vs. Traditional AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "12",
+  "title": "Agile Practices Using AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "5aa40128cc74dc6f50227410ff8cf20c68f5b956a23d73336c32a74cd2ba250e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/5aa40128cc74dc6f50227410ff8cf20c68f5b956a23d73336c32a74cd2ba250e",
+  "description": "Successfully completed 'Agile Practices Using AI' by Noah Gift. This course explores the intersection of Agile methodologies and Artificial Intelligence, demonstrating how AI tools can be integrated into sprints, backlogs, and team workflows to accelerate delivery and enhance product quality.",
+  "skills": ["Agile Methodologies", "AI for Business", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Agile", "AI Integration", "Software Development", "Project Management"],
+  "pdf_document_link": "/Certificates/12 - CertificateOfCompletion_Agile Practices Using AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
