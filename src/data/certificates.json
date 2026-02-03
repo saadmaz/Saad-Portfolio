@@ -270,6 +270,27 @@
   "pdf_document_link": "/Certificates/13 - CertificateOfCompletion_How to Boost Your Productivity with AI Tools.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "14",
+  "title": "IT and Cybersecurity Risk Management Essential Training",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-24",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "2f17ee0562dd919a93b47dbe263dead43cf0c18def759f44deaffec9eb6227d6",
+  "credential_url": "https://www.linkedin.com/learning/certificates/2f17ee0562dd919a93b47dbe263dead43cf0c18def759f44deaffec9eb6227d6",
+  "description": "Successfully completed 'IT and Cybersecurity Risk Management Essential Training' by Kip Boyle. This course provides a comprehensive foundation in identifying, assessing, and mitigating information technology and cybersecurity risks within an organization, aligning with global governance and compliance standards.",
+  "skills": ["IT Risk Management", "Governance, Risk Management, and Compliance (GRC)"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cybersecurity", "Risk Management", "GRC", "IT Governance"],
+  "pdf_document_link": "/Certificates/14 - CertificateOfCompletion_IT and Cybersecurity Risk Management Essential Training.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
