@@ -186,6 +186,27 @@
   "pdf_document_link": "/Certificates/9 - CertificateOfCompletion_Microsoft Security Essentials Concepts Solutions and AIPowered Protection.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "10",
+  "title": "Microsoft Security Essentials Professional Certificate by Microsoft and LinkedIn",
+  "issuer": "Microsoft and LinkedIn",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Microsoft_logo.svg",
+  "issue_date": "2025-10-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "1d1bda956bd73a351096e4062be363cf6efe564afb00133ceee1678ad551e803",
+  "credential_url": "https://www.linkedin.com/learning/certificates/1d1bda956bd73a351096e4062be363cf6efe564afb00133ceee1678ad551e803",
+  "description": "Successfully completed the comprehensive Microsoft Security Essentials Professional Certificate learning path. This curriculum validates expertise in core security concepts, including identity management, cloud security architecture, and the application of AI-powered protection within the Microsoft ecosystem.",
+  "skills": ["Microsoft Security", "Governance, Risk Management, and Compliance (GRC)", "Cloud Security"],
+  "category": "Cloud & DevOps",
+  "type": "professional certificate",
+  "tags": ["Cybersecurity", "Microsoft Security", "Cloud Protection", "Professional Certificate"],
+  "pdf_document_link": "/Certificates/10 - CertificateOfCompletion_Microsoft Security Essentials Professional Certificate by Microsoft and LinkedIn.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 
