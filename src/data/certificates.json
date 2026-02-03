@@ -99,7 +99,28 @@
   "category": "AI/ML",
   "type": "course",
   "tags": ["Microsoft 365", "AI Productivity", "Generative AI", "Microsoft Copilot"],
-  "pdf_document_link": "/certificates/microsoft-copilot-overview.pdf",
+  "pdf_document_link": "/Certificates/5 - CertificateOfCompletion_What Is Microsoft Copilot An Overview of Microsofts AI Tools 2024.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+},
+
+{
+  "id": "6",
+  "title": "Generative AI and Workplace Transformation",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-22",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "4e674f220aca068518be29b9958869835d2720fd5a2d74778288f7d34b3f8f0b",
+  "credential_url": "https://www.linkedin.com/learning/certificates/4e674f220aca068518be29b9958869835d2720fd5a2d74778288f7d34b3f8f0b",
+  "description": "Successfully completed 'Generative AI and Workplace Transformation' by Charlene Li. This course explores how generative AI is reshaping the corporate landscape, focusing on strategic leadership, organizational change, and the practical implementation of AI to drive business value.",
+  "skills": ["Business Transformation", "AI for Business", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Generative AI", "Workplace Transformation", "Change Management", "AI Strategy"],
+  "pdf_document_link": "/Certificates/6 - CertificateOfCompletion_Generative AI and Workplace Transformation.pdf",
   "is_verifiable": true,
   "is_featured": false
 }
