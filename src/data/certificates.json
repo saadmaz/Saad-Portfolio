@@ -438,6 +438,27 @@
   "pdf_document_link": "/Certificates/21 - CertificateOfCompletion_People Analytics.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "22",
+  "title": "Cybersecurity Foundations",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "07ee1efed86fbf3a39881fb27df9382c107a160a11ce56ae91fda2c91bdd86c7",
+  "credential_url": "https://www.linkedin.com/learning/certificates/07ee1efed86fbf3a39881fb27df9382c107a160a11ce56ae91fda2c91bdd86c7",
+  "description": "Successfully completed 'Cybersecurity Foundations' by Malcolm Shore. This course provides a comprehensive overview of the cybersecurity landscape, covering fundamental concepts such as threat actors, common attack vectors, risk management, and the implementation of robust security controls to protect organizational assets.",
+  "skills": ["Cybersecurity"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cybersecurity", "Information Security", "Risk Management", "Security Basics"],
+  "pdf_document_link": "/Certificates/22 - CertificateOfCompletion_Cybersecurity Foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
