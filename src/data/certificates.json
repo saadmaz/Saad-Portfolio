@@ -396,6 +396,27 @@
   "pdf_document_link": "/Certificates/19 - CertificateOfCompletion_Advanced SQL Project.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "20",
+  "title": "What No One Tells You About Career Fulfillment with Arthur Brooks",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "fcec0c8a114d10657f3039d00ff61c7e3a168a14b1c7d0eb902e2b3f175d3204",
+  "credential_url": "https://www.linkedin.com/learning/certificates/fcec0c8a114d10657f3039d00ff61c7e3a168a14b1c7d0eb902e2b3f175d3204",
+  "description": "Successfully completed 'What No One Tells You About Career Fulfillment with Arthur Brooks' by Dr. Arthur Brooks. This course examines the science of happiness and fulfillment in a professional context, offering strategies for career assessment, relationship building, and effective career management.",
+  "skills": ["Relationship Building", "Career Assessment", "Career Management"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Career Fulfillment", "Professional Development", "Arthur Brooks", "Soft Skills"],
+  "pdf_document_link": "/Certificates/20 - CertificateOfCompletion_What No One Tells You About Career Fulfillment with Arthur Brooks.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
