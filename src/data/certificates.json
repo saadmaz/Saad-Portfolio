@@ -354,6 +354,27 @@
   "pdf_document_link": "/Certificates/17 - CertificateOfCompletion_Overcome Communication Challenges.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "18",
+  "title": "Leadership Transitions: Becoming a Leader of Leaders",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "2a98f0c63a04f938caed71af6a8af81d135a380bf80cf67f6f9f57cf5eb4569d",
+  "credential_url": "https://www.linkedin.com/learning/certificates/2a98f0c63a04f938caed71af6a8af81d135a380bf80cf67f6f9f57cf5eb4569d",
+  "description": "Successfully completed 'Leadership Transitions: Becoming a Leader of Leaders' by Melody Wilding. This course addresses the critical shift from managing individual contributors to managing other managers, focusing on strategic delegation, high-level organizational leadership, and building leadership capacity within a team.",
+  "skills": ["Strategic Leadership", "Managing Managers"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Leadership", "Management", "Career Transition", "Strategy"],
+  "pdf_document_link": "/Certificates/18 - CertificateOfCompletion_Leadership Transitions.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
