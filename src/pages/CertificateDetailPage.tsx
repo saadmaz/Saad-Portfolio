@@ -162,7 +162,7 @@ const CertificateDetailPage = () => {
                       Credential ID
                     </span>
                     <code 
-                      className="block w-full text-center py-3 px-4 bg-secondary/50 rounded-xl text-xs font-mono border border-border/40"
+                      className="block w-full text-left py-3 px-4 bg-secondary/50 rounded-xl text-xs font-mono border border-border/40"
                       style={{ 
                         wordBreak: 'break-all',     // Forces breaks for long strings with no spaces
                         overflowWrap: 'anywhere',   // Standard property for modern browser compatibility
