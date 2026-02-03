@@ -312,6 +312,27 @@
   "pdf_document_link": "/Certificates/15 - CertificateOfCompletion_Practical Tips for Demonstrating Accountability as a Leader.pdf",
   "is_verifiable": true,
   "is_featured": false 
+ },
+
+ {
+  "id": "16",
+  "title": "Networking in the Age of AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "c1cdee079b15f1c3131cb58d32ab2c30a19485b7f468c88f9beeb8d704108b3f",
+  "credential_url": "https://www.linkedin.com/learning/certificates/c1cdee079b15f1c3131cb58d32ab2c30a19485b7f468c88f9beeb8d704108b3f",
+  "description": "Successfully completed 'Networking in the Age of AI' by Ruth Gotian. This course explores how to leverage artificial intelligence to enhance professional networking, build meaningful business relationships, and accelerate career development through AI-assisted communication and outreach strategies.",
+  "skills": ["AI for Career Development", "Business Networking", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Networking", "Career Development", "AI Strategy", "Professional Growth"],
+  "pdf_document_link": "/Certificates/16 - CertificateOfCompletion_Networking in the Age of AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
