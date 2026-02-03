@@ -165,6 +165,27 @@
   "pdf_document_link": "/Certificates/8 - CertificateOfCompletion_Introduction to Artificial Intelligence.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "9",
+  "title": "Microsoft Security Essentials: Concepts, Solutions, and AI-Powered Protection",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Microsoft_logo.svg",
+  "issue_date": "2025-10-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "fc6801413c58ca7c1a696a78991852a6b3142343d8c0e8091e1658775eb5ca2a",
+  "credential_url": "https://www.linkedin.com/learning/certificates/fc6801413c58ca7c1a696a78991852a6b3142343d8c0e8091e1658775eb5ca2a",
+  "description": "Successfully completed 'Microsoft Security Essentials: Concepts, Solutions, and AI-Powered Protection' by Bryan Li. This course covers the core pillars of Microsoft security, including identity management, cloud protection, and leveraging AI-driven solutions to mitigate modern cybersecurity threats.",
+  "skills": ["Microsoft Security", "Governance, Risk Management, and Compliance (GRC)", "Cloud Security"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cybersecurity", "Microsoft Security", "GRC", "AI Security"],
+  "pdf_document_link": "/Certificates/9 - CertificateOfCompletion_Microsoft Security Essentials Concepts Solutions and AIPowered Protection.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
