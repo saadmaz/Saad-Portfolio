@@ -459,6 +459,27 @@
   "pdf_document_link": "/Certificates/22 - CertificateOfCompletion_Cybersecurity Foundations.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "23",
+  "title": "Become an AI-Powered People Manager",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "3577dd4026e2c94a97dac5badc5892570eacddbea8f2dfc1a3b19495471253a9",
+  "credential_url": "https://www.linkedin.com/learning/certificates/3577dd4026e2c94a97dac5badc5892570eacddbea8f2dfc1a3b19495471253a9",
+  "description": "Successfully completed 'Become an AI-Powered People Manager' by Ashley Herd. This course explores how people managers can leverage generative AI to enhance leadership, improve team management, and streamline administrative tasks while maintaining human-centric oversight.",
+  "skills": ["Generative AI for Management", "AI for Business", "People Management"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI for Leadership", "People Management", "Generative AI", "Management Strategy"],
+  "pdf_document_link": "/Certificates/23 - CertificateOfCompletion_Become an AI-Powered People Manager.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 
