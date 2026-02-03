@@ -20,26 +20,24 @@
   "is_featured": true
   },
 
-  {
+ {
   "id": "2",
-  "title": "AWS Cloud Foundations",
-  "issuer": "Amazon Web Services",
-  "platform": "AWS Training & Certification",
-  "issuer_logo": "/logos/aws.svg",
-  "issue_date": "2024-08-15",
+  "title": "Sales Strategy: Building Relationships to Successfully Sell",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/logos/linkedin.svg",
+  "issue_date": "2025-04-19",
   "expiry_date": null,
   "does_not_expire": true,
-  "credential_id": "AWS-CF-829374",
-  "credential_url": "https://www.credly.com/badges/example-aws-cloud-foundations",
-  "description": "This certification validates foundational knowledge of cloud computing concepts, AWS core services, security, architecture, pricing models, and best practices for building scalable cloud solutions.",
-  "skills": ["Cloud Computing", "AWS Core Services", "IAM & Security", "Cloud Architecture", "Cost & Pricing Models"],
-  "category": "Cloud & DevOps",
-  "type": "certification",
-  "tags": ["AWS", "Cloud", "DevOps", "Infrastructure"],
-  "pdf_document_link": "/certificates/aws-cloud-foundations.pdf",
+  "credential_id": "35fb5efc1577983ed027692501a402052f3fbe28215c3aa8bb6cb655e09b232a",
+  "credential_url": "https://www.linkedin.com/learning/certificates/35fb5efc1577983ed027692501a402052f3fbe28215c3aa8bb6cb655e09b232a?trk=share_certificate",
+  "description": "Successfully completed the course 'Sales Strategy: Building Relationships to Successfully Sell' by Ronnell Richards, focusing on advanced relationship-building techniques and strategic sales positioning.",
+  "skills": ["Relationship Building", "Sales Strategy", "Business Development", "Client Relations"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Sales", "Business", "Networking", "Soft Skills"],
+  "pdf_document_link": "/Certificates/2 - CertificateOfCompletion_Sales Strategy Building Relationships to Successfully Sell.pdf",
   "is_verifiable": true,
-  "is_featured": true,
-  "colour": "from-orange-500/20 to-amber-500/20"
-  }
-
+  "is_featured": true
+ }
 ] 
