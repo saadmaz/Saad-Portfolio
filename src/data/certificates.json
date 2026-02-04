@@ -522,6 +522,28 @@
   "pdf_document_link": "/Certificates/25 - CertificateOfCompletion_Learning GitHub 2023.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "26",
+  "title": "The CEO Test: Mastering Leadership Challenges (Book Bite)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "6edeb2c1634f6c549183711f1315079679f93836597cda3fc240b809c867317b",
+  "credential_url": "https://www.linkedin.com/learning/certificates/6edeb2c1634f6c549183711f1315079679f93836597cda3fc240b809c867317b",
+  "description": "Successfully completed 'The CEO Test: Mastering Leadership Challenges (Book Bite)' by Next Big Idea Club. This course distills key leadership insights into actionable strategies for navigating complex organizational challenges and mastering the fundamental tests of chief executive leadership.",
+  "skills": ["Leadership"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Leadership", "Management", "CEO Insights", "Professional Development"],
+  "pdf_document_link": "/Certificates/26 - CertificateOfCompletion_The CEO Test Mastering Leadership Challenges Book Bite.pdf",
+  "is_verifiable": true,
+  "is_featured": false,
+  "colour": "from-slate-700/20 to-blue-800/20"
  }
 
 ] 
