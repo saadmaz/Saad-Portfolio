@@ -542,8 +542,28 @@
   "tags": ["Leadership", "Management", "CEO Insights", "Professional Development"],
   "pdf_document_link": "/Certificates/26 - CertificateOfCompletion_The CEO Test Mastering Leadership Challenges Book Bite.pdf",
   "is_verifiable": true,
-  "is_featured": false,
-  "colour": "from-slate-700/20 to-blue-800/20"
+  "is_featured": false
+ },
+
+ {
+  "id": "27",
+  "title": "ISACA Certified Information System Manager (CISM) Cert Prep",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/ISACA Logo.png",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "91fb1dbe8a7759905dbf041e35900fd74318cfe7a03a3679299b4ce52073dbda",
+  "credential_url": "https://www.linkedin.com/learning/certificates/91fb1dbe8a7759905dbf041e35900fd74318cfe7a03a3679299b4ce52073dbda",
+  "description": "Successfully completed 'ISACA Certified Information System Manager (CISM) Cert Prep' by Cybrary. This comprehensive preparation course covers the four functional areas of information security management: governance, risk management, program development, and incident management.",
+  "skills": ["Network Security", "Information Security Management"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cybersecurity", "CISM", "Information Security", "Security Management"],
+  "pdf_document_link": "/Certificates/27 - CertificateOfCompletion_ISACA Certified Information System Manager CISM Cert Prep.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
