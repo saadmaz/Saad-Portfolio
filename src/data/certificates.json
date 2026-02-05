@@ -711,6 +711,27 @@
   "pdf_document_link": "/Certificates/34 - CertificateOfCompletion_What Is Generative AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "36",
+  "title": "Leveraging the Power of Social Intelligence in the Age of AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-30",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7e2dbf5a3b6444a9932789d0b5a701db0dd49d828b226a0b50ae533b0a38ce0e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7e2dbf5a3b6444a9932789d0b5a701db0dd49d828b226a0b50ae533b0a38ce0e",
+  "description": "Successfully completed 'Leveraging the Power of Social Intelligence in the Age of AI' by Chris Shipley. This course explores the critical role of social intelligence in an AI-dominated landscape, focusing on enhancing interpersonal skills and emotional awareness to maintain a competitive human advantage.",
+  "skills": ["Social Intelligence", "Interpersonal Skills", "AI Productivity"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Social Intelligence", "AI Strategy", "Future of Work", "Soft Skills"],
+  "pdf_document_link": "/Certificates/35 - CertificateOfCompletion_Leveraging the Power of Social Intelligence in the Age of AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
