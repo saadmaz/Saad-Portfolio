@@ -1026,5 +1026,26 @@
   "pdf_document_link": "/Certificates/49 - CertificateOfCompletion_The Data Science of Economics Banking and Finance.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "50",
+  "title": "Hands-on Data Science and AI for Healthcare",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-18",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "d2d37b8e1c11f903355e2a0e3a2923759c2f393eeee867ea4147cbf3fa3ee988",
+  "credential_url": "https://www.linkedin.com/learning/certificates/d2d37b8e1c11f903355e2a0e3a2923759c2f393eeee867ea4147cbf3fa3ee988",
+  "description": "Successfully completed 'Hands-on Data Science and AI for Healthcare' by Wuraola Oyewusi. This course provides practical insights into applying data science and AI techniques within the healthcare sector, covering healthcare information technology (HIT), predictive analytics for patient care, and the ethical implementation of AI in clinical settings.",
+  "skills": ["Healthcare Information Technology (HIT)", "Healthcare Analytics", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Data Science", "Healthcare AI", "HIT", "Medical Analytics"],
+  "pdf_document_link": "/Certificates/50 - CertificateOfCompletion_Handson Data Science and AI for Healthcare.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 ] 
