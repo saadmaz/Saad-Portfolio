@@ -907,7 +907,7 @@
   "title": "Refactoring with GitHub Copilot",
   "issuer": "LinkedIn Learning",
   "platform": "LinkedIn Learning",
-  "issuer_logo": "/Logo/linkedin.svg",
+  "issuer_logo": "/Logo/Github.svg",
   "issue_date": "2025-10-31",
   "expiry_date": null,
   "does_not_expire": true,
@@ -919,6 +919,27 @@
   "type": "course",
   "tags": ["AI Coding", "GitHub Copilot", "PHP", "Refactoring", "Clean Code"],
   "pdf_document_link": "/Certificates/44 - CertificateOfCompletion_Refactoring with GitHub Copilot.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+ },
+
+ {
+  "id": "45",
+  "title": "Responsible GitHub Copilot: Creating Reliable Code Ethically",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Github.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "fc517881ae92c4ecc240b22fdc00e84134995ea5b7b087e5145a173f71ddb3f8",
+  "credential_url": "https://www.linkedin.com/learning/certificates/fc517881ae92c4ecc240b22fdc00e84134995ea5b7b087e5145a173f71ddb3f8",
+  "description": "Successfully completed 'Responsible GitHub Copilot: Creating Reliable Code Ethically' by Rob Bos. This course explores the ethical considerations and best practices for using AI-powered coding assistants, focusing on maintaining code reliability, understanding intellectual property implications, and implementing ethical AI standards in software development.",
+  "skills": ["GitHub Copilot", "Artificial Intelligence (AI)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["AI Ethics", "GitHub Copilot", "Responsible AI", "Software Development"],
+  "pdf_document_link": "/Certificates/45 - CertificateOfCompletion_Responsible GitHub Copilot Creating Reliable Code Ethically.pdf",
   "is_verifiable": true,
   "is_featured": false
  }
