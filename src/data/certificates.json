@@ -942,5 +942,26 @@
   "pdf_document_link": "/Certificates/45 - CertificateOfCompletion_Responsible GitHub Copilot Creating Reliable Code Ethically.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "46",
+  "title": "Learning Data Analytics: 1 Foundations",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "4b5530f4561fa2541a5446a74c6ba095bbb7fb722accae8633c61f788d776461",
+  "credential_url": "https://www.linkedin.com/learning/certificates/4b5530f4561fa2541a5446a74c6ba095bbb7fb722accae8633c61f788d776461",
+  "description": "Successfully completed 'Learning Data Analytics: 1 Foundations' by Robin Hunt. This foundational course covers the essential concepts of data analytics, including data types, the data analysis process, and how to use data to tell compelling stories and drive business decisions.",
+  "skills": ["Data Analytics"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Data Analytics", "Data Foundations", "Business Intelligence", "Analytics Basics"],
+  "pdf_document_link": "/Certificates/46 - CertificateOfCompletion_Learning Data Analytics 1 Foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
