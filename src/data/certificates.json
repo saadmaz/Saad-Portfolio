@@ -1005,5 +1005,26 @@
   "pdf_document_link": "/Certificates/48 - CertificateOfCompletion_Supercharge the Development Process with GitHub Extensions for Copilot Chat.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "49",
+  "title": "The Data Science of Economics, Banking, and Finance",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-06",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "f3309b656267e36402b3d5f10bc593d1ec725843bc652e2067645cd3a8723479",
+  "credential_url": "https://www.linkedin.com/learning/certificates/f3309b656267e36402b3d5f10bc593d1ec725843bc652e2067645cd3a8723479",
+  "description": "Successfully completed 'The Data Science of Economics, Banking, and Finance' by Barton Poulson. This course explores the intersection of data science and the financial sector, covering how data-driven insights are applied in economics, modern banking operations, and financial analysis to improve decision-making and forecasting.",
+  "skills": ["Finance", "Economics", "Banking"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Data Science", "Economics", "Banking", "Finance", "FinTech"],
+  "pdf_document_link": "/Certificates/49 - CertificateOfCompletion_The Data Science of Economics Banking and Finance.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 ] 
