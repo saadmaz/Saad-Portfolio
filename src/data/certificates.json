@@ -816,6 +816,26 @@
   "pdf_document_link": "/Certificates/39 - CertificateOfCompletion_Microsoft Azure AI Essentials Workloads and Machine Learning on Azure.pdf",
   "is_verifiable": true,
   "is_featured": true
- }
+ },
 
+ {
+  "id": "40",
+  "title": "The AI-Driven Project Manager: 10X Your Productivity with Generative AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "97ee2882432f3adb963ac094ad10ec7845b59d727e732791310358e95c9bced0",
+  "credential_url": "https://www.linkedin.com/learning/certificates/97ee2882432f3adb963ac094ad10ec7845b59d727e732791310358e95c9bced0",
+  "description": "Successfully completed 'The AI-Driven Project Manager: 10X Your Productivity with Generative AI' by Jean Kang. This course focuses on leveraging generative AI tools like ChatGPT to streamline project management workflows, automate repetitive tasks, and significantly enhance overall project productivity and efficiency.",
+  "skills": ["Project Management", "AI for Business", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI for Project Management", "Generative AI", "ChatGPT", "Productivity"],
+  "pdf_document_link": "/Certificates/40 - CertificateOfCompletion_The AIDriven Project Manager 10X Your Productivity with Generative AI.pdf",
+  "is_verifiable": true,
+  "is_featured": true
+  }
 ] 
