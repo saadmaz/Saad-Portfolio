@@ -795,6 +795,27 @@
   "pdf_document_link": "/Certificates/38 - CertificateOfCompletion_Using Data Effectively and Reliably with AI Analytics.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "39",
+  "title": "Microsoft Azure AI Essentials: Workloads and Machine Learning on Azure",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Microsoft Azure.svg",
+  "issue_date": "2025-11-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "09f63f73cf910177a0f53e7cbf43c5b1d65ea69ee0190138830568b54d894a32",
+  "credential_url": "https://www.linkedin.com/learning/certificates/09f63f73cf910177a0f53e7cbf43c5b1d65ea69ee0190138830568b54d894a32",
+  "description": "Successfully completed 'Microsoft Azure AI Essentials: Workloads and Machine Learning on Azure' by Ziggy Z. This course covers the fundamentals of AI workloads on Microsoft Azure, including machine learning model development, Azure AI Foundry services, and the implementation of scalable AI solutions within the Azure ecosystem.",
+  "skills": ["Machine Learning", "Azure AI Foundry", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Microsoft Azure", "Cloud AI", "Machine Learning", "Azure AI Foundry"],
+  "pdf_document_link": "/Certificates/39 - CertificateOfCompletion_Microsoft Azure AI Essentials Workloads and Machine Learning on Azure.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
