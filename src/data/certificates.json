@@ -753,6 +753,27 @@
   "pdf_document_link": "/Certificates/36 - CertificateOfCompletion_Writing Great Content with Gen AI That Doesnt Sound Fake.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "37",
+  "title": "Elearning Essentials: Instructional Design",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "e84f09b8f20fcd349350052394205dd7e306b8c652fcbaacfc16d1f9b28978d6",
+  "credential_url": "https://www.linkedin.com/learning/certificates/e84f09b8f20fcd349350052394205dd7e306b8c652fcbaacfc16d1f9b28978d6",
+  "description": "Successfully completed 'Elearning Essentials: Instructional Design' by Samantha Calamari. This course covers the fundamental principles of instructional design specifically for digital environments, including learner analysis, content structuring, and the development of engaging e-learning experiences.",
+  "skills": ["Instructional Design", "E-Learning"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Instructional Design", "E-Learning", "Education Technology", "Digital Learning"],
+  "pdf_document_link": "/Certificates/37 - CertificateOfCompletion_Elearning Essentials Instructional Design.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
