@@ -585,6 +585,27 @@
   "pdf_document_link": "/certificates/intro-career-skills-data-analytics.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "29",
+  "title": "AI Pair Programming with GitHub Copilot",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Github.svg",
+  "issue_date": "2025-10-24",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "54e4975777de59bb2b735a17db2f336f6fd691afb38e4b1a939743ef18fe3f05",
+  "credential_url": "https://www.linkedin.com/learning/certificates/54e4975777de59bb2b735a17db2f336f6fd691afb38e4b1a939743ef18fe3f05",
+  "description": "Successfully completed 'AI Pair Programming with GitHub Copilot' by Ronnie Sheer. This course demonstrates how to leverage GitHub Copilot to accelerate the development lifecycle, covering real-time code suggestions, test generation, and AI-assisted debugging to improve coding efficiency and quality.",
+  "skills": ["GitHub Copilot", "Artificial Intelligence (AI)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["AI Coding", "GitHub Copilot", "Pair Programming", "DevTools"],
+  "pdf_document_link": "/Certificates/29 - CertificateOfCompletion_AI Pair Programming with GitHub Copilot.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
