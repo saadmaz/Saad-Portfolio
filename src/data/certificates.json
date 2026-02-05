@@ -963,5 +963,26 @@
   "pdf_document_link": "/Certificates/46 - CertificateOfCompletion_Learning Data Analytics 1 Foundations.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "47",
+  "title": "Learning Data Analytics Part 2: Extending and Applying Core Knowledge",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "0bb62c4d70e1e73cfc6ae6d17fe0532d91ce90d2a1d1d4e115c7f42e29aec1f1",
+  "credential_url": "https://www.linkedin.com/learning/certificates/0bb62c4d70e1e73cfc6ae6d17fe0532d91ce90d2a1d1d4e115c7f42e29aec1f1",
+  "description": "Successfully completed 'Learning Data Analytics Part 2: Extending and Applying Core Knowledge' by Robin Hunt. This course builds upon foundational analytics concepts, focusing on advanced data exploration techniques, applying statistical methods to real-world datasets, and extending analytical workflows for deeper business insights.",
+  "skills": ["Data Analytics"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Data Analytics", "Advanced Analytics", "Data Application", "Business Intelligence"],
+  "pdf_document_link": "/Certificates/47 - CertificateOfCompletion_Learning Data Analytics Part 2 Extending and Applying Core Knowledge.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
