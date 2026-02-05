@@ -879,5 +879,26 @@
   "pdf_document_link": "/Certificates/42 - CertificateOfCompletion_Microsoft 365 Endpoint Administrator Associate MD102 Cert Prep 1 Deploy Windows Client.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "43",
+  "title": "Python Practice: Object-Oriented Programming",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "1dd21e790a4db1cbfc74daae494297f4d38f4f2951acda0f7366457964ca24b3",
+  "credential_url": "https://www.linkedin.com/learning/certificates/1dd21e790a4db1cbfc74daae494297f4d38f4f2951acda0f7366457964ca24b3",
+  "description": "Successfully completed 'Python Practice: Object-Oriented Programming' by Scott Simpson. This hands-on course involves solving five specific code challenges to test and refine knowledge of Object-Oriented Programming (OOP) in Python, including working with classes, objects, and inheritance to solve real-world problems.",
+  "skills": ["Object-Oriented Programming (OOP)", "Python (Programming Language)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Python", "OOP", "Coding Challenges", "Software Development"],
+  "pdf_document_link": "/Certificates/43 - CertificateOfCompletion_Python Practice ObjectOriented Programming.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
