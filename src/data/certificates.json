@@ -606,6 +606,27 @@
   "pdf_document_link": "/Certificates/29 - CertificateOfCompletion_AI Pair Programming with GitHub Copilot.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "30",
+  "title": "CompTIA Security+ (SY0-701) Cert Prep",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "679b8d79fd3e84668b50a992f45df7efe2c0a16a6bd082b8750e95a71af0309c",
+  "credential_url": "https://www.linkedin.com/learning/certificates/679b8d79fd3e84668b50a992f45df7efe2c0a16a6bd082b8750e95a71af0309c",
+  "description": "Successfully completed 'CompTIA Security+ (SY0-701) Cert Prep' by Infosec Institute. This course provides a comprehensive review of the core domains required for the SY0-701 certification, including enterprise security, threat management, vulnerability assessment, and security monitoring.",
+  "skills": ["Security Monitoring", "Enterprise Security", "Threat & Vulnerability Management"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cybersecurity", "CompTIA", "Security+", "Network Security"],
+  "pdf_document_link": "/Certificates/30 - CertificateOfCompletion_CompTIA Security SY0701 Cert Prep.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
