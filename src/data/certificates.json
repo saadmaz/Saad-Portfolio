@@ -669,6 +669,27 @@
   "pdf_document_link": "/Certificates/32 - CertificateOfCompletion_Building an Adaptability Mindset in the Age of AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "33",
+  "title": "Video Without Cameras: Text-to-Video Tools and Trends",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/logos/linkedin-learning.svg",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "94277040657e6568aa4a045c368285f7d6f4ce287ed1ae0a7b3b385dd92c64de",
+  "credential_url": "https://www.linkedin.com/learning/certificates/94277040657e6568aa4a045c368285f7d6f4ce287ed1ae0a7b3b385dd92c64de",
+  "description": "Successfully completed 'Video Without Cameras: Text-to-Video Tools and Trends' by Ashley Kennedy. This course explores the cutting-edge landscape of AI-driven video generation, focusing on text-to-video tools, emerging trends in synthetic media, and the application of AI in modern design workflows.",
+  "skills": ["Video Generation", "Artificial Intelligence for Design", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI Video", "Generative AI", "Video Production", "Design Trends"],
+  "pdf_document_link": "/Certificates/33 - CertificateOfCompletion_Video Without Cameras TexttoVideo Tools and Trends.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
