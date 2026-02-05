@@ -774,6 +774,27 @@
   "pdf_document_link": "/Certificates/37 - CertificateOfCompletion_Elearning Essentials Instructional Design.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "38",
+  "title": "Using Data Effectively and Reliably with AI Analytics",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "caf830bf6889a4704f4c096075a8969adbfac2aeefcb877ce43bdf34495a0476",
+  "credential_url": "https://www.linkedin.com/learning/certificates/caf830bf6889a4704f4c096075a8969adbfac2aeefcb877ce43bdf34495a0476",
+  "description": "Successfully completed 'Using Data Effectively and Reliably with AI Analytics' by John H. Johnson and George Lynch. This course explores the integration of AI into data analytics workflows, focusing on maintaining data integrity, ensuring reliability in AI-driven insights, and leveraging advanced analytics for business decision-making.",
+  "skills": ["AI for Business Analysis", "Data Analytics", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI Analytics", "Data Integrity", "Business Analysis", "Advanced Analytics"],
+  "pdf_document_link": "/Certificates/38 - CertificateOfCompletion_Using Data Effectively and Reliably with AI Analytics.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
