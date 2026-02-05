@@ -627,6 +627,48 @@
   "pdf_document_link": "/Certificates/30 - CertificateOfCompletion_CompTIA Security SY0701 Cert Prep.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "31",
+  "title": "Create LinkedIn Posts that Stand Out with Jamé Jackson",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "fcc09c6d76201f2b93ef322298dad424c0a7cc06ec6c2805b65037a0d6ec0383",
+  "credential_url": "https://www.linkedin.com/learning/certificates/fcc09c6d76201f2b93ef322298dad424c0a7cc06ec6c2805b65037a0d6ec0383",
+  "description": "Successfully completed 'Create LinkedIn Posts that Stand Out with Jamé Jackson' by LinkedIn News. This course explores strategies for crafting high-impact content, building a personal brand, and leveraging business networking techniques to increase visibility and engagement on the LinkedIn platform.",
+  "skills": ["LinkedIn", "Personal Branding", "Business Networking"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["LinkedIn", "Content Creation", "Personal Branding", "Networking"],
+  "pdf_document_link": "/Certificates/31 - CertificateOfCompletion_Create LinkedIn Posts that Stand Out with Jamé Jackson.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+ },
+
+ {
+  "id": "32",
+  "title": "Building an Adaptability Mindset in the Age of AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "71d7285689d240b39c39150a3568102311fb22a4e9d19b5cda59cb1de8f7b70b",
+  "credential_url": "https://www.linkedin.com/learning/certificates/71d7285689d240b39c39150a3568102311fb22a4e9d19b5cda59cb1de8f7b70b",
+  "description": "Successfully completed 'Building an Adaptability Mindset in the Age of AI' by Chris Shipley. This course focuses on developing the cognitive flexibility and critical thinking skills necessary to thrive in an AI-driven workforce, emphasizing adaptability as a core professional competency.",
+  "skills": ["Critical Thinking", "AI Productivity", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Adaptability", "Future of Work", "Mindset", "AI Strategy"],
+  "pdf_document_link": "/Certificates/32 - CertificateOfCompletion_Building an Adaptability Mindset in the Age of AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
