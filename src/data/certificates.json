@@ -564,6 +564,27 @@
   "pdf_document_link": "/Certificates/27 - CertificateOfCompletion_ISACA Certified Information System Manager CISM Cert Prep.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "28",
+  "title": "Introduction to Career Skills in Data Analytics",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "edd7af5ca4af81109d6c768d3c673a9388c93aa03af81712985757e3258c5932",
+  "credential_url": "https://www.linkedin.com/learning/certificates/edd7af5ca4af81109d6c768d3c673a9388c93aa03af81712985757e3258c5932",
+  "description": "Successfully completed 'Introduction to Career Skills in Data Analytics' by Robin Hunt. This course provides a foundation in the essential technical and professional skills required for a career in data analytics, including data interpretation, tool proficiency, and career path navigation.",
+  "skills": ["Data Analytics", "Tech Career Skills"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Data Analytics", "Career Development", "Tech Skills", "Data Science Foundations"],
+  "pdf_document_link": "/certificates/intro-career-skills-data-analytics.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
