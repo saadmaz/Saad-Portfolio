@@ -837,5 +837,26 @@
   "pdf_document_link": "/Certificates/40 - CertificateOfCompletion_The AIDriven Project Manager 10X Your Productivity with Generative AI.pdf",
   "is_verifiable": true,
   "is_featured": true
-  }
+  },
+
+  {
+  "id": "41",
+  "title": "DevOps Foundations: Going Cloud Native",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "75acd5d634ccc9438bf46da1e29331af117e8ebdbfd7c74a0688e7c6bb23f51e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/75acd5d634ccc9438bf46da1e29331af117e8ebdbfd7c74a0688e7c6bb23f51e",
+  "description": "Successfully completed 'DevOps Foundations: Going Cloud Native' by Karthik Gaekwad. This course explores the core principles of cloud-native DevOps, covering containerization, microservices architecture, continuous integration and deployment (CI/CD) in cloud environments, and the cultural shifts necessary for successful cloud-native transformation.",
+  "skills": ["DevOps Foundations", "Cloud Development", "DevOps"],
+  "category": "Cloud & DevOps",
+  "type": "course",
+  "tags": ["Cloud Native", "DevOps Foundations", "Cloud Architecture", "CI/CD"],
+  "pdf_document_link": "/Certificates/41 - CertificateOfCompletion_DevOps Foundations Going Cloud Native.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+ }
 ] 
