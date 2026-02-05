@@ -984,5 +984,26 @@
   "pdf_document_link": "/Certificates/47 - CertificateOfCompletion_Learning Data Analytics Part 2 Extending and Applying Core Knowledge.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "48",
+  "title": "Supercharge the Development Process with GitHub Extensions for Copilot Chat",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "bb7a005522a90d274b74543986241db712075f24c27b9e01014eb4eca35bf043",
+  "credential_url": "https://www.linkedin.com/learning/certificates/bb7a005522a90d274b74543986241db712075f24c27b9e01014eb4eca35bf043",
+  "description": "Successfully completed 'Supercharge the Development Process with GitHub Extensions for Copilot Chat' by Ray Villalobos. This course explores how to integrate and utilize GitHub extensions within Copilot Chat to streamline coding workflows, enhance AI-assisted debugging, and accelerate the overall software development lifecycle.",
+  "skills": ["GitHub"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["GitHub", "GitHub Copilot", "DevTools", "AI Coding", "Copilot Chat"],
+  "pdf_document_link": "/Certificates/48 - CertificateOfCompletion_Supercharge the Development Process with GitHub Extensions for Copilot Chat.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
