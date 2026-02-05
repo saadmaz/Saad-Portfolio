@@ -690,6 +690,27 @@
   "pdf_document_link": "/Certificates/33 - CertificateOfCompletion_Video Without Cameras TexttoVideo Tools and Trends.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "34",
+  "title": "What Is Generative AI?",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-30",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "1bd2746bc0d7e03f38282ae33a8622a157514d1736379e31bcd3a7efd7d8ead6",
+  "credential_url": "https://www.linkedin.com/learning/certificates/1bd2746bc0d7e03f38282ae33a8622a157514d1736379e31bcd3a7efd7d8ead6",
+  "description": "Successfully completed 'What Is Generative AI?' by Pinar Seyhan Demirdag. This foundational course explores the core concepts of generative artificial intelligence, including how generative models work, the different types of content they can create, and their transformative potential across various industries.",
+  "skills": ["Generative AI Tools", "Artificial Intelligence (AI)", "Generative AI"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Generative AI", "AI Foundations", "Machine Learning", "Innovation"],
+  "pdf_document_link": "/Certificates/34 - CertificateOfCompletion_What Is Generative AI.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
