@@ -900,5 +900,26 @@
   "pdf_document_link": "/Certificates/43 - CertificateOfCompletion_Python Practice ObjectOriented Programming.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "44",
+  "title": "Refactoring with GitHub Copilot",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-10-31",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "4ef680317133a91672851d309be58dbb89a02197e4b0d33353763da3951523e0",
+  "credential_url": "https://www.linkedin.com/learning/certificates/4ef680317133a91672851d309be58dbb89a02197e4b0d33353763da3951523e0",
+  "description": "Successfully completed 'Refactoring with GitHub Copilot' by Gary Kovar. This course demonstrates how to utilize GitHub Copilot to improve existing code structures, covering automated refactoring suggestions, identifying code smells, and optimizing PHP code for better maintainability and performance.",
+  "skills": ["GitHub Copilot", "PHP", "Artificial Intelligence (AI)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["AI Coding", "GitHub Copilot", "PHP", "Refactoring", "Clean Code"],
+  "pdf_document_link": "/Certificates/44 - CertificateOfCompletion_Refactoring with GitHub Copilot.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
