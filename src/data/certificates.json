@@ -858,5 +858,26 @@
   "pdf_document_link": "/Certificates/41 - CertificateOfCompletion_DevOps Foundations Going Cloud Native.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "42",
+  "title": "Microsoft 365 Endpoint Administrator Associate (MD-102) Cert Prep: 1 Deploy Windows Client",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Microsoft_logo.svg",
+  "issue_date": "2025-11-02",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7fa76bc2428f0c4d9fd30ae0cb81a321b83333b539a93698d83949fa60f98a9a",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7fa76bc2428f0c4d9fd30ae0cb81a321b83333b539a93698d83949fa60f98a9a",
+  "description": "Successfully completed the MD-102 certification prep course by Microsoft Press. This module focuses on the deployment of Windows clients, covering installation strategies, configuration of post-installation settings, and implementation of device enrollment in a Microsoft 365 environment.",
+  "skills": ["Microsoft 365", "Network Administration"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Microsoft 365", "Windows Deployment", "Endpoint Administration", "MD-102"],
+  "pdf_document_link": "/Certificates/42 - CertificateOfCompletion_Microsoft 365 Endpoint Administrator Associate MD102 Cert Prep 1 Deploy Windows Client.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 ] 
