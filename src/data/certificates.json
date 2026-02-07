@@ -1257,6 +1257,27 @@
   "pdf_document_link": "/Certificates/60 - CertificateOfCompletion_How to Give Feedback People Can Actually Use.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "61",
+  "title": "Business Intelligence for Consultants",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "86590d28240a3279bdd65398dd9ce53e8c52c56da0d9bb5b1b22b96df797310a",
+  "credential_url": "https://www.linkedin.com/learning/certificates/86590d28240a3279bdd65398dd9ce53e8c52c56da0d9bb5b1b22b96df797310a",
+  "description": "Successfully completed 'Business Intelligence for Consultants' by Joshua Rischin. This course covers the fundamental frameworks of business intelligence (BI) specifically for consulting environments, focusing on data visualization, client reporting, and using analytical insights to drive strategic business recommendations.",
+  "skills": ["Business Intelligence (BI)"],
+  "category": "Data Analytics",
+  "type": "course",
+  "tags": ["Business Intelligence", "Consulting", "Data Analysis", "Strategic Insights"],
+  "pdf_document_link": "/Certificates/61 - CertificateOfCompletion_Business Intelligence for Consultants.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
