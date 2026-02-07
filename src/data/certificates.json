@@ -1110,6 +1110,27 @@
   "pdf_document_link": "/Certificates/53 - CertificateOfCompletion_HandsOn AI Building Agents with the Google Agent Development Toolkit ADK.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "54",
+  "title": "How to Be an Inclusive Leader (getAbstract Summary)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "0d9ff6c42e5aef18f747a533517b6fa6f09c9abee9b2a3a381c5385656ae00b2",
+  "credential_url": "https://www.linkedin.com/learning/certificates/0d9ff6c42e5aef18f747a533517b6fa6f09c9abee9b2a3a381c5385656ae00b2",
+  "description": "Successfully completed 'How to Be an Inclusive Leader (getAbstract Summary)' by getAbstract. This course distills the core principles of inclusive leadership, providing actionable strategies for fostering a diverse and equitable workplace environment through effective team leadership and conscious inclusion practices.",
+  "skills": ["Team Leadership", "Diversity and Inclusion"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Inclusive Leadership", "Leadership Summary", "DEI", "Management"],
+  "pdf_document_link": "/Certificates/54 - CertificateOfCompletion_How to Be an Inclusive Leader getAbstract Summary.pdf",
+  "is_verifiable": true,
+  "is_featured": false 
  }
 
 ] 
