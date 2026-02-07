@@ -1194,6 +1194,27 @@
   "pdf_document_link": "/Certificates/57 - CertificateOfCompletion_Practical Accessibility for Designers.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "58",
+  "title": "Strategic Project Risk Management",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "c9781d6e53232e03cfd4de9b51a31f507ac91c4911ed1506e8276e371d62e602",
+  "credential_url": "https://www.linkedin.com/learning/certificates/c9781d6e53232e03cfd4de9b51a31f507ac91c4911ed1506e8276e371d62e602",
+  "description": "Successfully completed 'Strategic Project Risk Management' by Dr. Prasad Kodukula. This course covers advanced strategies for identifying, analyzing, and mitigating risks within complex projects, aligning risk management practices with strategic organizational goals to ensure project success.",
+  "skills": ["Strategic Planning", "Project Risk", "Project Management"],
+  "category": "Project Management",
+  "type": "course",
+  "tags": ["Risk Management", "Strategic Planning", "PMP Prep", "Project Governance"],
+  "pdf_document_link": "/Certificates/58 - CertificateOfCompletion_Strategic Project Risk Management.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
