@@ -1173,6 +1173,27 @@
   "pdf_document_link": "/Certificates/56 - CertificateOfCompletion_MLOps Essentials Model Development and Integration.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "57",
+  "title": "Practical Accessibility for Designers",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-25",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "594f5d09efcb7b3372f093839ec0e272432313d02b17c9606ebee2567f60443e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/594f5d09efcb7b3372f093839ec0e272432313d02b17c9606ebee2567f60443e",
+  "description": "Successfully completed 'Practical Accessibility for Designers' by Chimmy Kalu. This course provides actionable techniques for creating inclusive digital products, covering universal design principles, IT accessibility standards, and practical methods for implementing accessible UI/UX components.",
+  "skills": ["Universal Design", "IT Accessibility", "Accessibility"],
+  "category": "Design & UX",
+  "type": "course",
+  "tags": ["Inclusive Design", "UX Design", "Web Accessibility", "Universal Design"],
+  "pdf_document_link": "/Certificates/57 - CertificateOfCompletion_Practical Accessibility for Designers.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
