@@ -1320,6 +1320,27 @@
   "pdf_document_link": "/Certificates/63 - CertificateOfCompletion_Generative AI for Sales and Services Professionals.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "64",
+  "title": "Learning Microsoft 365 Copilot for Work (2024)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "691d7cec2045ecb5b4afe38dd5ea3c1eac06162addf6a793890e9a4a1f667ed8",
+  "credential_url": "https://www.linkedin.com/learning/certificates/691d7cec2045ecb5b4afe38dd5ea3c1eac06162addf6a793890e9a4a1f667ed8",
+  "description": "Successfully completed 'Learning Microsoft 365 Copilot for Work (2024)' by Nicholas Brazzi. This course explores the practical application of Microsoft 365 Copilot across the Office ecosystem, focusing on enhancing productivity through AI-assisted content creation, data analysis, and workflow automation within professional environments.",
+  "skills": ["Microsoft Copilot", "Office 365", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Microsoft 365", "AI Productivity", "Microsoft Copilot", "Office Automation"],
+  "pdf_document_link": "/Certificates/64 - CertificateOfCompletion_Learning Microsoft 365 Copilot for Work 2024.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
