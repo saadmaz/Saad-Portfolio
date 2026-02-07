@@ -1236,6 +1236,27 @@
   "pdf_document_link": "/Certificates/59 - CertificateOfCompletion_Flutter Essential Training Build for Multiple Platforms.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "60",
+  "title": "How to Give Feedback People Can Actually Use",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7485eea779574bdc0dae9b5f14bf16f1db62d4972d312ccf90ac3b04dc95a49c",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7485eea779574bdc0dae9b5f14bf16f1db62d4972d312ccf90ac3b04dc95a49c",
+  "description": "Successfully completed 'How to Give Feedback People Can Actually Use' by Kwame Christian and the American Negotiation Institute. This course provides practical strategies for delivering constructive feedback that is clear, actionable, and preserves professional relationships, focusing on effective interpersonal communication techniques.",
+  "skills": ["Constructive Feedback", "Interpersonal Communication"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Feedback", "Communication Skills", "Leadership", "Management", "Negotiation"],
+  "pdf_document_link": "/Certificates/60 - CertificateOfCompletion_How to Give Feedback People Can Actually Use.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
