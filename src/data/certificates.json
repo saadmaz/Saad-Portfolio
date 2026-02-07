@@ -1215,6 +1215,27 @@
   "pdf_document_link": "/Certificates/58 - CertificateOfCompletion_Strategic Project Risk Management.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "59",
+  "title": "Flutter Essential Training: Build for Multiple Platforms",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Flutter_logo.svg",
+  "issue_date": "2025-10-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "19972993b493fa59e58867db5f9fda2f6830441d790fe036f153e1220f420227",
+  "credential_url": "https://www.linkedin.com/learning/certificates/19972993b493fa59e58867db5f9fda2f6830441d790fe036f153e1220f420227",
+  "description": "Successfully completed 'Flutter Essential Training: Build for Multiple Platforms' by Pooja Bhaumik. This course covers the core fundamentals of the Flutter framework, including UI development with widgets, state management, and the architectural principles required to build and deploy high-performance applications across mobile, web, and desktop from a single codebase.",
+  "skills": ["Flutter", "Cross-platform Development"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Flutter", "Dart", "Mobile Development", "Cross-platform", "UI/UX"],
+  "pdf_document_link": "/Certificates/59 - CertificateOfCompletion_Flutter Essential Training Build for Multiple Platforms.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
