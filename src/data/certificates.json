@@ -1152,6 +1152,27 @@
   "pdf_document_link": "/Certificates/55 - CertificateOfCompletion_HTML Structured Semantic Data.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "56",
+  "title": "MLOps Essentials: Model Development and Integration",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "eb9a6fcecc1434e38ee4ac39d134de545eef15066bc9cdf7206667d95f0df673",
+  "credential_url": "https://www.linkedin.com/learning/certificates/eb9a6fcecc1434e38ee4ac39d134de545eef15066bc9cdf7206667d95f0df673",
+  "description": "Successfully completed 'MLOps Essentials: Model Development and Integration' by Kumaran Ponnambalam. This course covers the fundamental principles of MLOps, focusing on the lifecycle of machine learning models, including development, integration, and deployment within scalable production environments.",
+  "skills": ["MLOps", "Machine Learning", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["MLOps", "Model Integration", "DevOps for ML", "Production AI"],
+  "pdf_document_link": "/Certificates/56 - CertificateOfCompletion_MLOps Essentials Model Development and Integration.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
