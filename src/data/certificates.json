@@ -1404,6 +1404,27 @@
   "pdf_document_link": "/Certificates/67 - CertificateOfCompletion_Microsoft Copilot The Art of Prompt Writing.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "68",
+  "title": "Generative AI for Customer Service with Microsoft 365 Copilot Professional Certificate",
+  "issuer": "Microsoft via LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/Microsoft_logo.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7a08162a81054e4408ee275d27ea665aec318ec7d6a11d6856f403aaaa06fef9",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7a08162a81054e4408ee275d27ea665aec318ec7d6a11d6856f403aaaa06fef9",
+  "description": "Successfully earned the Professional Certificate in 'Generative AI for Customer Service with Microsoft 365 Copilot'. This comprehensive learning path covers the integration of generative AI within customer service workflows, leveraging Microsoft 365 Copilot to enhance agent productivity, personalizing client interactions, and streamlining service management processes.",
+  "skills": ["Generative AI for Customer Service", "Microsoft Copilot", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "professional certificate",
+  "tags": ["Generative AI", "Customer Service", "Microsoft 365", "Copilot", "Professional Certificate"],
+  "pdf_document_link": "/Certificates/68 - CertificateOfCompletion_Generative AI for Customer Service with Microsoft 365 Copilot Professional Certificate.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
