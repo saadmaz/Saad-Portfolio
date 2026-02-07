@@ -1089,6 +1089,27 @@
   "pdf_document_link": "/Certificates/52 - CertificateOfCompletion_Build AI Agents and Automate Workflows with n8n.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "53",
+  "title": "Hands-On AI: Building Agents with the Google Agent Development Toolkit (ADK)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "acada87a9cbb7664550a429809922eab80e2cc03f51f3d7c9ee9cc92cad68001",
+  "credential_url": "https://www.linkedin.com/learning/certificates/acada87a9cbb7664550a429809922eab80e2cc03f51f3d7c9ee9cc92cad68001",
+  "description": "Successfully completed 'Hands-On AI: Building Agents with the Google Agent Development Toolkit (ADK)' by Jigyasa Grover. This course provides practical experience in developing autonomous AI agents using Google's ADK, focusing on agent architecture, tool integration, and deploying sophisticated agentic workflows.",
+  "skills": ["AI Agents", "AI Software Development", "Agent Development"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Google ADK", "AI Agents", "Agentic Systems", "Software Development"],
+  "pdf_document_link": "/Certificates/53 - CertificateOfCompletion_HandsOn AI Building Agents with the Google Agent Development Toolkit ADK.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
