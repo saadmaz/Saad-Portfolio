@@ -1068,5 +1068,27 @@
   "pdf_document_link": "/Certificates/51 - CertificateOfCompletion_Building Agentic AI Systems.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "52",
+  "title": "Build AI Agents and Automate Workflows with n8n",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logos/n8n logo.webp",
+  "issue_date": "2025-11-18",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "b7c15087c4ab237c660bbd9db8f85ef9701eeea0b295ee6e0e8788dea7008d69",
+  "credential_url": "https://www.linkedin.com/learning/certificates/b7c15087c4ab237c660bbd9db8f85ef9701eeea0b295ee6e0e8788dea7008d69",
+  "description": "Successfully completed 'Build AI Agents and Automate Workflows with n8n' by Morten Rand-Hendriksen. This course covers the design and implementation of autonomous AI agents using the n8n automation platform, focusing on workflow automation, API integrations, and leveraging generative AI to build sophisticated agentic systems.",
+  "skills": ["AI Agents", "AI Productivity", "Generative AI"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["n8n", "AI Automation", "Workflow Automation", "AI Agents"],
+  "pdf_document_link": "/Certificates/52 - CertificateOfCompletion_Build AI Agents and Automate Workflows with n8n.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
+
 ] 
