@@ -1131,6 +1131,27 @@
   "pdf_document_link": "/Certificates/54 - CertificateOfCompletion_How to Be an Inclusive Leader getAbstract Summary.pdf",
   "is_verifiable": true,
   "is_featured": false 
+ },
+
+ {
+  "id": "55",
+  "title": "HTML: Structured Semantic Data",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "d18c439b0df7b0000a849ac5f1db5bd38d900ddae894f89b77eb140561e28ba2",
+  "credential_url": "https://www.linkedin.com/learning/certificates/d18c439b0df7b0000a849ac5f1db5bd38d900ddae894f89b77eb140561e28ba2",
+  "description": "Successfully completed 'HTML: Structured Semantic Data' by Jen Kramer. This course covers the implementation of semantic markup to improve web accessibility and SEO, focusing on using Schema.org and JSON-LD to provide search engines with a deeper understanding of web content.",
+  "skills": ["Semantic Markup", "HTML"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["HTML", "Semantic Web", "SEO", "Accessibility", "Web Development"],
+  "pdf_document_link": "/Certificates/55 - CertificateOfCompletion_HTML Structured Semantic Data.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
