@@ -1446,6 +1446,27 @@
   "pdf_document_link": "/Certificates/69 - CertificateOfCompletion_Ideaflow The Only Business Metric That Matters Book Bite.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "70",
+  "title": "A New Way to Think: Your Guide to Management Effectiveness (Book Bite)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "0f49671ea2cf942d431b41dce4f7e75d0bd28c0c781d314c0dac06eb9c428016",
+  "credential_url": "https://www.linkedin.com/learning/certificates/0f49671ea2cf942d431b41dce4f7e75d0bd28c0c781d314c0dac06eb9c428016",
+  "description": "Successfully completed 'A New Way to Think: Your Guide to Management Effectiveness (Book Bite)' by Next Big Idea Club. This course provides a high-level summary of modern management frameworks, focusing on shifting traditional mindsets to improve organizational effectiveness and decision-making.",
+  "skills": ["Business Management"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Management", "Leadership", "Business Strategy", "Professional Development"],
+  "pdf_document_link": "/Certificates/70 - CertificateOfCompletion_A New Way to Think Your Guide to Management Effectiveness Book Bite.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
