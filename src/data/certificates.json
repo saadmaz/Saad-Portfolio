@@ -1425,6 +1425,27 @@
   "pdf_document_link": "/Certificates/68 - CertificateOfCompletion_Generative AI for Customer Service with Microsoft 365 Copilot Professional Certificate.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "69",
+  "title": "Ideaflow: The Only Business Metric That Matters (Book Bite)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "13dc85c9beea0c8cf4ab702585f331198041d79d205a656cba04d296a14ec1ea",
+  "credential_url": "https://www.linkedin.com/learning/certificates/13dc85c9beea0c8cf4ab702585f331198041d79d205a656cba04d296a14ec1ea",
+  "description": "Successfully completed 'Ideaflow: The Only Business Metric That Matters (Book Bite)' by Next Big Idea Club. This course explores the concept of 'ideaflow' as a critical business metric, focusing on techniques for rapid idea development, fostering innovation within teams, and optimizing the creative output of an organization.",
+  "skills": ["Ideas Development", "Team Management"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Innovation", "Ideaflow", "Team Management", "Business Metrics", "Creative Strategy"],
+  "pdf_document_link": "/Certificates/69 - CertificateOfCompletion_Ideaflow The Only Business Metric That Matters Book Bite.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
