@@ -1299,6 +1299,27 @@
   "pdf_document_link": "/Certificates/62 - CertificateOfCompletion_Using AI for Customer Service Managers.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "63",
+  "title": "Generative AI for Sales and Services Professionals",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "8fa4209c482299346b0c3fc018ef0accbf583a63b65f38c9c159fa2b036c4c77",
+  "credential_url": "https://www.linkedin.com/learning/certificates/8fa4209c482299346b0c3fc018ef0accbf583a63b65f38c9c159fa2b036c4c77",
+  "description": "Successfully completed 'Generative AI for Sales and Services Professionals' by Sam Mallikarjunan. This course explores the application of generative AI tools to optimize sales processes, enhance customer service interactions, and leverage AI-driven insights for professional growth in sales and service roles.",
+  "skills": ["Sales Support Tools", "Generative AI for Sales", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Generative AI", "Sales AI", "Service Professionals", "AI Productivity"],
+  "pdf_document_link": "/Certificates/63 - CertificateOfCompletion_Generative AI for Sales and Services Professionals.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
