@@ -1362,6 +1362,27 @@
   "pdf_document_link": "/Certificates/65 - CertificateOfCompletion_Customer Journey Mapping with Generative AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "66",
+  "title": "Copilot for Service: Helpful Tips for Customer Service Agents",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/copilot.png",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "a8218b52fc046ba14c5fcfcdcef2b0047bc3865b360163d1a0fe94323960da9e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/a8218b52fc046ba14c5fcfcdcef2b0047bc3865b360163d1a0fe94323960da9e",
+  "description": "Successfully completed 'Copilot for Service: Helpful Tips for Customer Service Agents' by Garrick Chow. This course provides practical strategies and tips for customer service professionals to leverage Microsoft Copilot, focusing on improving response times, personalizing customer interactions, and streamlining service workflows through AI assistance.",
+  "skills": ["Microsoft Copilot", "AI for Business", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Microsoft Copilot", "Customer Service", "AI Productivity", "Service Agents"],
+  "pdf_document_link": "/Certificates/66 - CertificateOfCompletion_Copilot for Service Helpful Tips for Customer Service Agents.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
