@@ -1383,6 +1383,27 @@
   "pdf_document_link": "/Certificates/66 - CertificateOfCompletion_Copilot for Service Helpful Tips for Customer Service Agents.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "67",
+  "title": "Microsoft Copilot: The Art of Prompt Writing",
+  "issuer": "Microsoft via LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/copilot.png",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "934b8243adfe93bbee6ae56a99c33eba4901432207857d45f2cf395f0c8b9407",
+  "credential_url": "https://www.linkedin.com/learning/certificates/934b8243adfe93bbee6ae56a99c33eba4901432207857d45f2cf395f0c8b9407",
+  "description": "Successfully completed 'Microsoft Copilot: The Art of Prompt Writing' by Garrick Chow. This course covers the fundamental principles and advanced techniques of prompt engineering specifically for Microsoft Copilot, focusing on crafting effective queries to maximize AI-driven productivity and output quality.",
+  "skills": ["AI Prompting", "Microsoft Copilot", "AI Productivity"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Prompt Engineering", "Microsoft Copilot", "AI Productivity", "Generative AI"],
+  "pdf_document_link": "/Certificates/67 - CertificateOfCompletion_Microsoft Copilot The Art of Prompt Writing.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
