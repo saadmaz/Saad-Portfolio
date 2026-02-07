@@ -1327,7 +1327,7 @@
   "title": "Learning Microsoft 365 Copilot for Work (2024)",
   "issuer": "LinkedIn Learning",
   "platform": "LinkedIn Learning",
-  "issuer_logo": "/Logo/linkedin.svg",
+  "issuer_logo": "/Logo/Microsoft_logo.svg",
   "issue_date": "2025-11-26",
   "expiry_date": null,
   "does_not_expire": true,
@@ -1339,6 +1339,27 @@
   "type": "course",
   "tags": ["Microsoft 365", "AI Productivity", "Microsoft Copilot", "Office Automation"],
   "pdf_document_link": "/Certificates/64 - CertificateOfCompletion_Learning Microsoft 365 Copilot for Work 2024.pdf",
+  "is_verifiable": true,
+  "is_featured": false
+ },
+
+ {
+  "id": "65",
+  "title": "Customer Journey Mapping with Generative AI",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-26",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "24b787407c65917f45303ea7c31bc8307e698efb7a4ad24b5dba4fbcbbd1b0ef",
+  "credential_url": "https://www.linkedin.com/learning/certificates/24b787407c65917f45303ea7c31bc8307e698efb7a4ad24b5dba4fbcbbd1b0ef",
+  "description": "Successfully completed 'Customer Journey Mapping with Generative AI' by Maury Rogow. This course demonstrates how to leverage generative AI to create detailed customer journey maps, identifying key touchpoints, pain points, and opportunities for personalization across the digital marketing lifecycle.",
+  "skills": ["Digital Marketing", "AI for Business", "Customer Journey Mapping"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Customer Journey", "Generative AI", "Digital Marketing", "AI for Business", "CX"],
+  "pdf_document_link": "/Certificates/65 - CertificateOfCompletion_Customer Journey Mapping with Generative AI.pdf",
   "is_verifiable": true,
   "is_featured": false
  }
