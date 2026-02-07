@@ -1278,6 +1278,27 @@
   "pdf_document_link": "/Certificates/61 - CertificateOfCompletion_Business Intelligence for Consultants.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "62",
+  "title": "Using AI for Customer Service Managers",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-23",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "b9ccfeb585f5e82b2e9c0d949ed76f6dc22678077a2507e67e1f9bc29332f4ba",
+  "credential_url": "https://www.linkedin.com/learning/certificates/b9ccfeb585f5e82b2e9c0d949ed76f6dc22678077a2507e67e1f9bc29332f4ba",
+  "description": "Successfully completed 'Using AI for Customer Service Managers' by Brad Cleveland. This course explores the integration of artificial intelligence into customer service management, focusing on enhancing service delivery, optimizing resource allocation, and leveraging AI tools to improve customer satisfaction and operational efficiency.",
+  "skills": ["Customer Service Management", "AI for Business", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI for Business", "Customer Service", "AI Management", "Service Strategy"],
+  "pdf_document_link": "/Certificates/62 - CertificateOfCompletion_Using AI for Customer Service Managers.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
