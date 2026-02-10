@@ -69,12 +69,12 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
-        {/* GRID LAYOUT: Stacks on mobile, splits into 2 columns on large screens */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* GRID LAYOUT: Stacks on mobile, splits into 2 columns on large screens; centered block */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-5xl mx-auto justify-center">
           
           {/* --- LEFT COLUMN: TEXT & CONTENT --- */}
           {/* order-2 puts text below image on mobile; text-center centers it for small screens */}
-          <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left">
+          <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
             
             {/* Status Badge: Animates in from the bottom */}
             <motion.div
@@ -186,7 +186,7 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative order-1 lg:order-2 flex justify-center lg:justify-end mb-8 lg:mb-0"
+            className="relative order-1 lg:order-2 flex justify-center mb-8 lg:mb-0"
           >
             <div 
               ref={ref}

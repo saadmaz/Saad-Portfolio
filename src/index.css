@@ -179,7 +179,7 @@
 @layer components {
   /* Section Container */
   .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+      @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   /* Slightly wider max width for very large screens */
@@ -189,10 +189,24 @@
     }
   }
   
-  /* Section Padding */
-  .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
-  }
+  
+    /* Section Padding: minimum 5rem (py-20) for consistent spacing */
+    .section-padding {
+      @apply py-20 md:py-24 lg:py-32;
+    }
+
+    /* Extra horizontal padding for very large screens to create more corner space */
+    @screen xl {
+      .section-container {
+        @apply px-12;
+      }
+    }
+
+    @screen 2xl {
+      .section-container {
+        @apply px-20;
+      }
+    }
   
   /* Card Hover Effect */
   .card-hover {

@@ -104,7 +104,7 @@ const CertificationsPage = () => {
           ) : (
             <>
               {/* --- SEARCH & FILTERS --- */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
                 <div className="relative flex-1 lg:flex-none lg:max-w-xl">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -123,7 +123,7 @@ const CertificationsPage = () => {
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 items-center">
                   {categories.map((category) => (
                     <button
                       key={category}
