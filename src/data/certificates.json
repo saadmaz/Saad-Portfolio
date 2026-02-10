@@ -1614,6 +1614,27 @@
   "pdf_document_link": "/Certificates/77 - CertificateOfCompletion_Project Management with Microsoft Copilot.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "78",
+  "title": "Leveraging AI for Penetration Testing",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-05",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "3e225e7de88e5235fb76952a8d82cc9800308eb643e58eb9096f43bb753e6947",
+  "credential_url": "https://www.linkedin.com/learning/certificates/3e225e7de88e5235fb76952a8d82cc9800308eb643e58eb9096f43bb753e6947",
+  "description": "Successfully completed 'Leveraging AI for Penetration Testing' by Tennisha Virginia Martin. This course explores the intersection of artificial intelligence and cybersecurity, focusing on using AI tools to automate vulnerability scanning, enhance threat detection, and streamline ethical hacking workflows during penetration testing engagements.",
+  "skills": ["AI Security", "Penetration Testing", "Artificial Intelligence (AI)"],
+  "category": "Cybersecurity",
+  "type": "course",
+  "tags": ["Ethical Hacking", "AI Security", "Penetration Testing", "Cybersecurity Automation"],
+  "pdf_document_link": "/Certificates/78 - CertificateOfCompletion_Leveraging AI for Penetration Testing.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
