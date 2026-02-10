@@ -1866,6 +1866,27 @@
   "pdf_document_link": "/Certificates/89 - CertificateOfCompletion_Java 17 First Look.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "90",
+  "title": "Ethics and Law in Data Analytics",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-18",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "09bc9bc5984c0156febe92ca3e1fde08b7741431210de08b0f93db727655d5d6",
+  "credential_url": "https://www.linkedin.com/learning/certificates/09bc9bc5984c0156febe92ca3e1fde08b7741431210de08b0f93db727655d5d6",
+  "description": "Successfully completed 'Ethics and Law in Data Analytics' by Microsoft General Technical Skills. This course examines the legal and ethical frameworks governing data usage, focusing on privacy regulations, algorithmic bias, and the responsible handling of data within analytical workflows to ensure compliance and social responsibility.",
+  "skills": ["Business Ethics", "Data Analytics"],
+  "category": "Data Science & Analytics",
+  "type": "course",
+  "tags": ["Data Ethics", "Data Privacy", "Legal Compliance", "Responsible AI", "Data Analytics"],
+  "pdf_document_link": "/Certificates/90 - CertificateOfCompletion_Ethics and Law in Data Analytics.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
