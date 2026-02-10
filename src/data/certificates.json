@@ -1593,6 +1593,27 @@
   "pdf_document_link": "/Certificates/76 - CertificateOfCompletion_Cloud Storage Concepts Services Cost Control and Security.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "77",
+  "title": "Project Management with Microsoft Copilot",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/copilot.png",
+  "issue_date": "2025-12-04",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "91d1aa1b52f792e77e0ed25a551c17fb5600241e2230d2c8dc7bf88460010489",
+  "credential_url": "https://www.linkedin.com/learning/certificates/91d1aa1b52f792e77e0ed25a551c17fb5600241e2230d2c8dc7bf88460010489",
+  "description": "Successfully completed 'Project Management with Microsoft Copilot' by Cindy M. Lewis. This course explores the integration of Microsoft Copilot within the project management lifecycle, focusing on using AI to automate scheduling, enhance stakeholder communication, and optimize project tracking and reporting.",
+  "skills": ["Microsoft Copilot", "Project Management", "Artificial Intelligence (AI)"],
+  "category": "Project Management",
+  "type": "course",
+  "tags": ["Microsoft Copilot", "AI for Project Management", "Automation", "Project Governance"],
+  "pdf_document_link": "/Certificates/77 - CertificateOfCompletion_Project Management with Microsoft Copilot.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
