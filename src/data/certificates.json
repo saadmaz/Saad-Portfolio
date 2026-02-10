@@ -1824,6 +1824,27 @@
   "pdf_document_link": "/Certificates/87 - CertificateOfCompletion_Responsible AI Algorithm Design.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "88",
+  "title": "Teamwork Foundations",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-29",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "dc7f2dcd19055194047094edad72b46ac053fe67da5bbe3695178e8754d31c82",
+  "credential_url": "https://www.linkedin.com/learning/certificates/dc7f2dcd19055194047094edad72b46ac053fe67da5bbe3695178e8754d31c82",
+  "description": "Successfully completed 'Teamwork Foundations' by Chris Croft. This course explores the fundamental principles of effective collaboration, focusing on building trust within teams, managing conflict, and optimizing collective productivity through better communication and shared goals.",
+  "skills": ["Teamwork"],
+  "category": "Soft Skills",
+  "type": "course",
+  "tags": ["Collaboration", "Teamwork", "Leadership", "Communication", "Professional Development"],
+  "pdf_document_link": "/Certificates/88 - CertificateOfCompletion_Teamwork Foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
