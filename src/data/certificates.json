@@ -1551,6 +1551,27 @@
   "pdf_document_link": "/Certificates/74 - CertificateOfCompletion_The LongDistance Leader getAbstract Summary.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "75",
+  "title": "Innovating with AI Design Using Autonomous Vehicles",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-03",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "6c9b26891f639f9d161736df6582f2960bfc94ab475a0453e027a9a537ef8358",
+  "credential_url": "https://www.linkedin.com/learning/certificates/6c9b26891f639f9d161736df6582f2960bfc94ab475a0453e027a9a537ef8358",
+  "description": "Successfully completed 'Innovating with AI Design Using Autonomous Vehicles' by Sudha Jamthe. This course explores the intersection of AI design and autonomous transportation, focusing on design thinking, voice and data convergence, and user experience (UX) strategies for self-driving systems.",
+  "skills": ["Design Thinking", "Voice & Data Convergence", "User Experience (UX)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Autonomous Vehicles", "AI Design", "UX", "Computer Vision", "Design Thinking"],
+  "pdf_document_link": "/Certificates/75 - CertificateOfCompletion_Innovating with AI Design Using Autonomous Vehicles.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
