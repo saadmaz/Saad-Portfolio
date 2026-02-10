@@ -1698,6 +1698,27 @@
   "pdf_document_link": "/Certificates/81 - CertificateOfCompletion_Google Distributed Cloud GDC Platform Introduction by Google.pdf",
   "is_verifiable": true,
   "is_featured": true
- }
+ },
+
+ {
+  "id": "82",
+  "title": "Continuous Integration: Tools",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-12",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "faf7fbd827e88e8deaec52502bf78164769cf2061ae45b24374f25f56e910607",
+  "credential_url": "https://www.linkedin.com/learning/certificates/faf7fbd827e88e8deaec52502bf78164769cf2061ae45b24374f25f56e910607",
+  "description": "Successfully completed 'Continuous Integration: Tools' by Michael J. This course provides an in-depth look at the essential tooling required for effective Continuous Integration (CI), exploring automated build environments, testing frameworks, and the integration of these tools to streamline the software development pipeline.",
+  "skills": ["Continuous Integration (CI)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Continuous Integration", "DevOps Tools", "Automation", "Software Engineering"],
+  "pdf_document_link": "/Certificates/82 - CertificateOfCompletion_Continuous Integration Tools.pdf",
+  "is_verifiable": true,
+  "is_featured": true
+}
 
 ] 
