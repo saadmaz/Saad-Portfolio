@@ -1509,6 +1509,27 @@
   "pdf_document_link": "/Certificates/72 - CertificateOfCompletion_CSS Advanced Layouts with Grid.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "73",
+  "title": "Project Management Foundations: Ethics",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-27",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "a26452336e2068550cba167344f4bddb410da4f90756d744d06449f53379981e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/a26452336e2068550cba167344f4bddb410da4f90756d744d06449f53379981e",
+  "description": "Successfully completed 'Project Management Foundations: Ethics' by Bob McGannon. This course explores the ethical responsibilities of project managers, focusing on the PMI Code of Ethics and Professional Conduct, and providing practical frameworks for navigating complex ethical dilemmas within project environments.",
+  "skills": ["Business Ethics", "Project Management"],
+  "category": "Project Management",
+  "type": "course",
+  "tags": ["Business Ethics", "Project Management", "PMI", "Professional Conduct"],
+  "pdf_document_link": "/Certificates/73 - CertificateOfCompletion_Project Management Foundations Ethics.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
