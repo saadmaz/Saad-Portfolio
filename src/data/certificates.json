@@ -1845,6 +1845,27 @@
   "pdf_document_link": "/Certificates/88 - CertificateOfCompletion_Teamwork Foundations.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "89",
+  "title": "Java 17: First Look",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-04-16",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "f880487098ea57016a34d7d66623f5702a8e18cab8f0eedfb9aa47f7e03b2773",
+  "credential_url": "https://www.linkedin.com/learning/certificates/f880487098ea57016a34d7d66623f5702a8e18cab8f0eedfb9aa47f7e03b2773",
+  "description": "Successfully completed 'Java 17: First Look' by Kathryn Hodge. This course provides an essential introduction to the Java 17 ecosystem, exploring key language features, syntax basics, and the modern enhancements that make Java a premier choice for robust, cross-platform software development.",
+  "skills": ["Java"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Java", "Backend Development", "Software Engineering", "Object-Oriented Programming"],
+  "pdf_document_link": "/Certificates/89 - CertificateOfCompletion_Java 17 First Look.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
