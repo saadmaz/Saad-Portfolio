@@ -1572,6 +1572,27 @@
   "pdf_document_link": "/Certificates/75 - CertificateOfCompletion_Innovating with AI Design Using Autonomous Vehicles.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "76",
+  "title": "Cloud Storage Concepts: Services, Cost Control, and Security",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-03",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "047a8d25b10115147c237ed3de60bb03319919790dec9789c205488481aae64c",
+  "credential_url": "https://www.linkedin.com/learning/certificates/047a8d25b10115147c237ed3de60bb03319919790dec9789c205488481aae64c",
+  "description": "Successfully completed 'Cloud Storage Concepts: Services, Cost Control, and Security' by David Linthicum. This course provides a deep dive into cloud storage architectures, evaluating different service models, implementing cost-optimization strategies, and ensuring data security and compliance within cloud environments.",
+  "skills": ["Storage Management", "Cloud Storage"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["Cloud Computing", "Infrastructure", "Cloud Security", "Cost Management"],
+  "pdf_document_link": "/Certificates/76 - CertificateOfCompletion_Cloud Storage Concepts Services Cost Control and Security.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
