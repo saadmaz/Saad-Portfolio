@@ -1740,6 +1740,27 @@
   "pdf_document_link": "/Certificates/83 - CertificateOfCompletion_Boosting Your Influence Skills with Generative AI.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "84",
+  "title": "Build with AI: Create a Follow-Up App with React, Supabase, and Cursor",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-15",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "f41519017d16cc9d3cec659028b49ea2c394a29e58149503d0b6a86aab5b984e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/f41519017d16cc9d3cec659028b49ea2c394a29e58149503d0b6a86aab5b984e",
+  "description": "Successfully completed 'Build with AI: Create a Follow-Up App with React, Supabase, and Cursor' by Ayodele Aransiola. This course demonstrates the end-to-end development of a functional application using React and Supabase, while leveraging Cursor as an AI-powered code editor to accelerate the development workflow.",
+  "skills": ["React.js", "AI Software Development", "Artificial Intelligence (AI)"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["React", "Supabase", "Cursor", "AI-Powered Development", "Full-Stack"],
+  "pdf_document_link": "/Certificates/84 - CertificateOfCompletion_Build with AI Create a FollowUp App with React Supabase and Cursor.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
