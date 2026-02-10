@@ -1635,6 +1635,27 @@
   "pdf_document_link": "/Certificates/78 - CertificateOfCompletion_Leveraging AI for Penetration Testing.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "79",
+  "title": "DevOps Foundations",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-08",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "7d11d7f1314d3be3ca63a05b355665ea387e4d48f83c33633f9f406dbc3d91e7",
+  "credential_url": "https://www.linkedin.com/learning/certificates/7d11d7f1314d3be3ca63a05b355665ea387e4d48f83c33633f9f406dbc3d91e7",
+  "description": "Successfully completed 'DevOps Foundations' by Ernest Mueller and James Wickett. This course covers the fundamental principles and movement of DevOps, focusing on the cultural shift, automation, measurement, and sharing (CAMS) required to bridge the gap between development and operations for faster, more reliable software delivery.",
+  "skills": ["DevOps"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["DevOps", "Software Development Lifecycle", "CI/CD", "Automation", "CAMS"],
+  "pdf_document_link": "/Certificates/79 - CertificateOfCompletion_DevOps Foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
