@@ -1761,6 +1761,27 @@
   "pdf_document_link": "/Certificates/84 - CertificateOfCompletion_Build with AI Create a FollowUp App with React Supabase and Cursor.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "85",
+  "title": "AI Accountability: Build Responsible and Transparent Systems",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-19",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "293fc1aa8a5fba7fdb6dc3c3f21091d119f5f2b0e0dd36866076236b9db4fd96",
+  "credential_url": "https://www.linkedin.com/learning/certificates/293fc1aa8a5fba7fdb6dc3c3f21091d119f5f2b0e0dd36866076236b9db4fd96",
+  "description": "Successfully completed 'AI Accountability: Build Responsible and Transparent Systems' by Barton Poulson. This course explores the critical frameworks for AI ethics, focusing on building transparent, fair, and accountable AI systems while mitigating bias and ensuring responsible development practices.",
+  "skills": ["Responsible AI", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI Ethics", "Responsible AI", "Accountability", "Transparency", "AI Governance"],
+  "pdf_document_link": "/Certificates/85 - CertificateOfCompletion_AI Accountability Build Responsible and Transparent Systems.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
