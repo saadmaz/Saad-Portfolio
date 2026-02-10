@@ -1782,6 +1782,27 @@
   "pdf_document_link": "/Certificates/85 - CertificateOfCompletion_AI Accountability Build Responsible and Transparent Systems.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "86",
+  "title": "The AI-Driven Cybersecurity Analyst",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-19",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "9a2aee2241c55f4694adf0fc7a910998dcc135e28689e77e930f1d13d0648edd",
+  "credential_url": "https://www.linkedin.com/learning/certificates/9a2aee2241c55f4694adf0fc7a910998dcc135e28689e77e930f1d13d0648edd",
+  "description": "Successfully completed 'The AI-Driven Cybersecurity Analyst' by Michael Wylie. This course explores the role of an analyst in an AI-enhanced security environment, focusing on using generative AI for threat hunting, automated incident response, and refining information security analysis through machine learning insights.",
+  "skills": ["Information Security Analysis", "Artificial Intelligence (AI)", "Generative AI"],
+  "category": "Cybersecurity",
+  "type": "course",
+  "tags": ["Cybersecurity", "AI-Driven Security", "Threat Hunting", "Generative AI", "Information Security"],
+  "pdf_document_link": "/Certificates/86 - CertificateOfCompletion_The AIDriven Cybersecurity Analyst.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
