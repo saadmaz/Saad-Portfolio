@@ -1467,6 +1467,27 @@
   "pdf_document_link": "/Certificates/70 - CertificateOfCompletion_A New Way to Think Your Guide to Management Effectiveness Book Bite.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "71",
+  "title": "Machine Learning with Python: Foundations",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-18",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "329f056d23c4de34e8146825076713014aa017e86d5338955600f3362105cc39",
+  "credential_url": "https://www.linkedin.com/learning/certificates/329f056d23c4de34e8146825076713014aa017e86d5338955600f3362105cc39",
+  "description": "Successfully completed 'Machine Learning with Python: Foundations' by Frederick Nwanganga. This course provides a solid foundation in machine learning using Python, covering key algorithms, data preprocessing, and the fundamental principles of building and evaluating predictive models.",
+  "skills": ["Machine Learning", "Python (Programming Language)", "Artificial Intelligence (AI)"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["Machine Learning", "Python", "Data Science", "AI Foundations"],
+  "pdf_document_link": "/Certificates/71 - CertificateOfCompletion_Machine Learning with Python Foundations.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
