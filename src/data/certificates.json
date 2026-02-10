@@ -1488,6 +1488,27 @@
   "pdf_document_link": "/Certificates/71 - CertificateOfCompletion_Machine Learning with Python Foundations.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "72",
+  "title": "CSS: Advanced Layouts with Grid",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-11-27",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "c1e3008dfd7d00768b9667a444d2083483857d7e8edd7295450bd233c3d4c70c",
+  "credential_url": "https://www.linkedin.com/learning/certificates/c1e3008dfd7d00768b9667a444d2083483857d7e8edd7295450bd233c3d4c70c",
+  "description": "Successfully completed 'CSS: Advanced Layouts with Grid' by Carrie Dils. This course covers advanced techniques for creating complex, responsive web layouts using CSS Grid, focusing on grid areas, alignment, layering, and practical implementation strategies for modern front-end development.",
+  "skills": ["CSS Grid Layout", "Web Development", "Front-End Development"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["CSS Grid", "Frontend", "Web Design", "Responsive Layouts"],
+  "pdf_document_link": "/Certificates/72 - CertificateOfCompletion_CSS Advanced Layouts with Grid.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
