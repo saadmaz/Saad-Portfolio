@@ -181,6 +181,13 @@
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+
+  /* Slightly wider max width for very large screens */
+  @media (min-width: 1536px) {
+    .section-container {
+      max-width: 1600px;
+    }
+  }
   
   /* Section Padding */
   .section-padding {

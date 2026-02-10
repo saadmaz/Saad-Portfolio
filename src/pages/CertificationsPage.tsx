@@ -105,13 +105,13 @@ const CertificationsPage = () => {
             <>
               {/* --- SEARCH & FILTERS --- */}
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <div className="relative flex-1">
+                <div className="relative flex-1 lg:flex-none lg:max-w-xl">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     placeholder="Search certifications..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-card border-border"
+                      className="pl-10 bg-card border-border max-w-xl w-full"
                   />
                   {searchQuery && (
                     <button

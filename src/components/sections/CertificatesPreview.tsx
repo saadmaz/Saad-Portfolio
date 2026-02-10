@@ -39,6 +39,16 @@ const certificates = (Array.isArray(certificatesData) ? certificatesData : [cert
   });
 
 export function CertificatesPreview() {
+  const formatDate = (dateStr: any) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleString(undefined, { month: "short", year: "numeric" });
+    } catch (e) {
+      return dateStr.split("-")[0] || dateStr;
+    }
+  };
+
   return (
     // 'py-16' used instead of 'section-padding' to slightly reduce vertical footprint
     <section className="py-16 bg-secondary/30">
@@ -64,6 +74,14 @@ export function CertificatesPreview() {
                 development, and data engineering.
               </p>
             </div>
+
+            {/* SEE ALL CTA in header for more discoverability on large screens */}
+            <div className="mt-4 md:mt-0">
+              <Link to="/certifications" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground rounded-full font-semibold shadow-sm hover:opacity-95 transition">
+                See All Certificates
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
         </motion.div>
 
@@ -86,7 +104,7 @@ export function CertificatesPreview() {
             <CarouselContent className="-ml-4">
               {/* Mapping through data to generate individual slides */}
               {certificates.map((cert, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5">
                   {/* Internal card animation: Scale and hover translation */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -107,12 +125,16 @@ export function CertificatesPreview() {
                         <div className="relative z-10 flex-1 flex flex-col">
                           {/* Header: Logo and Year */}
                           <div className="flex items-start justify-between mb-4">
-                            <div className="w-10 h-10 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors">
-                              <Award className="w-5 h-5 text-accent" />
+                            <div className="w-12 h-12 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors overflow-hidden">
+                              {cert.issuerLogo ? (
+                                <img src={cert.issuerLogo} alt={cert.issuer} className="w-10 h-10 object-contain" />
+                              ) : (
+                                <Award className="w-5 h-5 text-accent" />
+                              )}
                             </div>
                             <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {cert.issueDate ? cert.issueDate.split("-")[0] : ""}
+                              {formatDate(cert.issueDate)}
                             </span>
                           </div>
 
