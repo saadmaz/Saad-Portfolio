@@ -1656,6 +1656,27 @@
   "pdf_document_link": "/Certificates/79 - CertificateOfCompletion_DevOps Foundations.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "80",
+  "title": "DevOps Foundations: Continuous Delivery/Continuous Integration",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-09",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "d0108935a69cf07e7a3d62e6edc23ce443170a1b5a2dc57352f0248afc96a4e8",
+  "credential_url": "https://www.linkedin.com/learning/certificates/d0108935a69cf07e7a3d62e6edc23ce443170a1b5a2dc57352f0248afc96a4e8",
+  "description": "Successfully completed 'DevOps Foundations: Continuous Delivery/Continuous Integration' by Ernest Mueller and James Wickett. This course explores the core practices of CI/CD, focusing on automating the software release process to ensure reliable, high-frequency deployments through robust testing and integration pipelines.",
+  "skills": ["Continuous Integration and Continuous Delivery (CI/CD)", "DevOps"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["DevOps", "CI/CD", "Automation", "Software Engineering", "Continuous Delivery"],
+  "pdf_document_link": "/Certificates/80 - CertificateOfCompletion_DevOps Foundations Continuous DeliveryContinuous Integration.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
