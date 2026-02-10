@@ -1530,6 +1530,27 @@
   "pdf_document_link": "/Certificates/73 - CertificateOfCompletion_Project Management Foundations Ethics.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "74",
+  "title": "The Long-Distance Leader (getAbstract Summary)",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2025-12-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "8c205c24f902ad18eb66a04a5f49b457a78300029d33b590d3c047510a03f1d8",
+  "credential_url": "https://www.linkedin.com/learning/certificates/8c205c24f902ad18eb66a04a5f49b457a78300029d33b590d3c047510a03f1d8",
+  "description": "Successfully completed 'The Long-Distance Leader (getAbstract Summary)' by getAbstract. This course distills the essential strategies for leading teams effectively in a remote environment, focusing on maintaining communication, fostering trust, and driving performance across distributed workforces.",
+  "skills": ["Remote Team Management"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Remote Work", "Leadership", "Team Management", "getAbstract"],
+  "pdf_document_link": "/Certificates/74 - CertificateOfCompletion_The LongDistance Leader getAbstract Summary.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
