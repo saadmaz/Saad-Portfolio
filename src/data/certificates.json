@@ -1950,6 +1950,27 @@
   "pdf_document_link": "/Certificates/93 - CertificateOfCompletion_Wavelet Analysis Applications with Wolfram Language.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "94",
+  "title": "IT Service Management Foundations: Problem Management",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2026-01-06",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "e9545c60b9349855e912d1fa99f59aed057bbd9389a12eab1f68f259a2cb607e",
+  "credential_url": "https://www.linkedin.com/learning/certificates/e9545c60b9349855e912d1fa99f59aed057bbd9389a12eab1f68f259a2cb607e",
+  "description": "Successfully completed 'IT Service Management Foundations: Problem Management' by Shane Chagpar. This course explores the lifecycle of problem management within ITIL frameworks, focusing on root cause analysis, preventing recurring incidents, and implementing permanent solutions to improve overall IT service quality and reliability.",
+  "skills": ["IT Service Management"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["ITSM", "Problem Management", "Root Cause Analysis", "ITIL Foundations", "Operations"],
+  "pdf_document_link": "/Certificates/94 - CertificateOfCompletion_IT Service Management Foundations Problem Management.pdf",
+  "is_verifiable": true,
+  "is_featured": false 
  }
 
 ] 
