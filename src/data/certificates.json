@@ -1887,6 +1887,27 @@
   "pdf_document_link": "/Certificates/90 - CertificateOfCompletion_Ethics and Law in Data Analytics.pdf",
   "is_verifiable": true,
   "is_featured": true
+ },
+
+ {
+  "id": "91",
+  "title": "Writing a Business Case",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2026-01-01",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "0d25bdef8668a9f5fcb79b4d35de0338f5e9e743dd4ac49bbe898329d53e8027",
+  "credential_url": "https://www.linkedin.com/learning/certificates/0d25bdef8668a9f5fcb79b4d35de0338f5e9e743dd4ac49bbe898329d53e8027",
+  "description": "Successfully completed 'Writing a Business Case' by Mike Figliuolo. This course provides a structured methodology for building compelling business cases, focusing on defining clear objectives, quantifying benefits and costs, analyzing risks, and effectively communicating value propositions to executive stakeholders.",
+  "skills": ["Business Case Development"],
+  "category": "Business & Strategy",
+  "type": "course",
+  "tags": ["Business Case", "Strategy", "Professional Communication", "Stakeholder Management"],
+  "pdf_document_link": "/Certificates/91 - CertificateOfCompletion_Writing a Business Case.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
