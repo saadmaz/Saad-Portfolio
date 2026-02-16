@@ -1915,7 +1915,7 @@
   "title": "Blockchain Security by Infosec",
   "issuer": "LinkedIn Learning",
   "platform": "LinkedIn Learning",
-  "issuer_logo": "/logos/linkedin-learning.svg",
+  "issuer_logo": "/Logo/linkedin.svg",
   "issue_date": "2026-01-01",
   "expiry_date": null,
   "does_not_expire": true,
@@ -1926,7 +1926,7 @@
   "category": "Cybersecurity",
   "type": "course",
   "tags": ["Blockchain", "Cryptography", "Cybersecurity", "Infosec", "Smart Contract Security"],
-  "pdf_document_link": "/certificates/blockchain-security-infosec.pdf",
+  "pdf_document_link": "/Certificates/92 - CertificateOfCompletion_Blockchain Security by Infosec.pdf",
   "is_verifiable": true,
   "is_featured": true
  },

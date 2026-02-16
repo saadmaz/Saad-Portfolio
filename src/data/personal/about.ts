@@ -12,6 +12,7 @@ export const volunteer = [
         description: "Teaching coding to underserved students",
         impact: "Taught 50+ students to code"
     },
+    
     {
         org: "Tech4Youth",
         role: "Volunteer Instructor",
