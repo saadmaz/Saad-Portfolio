@@ -2013,6 +2013,27 @@
   "pdf_document_link": "/Certificates/96 - CertificateOfCompletion_Everyday AI Concepts.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "97",
+  "title": "Building a Responsible AI Program: Context, Culture, Content, and Commitment",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2026-02-11",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "2bdca5c20dc0a03f22b80ad6398b29555f7a44f572951be474e8a91d8d6eec73",
+  "credential_url": "https://www.linkedin.com/learning/certificates/2bdca5c20dc0a03f22b80ad6398b29555f7a44f572951be474e8a91d8d6eec73",
+  "description": "Successfully completed 'Building a Responsible AI Program: Context, Culture, Content, and Commitment' by Katrina Ingram. This course provides a strategic framework for establishing responsible AI initiatives within organizations, focusing on cultural alignment, ethical content development, and long-term organizational commitment.",
+  "skills": ["Ethical Leadership", "Artificial Intelligence (AI)", "Responsible AI"],
+  "category": "AI/ML",
+  "type": "course",
+  "tags": ["AI Ethics", "Responsible AI", "Governance", "Ethical Leadership", "Change Management"],
+  "pdf_document_link": "/Certificates/97 - CertificateOfCompletion_Building a Responsible AI Program Context Culture Content and Commitment.pdf",
+  "is_verifiable": true,
+  "is_featured": true
  }
 
 ] 
