@@ -2055,6 +2055,27 @@
   "pdf_document_link": "/Certificates/98 - CertificateOfCompletion_Social Media Marketing Foundations.pdf",
   "is_verifiable": true,
   "is_featured": false
+ },
+
+ {
+  "id": "99",
+  "title": "Social Media Marketing: Strategy and Optimization",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2026-02-12",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "2e56fa98b6b17512399c58a14e842bac5dc3b5b050007d46d547c5bc5c6a0016",
+  "credential_url": "https://www.linkedin.com/learning/certificates/2e56fa98b6b17512399c58a14e842bac5dc3b5b050007d46d547c5bc5c6a0016",
+  "description": "Successfully completed 'Social Media Marketing: Strategy and Optimization' by Martin Waxman. This course explores advanced techniques for optimizing social media performance, focusing on strategic content distribution, audience analysis, and leveraging data-driven insights to refine marketing workflows and maximize engagement.",
+  "skills": ["Social Media Marketing", "Social Media Optimization (SMO)"],
+  "category": "Marketing & Communication",
+  "type": "course",
+  "tags": ["Social Media Strategy", "SMO", "Digital Marketing", "Content Optimization", "Marketing Analytics"],
+  "pdf_document_link": "/Certificates/99 - CertificateOfCompletion_Social Media Marketing Strategy and Optimization.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
