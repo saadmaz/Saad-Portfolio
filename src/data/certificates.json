@@ -1971,6 +1971,27 @@
   "pdf_document_link": "/Certificates/94 - CertificateOfCompletion_IT Service Management Foundations Problem Management.pdf",
   "is_verifiable": true,
   "is_featured": false 
+ },
+
+ {
+  "id": "95",
+  "title": "IT Service Desk: Monitoring and Metrics Fundamentals",
+  "issuer": "LinkedIn Learning",
+  "platform": "LinkedIn Learning",
+  "issuer_logo": "/Logo/linkedin.svg",
+  "issue_date": "2026-02-07",
+  "expiry_date": null,
+  "does_not_expire": true,
+  "credential_id": "0844d6f1c7e74b292a2b59c872f9e44ff4e9703718f52ba9d13e237294c33425",
+  "credential_url": "https://www.linkedin.com/learning/certificates/0844d6f1c7e74b292a2b59c872f9e44ff4e9703718f52ba9d13e237294c33425",
+  "description": "Successfully completed 'IT Service Desk: Monitoring and Metrics Fundamentals' by Brett Moffett. This course explores the critical key performance indicators (KPIs) and monitoring strategies essential for an effective IT service desk, focusing on data-driven decision-making to improve service delivery and agent performance.",
+  "skills": ["IT Service Management"],
+  "category": "Technology & Web Development",
+  "type": "course",
+  "tags": ["ITSM", "Service Desk", "KPIs", "Performance Metrics", "IT Operations"],
+  "pdf_document_link": "/Certificates/95 - CertificateOfCompletion_IT Service Desk Monitoring and Metrics Fundamentals.pdf",
+  "is_verifiable": true,
+  "is_featured": false
  }
 
 ] 
