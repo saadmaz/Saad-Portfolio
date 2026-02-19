@@ -96,7 +96,7 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="space-y-4"
             >
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
+              <h1 className="font-display whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
                 Hi, I'm{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-blue-900">Saad Mazhar</span>    
@@ -105,7 +105,7 @@ export function HeroSection() {
                 </span>
               </h1>
               
-              <p className="text-lg md:text-2xl text-muted-foreground font-light">
+              <p className="whitespace-nowrap text-base sm:text-lg md:text-2xl text-muted-foreground font-light">
                 • Startup Founder • Tech Speaker • Compere
               </p>
             </motion.div>
