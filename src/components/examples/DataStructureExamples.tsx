@@ -177,7 +177,8 @@ export function SkillsExample() {
                   <div className="w-full bg-gray-200 rounded h-2">
                     <div
                       className="bg-blue-500 h-2 rounded"
-                      style={{ width: `${(skill.level / 5) * 100}%` }}
+                      // use years (numeric) for example width; avoids casting string level to number
+                      style={{ width: `${(skill.years / 10) * 100}%` }}
                     />
                   </div>
                 </div>
