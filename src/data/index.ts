@@ -7,7 +7,7 @@
 
 // ==================== CONTENT DATA ====================
 // Projects, blogs, events, newsletters, and hosting information
-export { default as projectsData } from './content/projects.json';
+export { default as projectsData } from './projects.json';
 export { default as blogsData } from './content/blogs.json';
 export { default as eventsData } from './content/events.json';
 export { default as newslettersData } from './content/newsletters.json';

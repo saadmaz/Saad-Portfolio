@@ -1,55 +1,11 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Calendar, Building, ExternalLink } from "lucide-react";
+import { ArrowUpRight, Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-const experiences = [
-  {
-    id: 1,
-    role: "Co-Founder & CTO",
-    company: "Startup XYZ",
-    companyUrl: "https://startupxyz.com",
-    companyLogo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop&q=80",
-    period: "2023 - Present",
-    description: "Leading technical strategy and product development for an AI-powered productivity platform serving 10K+ users.",
-    highlights: [
-      "Built core product from 0 to 1 with 99.9% uptime",
-      "Scaled infrastructure to handle 1M+ daily requests",
-      "Led a team of 5 engineers across frontend and backend"
-    ],
-    tech: ["React", "Node.js", "AWS", "PostgreSQL", "OpenAI"],
-  },
-  {
-    id: 2,
-    role: "Software Engineer Intern",
-    company: "Tech Corp",
-    companyUrl: "https://techcorp.com",
-    companyLogo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop&q=80",
-    period: "Summer 2023",
-    description: "Developed key features for the customer-facing dashboard used by Fortune 500 clients.",
-    highlights: [
-      "Reduced page load time by 40% through optimization",
-      "Implemented real-time collaboration features",
-      "Contributed to open-source internal tools"
-    ],
-    tech: ["TypeScript", "React", "GraphQL", "Redis"],
-  },
-  {
-    id: 3,
-    role: "Founding Engineer",
-    company: "PreviousStartup",
-    companyUrl: "https://previousstartup.com",
-    companyLogo: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=100&h=100&fit=crop&q=80",
-    period: "2022 - 2023",
-    description: "First engineering hire at an early-stage startup focused on developer tools.",
-    highlights: [
-      "Architected the entire backend infrastructure",
-      "Integrated with 15+ third-party APIs",
-      "Helped raise $500K seed funding"
-    ],
-    tech: ["Python", "FastAPI", "Docker", "MongoDB"],
-  },
-];
+import { dataManager, WorkExperience } from "@/lib/dataManager";
+
+const experiences: WorkExperience[] = dataManager.getWorkExperience();
 
 export function ExperienceSection() {
   return (
@@ -75,7 +31,6 @@ export function ExperienceSection() {
               </Link>
             </Button>
           </div>
-        </motion.div>
 
         {/* Experience Cards */}
         <div className="space-y-6">
@@ -88,7 +43,8 @@ export function ExperienceSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8">
+              <Link to="/experience" className="block">
+                <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8">
                 <div className="grid md:grid-cols-[1fr_2fr] gap-6">
                   {/* Left - Meta Info */}
                   <div className="space-y-4">
@@ -107,9 +63,20 @@ export function ExperienceSection() {
                     </a>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4" />
-                        {exp.period}
+                        {exp.startDate}{exp.isCurrent ? " - Present" : exp.endDate ? ` - ${exp.endDate}` : ""}
+                        {exp.location && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            {exp.location}
+                          </span>
+                        )}
+                        {exp.employmentType && (
+                          <span className="px-2 py-0.5 rounded-full bg-secondary text-xs">
+                            {exp.employmentType}
+                          </span>
+                        )}
                       </div>
                       <a 
                         href={exp.companyUrl}
@@ -135,7 +102,7 @@ export function ExperienceSection() {
                     </p>
                     
                     <ul className="space-y-2">
-                      {exp.highlights.map((highlight, i) => (
+                      {(exp.highlights || []).map((highlight, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-foreground">
                           <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                           {highlight}
@@ -144,7 +111,7 @@ export function ExperienceSection() {
                     </ul>
 
                     <div className="flex flex-wrap gap-2 pt-2">
-                      {exp.tech.map((tech) => (
+                      {(exp.technologies || []).map((tech) => (
                         <span key={tech} className="tech-chip">
                           {tech}
                         </span>

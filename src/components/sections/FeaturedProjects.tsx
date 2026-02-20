@@ -3,38 +3,9 @@ import { ArrowUpRight, Github, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-const featuredProjects = [
-  {
-    id: 1,
-    title: "TechFlow Analytics",
-    description: "A real-time analytics dashboard for SaaS businesses. Track user behavior, revenue metrics, and growth trends with beautiful visualizations.",
-    tech: ["React", "TypeScript", "Node.js", "PostgreSQL", "D3.js"],
-    status: "Live",
-    liveUrl: "https://techflow.app",
-    githubUrl: "https://github.com/saadmaz/techflow",
-    gradient: "from-accent to-blue-accent",
-  },
-  {
-    id: 2,
-    title: "DevConnect Platform", 
-    description: "A networking platform for developers to connect, collaborate, and find opportunities. Features real-time chat and project matching.",
-    tech: ["Next.js", "Prisma", "Tailwind", "Socket.io", "AWS"],
-    status: "MVP",
-    liveUrl: "https://devconnect.io",
-    githubUrl: "https://github.com/johndoe/devconnect",
-    gradient: "from-success to-accent",
-  },
-  {
-    id: 3,
-    title: "AI Code Assistant",
-    description: "An intelligent code review tool powered by GPT-4. Provides suggestions, identifies bugs, and improves code quality automatically.",
-    tech: ["Python", "FastAPI", "OpenAI", "React", "Docker"],
-    status: "In Progress",
-    liveUrl: null,
-    githubUrl: "https://github.com/johndoe/ai-code",
-    gradient: "from-warning to-destructive",
-  },
-];
+import { dataManager, Project } from "@/lib/dataManager";
+
+const featuredProjects: Project[] = dataManager.getFeaturedProjects(3);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -84,7 +55,7 @@ export function FeaturedProjects() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-center"
         >
           {featuredProjects.map((project) => (
             <motion.div
@@ -92,60 +63,64 @@ export function FeaturedProjects() {
               variants={itemVariants}
               className="group"
             >
-              <div className="h-full bg-card rounded-xl border border-border card-hover overflow-hidden flex flex-col">
-                <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
-                
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
-                      {project.title}
-                    </h3>
-                    <span className={`status-badge ${
-                      project.status === 'Live' ? 'status-live' :
-                      project.status === 'MVP' ? 'status-mvp' :
-                      'status-progress'
-                    }`}>
-                      {project.status}
-                    </span>
-                  </div>
-
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
-                    {project.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((tech) => (
-                      <span key={tech} className="tech-chip">
-                        {tech}
+              <Link to={`/projects/${project.slug || project.id}`} className="block h-full">
+                <div className="h-full bg-card rounded-xl border border-border card-hover overflow-hidden flex flex-col">
+                  <div className={`h-2 bg-gradient-to-r ${project.colour || project.gradient || 'from-accent to-blue-accent'}`} />
+                  
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
+                        {project.title}
+                      </h3>
+                      <span className={`status-badge ${
+                        project.status === 'Live' ? 'status-live' :
+                        project.status === 'MVP' ? 'status-mvp' :
+                        'status-progress'
+                      }`}>
+                        {project.status}
                       </span>
-                    ))}
-                  </div>
+                    </div>
 
-                  {/* --- ACTION BUTTONS --- */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-border">
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-accent transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        View Live
-                      </a>
-                    )}
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Github className="w-4 h-4" />
-                      GitHub
-                    </a>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
+                      {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {(project.technologies || []).map((tech) => (
+                        <span key={tech} className="tech-chip">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* --- ACTION BUTTONS --- */}
+                    <div className="flex items-center gap-4 pt-4 border-t border-border">
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-accent transition-colors"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          View Live
+                        </a>
+                      )}
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <Github className="w-4 h-4" />
+                          GitHub
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

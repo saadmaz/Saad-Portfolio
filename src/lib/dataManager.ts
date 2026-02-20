@@ -7,7 +7,7 @@ import blogsData from "@/data/content/blogs.json";
 import workExperienceData from "@/data/personal/workExperience.json";
 import certificatesData from "@/data/personal/certificates.json";
 import skillsData from "@/data/personal/skills.json";
-import projectsData from "@/data/content/projects.json";
+import projectsData from "@/data/projects.json";
 import eventsData from "@/data/content/events.json";
 import newslettersData from "@/data/content/newsletters.json";
 import hostingData from "@/data/content/hosting.json";
@@ -29,12 +29,29 @@ export interface WorkExperience {
   id: number;
   company: string;
   position: string;
+  employmentType?: string;
   startDate: string;
   endDate: string;
-  location: string;
-  description: string;
-  technologies: string[];
-  achievements: string[];
+  isCurrent?: boolean;
+  location?: string;
+  workMode?: string;
+  department?: string;
+  description?: string;
+  responsibilities?: string[];
+  technologies?: string[];
+  achievements?: string[];
+  companyUrl?: string;
+  companyLogo?: string;
+  companyIndustry?: string;
+  companySize?: string;
+  teamSize?: number;
+  reportsTo?: string;
+  directReports?: number;
+  projectsHighlighted?: string[];
+  referenceAvailable?: boolean;
+  linkedinUrl?: string;
+  mediaLinks?: string[];
+  impact?: string;
   isLatest?: boolean;
 }
 
@@ -63,13 +80,55 @@ export interface Skill {
 
 export interface Project {
   id: number;
+  slug?: string;
   title: string;
   description: string;
-  date: string;
-  image: string;
-  technologies: string[];
-  link: string;
-  github: string;
+  longDescription?: string;
+  date?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  status?: string;
+  stage?: string;
+  version?: string;
+  image?: string;
+  images?: string[];
+  thumbnail?: string;
+  video?: string;
+  livePreview?: string;
+  link?: string;
+  github?: string;
+  caseStudy?: string;
+  figma?: string;
+  documentation?: string;
+  playStore?: string;
+  appStore?: string;
+  type?: string;
+  category?: string;
+  tags?: string[];
+  featured?: boolean;
+  order?: number;
+  technologies?: string[];
+  techStack?: {
+    frontend?: string[];
+    backend?: string[];
+    database?: string[];
+    devops?: string[];
+    tools?: string[];
+  };
+  metrics?: {
+    users?: number;
+    stars?: number;
+    forks?: number;
+    downloads?: number;
+  };
+  role?: string;
+  teamSize?: number;
+  contributions?: string[];
+  challenges?: string[];
+  learnings?: string[];
+  highlights?: string[];
+  colour?: string;
   isLatest?: boolean;
 }
 
@@ -204,10 +263,24 @@ class DataManager {
   }
 
   /**
+   * Get project by slug
+   */
+  getProjectBySlug(slug: string): Project | undefined {
+    return this.projects.find((p) => p.slug === slug || p.slug === `/${slug}`);
+  }
+
+  /**
+   * Get project by id
+   */
+  getProjectById(id: number): Project | undefined {
+    return this.projects.find((p) => p.id === id);
+  }
+
+  /**
    * Get featured projects only
    */
   getFeaturedProjects(limit?: number): Project[] {
-    const featured = this.projects.filter((p) => p.isLatest);
+    const featured = this.projects.filter((p) => p.featured || p.isLatest);
     return limit ? featured.slice(0, limit) : featured;
   }
 
