@@ -8,6 +8,7 @@ const ProjectDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   let project: Project | undefined;
   if (slug) {
+
     // try slug then numeric id
     project = dataManager.getProjectBySlug(slug);
     if (!project && !isNaN(Number(slug))) {

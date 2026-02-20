@@ -5,8 +5,8 @@
 
 import blogsData from "@/data/content/blogs.json";
 import workExperienceData from "@/data/personal/workExperience.json";
-import certificatesData from "@/data/personal/certificates.json";
-import skillsData from "@/data/personal/skills.json";
+import certificatesData from "@/data/certificates.json";
+import skillsData from "@/data/skills.json";
 import projectsData from "@/data/projects.json";
 import eventsData from "@/data/content/events.json";
 import newslettersData from "@/data/content/newsletters.json";
@@ -56,25 +56,36 @@ export interface WorkExperience {
 }
 
 export interface Certificate {
-  id: number;
+  // JSON from assets contains various fields; we keep a flexible shape.
+  id: string;
   title: string;
   issuer: string;
-  issueDate: string;
-  expiryDate?: string;
-  credentialId: string;
-  credentialUrl: string;
-  description: string;
-  certificatePdfUrl?: string;
-  isLatest?: boolean;
+  platform?: string;
+  issuer_logo?: string;
+  issue_date?: string;
+  expiry_date?: string | null;
+  does_not_expire?: boolean;
+  credential_id?: string;
+  credential_url?: string;
+  description?: string;
+  skills?: string[];
+  category?: string;
+  type?: string;
+  tags?: string[];
+  pdf_document_link?: string;
+  is_verifiable?: boolean;
+  is_featured?: boolean;
+  [key: string]: any;
 }
 
 export interface Skill {
   category: string;
   skills: Array<{
     name: string;
-    level: number;
+    level: string;
     years: number;
-    endorsed: number;
+    // JSON does not include endorsed field, but we keep optional
+    endorsed?: number;
   }>;
 }
 
@@ -156,17 +167,8 @@ export interface Project {
   featured?: boolean;
   order?: number;
   technologies?: string[];
-  techStack?: {
-    frontend?: string[];
-    backend?: string[];
-    database?: string[];
-    devops?: string[];
-    tools?: string[];
-  };
-  role?: string;
   teamSize?: number;
   contributions?: string[];
-  challenges?: string[];
   learnings?: string[];
   highlights?: string[];
   colour?: string;
@@ -238,9 +240,9 @@ class DataManager {
     // Initialize all data, sorted by date (latest first)
     this.blogs = sortByDateDesc(blogsData as Blog[]);
     this.workExperience = sortByDateDesc(workExperienceData as WorkExperience[]);
-    this.certificates = sortByDateDesc(certificatesData as Certificate[]);
-    this.skills = skillsData as Skill[];
-    this.projects = sortByDateDesc(projectsData as Project[]);
+    this.certificates = sortByDateDesc(certificatesData as any) as Certificate[];
+    this.skills = skillsData as any;
+    this.projects = sortByDateDesc(projectsData as any);
     this.events = sortByDateDesc(eventsData as Event[]);
     this.newsletters = sortByDateDesc(newslettersData as Newsletter[]);
     this.hosting = sortByDateDesc(hostingData as Hosting[]);
@@ -399,9 +401,9 @@ class DataManager {
   reload(): void {
     this.blogs = sortByDateDesc(blogsData as Blog[]);
     this.workExperience = sortByDateDesc(workExperienceData as WorkExperience[]);
-    this.certificates = sortByDateDesc(certificatesData as Certificate[]);
-    this.skills = skillsData as Skill[];
-    this.projects = sortByDateDesc(projectsData as Project[]);
+    this.certificates = sortByDateDesc(certificatesData as any) as Certificate[];
+    this.skills = skillsData as any;
+    this.projects = sortByDateDesc(projectsData as any);
     this.events = sortByDateDesc(eventsData as Event[]);
     this.newsletters = sortByDateDesc(newslettersData as Newsletter[]);
     this.hosting = sortByDateDesc(hostingData as Hosting[]);
