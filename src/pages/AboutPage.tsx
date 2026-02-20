@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-import { educationList } from "@/data/personal/education";
+import { educationList } from "@/data/education";
 import { languages, volunteer, sports, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
 
