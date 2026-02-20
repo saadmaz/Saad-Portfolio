@@ -26,6 +26,7 @@ const StarRating = ({ filled }: { filled: number }) => (
   </div>
 );
 
+
 const AboutPage = () => {
   return (
     <Layout>

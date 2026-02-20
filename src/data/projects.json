@@ -45,7 +45,6 @@
     "colour": "from-blue-700/20 to-slate-800/20"
   },
 
-  
   {
     "id": 2,
     "slug": "ecommerce-platform",
@@ -77,6 +76,7 @@
     "features": [],
     "colour": "from-green-700/20 to-green-800/20"
   },
+
   {
     "id": 3,
     "slug": "task-management-app",
