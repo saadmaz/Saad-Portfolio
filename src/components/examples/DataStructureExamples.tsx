@@ -59,38 +59,43 @@ export function FeaturedProjectsExample() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.map((project) => (
           <div key={project.id} className="border rounded overflow-hidden">
+            {/* fallback to heroImage or legacy image field */}
             <img
-              src={project.image}
+              src={project.heroImage || project.image}
               alt={project.title}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
               <h3 className="font-bold">{project.title}</h3>
-              <p className="text-gray-600 text-sm">{project.description}</p>
+              <p className="text-gray-600 text-sm">{project.tagline || project.description}</p>
               <div className="flex gap-2 mt-2 flex-wrap">
-                {project.technologies.map((tech) => (
+                {(project.techStack || project.technologies || []).map((tech) => (
                   <span key={tech} className="bg-gray-100 px-2 py-1 text-xs rounded">
                     {tech}
                   </span>
                 ))}
               </div>
               <div className="flex gap-2 mt-4">
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-blue-500 text-white px-2 py-1 rounded text-center text-sm"
-                >
-                  View
-                </a>
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-gray-800 text-white px-2 py-1 rounded text-center text-sm"
-                >
-                  GitHub
-                </a>
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-blue-500 text-white px-2 py-1 rounded text-center text-sm"
+                  >
+                    View
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-gray-800 text-white px-2 py-1 rounded text-center text-sm"
+                  >
+                    GitHub
+                  </a>
+                )}
               </div>
             </div>
           </div>

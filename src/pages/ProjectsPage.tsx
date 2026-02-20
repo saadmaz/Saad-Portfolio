@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Github, ExternalLink, Filter } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 import { dataManager, Project } from "@/lib/dataManager";
+import { ProjectCard } from "@/components/projects/ProjectCard";
 
 const allProjects: Project[] = dataManager.getProjects();
 
@@ -75,77 +74,7 @@ const ProjectsPage = () => {
                 transition={{ duration: 0.5, delay: index * 0.05 }}
                 className="group"
               >
-                <Link to={`/projects/${project.slug || project.id}`} className="block h-full">
-                  <div className="h-full bg-card rounded-xl border border-border card-hover overflow-hidden flex flex-col">
-                    <div className="p-6 flex-1 flex flex-col">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          {project.featured && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">
-                              Featured
-                            </span>
-                          )}
-                          <span className="text-xs text-muted-foreground">
-                            {project.category}
-                          </span>
-                        </div>
-                        <span className={`status-badge ${project.status === 'Live' ? 'status-live' :
-                          project.status === 'MVP' ? 'status-mvp' :
-                            'status-progress'
-                          }`}>
-                          {project.status}
-                        </span>
-                      </div>
-
-                      {/* Title & Description */}
-                      <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors mb-2">
-                        {project.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
-                        {project.description}
-                      </p>
-
-                      {/* Tech Stack */}
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {(project.technologies || []).slice(0, 4).map((tech) => (
-                          <span key={tech} className="tech-chip">
-                            {tech}
-                          </span>
-                        ))}
-                        {(project.technologies?.length || 0) > 4 && (
-                          <span className="tech-chip">+{(project.technologies?.length || 0) - 4}</span>
-                        )}
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center gap-3 pt-4 border-t border-border">
-                        {project.link && (
-                          <a
-                            href={project.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-accent transition-colors"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            View Live
-                          </a>
-                        )}
-                        {project.github && (
-                          <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            <Github className="w-4 h-4" />
-                            GitHub
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <ProjectCard project={project} />
               </motion.div>
             ))}
           </div>

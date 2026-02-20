@@ -102,14 +102,18 @@ export const useProjects = () => {
 };
 
 /**
- * Hook to get featured projects
+ * Hook to get a small set of projects for spotlight sections.
+ * Historically this returned projects with the `featured` flag; we
+ * now fetch the most recent items to satisfy the "top 3 most recent
+ * projects" requirement. The old behaviour is still available via
+ * `dataManager.getFeaturedProjects` if callers need it.
  */
 export const useFeaturedProjects = (limit?: number) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProjects(dataManager.getFeaturedProjects(limit));
+    setProjects(dataManager.getRecentProjects(limit));
     setLoading(false);
   }, [limit]);
 

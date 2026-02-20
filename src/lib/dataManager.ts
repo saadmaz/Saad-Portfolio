@@ -82,15 +82,62 @@ export interface Project {
   id: number;
   slug?: string;
   title: string;
-  description: string;
-  longDescription?: string;
+
+  // core fields used across pages
   date?: string;
+  status?: "Live" | "In Progress" | "Archived" | string;
+  tagline?: string;                    // short summary used on cards
+  gradientStart?: string;              // hex or css color
+  gradientEnd?: string;                // hex or css color
+  techStack?: string[];                // array of strings for tags
+  role?: string;
+  duration?: string;
+  githubUrl?: string;
+  liveUrl?: string;
+  heroImage?: string;
+  screenshots?: string[];
+  videoDemo?: string;
+  overview?: string;
+  problem?: string;
+  solution?: string;
+  impact?: string;
+  architecture?: {
+    description?: string;
+    diagramUrl?: string;
+  };
+  databaseSchema?: string;
+  apiDocs?: string;
+  challenges?: Array<{
+    wall?: string;
+    fix?: string;
+    lesson?: string;
+  }>;
+  metrics?: {
+    users?: number;
+    stars?: number;
+    forks?: number;
+    downloads?: number;
+    lighthouseScore?: {
+      performance?: number;
+      accessibility?: number;
+      seo?: number;
+    };
+    testCoverage?: number;
+    cicd?: string;
+  };
+  stackDeepDive?: {
+    frontend?: string;
+    backend?: string;
+    aiIntegration?: string;
+  };
+  roadmap?: string[];
+  features?: string[];
+
+  // legacy / miscellaneous fields (kept for backwards compatibility)
+  description?: string;
+  longDescription?: string;
   startDate?: string;
   endDate?: string;
-  duration?: string;
-  status?: string;
-  stage?: string;
-  version?: string;
   image?: string;
   images?: string[];
   thumbnail?: string;
@@ -115,12 +162,6 @@ export interface Project {
     database?: string[];
     devops?: string[];
     tools?: string[];
-  };
-  metrics?: {
-    users?: number;
-    stars?: number;
-    forks?: number;
-    downloads?: number;
   };
   role?: string;
   teamSize?: number;
@@ -282,6 +323,32 @@ class DataManager {
   getFeaturedProjects(limit?: number): Project[] {
     const featured = this.projects.filter((p) => p.featured || p.isLatest);
     return limit ? featured.slice(0, limit) : featured;
+  }
+
+  /**
+   * Return the most recent projects from the sorted list.
+   * Used by homepage to show the 3 newest items regardless of featured flag.
+   */
+  getRecentProjects(limit?: number): Project[] {
+    return limit ? this.projects.slice(0, limit) : this.projects;
+  }
+
+  /**
+   * Ensure each project defines a unique gradientStart/gradientEnd pair.
+   * Emits a console warning if duplicates are found.
+   */
+  private ensureUniqueGradients(): void {
+    const seen = new Set<string>();
+    this.projects.forEach((p) => {
+      if (p.gradientStart && p.gradientEnd) {
+        const key = `${p.gradientStart}-${p.gradientEnd}`;
+        if (seen.has(key)) {
+          console.warn(`Duplicate gradient for project ${p.slug || p.id}: ${key}`);
+        } else {
+          seen.add(key);
+        }
+      }
+    });
   }
 
   /**
