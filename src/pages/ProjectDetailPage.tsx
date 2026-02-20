@@ -1,24 +1,28 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { dataManager, Project } from "@/lib/dataManager";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   ExternalLink, Github, ChevronLeft, PlayCircle, 
   FileText, CheckCircle2, Zap, Trophy, Target, AlertCircle,
   Lightbulb, Rocket, ShieldCheck, Database, Code2, 
-  Cpu, Layers, Calendar, Clock, User, BarChart3, Check
+  Cpu, Layers, Calendar, Clock, User, BarChart3, Check, X
 } from "lucide-react";
 
 /**
- * PROJECT DETAIL PAGE - SLEEK PROFESSIONAL VERSION
- * Design Philosophy: 
- * - Linear/Vercel-inspired aesthetic.
- * - Tight typography, crisp borders, and subtle contrast.
- * - High information density without feeling cluttered.
+ * PROJECT DETAIL PAGE - INTERACTIVE & PROFESSIONAL
+ * Features:
+ * - Image Lightbox Modal for full-screen viewing
+ * - Fluid hover animations on interactable elements
+ * - Naturally scrolling sidebar (un-frozen)
  */
 const ProjectDetailPage = () => {
-  // --- 1. ROUTER & DATA FETCHING ---
+  // --- 1. STATE & ROUTING ---
   const { slug } = useParams<{ slug: string }>();
+  // State to track which image is currently selected for the full-screen lightbox
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   let project: Project | undefined;
 
   // Retrieve project by slug; fallback to numeric ID if needed
@@ -44,8 +48,7 @@ const ProjectDetailPage = () => {
     );
   }
 
-  // --- HELPER FUNCTION ---
-  // Ensures we don't render empty UI boxes for blank JSON fields
+  // Helper function to validate non-empty strings from JSON
   const hasValue = (val?: string) => val && val.trim() !== "" && val.toLowerCase() !== "n/a" && val.toLowerCase() !== "none";
 
   return (
@@ -77,7 +80,7 @@ const ProjectDetailPage = () => {
                     </p>
                   )}
                   
-                  {/* Tech Stack Pills: Scaled down, crisper borders */}
+                  {/* Tech Stack Pills */}
                   {project.techStack && project.techStack.length > 0 && (
                     <div className="mt-6 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
@@ -89,11 +92,11 @@ const ProjectDetailPage = () => {
                   )}
                 </div>
 
-                {/* Status Badge: Moved to top right relative to header, smaller and sharper */}
+                {/* Status Badge */}
                 {project.status && (
                   <div className="shrink-0">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-                      <div className={`w-2 h-2 rounded-full ${project.status.toLowerCase() === 'live' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${project.status.toLowerCase() === 'live' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]'}`} />
                       <span className="text-xs font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">{project.status}</span>
                     </div>
                   </div>
@@ -109,13 +112,17 @@ const ProjectDetailPage = () => {
               {/* ========================================== */}
               <div className="lg:col-span-8 space-y-16">
                 
-                {/* 1. HERO IMAGE */}
+                {/* 1. HERO IMAGE (Interactive) */}
+                {/* ADDED: cursor-zoom-in, onClick handler, and a group-hover scale animation */}
                 {project.heroImage && (
-                  <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm bg-slate-100 dark:bg-slate-900">
+                  <div 
+                    onClick={() => setSelectedImage(project!.heroImage!)}
+                    className="group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm bg-slate-100 dark:bg-slate-900 cursor-zoom-in"
+                  >
                     <img 
                       src={project.heroImage} 
                       alt={`${project.title} Cover`} 
-                      className="w-full object-cover h-[300px] md:h-[450px]" 
+                      className="w-full object-cover h-[300px] md:h-[450px] transition-transform duration-700 ease-out group-hover:scale-105" 
                     />
                   </div>
                 )}
@@ -127,7 +134,6 @@ const ProjectDetailPage = () => {
                       <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">Project Overview</h2>
                       <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
                     </div>
-                    {/* Font size reduced to text-lg for professional readability */}
                     <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
                       {project.overview}
                     </p>
@@ -135,7 +141,6 @@ const ProjectDetailPage = () => {
                 )}
 
                 {/* 3. CASE STUDY TRIAD (Problem, Solution, Impact) */}
-                {/* Clean, subtle cards instead of massive color blocks */}
                 {(project.problem || project.solution || project.impact) && (
                   <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {project.problem && (
@@ -162,7 +167,7 @@ const ProjectDetailPage = () => {
                   </section>
                 )}
 
-                {/* 4. ARCHITECTURE & SYSTEM DESIGN */}
+                {/* 4. ARCHITECTURE & SYSTEM DESIGN (Interactive Diagram) */}
                 {(project.architecture?.description || project.architecture?.diagramUrl) && (
                   <section className="space-y-6">
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
@@ -174,8 +179,15 @@ const ProjectDetailPage = () => {
                       </p>
                     )}
                     {project.architecture.diagramUrl && hasValue(project.architecture.diagramUrl) && (
-                      <div className="p-2 rounded-2xl bg-white dark:bg-black border border-slate-200 dark:border-slate-800">
-                        <img src={project.architecture.diagramUrl} alt="Architecture Diagram" className="w-full rounded-xl" />
+                      <div 
+                        onClick={() => setSelectedImage(project!.architecture!.diagramUrl!)}
+                        className="group p-2 rounded-2xl bg-white dark:bg-black border border-slate-200 dark:border-slate-800 cursor-zoom-in overflow-hidden"
+                      >
+                        <img 
+                          src={project.architecture.diagramUrl} 
+                          alt="Architecture Diagram" 
+                          className="w-full rounded-xl transition-transform duration-700 ease-out group-hover:scale-105" 
+                        />
                       </div>
                     )}
                   </section>
@@ -212,7 +224,6 @@ const ProjectDetailPage = () => {
                 )}
 
                 {/* 6. CHALLENGES & SOLUTIONS */}
-                {/* Sleeker, list-based approach rather than chunky blocks */}
                 {project.challenges && project.challenges.length > 0 && (
                   <section className="space-y-6">
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Technical Challenges</h2>
@@ -258,14 +269,25 @@ const ProjectDetailPage = () => {
                   </section>
                 )}
 
-                {/* 8. SCREENSHOTS GALLERY */}
+                {/* 8. SCREENSHOTS GALLERY (Interactive) */}
+                {/* ADDED: Hover scale animations and click-to-expand lightbox trigger */}
                 {project.screenshots && project.screenshots.length > 0 && (
                   <section className="space-y-6">
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Interface Gallery</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {project.screenshots.map((shot, i) => (
-                        <div key={i} className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
-                          <img src={shot} alt={`Gallery ${i}`} className="w-full h-auto object-cover hover:opacity-90 transition-opacity" />
+                        <div 
+                          key={i} 
+                          onClick={() => setSelectedImage(shot)}
+                          className="group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 cursor-zoom-in relative"
+                        >
+                          <img 
+                            src={shot} 
+                            alt={`Gallery ${i}`} 
+                            className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
+                          />
+                          {/* Subtle overlay hint on hover */}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                         </div>
                       ))}
                     </div>
@@ -275,11 +297,12 @@ const ProjectDetailPage = () => {
 
               {/* ========================================== */}
               {/* RIGHT COLUMN: SIDEBAR METADATA (4 Cols)      */}
+              {/* REMOVED sticky classes so this scrolls normally */}
               {/* ========================================== */}
               <aside className="lg:col-span-4 space-y-6">
                 
                 {/* 1. PROJECT DETAILS & LINKS CARD */}
-                <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm sticky top-8">
+                <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
                   
                   {/* Basic Meta (Date, Role, Duration) */}
                   <div className="space-y-4 mb-8">
@@ -299,23 +322,48 @@ const ProjectDetailPage = () => {
 
                   {/* Primary Links */}
                   <div className="space-y-3">
+                    {/* ADDED: Hover -translate-y animation and shadow pop for Live Site */}
                     {hasValue(project.liveUrl) && (
-                      <a href={project.liveUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold hover:opacity-90 transition-opacity">
+                      <a 
+                        href={project.liveUrl} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold shadow-md hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
+                      >
                         <ExternalLink className="w-4 h-4" /> Visit Live Site
                       </a>
                     )}
+                    
+                    {/* ADDED: Hover scale effect for secondary buttons */}
                     {hasValue(project.videoDemo) && (
-                      <a href={project.videoDemo} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 text-sm font-bold hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors">
+                      <a 
+                        href={project.videoDemo} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 text-sm font-bold hover:bg-indigo-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                      >
                         <PlayCircle className="w-4 h-4" /> Watch Demo Video
                       </a>
                     )}
+                    
                     {hasValue(project.githubUrl) && (
-                      <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                      <a 
+                        href={project.githubUrl} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                      >
                         <Github className="w-4 h-4" /> View Source Code
                       </a>
                     )}
+                    
                     {hasValue(project.pdfReport) && (
-                      <a href={project.pdfReport} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                      <a 
+                        href={project.pdfReport} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                      >
                         <FileText className="w-4 h-4" /> Download PDF Report
                       </a>
                     )}
@@ -403,6 +451,42 @@ const ProjectDetailPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ========================================== */}
+      {/* FULL SCREEN IMAGE LIGHTBOX OVERLAY           */}
+      {/* ========================================== */}
+      {/* AnimatePresence allows framer-motion to animate elements as they are removed from the DOM */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)} // Clicking the backdrop closes the modal
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 md:p-12 cursor-zoom-out"
+          >
+            {/* Close Button */}
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors backdrop-blur-lg"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            {/* The Enlarged Image */}
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }} // Gives it a nice snappy popup feel
+              src={selectedImage}
+              alt="Enlarged view"
+              className="max-w-full max-h-full object-contain rounded-xl shadow-2xl cursor-default"
+              onClick={(e) => e.stopPropagation()} // Prevents closing if the user clicks the image itself
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Layout>
   );
 };
