@@ -94,17 +94,19 @@ export interface Project {
   slug?: string;
   title: string;
 
-  // core fields used across pages
+  // --- CORE FIELDS ---
   date?: string;
   status?: "Live" | "In Progress" | "Archived" | string;
-  tagline?: string;                    // short summary used on cards
-  gradientStart?: string;              // hex or css color
-  gradientEnd?: string;                // hex or css color
-  techStack?: string[];                // array of strings for tags
+  tagline?: string;           
+  gradientStart?: string;     
+  gradientEnd?: string;       
+  techStack?: string[];       
   role?: string;
   duration?: string;
   githubUrl?: string;
   liveUrl?: string;
+  // NEW: Added to fix the property error
+  pdfReport?: string;         
   heroImage?: string;
   screenshots?: string[];
   videoDemo?: string;
@@ -112,6 +114,8 @@ export interface Project {
   problem?: string;
   solution?: string;
   impact?: string;
+
+  // --- TECHNICAL DETAILS ---
   architecture?: {
     description?: string;
     diagramUrl?: string;
@@ -123,19 +127,25 @@ export interface Project {
     fix?: string;
     lesson?: string;
   }>;
+  
+  // --- QUANTITATIVE DATA ---
   metrics?: {
     users?: number;
     stars?: number;
     forks?: number;
     downloads?: number;
+    // Updated to handle both 3 and 4 metric scenarios
     lighthouseScore?: {
       performance?: number;
       accessibility?: number;
       seo?: number;
+      bestPractices?: number;
     };
     testCoverage?: number;
     cicd?: string;
   };
+
+  // --- DEEP DIVE & PLANNING ---
   stackDeepDive?: {
     frontend?: string;
     backend?: string;
@@ -143,8 +153,9 @@ export interface Project {
   };
   roadmap?: string[];
   features?: string[];
+  colour?: string; // Used for the dynamic card background
 
-  // legacy / miscellaneous fields (kept for backwards compatibility)
+  // --- LEGACY / COMPATIBILITY FIELDS ---
   description?: string;
   longDescription?: string;
   startDate?: string;
@@ -171,7 +182,6 @@ export interface Project {
   contributions?: string[];
   learnings?: string[];
   highlights?: string[];
-  colour?: string;
   isLatest?: boolean;
 }
 
