@@ -44,6 +44,8 @@
     "features": ["Project listings", "Blog", "Contact form"],
     "colour": "from-blue-700/20 to-slate-800/20"
   },
+
+  
   {
     "id": 2,
     "slug": "ecommerce-platform",
