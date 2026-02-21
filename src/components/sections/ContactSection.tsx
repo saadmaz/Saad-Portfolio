@@ -4,77 +4,69 @@ import { Link } from "react-router-dom"; // Hook for client-side routing within 
 
 /**
  * ContactSection Component
- * * UPDATED: Now uses 'bg-contact-blue' to maintain the original vibrant blue theme.
- * * UI FIX: Added 'text-white' to ensure readability against the primary blue background.
+ * * UI RESTORED: Reverted to the original 2-column layout structure.
+ * * UPGRADED: Added 'bg-contact-gradient' for a professional Navy depth.
+ * * REFINED: Enhanced glassmorphism for a high-end SaaS aesthetic.
  */
 export function ContactSection() {
   return (
     // MAIN SECTION WRAPPER: 
-    // 1. py-16 provides vertical breathing room.
-    // 2. bg-contact-blue applies your specifically preserved legacy blue.
-    // 3. text-white ensures all nested text inherits a light color for high contrast.
-    <section className="py-16 bg-contact-blue text-white overflow-hidden"> 
+    // 1. py-12 vertical padding restored.
+    // 2. bg-contact-gradient applies the deep professional Navy you requested.
+    // 3. overflow-hidden prevents animation jitters.
+    <section className="py-12 bg-contact-gradient text-white overflow-hidden border-t border-white/5"> 
       <div className="section-container"> {/* Standardized container for horizontal centering and gutters */}
         
-        <div className="grid lg:grid-cols-2 gap-16 items-center"> {/* 2-column grid: Info on left, CTAs on right */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center"> {/* Establishes a 2-column grid as per your previous UI */}
           
-          {/* --- LEFT COLUMN: CONTACT IDENTITY --- */}
+          {/* --- LEFT COLUMN: COMPACT CONTACT INFO --- */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }} // Starts invisible and slightly to the left
-            whileInView={{ opacity: 1, x: 0 }} // Fades in and slides to position on scroll
-            viewport={{ once: true }} // Animation only triggers once for better UX
-            transition={{ duration: 0.6, ease: "easeOut" }} // Smooth deceleration
+            initial={{ opacity: 0, x: -20 }} // Restored original animation offset
+            whileInView={{ opacity: 1, x: 0 }} 
+            viewport={{ once: true }} 
+            transition={{ duration: 0.5 }} 
           >
-            {/* SUBTITLE: Highly visible uppercase label */}
-            <span className="inline-block text-sm font-black uppercase tracking-[0.3em] text-white/80 mb-4">
+            {/* SUBTITLE: Restored 2xl font size and accent coloring */}
+            <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
               Get in Touch
             </span>
             
-            {/* PRIMARY HEADING: Bold and high-impact */}
-            <h2 className="font-display text-4xl md:text-5xl font-extrabold mb-6 leading-[1.1] tracking-tighter">
-              Let's Build Something <br /> Great Together
+            {/* PRIMARY HEADING: Restored 3xl size and leading-tight */}
+            <h2 className="font-display text-3xl font-bold mb-4 leading-tight">
+              Let's Build Something Great Together
             </h2>
             
-            {/* SUPPORTING TEXT: Slightly transparent to keep hierarchy focused on the heading */}
-            <p className="text-white/70 mb-10 max-w-md text-lg leading-relaxed font-medium">
+            {/* SUPPORTING TEXT: Slightly muted opacity to look better on Navy */}
+            <p className="text-white/60 mb-6 max-w-md text-sm leading-relaxed">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
-            {/* INTERACTIVE CONTACT LIST */}
-            <div className="space-y-5 mb-10">
-              {/* Email Link: Uses hover:translate-x to give interactive feedback */}
+            {/* CONTACT METHOD LIST */}
+            <div className="space-y-3 mb-6">
               <a 
                 href="mailto:saadmazaa@gmail.com" 
-                className="flex items-center gap-4 text-white/90 hover:text-white transition-all group w-fit"
+                className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm"
               >
-                <div className="p-2.5 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <span className="font-semibold tracking-tight">saadmazaa@gmail.com</span>
+                <Mail className="w-4 h-4 text-accent" />
+                <span>saadmazaa@gmail.com</span>
               </a>
 
-              {/* Phone Link */}
               <a 
                 href="tel:+94720135801" 
-                className="flex items-center gap-4 text-white/90 hover:text-white transition-all group w-fit"
+                className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm"
               >
-                <div className="p-2.5 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <span className="font-semibold tracking-tight">+94 72 01 358 01</span>
+                <Phone className="w-4 h-4 text-accent" />
+                <span>+94 72 01 358 01</span>
               </a>
 
-              {/* Geographic Context */}
-              <div className="flex items-center gap-4 text-white/80 cursor-default">
-                <div className="p-2.5 rounded-lg bg-white/10">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <span className="font-medium">Colombo, Sri Lanka</span>
+              <div className="flex items-center gap-3 text-white/60 text-sm">
+                <MapPin className="w-4 h-4 text-accent" />
+                <span>Colombo, Sri Lanka</span>
               </div>
             </div>
 
-            {/* SOCIAL ROW: Branded glass-effect buttons */}
-            <div className="flex items-center gap-4">
+            {/* SOCIAL MEDIA LINKS: Restored original card-themed icons */}
+            <div className="flex items-center gap-3">
               {[
                 { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
                 { Icon: Github, href: "https://github.com/saadmaz" },
@@ -87,7 +79,7 @@ export function ContactSection() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-white/10 border border-white/10 hover:bg-white hover:text-contact-blue hover:-translate-y-1 transition-all duration-300" 
+                  className="p-2 rounded-md bg-white/5 border border-white/10 hover:bg-accent hover:text-white transition-all shadow-sm" 
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -95,60 +87,58 @@ export function ContactSection() {
             </div>
           </motion.div>
 
-          {/* --- RIGHT COLUMN: QUICK ACTION CARDS --- */}
+          {/* --- RIGHT COLUMN: COMPACT CTA CARDS --- */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }} // Slides in from the right
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }} // Delayed entry for staggered effect
-            className="space-y-6"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-4"
           >
-            {/* GRID FOR ACTION CARDS */}
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* MESSAGE CARD: Glassmorphism effect to look premium on blue */}
+              {/* SEND MESSAGE CARD: Glassmorphism refined for Dark Navy background */}
               <Link 
                 to="/contact" 
-                className="block p-8 rounded-3xl bg-white/10 border border-white/20 hover:bg-white/20 hover:scale-[1.02] transition-all group backdrop-blur-sm"
+                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group backdrop-blur-md"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-contact-blue transition-all duration-500">
-                      <Mail className="w-7 h-7" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-1 tracking-tight">Send a Message</h3>
-                      <p className="text-white/60 text-sm">Response within 24 hours.</p>
-                    </div>
+                  <div>
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                      <Mail className="w-4 h-4 text-accent" />
+                      Send a Message
+                    </h3>
+                    <p className="text-white/40 text-xs group-hover:text-white/70 transition-colors">
+                      Get a response within 24 hours.
+                    </p>
                   </div>
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform opacity-50 group-hover:opacity-100" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
               </Link>
 
-              {/* BOOKING CARD */}
+              {/* SCHEDULE CALL CARD */}
               <a 
                 href="https://cal.com/saad-mazhar" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-8 rounded-3xl bg-white/10 border border-white/20 hover:bg-white/20 hover:scale-[1.02] transition-all group backdrop-blur-sm"
+                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group backdrop-blur-md"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-contact-blue transition-all duration-500">
-                      <Calendar className="w-7 h-7" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-1 tracking-tight">Schedule a Call</h3>
-                      <p className="text-white/60 text-sm">Book a 30-minute chat via Cal.com</p>
-                    </div>
+                  <div>
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                      <Calendar className="w-4 h-4 text-accent" />
+                      Schedule a Call
+                    </h3>
+                    <p className="text-white/40 text-xs group-hover:text-white/70 transition-colors">
+                      Book a 30-minute chat via Cal.com
+                    </p>
                   </div>
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform opacity-50 group-hover:opacity-100" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
               </a>
 
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>
