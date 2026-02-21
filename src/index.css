@@ -4,96 +4,108 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Portfolio Design System */
+/* ==========================================================================
+   PROFESSIONAL PORTFOLIO DESIGN SYSTEM
+   ========================================================================== 
+   This file defines the global design tokens (colors, typography, shadows)
+   and custom components used throughout the application. It utilizes Tailwind's
+   @layer directives to ensure correct specificity and CSS variable handling.
+   ========================================================================== */
 
 @layer base {
   :root {
-    /* Core Colors - Light Theme (softened for professional feel) */
-    /* background shifted off‑white to reduce glare */
-    --background: 0 0% 98%; /* ~#fafafa instead of pure white */
-    --foreground: 222 47% 11%;
+    /* --- LIGHT THEME: "PEARL & COBALT" AESTHETIC --- */
     
-    /* Card & Surface: very light grey rather than stark white */
-    --card: 0 0% 99%; /* ~#fcfcfc */
+    /* BACKGROUNDS: Using a premium 'Pearl White' (a very subtle cool-tinted off-white) 
+       This reduces eye glare compared to pure white and looks much more expensive. */
+    --background: 210 24% 98%; 
+    --foreground: 222 47% 11%; /* Deep slate/navy for text. Softer than pure black #000 */
+    
+    /* CARDS & SURFACES: Pure white cards on a pearl background creates natural depth 
+       without relying heavily on dark borders. */
+    --card: 0 0% 100%; 
     --card-foreground: 222 47% 11%;
     
-    /* Popover */
+    /* POPOVERS: Tooltips, dropdown menus, etc. */
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
     
-    /* Primary - Deep Navy */
+    /* PRIMARY BRANDING: Used for main buttons and heavy emphasis. 
+       Deep navy looks more trustworthy and professional than standard grays. */
     --primary: 222 47% 11%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 210 40% 98%; /* Off-white text on dark buttons */
     
-    /* Secondary - Dark Blue */
-    --secondary: 222 47% 15%;
-    --secondary-foreground: 0 0% 100%;
+    /* SECONDARY ELEMENTS: Secondary buttons or less important badges. 
+       A soft, pearl-gray/blue tint. */
+    --secondary: 210 14% 95%;
+    --secondary-foreground: 222 47% 11%;
     
-    /* Muted - Light Gray (even softer) */
-    --muted: 220 14% 98%;
-    --muted-foreground: 220 9% 46%;
+    /* MUTED ELEMENTS: Used for subtle backgrounds, input fields, or disabled states. */
+    --muted: 210 14% 93%;
+    --muted-foreground: 215 16% 47%; /* Mid-gray for subtitles/captions */
     
-    /* Accent - Slate Blue */
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
+    /* ACCENT COLOR: Changed to a premium "Cobalt Blue". 
+       It is vibrant but not blinding, perfect for links and CTA highlights. */
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%; /* Pure white text on accent backgrounds */
     
-    /* Destructive */
+    /* SYSTEM STATES: Errors and destructive actions. */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    /* Border & Input */
-    --border: 220 13% 93%;
-    --input: 220 13% 93%;
-    --ring: 222 47% 11%;
+    /* BORDERS & INPUTS: Crisp, subtle borders that don't overwhelm the eye. */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%; /* Focus rings (when tabbing) match the cobalt accent */
     
-    /* Radius */
-    --radius: 0.625rem;
+    /* BORDER RADIUS: Standardized rounding for a modern, approachable feel. */
+    --radius: 0.75rem; /* Slightly larger (12px) for a more modern 'app' feel */
     
-    /* Custom Portfolio Colors */
+    /* --- CUSTOM PORTFOLIO-SPECIFIC TOKENS --- */
     --navy: 222 47% 11%;
     --navy-light: 222 47% 20%;
     --slate: 215 20% 65%;
     --slate-light: 220 14% 96%;
-    --blue-accent: 217 91% 60%;
-    --blue-soft: 217 91% 95%;
+    --blue-accent: 221 83% 53%; /* Synced with --accent */
+    --blue-soft: 210 100% 96%;
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
     
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 14% 99%) 100%);
+    /* --- PREMIUM GRADIENTS --- */
+    /* Hero gradient: Fades from pure white to our pearl background */
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 24% 98%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 24% 99%) 100%);
     --gradient-navy: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 18%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(222 47% 35%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(221 83% 45%) 100%);
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
-    --shadow-card: 0 0 0 1px hsl(220 13% 91%), 0 4px 6px -1px hsl(222 47% 11% / 0.05);
-    --shadow-card-hover: 0 0 0 1px hsl(217 91% 60% / 0.3), 0 10px 20px -5px hsl(222 47% 11% / 0.1);
+    /* --- REFINED SHADOWS --- 
+       Professional light themes rely on very diffused, low-opacity shadows 
+       (the "Apple" or "Stripe" look) rather than harsh, dark drop shadows. */
+    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.03);
+    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.04), 0 2px 4px -2px hsl(222 47% 11% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.05), 0 4px 6px -4px hsl(222 47% 11% / 0.02);
+    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.05), 0 8px 10px -6px hsl(222 47% 11% / 0.02);
     
-    /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217 91% 60%;
+    /* Interactive Card Shadows: Soft resting border, gorgeous diffused shadow on hover */
+    --shadow-card: 0 0 0 1px hsl(214 32% 91%), 0 4px 6px -1px hsl(222 47% 11% / 0.03);
+    --shadow-card-hover: 0 0 0 1px hsl(221 83% 53% / 0.2), 0 20px 25px -5px hsl(222 47% 11% / 0.08);
   }
 
+  /* --- DARK THEME: "DEEP SPACE" AESTHETIC --- 
+     These colors apply when the 'dark' class is added to the HTML tag. */
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    /* Very dark slate, not pure black, to reduce eye fatigue */
+    --background: 222 47% 6%; 
+    --foreground: 210 40% 98%; /* Crisp off-white text */
     
-    --card: 222 47% 8%;
+    /* Cards are slightly lighter than the background to create elevation */
+    --card: 222 47% 8%; 
     --card-foreground: 210 40% 98%;
     
     --popover: 222 47% 8%;
     --popover-foreground: 210 40% 98%;
     
+    /* In dark mode, primary elements invert to light colors for contrast */
     --primary: 210 40% 98%;
     --primary-foreground: 222 47% 11%;
     
@@ -103,113 +115,102 @@
     --muted: 222 47% 15%;
     --muted-foreground: 215 20% 65%;
     
-    --accent: 217 91% 60%;
+    /* The Cobalt Blue accent works beautifully in dark mode too */
+    --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     
-    --border: 222 47% 18%;
+    --border: 222 47% 18%; /* Darker, subtle borders */
     --input: 222 47% 18%;
-    --ring: 217 91% 60%;
+    --ring: 221 83% 53%;
     
+    /* Custom Dark Mode Tokens */
     --navy: 210 40% 98%;
     --navy-light: 215 20% 85%;
     --slate: 215 20% 45%;
     --slate-light: 222 47% 15%;
-    --blue-accent: 217 91% 60%;
+    --blue-accent: 221 83% 53%;
     --blue-soft: 217 91% 15%;
     
+    /* Dark Mode Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 10%) 100%);
     
-    --shadow-card: 0 0 0 1px hsl(222 47% 18%), 0 4px 6px -1px hsl(0 0% 0% / 0.2);
-    --shadow-card-hover: 0 0 0 1px hsl(217 91% 60% / 0.3), 0 10px 20px -5px hsl(0 0% 0% / 0.3);
-    
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 18%;
-    --sidebar-ring: 217 91% 60%;
+    /* Dark Mode Shadows: Harder borders, darker dropshadows */
+    --shadow-card: 0 0 0 1px hsl(222 47% 18%), 0 4px 6px -1px hsl(0 0% 0% / 0.4);
+    --shadow-card-hover: 0 0 0 1px hsl(221 83% 53% / 0.5), 0 15px 30px -5px hsl(0 0% 0% / 0.6);
   }
 }
 
+/* ==========================================================================
+   GLOBAL HTML/BODY STYLES
+   ========================================================================== */
 @layer base {
   * {
+    /* Apply our custom border token globally by default */
     @apply border-border;
   }
   
   html {
+    /* Enables smooth scrolling when clicking anchor links (e.g., #contact) */
     scroll-behavior: smooth;
   }
   
   body {
+    /* Set core background, text color, and smooth out font rendering */
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
   
+  /* TYPOGRAPHY SYSTEM 
+     We use 'DM Sans' for headings to give a modern, geometric tech feel, 
+     and 'Inter' (above) for body text for maximum readability. */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'DM Sans', system-ui, sans-serif;
     @apply font-semibold tracking-tight text-foreground;
   }
   
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-  }
-  
-  h2 {
-    @apply text-3xl md:text-4xl;
-  }
-  
-  h3 {
-    @apply text-xl md:text-2xl;
-  }
-  
-  h4 {
-    @apply text-lg md:text-xl;
-  }
+  /* Responsive Heading Sizes */
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  h4 { @apply text-lg md:text-xl; }
   
   p {
+    /* Improves readability for long paragraphs */
     @apply leading-relaxed;
   }
 }
 
+/* ==========================================================================
+   CUSTOM REUSABLE COMPONENTS
+   ========================================================================== */
 @layer components {
-  /* Section Container */
+  
+  /* --- LAYOUT CONTAINERS --- */
+  /* Centralizes content and adds responsive horizontal padding */
   .section-container {
       @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Slightly wider max width for very large screens */
+  /* Expands the container slightly on ultra-wide monitors */
   @media (min-width: 1536px) {
-    .section-container {
-      max-width: 1600px;
-    }
+    .section-container { max-width: 1600px; }
   }
   
-  
-    /* Section Padding: minimum 5rem (py-20) for consistent spacing */
-    .section-padding {
-      @apply py-20 md:py-24 lg:py-32;
-    }
+  /* Standardized vertical spacing for different sections (About, Projects, etc.) */
+  .section-padding {
+    @apply py-20 md:py-24 lg:py-32;
+  }
 
-    /* Extra horizontal padding for very large screens to create more corner space */
-    @screen xl {
-      .section-container {
-        @apply px-12;
-      }
-    }
-
-    @screen 2xl {
-      .section-container {
-        @apply px-20;
-      }
-    }
+  /* Increases horizontal breathing room on larger screens */
+  @screen xl { .section-container { @apply px-12; } }
+  @screen 2xl { .section-container { @apply px-20; } }
   
-  /* Card Hover Effect */
+  /* --- CARD EFFECTS --- */
+  /* Applies our custom CSS variables for shadows on resting and hover states */
   .card-hover {
     @apply transition-all duration-300 ease-out;
     box-shadow: var(--shadow-card);
@@ -217,204 +218,174 @@
   
   .card-hover:hover {
     box-shadow: var(--shadow-card-hover);
+    /* Subtle lift effect */
     @apply -translate-y-1;
   }
   
-  /* Tech Chip */
+  /* --- UI ELEMENTS --- */
+  /* Small badges used for displaying React, Tailwind, etc. */
   .tech-chip {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
-    @apply bg-secondary text-secondary-foreground;
-    @apply transition-colors duration-200;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide;
+    @apply bg-secondary text-secondary-foreground border border-black/5 dark:border-white/5;
+    @apply transition-all duration-200;
   }
   
   .tech-chip:hover {
-    @apply bg-accent text-accent-foreground;
+    @apply bg-accent text-accent-foreground border-accent;
   }
   
-  /* Section Title */
+  /* Small uppercase headings used above main section titles */
   .section-title {
-    @apply text-sm font-semibold uppercase tracking-wider text-accent mb-3;
+    @apply text-sm font-bold uppercase tracking-widest text-accent mb-3;
   }
   
-  /* Gradient Text */
+  /* Makes text transparent and clips the background gradient to the text shape */
   .gradient-text {
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-accent);
   }
   
-  /* Link Underline Animation */
+  /* --- ANIMATED LINKS --- */
+  /* Creates a bottom border that slides in on hover */
   .link-underline {
     @apply relative;
   }
   
   .link-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300;
+    @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300;
   }
   
   .link-underline:hover::after {
     @apply w-full;
   }
   
-  /* Nav Link */
+  /* Navigation menu links */
   .nav-link {
-    @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium;
+    @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-semibold;
   }
   
   .nav-link-active {
-    @apply text-foreground;
+    @apply text-accent font-bold;
   }
   
-  /* Button Variants */
+  /* --- BUTTON SYSTEM --- */
+  /* Base style for all buttons: Solid background */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-sm;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
     @apply bg-primary text-primary-foreground;
-    @apply transition-all duration-300;
-    @apply shadow-md;
+    @apply transition-all duration-300 shadow-sm;
   }
   
   .btn-primary:hover {
-    background: linear-gradient(135deg, hsl(217 91% 50%) 0%, hsl(222 47% 25%) 100%);
-    @apply shadow-lg scale-[1.02];
+    @apply shadow-md scale-[1.02] opacity-90;
   }
   
+  /* Secondary Button: Muted background, used for 'Cancel' or alternate actions */
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-sm;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
     @apply bg-secondary text-secondary-foreground border border-border;
     @apply transition-all duration-300;
   }
   
   .btn-secondary:hover {
-    @apply bg-accent/10 border-accent text-accent;
+    @apply bg-accent/10 border-accent/30 text-accent;
   }
   
+  /* Accent Button: Glowing gradient button for primary Call-to-Actions */
   .btn-accent {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-sm;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
     @apply text-primary-foreground;
     background: var(--gradient-accent);
-    @apply transition-all duration-300;
-    @apply shadow-md;
+    @apply transition-all duration-300 shadow-md;
   }
   
   .btn-accent:hover {
-    background: linear-gradient(135deg, hsl(217 91% 55%) 0%, hsl(250 60% 45%) 100%);
+    /* Shifts the gradient slightly and lifts the button */
+    background: linear-gradient(135deg, hsl(221 83% 58%) 0%, hsl(221 83% 48%) 100%);
     @apply shadow-lg scale-[1.02];
   }
   
+  /* Outline Button: Transparent background, colored border */
   .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-sm;
-    @apply border-2 border-primary text-primary;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
+    @apply border-2 border-primary text-primary bg-transparent;
     @apply hover:bg-primary hover:text-primary-foreground transition-all duration-200;
   }
   
-  /* Footer Link */
-  .footer-link {
-    @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm;
-  }
-  
-  /* Badge */
+  /* --- STATUS BADGES --- */
+  /* Used for marking projects as Live, In Progress, etc. */
   .status-badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
   }
   
   .status-live {
-    @apply bg-green-100 text-green-800;
+    @apply bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30;
   }
   
   .status-mvp {
-    @apply bg-yellow-100 text-yellow-800;
+    @apply bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-500/30;
   }
   
   .status-progress {
-    @apply bg-blue-100 text-blue-800;
+    @apply bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30;
   }
 }
 
+/* ==========================================================================
+   UTILITY CLASSES & ANIMATIONS
+   ========================================================================== */
 @layer utilities {
-  /* unify existing bg-white usages with card background for light theme */
+  
+  /* Enforces that explicitly calling bg-white maps to our dynamic card color.
+     NOTE: In our new premium theme, --card is pure white in light mode anyway,
+     but this ensures it switches properly to dark grey in dark mode. */
   .bg-white {
     background-color: hsl(var(--card)) !important;
   }
 
-  /* Smooth Fade In */
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
+  /* --- ANIMATION CLASSES --- */
+  /* Standard Fade In */
+  .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
   
-  .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
-  }
+  /* Fade In while sliding up slightly (great for hero text) */
+  .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
   
-  .animate-fade-in-delay-1 {
-    animation: fadeInUp 0.6s ease-out 0.1s forwards;
-    opacity: 0;
-  }
+  /* Staggered animations for lists or grid items */
+  .animate-fade-in-delay-1 { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
+  .animate-fade-in-delay-2 { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+  .animate-fade-in-delay-3 { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
   
-  .animate-fade-in-delay-2 {
-    animation: fadeInUp 0.6s ease-out 0.2s forwards;
-    opacity: 0;
-  }
-  
-  .animate-fade-in-delay-3 {
-    animation: fadeInUp 0.6s ease-out 0.3s forwards;
-    opacity: 0;
-  }
-  
+  /* Keyframes for the above animations */
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
   @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
   }
   
   @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
   }
   
-  .animate-slide-in-left {
-    animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
+  /* Directional Slide Utilities */
+  .animate-slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+  .animate-slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
   
-  .animate-slide-in-right {
-    animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-  
-  /* Scroll Reveal */
+  /* Scroll Reveal Logic (Used via Intersection Observer in JS) */
   .reveal {
     opacity: 0;
     transform: translateY(30px);
-    transition: all 0.6s ease-out;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth spring-like easing */
   }
   
   .reveal.active {
@@ -422,22 +393,25 @@
     transform: translateY(0);
   }
   
-  /* Premium Toggle Styles */
+  /* --- CUSTOM TOGGLE SWITCH (e.g., Light/Dark mode or Pro toggle) --- */
   .toggle-professional {
     @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full;
-    @apply transition-all duration-300 ease-out;
-    background: hsl(var(--primary));
+    @apply transition-colors duration-300 ease-out border border-transparent;
+    background: hsl(var(--accent));
   }
   
   .toggle-professional[data-state="unchecked"] {
     background: hsl(var(--muted));
+    @apply border-border;
   }
   
+  /* The moving circle inside the toggle */
   .toggle-professional-thumb {
-    @apply pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg;
-    @apply transition-transform duration-300 ease-out;
+    @apply pointer-events-none block h-5 w-5 rounded-full bg-white shadow-sm;
+    @apply transition-transform duration-300 cubic-bezier(0.16, 1, 0.3, 1);
   }
   
+  /* Positioning states for the thumb */
   .toggle-professional[data-state="checked"] .toggle-professional-thumb {
     transform: translateX(20px);
   }
