@@ -5,272 +5,90 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   PROFESSIONAL PORTFOLIO DESIGN SYSTEM
+   PROFESSIONAL PORTFOLIO DESIGN SYSTEM v4.0
    ========================================================================== 
-   This file defines the global design tokens (colors, typography, shadows)
-   and custom components used throughout the application. It utilizes Tailwind's
-   @layer directives to ensure correct specificity and CSS variable handling.
+   Palette: Pearl White & Enterprise Blue
    ========================================================================== */
 
 @layer base {
   :root {
-    /* --- LIGHT THEME: "PEARL & COBALT" AESTHETIC --- */
+    /* --- LIGHT THEME: "PEARL & COBALT" --- */
     
-    /* BACKGROUNDS: Using a premium 'Pearl White' (a very subtle cool-tinted off-white) 
-       This reduces eye glare compared to pure white and looks much more expensive. */
+    /* BACKGROUNDS: Pearl White tint reduces glare and feels more premium. */
     --background: 210 24% 98%; 
-    --foreground: 222 47% 11%; /* Deep slate/navy for text. Softer than pure black #000 */
+    --foreground: 222 47% 11%; /* Deep navy for crisp, readable text. */
     
-    /* CARDS & SURFACES: Pure white cards on a pearl background creates natural depth 
-       without relying heavily on dark borders. */
+    /* CARDS: Pure white surface to stand out against the pearl background. */
     --card: 0 0% 100%; 
     --card-foreground: 222 47% 11%;
     
-    /* POPOVERS: Tooltips, dropdown menus, etc. */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    
-    /* PRIMARY BRANDING: Used for main buttons and heavy emphasis. 
-       Deep navy looks more trustworthy and professional than standard grays. */
+    /* PRIMARY (Structural): Trustworthy Navy. */
     --primary: 222 47% 11%;
-    --primary-foreground: 210 40% 98%; /* Off-white text on dark buttons */
+    --primary-foreground: 210 40% 98%;
     
-    /* SECONDARY ELEMENTS: Secondary buttons or less important badges. 
-       A soft, pearl-gray/blue tint. */
-    --secondary: 210 14% 95%;
-    --secondary-foreground: 222 47% 11%;
+    /* ==========================================
+       THE "PROFESSIONAL BLUE" OVERHAUL
+       ========================================== */
+    /* ACCENT: Enterprise Royal Blue. Deep, rich, and authoritative. */
+    --accent: 224 76% 48%; 
+    --accent-foreground: 0 0% 100%;
+
+    /* LEGACY CONTACT BLUE: Preserved for your "Get in Touch" section. */
+    --contact-blue: 217 91% 60%; 
     
-    /* MUTED ELEMENTS: Used for subtle backgrounds, input fields, or disabled states. */
-    --muted: 210 14% 93%;
-    --muted-foreground: 215 16% 47%; /* Mid-gray for subtitles/captions */
-    
-    /* ACCENT COLOR: Changed to a premium "Cobalt Blue". 
-       It is vibrant but not blinding, perfect for links and CTA highlights. */
-    --accent: 221 83% 53%;
-    --accent-foreground: 0 0% 100%; /* Pure white text on accent backgrounds */
-    
-    /* SYSTEM STATES: Errors and destructive actions. */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    
-    /* BORDERS & INPUTS: Crisp, subtle borders that don't overwhelm the eye. */
+    /* BORDERS & RADIUS */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 221 83% 53%; /* Focus rings (when tabbing) match the cobalt accent */
+    --ring: 224 76% 48%;
+    --radius: 0.75rem; 
     
-    /* BORDER RADIUS: Standardized rounding for a modern, approachable feel. */
-    --radius: 0.75rem; /* Slightly larger (12px) for a more modern 'app' feel */
+    /* HOVER GRADIENT: A smooth transition from Royal Blue to Navy. */
+    --gradient-hover-blue: linear-gradient(135deg, hsl(224 76% 48%) 0%, hsl(226 71% 40%) 100%);
     
-    /* --- CUSTOM PORTFOLIO-SPECIFIC TOKENS --- */
-    --navy: 222 47% 11%;
-    --navy-light: 222 47% 20%;
-    --slate: 215 20% 65%;
-    --slate-light: 220 14% 96%;
-    --blue-accent: 221 83% 53%; /* Synced with --accent */
-    --blue-soft: 210 100% 96%;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    
-    /* --- PREMIUM GRADIENTS --- */
-    /* Hero gradient: Fades from pure white to our pearl background */
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 24% 98%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 24% 99%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 18%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(221 83% 45%) 100%);
-    
-    /* --- REFINED SHADOWS --- 
-       Professional light themes rely on very diffused, low-opacity shadows 
-       (the "Apple" or "Stripe" look) rather than harsh, dark drop shadows. */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.03);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.04), 0 2px 4px -2px hsl(222 47% 11% / 0.04);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.05), 0 4px 6px -4px hsl(222 47% 11% / 0.02);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.05), 0 8px 10px -6px hsl(222 47% 11% / 0.02);
-    
-    /* Interactive Card Shadows: Soft resting border, gorgeous diffused shadow on hover */
+    /* SHADOWS: Diffused and soft for a clean "Apple-style" appearance. */
     --shadow-card: 0 0 0 1px hsl(214 32% 91%), 0 4px 6px -1px hsl(222 47% 11% / 0.03);
-    --shadow-card-hover: 0 0 0 1px hsl(221 83% 53% / 0.2), 0 20px 25px -5px hsl(222 47% 11% / 0.08);
+    --shadow-card-hover: 0 0 0 1px hsl(224 76% 48% / 0.2), 0 20px 25px -5px hsl(222 47% 11% / 0.08);
   }
 
-  /* --- DARK THEME: "DEEP SPACE" AESTHETIC --- 
-     These colors apply when the 'dark' class is added to the HTML tag. */
   .dark {
-    /* Very dark slate, not pure black, to reduce eye fatigue */
+    /* --- DARK THEME: "DEEP SPACE" --- */
     --background: 222 47% 6%; 
-    --foreground: 210 40% 98%; /* Crisp off-white text */
-    
-    /* Cards are slightly lighter than the background to create elevation */
+    --foreground: 210 40% 98%; 
     --card: 222 47% 8%; 
     --card-foreground: 210 40% 98%;
     
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-    
-    /* In dark mode, primary elements invert to light colors for contrast */
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47% 11%;
-    
-    --secondary: 222 47% 15%;
-    --secondary-foreground: 210 40% 98%;
-    
-    --muted: 222 47% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    /* The Cobalt Blue accent works beautifully in dark mode too */
-    --accent: 221 83% 53%;
+    /* ACCENT (Glow): Slightly more luminous blue for dark mode visibility. */
+    --accent: 221 83% 53%; 
     --accent-foreground: 0 0% 100%;
-    
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    
-    --border: 222 47% 18%; /* Darker, subtle borders */
-    --input: 222 47% 18%;
+
+    --contact-blue: 217 91% 60%;
+    --border: 222 47% 18%;
     --ring: 221 83% 53%;
     
-    /* Custom Dark Mode Tokens */
-    --navy: 210 40% 98%;
-    --navy-light: 215 20% 85%;
-    --slate: 215 20% 45%;
-    --slate-light: 222 47% 15%;
-    --blue-accent: 221 83% 53%;
-    --blue-soft: 217 91% 15%;
-    
-    /* Dark Mode Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 10%) 100%);
-    
-    /* Dark Mode Shadows: Harder borders, darker dropshadows */
-    --shadow-card: 0 0 0 1px hsl(222 47% 18%), 0 4px 6px -1px hsl(0 0% 0% / 0.4);
-    --shadow-card-hover: 0 0 0 1px hsl(221 83% 53% / 0.5), 0 15px 30px -5px hsl(0 0% 0% / 0.6);
+    --gradient-hover-blue: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(224 76% 48%) 100%);
   }
 }
 
-/* ==========================================================================
-   GLOBAL HTML/BODY STYLES
-   ========================================================================== */
-@layer base {
-  * {
-    /* Apply our custom border token globally by default */
-    @apply border-border;
-  }
-  
-  html {
-    /* Enables smooth scrolling when clicking anchor links (e.g., #contact) */
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    /* Set core background, text color, and smooth out font rendering */
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-  
-  /* TYPOGRAPHY SYSTEM 
-     We use 'DM Sans' for headings to give a modern, geometric tech feel, 
-     and 'Inter' (above) for body text for maximum readability. */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    @apply font-semibold tracking-tight text-foreground;
-  }
-  
-  /* Responsive Heading Sizes */
-  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
-  h2 { @apply text-3xl md:text-4xl; }
-  h3 { @apply text-xl md:text-2xl; }
-  h4 { @apply text-lg md:text-xl; }
-  
-  p {
-    /* Improves readability for long paragraphs */
-    @apply leading-relaxed;
-  }
-}
-
-/* ==========================================================================
-   CUSTOM REUSABLE COMPONENTS
-   ========================================================================== */
 @layer components {
+  /* ==========================================
+     BUTTON SYSTEM
+     ========================================== */
+     
+  /* Accent Button: Solid Enterprise Blue that expands into a gradient on hover. */
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
+    @apply bg-accent text-accent-foreground;
+    @apply transition-all duration-300 shadow-md;
+    background-size: 200% auto;
+  }
   
-  /* --- LAYOUT CONTAINERS --- */
-  /* Centralizes content and adds responsive horizontal padding */
-  .section-container {
-      @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  .btn-accent:hover {
+    background-image: var(--gradient-hover-blue);
+    background-position: right center;
+    @apply shadow-lg scale-[1.02];
   }
 
-  /* Expands the container slightly on ultra-wide monitors */
-  @media (min-width: 1536px) {
-    .section-container { max-width: 1600px; }
-  }
-  
-  /* Standardized vertical spacing for different sections (About, Projects, etc.) */
-  .section-padding {
-    @apply py-20 md:py-24 lg:py-32;
-  }
-
-  /* Increases horizontal breathing room on larger screens */
-  @screen xl { .section-container { @apply px-12; } }
-  @screen 2xl { .section-container { @apply px-20; } }
-  
-  /* --- CARD EFFECTS --- */
-  /* Applies our custom CSS variables for shadows on resting and hover states */
-  .card-hover {
-    @apply transition-all duration-300 ease-out;
-    box-shadow: var(--shadow-card);
-  }
-  
-  .card-hover:hover {
-    box-shadow: var(--shadow-card-hover);
-    /* Subtle lift effect */
-    @apply -translate-y-1;
-  }
-  
-  /* --- UI ELEMENTS --- */
-  /* Small badges used for displaying React, Tailwind, etc. */
-  .tech-chip {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide;
-    @apply bg-secondary text-secondary-foreground border border-black/5 dark:border-white/5;
-    @apply transition-all duration-200;
-  }
-  
-  .tech-chip:hover {
-    @apply bg-accent text-accent-foreground border-accent;
-  }
-  
-  /* Small uppercase headings used above main section titles */
-  .section-title {
-    @apply text-sm font-bold uppercase tracking-widest text-accent mb-3;
-  }
-  
-  /* Makes text transparent and clips the background gradient to the text shape */
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-accent);
-  }
-  
-  /* --- ANIMATED LINKS --- */
-  /* Creates a bottom border that slides in on hover */
-  .link-underline {
-    @apply relative;
-  }
-  
-  .link-underline::after {
-    content: '';
-    @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300;
-  }
-  
-  .link-underline:hover::after {
-    @apply w-full;
-  }
-  
-  /* Navigation menu links */
-  .nav-link {
-    @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-semibold;
-  }
-  
-  .nav-link-active {
-    @apply text-accent font-bold;
-  }
-  
-  /* --- BUTTON SYSTEM --- */
-  /* Base style for all buttons: Solid background */
+  /* Neutral/Navy Button: For secondary but important structural actions. */
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
     @apply bg-primary text-primary-foreground;
@@ -281,142 +99,46 @@
     @apply shadow-md scale-[1.02] opacity-90;
   }
   
-  /* Secondary Button: Muted background, used for 'Cancel' or alternate actions */
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
-    @apply bg-secondary text-secondary-foreground border border-border;
-    @apply transition-all duration-300;
-  }
-  
-  .btn-secondary:hover {
-    @apply bg-accent/10 border-accent/30 text-accent;
-  }
-  
-  /* Accent Button: Glowing gradient button for primary Call-to-Actions */
-  .btn-accent {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
-    @apply text-primary-foreground;
-    background: var(--gradient-accent);
-    @apply transition-all duration-300 shadow-md;
-  }
-  
-  .btn-accent:hover {
-    /* Shifts the gradient slightly and lifts the button */
-    background: linear-gradient(135deg, hsl(221 83% 58%) 0%, hsl(221 83% 48%) 100%);
-    @apply shadow-lg scale-[1.02];
-  }
-  
-  /* Outline Button: Transparent background, colored border */
+  /* Outline Button: Inverts to the hover gradient for a premium interaction. */
   .btn-outline {
     @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
-    @apply border-2 border-primary text-primary bg-transparent;
-    @apply hover:bg-primary hover:text-primary-foreground transition-all duration-200;
+    @apply border-2 border-accent text-accent bg-transparent;
+    @apply transition-all duration-300;
+  }
+
+  .btn-outline:hover {
+    @apply text-white shadow-lg scale-[1.02] border-transparent;
+    background-image: var(--gradient-hover-blue);
+  }
+
+  /* Standard Card Style */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+    box-shadow: var(--shadow-card);
   }
   
-  /* --- STATUS BADGES --- */
-  /* Used for marking projects as Live, In Progress, etc. */
-  .status-badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
-  }
-  
-  .status-live {
-    @apply bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30;
-  }
-  
-  .status-mvp {
-    @apply bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-500/30;
-  }
-  
-  .status-progress {
-    @apply bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30;
+  .card-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    @apply -translate-y-1;
   }
 }
 
-/* ==========================================================================
-   UTILITY CLASSES & ANIMATIONS
-   ========================================================================== */
 @layer utilities {
+  /* ==========================================
+     LEGACY COLOR OVERRIDES
+     ========================================== */
+     
+  /* Apply this class to your "Get in Touch" section container */
+  .bg-contact-blue {
+    background-color: hsl(var(--contact-blue)) !important;
+  }
   
-  /* Enforces that explicitly calling bg-white maps to our dynamic card color.
-     NOTE: In our new premium theme, --card is pure white in light mode anyway,
-     but this ensures it switches properly to dark grey in dark mode. */
-  .bg-white {
-    background-color: hsl(var(--card)) !important;
+  .text-contact-blue {
+    color: hsl(var(--contact-blue)) !important;
   }
 
-  /* --- ANIMATION CLASSES --- */
-  /* Standard Fade In */
-  .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-  
-  /* Fade In while sliding up slightly (great for hero text) */
-  .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-  
-  /* Staggered animations for lists or grid items */
-  .animate-fade-in-delay-1 { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
-  .animate-fade-in-delay-2 { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
-  .animate-fade-in-delay-3 { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
-  
-  /* Keyframes for the above animations */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  
-  /* Directional Slide Utilities */
-  .animate-slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  .animate-slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  
-  /* Scroll Reveal Logic (Used via Intersection Observer in JS) */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth spring-like easing */
-  }
-  
-  .reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* --- CUSTOM TOGGLE SWITCH (e.g., Light/Dark mode or Pro toggle) --- */
-  .toggle-professional {
-    @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full;
-    @apply transition-colors duration-300 ease-out border border-transparent;
-    background: hsl(var(--accent));
-  }
-  
-  .toggle-professional[data-state="unchecked"] {
-    background: hsl(var(--muted));
-    @apply border-border;
-  }
-  
-  /* The moving circle inside the toggle */
-  .toggle-professional-thumb {
-    @apply pointer-events-none block h-5 w-5 rounded-full bg-white shadow-sm;
-    @apply transition-transform duration-300 cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  /* Positioning states for the thumb */
-  .toggle-professional[data-state="checked"] .toggle-professional-thumb {
-    transform: translateX(20px);
-  }
-  
-  .toggle-professional[data-state="unchecked"] .toggle-professional-thumb {
-    transform: translateX(2px);
+  /* Utility to enforce pure card colors for bg-white usage */
+  .bg-white {
+    background-color: hsl(var(--card)) !important;
   }
 }
