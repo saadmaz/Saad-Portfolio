@@ -2,65 +2,79 @@ import { motion } from "framer-motion"; // Imports motion for scroll-triggered a
 import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react"; // SVG icons for contact methods and social media
 import { Link } from "react-router-dom"; // Hook for client-side routing within the application
 
+/**
+ * ContactSection Component
+ * * UPDATED: Now uses 'bg-contact-blue' to maintain the original vibrant blue theme.
+ * * UI FIX: Added 'text-white' to ensure readability against the primary blue background.
+ */
 export function ContactSection() {
   return (
-    // MAIN SECTION WRAPPER: py-12 provides vertical padding; bg-secondary applies the theme's secondary background color
-    <section className="py-12 bg-secondary"> 
-      <div className="section-container"> {/* Utility class for centered horizontal alignment and standard gutters */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center"> {/* Establishes a 2-column grid on large screens, centered vertically */}
+    // MAIN SECTION WRAPPER: 
+    // 1. py-16 provides vertical breathing room.
+    // 2. bg-contact-blue applies your specifically preserved legacy blue.
+    // 3. text-white ensures all nested text inherits a light color for high contrast.
+    <section className="py-16 bg-contact-blue text-white overflow-hidden"> 
+      <div className="section-container"> {/* Standardized container for horizontal centering and gutters */}
+        
+        <div className="grid lg:grid-cols-2 gap-16 items-center"> {/* 2-column grid: Info on left, CTAs on right */}
           
-          {/* --- LEFT COLUMN: COMPACT CONTACT INFO --- */}
-          {/* motion.div: Handles the entry animation (fading in and sliding from the left) when the section enters the viewport */}
+          {/* --- LEFT COLUMN: CONTACT IDENTITY --- */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }} // Animation start state
-            whileInView={{ opacity: 1, x: 0 }} // Animation end state triggered by scroll
-            viewport={{ once: true }} // Ensures the animation only plays the first time the section is seen
-            transition={{ duration: 0.5 }} // Half-second animation speed
+            initial={{ opacity: 0, x: -30 }} // Starts invisible and slightly to the left
+            whileInView={{ opacity: 1, x: 0 }} // Fades in and slides to position on scroll
+            viewport={{ once: true }} // Animation only triggers once for better UX
+            transition={{ duration: 0.6, ease: "easeOut" }} // Smooth deceleration
           >
-            {/* SUBTITLE: Small, bold, uppercase accent text to introduce the section */}
-            <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
+            {/* SUBTITLE: Highly visible uppercase label */}
+            <span className="inline-block text-sm font-black uppercase tracking-[0.3em] text-white/80 mb-4">
               Get in Touch
             </span>
             
-            {/* PRIMARY HEADING: Uses font-display for brand-consistent typography */}
-            <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-foreground">
-              Let's Build Something Great Together
+            {/* PRIMARY HEADING: Bold and high-impact */}
+            <h2 className="font-display text-4xl md:text-5xl font-extrabold mb-6 leading-[1.1] tracking-tighter">
+              Let's Build Something <br /> Great Together
             </h2>
             
-            {/* SUPPORTING TEXT: Muted color with a max-width for optimal readability on wider screens */}
-            <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
+            {/* SUPPORTING TEXT: Slightly transparent to keep hierarchy focused on the heading */}
+            <p className="text-white/70 mb-10 max-w-md text-lg leading-relaxed font-medium">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
-            {/* CONTACT METHOD LIST: Vertical list of interactive communication links */}
-            <div className="space-y-3 mb-6">
-              {/* Email Link: Uses 'mailto' protocol to trigger default email clients */}
+            {/* INTERACTIVE CONTACT LIST */}
+            <div className="space-y-5 mb-10">
+              {/* Email Link: Uses hover:translate-x to give interactive feedback */}
               <a 
                 href="mailto:saadmazaa@gmail.com" 
-                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-4 text-white/90 hover:text-white transition-all group w-fit"
               >
-                <Mail className="w-4 h-4 text-accent" />
-                <span>saadmazaa@gmail.com</span>
+                <div className="p-2.5 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <span className="font-semibold tracking-tight">saadmazaa@gmail.com</span>
               </a>
 
-              {/* Phone Link: Uses 'tel' protocol for mobile interactivity */}
+              {/* Phone Link */}
               <a 
                 href="tel:+94720135801" 
-                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-4 text-white/90 hover:text-white transition-all group w-fit"
               >
-                <Phone className="w-4 h-4 text-accent" />
-                <span>+94 72 01 358 01</span>
+                <div className="p-2.5 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <span className="font-semibold tracking-tight">+94 72 01 358 01</span>
               </a>
 
-              {/* Physical Location: Non-link item providing geographic context */}
-              <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                <MapPin className="w-4 h-4 text-accent" />
-                <span>Colombo, Sri Lanka</span>
+              {/* Geographic Context */}
+              <div className="flex items-center gap-4 text-white/80 cursor-default">
+                <div className="p-2.5 rounded-lg bg-white/10">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <span className="font-medium">Colombo, Sri Lanka</span>
               </div>
             </div>
 
-            {/* SOCIAL MEDIA LINKS: Horizontal row of branded icon buttons */}
-            <div className="flex items-center gap-3">
+            {/* SOCIAL ROW: Branded glass-effect buttons */}
+            <div className="flex items-center gap-4">
               {[
                 { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
                 { Icon: Github, href: "https://github.com/saadmaz" },
@@ -71,9 +85,9 @@ export function ContactSection() {
                 <a 
                   key={index}
                   href={social.href}
-                  target="_blank" // Opens link in a new browser tab
-                  rel="noopener noreferrer" // Essential security attribute for external links
-                  className="p-2 rounded-md bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-white/10 border border-white/10 hover:bg-white hover:text-contact-blue hover:-translate-y-1 transition-all duration-300" 
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -81,62 +95,60 @@ export function ContactSection() {
             </div>
           </motion.div>
 
-          {/* --- RIGHT COLUMN: COMPACT CTA CARDS --- */}
-          {/* motion.div: Animates in from the right with a slight delay after the left column */}
+          {/* --- RIGHT COLUMN: QUICK ACTION CARDS --- */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 30 }} // Slides in from the right
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            transition={{ duration: 0.6, delay: 0.2 }} // Delayed entry for staggered effect
+            className="space-y-6"
           >
-            {/* GRID FOR CTA CARDS: Stacks on mobile, side-by-side on tablet/medium screens */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* GRID FOR ACTION CARDS */}
+            <div className="grid grid-cols-1 gap-6">
 
-              {/* SEND MESSAGE CARD: Navigates to a deeper contact form page within the React app */}
+              {/* MESSAGE CARD: Glassmorphism effect to look premium on blue */}
               <Link 
                 to="/contact" 
-                className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
+                className="block p-8 rounded-3xl bg-white/10 border border-white/20 hover:bg-white/20 hover:scale-[1.02] transition-all group backdrop-blur-sm"
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    {/* Header: Changes color smoothly when the parent card is hovered via 'group-hover' */}
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
-                      <Mail className="w-4 h-4 text-accent" />
-                      Send a Message
-                    </h3>
-                    <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
-                      Get a response within 24 hours.
-                    </p>
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-contact-blue transition-all duration-500">
+                      <Mail className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-1 tracking-tight">Send a Message</h3>
+                      <p className="text-white/60 text-sm">Response within 24 hours.</p>
+                    </div>
                   </div>
-                  {/* Visual Cue: Arrow translates 4 pixels to the right on hover to indicate forward motion */}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform opacity-50 group-hover:opacity-100" />
                 </div>
               </Link>
 
-              {/* SCHEDULE CALL CARD: External link to an appointment booking service (Cal.com) */}
+              {/* BOOKING CARD */}
               <a 
                 href="https://cal.com/saad-mazhar" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all group"
+                className="block p-8 rounded-3xl bg-white/10 border border-white/20 hover:bg-white/20 hover:scale-[1.02] transition-all group backdrop-blur-sm"
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
-                      <Calendar className="w-4 h-4 text-accent" />
-                      Schedule a Call
-                    </h3>
-                    <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
-                      Book a 30-minute chat via Cal.com
-                    </p>
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-contact-blue transition-all duration-500">
+                      <Calendar className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-1 tracking-tight">Schedule a Call</h3>
+                      <p className="text-white/60 text-sm">Book a 30-minute chat via Cal.com</p>
+                    </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform opacity-50 group-hover:opacity-100" />
                 </div>
               </a>
 
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
