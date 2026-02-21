@@ -1,129 +1,136 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { 
+  Mail, Phone, MapPin, ArrowRight, Instagram, 
+  Facebook, Github, Linkedin, X, Calendar, LucideIcon 
+} from "lucide-react";
 
-/**
- * CONTACT SECTION - PROFESSIONAL NAVY EDITION
- * * FEATURES:
- * 1. FIXED: Uses 'bg-contact-gradient' to stay Navy Blue in Light Mode.
- * 2. FIXED: Forces 'text-white' for readability on dark background.
- * 3. STYLE: Premium glassmorphism cards and original 2-column layout.
- */
+// --- Types & Data ---
+
+interface SocialLink {
+  Icon: LucideIcon;
+  href: string;
+  label: string;
+}
+
+const SOCIAL_LINKS: SocialLink[] = [
+  { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz", label: "LinkedIn" },
+  { Icon: Github, href: "https://github.com/saadmaz", label: "GitHub" },
+  { Icon: Instagram, href: "https://instagram.com/saadmazhar_", label: "Instagram" },
+  { Icon: Facebook, href: "https://facebook.com/saadmazhar", label: "Facebook" },
+  { Icon: X, href: "https://x.com/SaadMazhar_", label: "X (Twitter)" },
+];
+
+// --- Sub-components ---
+
+const ContactMethod = ({ icon: Icon, text, href }: { icon: LucideIcon, text: string, href?: string }) => {
+  const className = "flex items-center gap-3 text-muted-foreground transition-colors group text-sm";
+  const content = (
+    <>
+      <Icon className="w-4 h-4 text-accent" />
+      <span>{text}</span>
+    </>
+  );
+
+  return href ? (
+    <a href={href} className={`${className} hover:text-accent`}>{content}</a>
+  ) : (
+    <div className={className}>{content}</div>
+  );
+};
+
+// --- Main Component ---
+
 export function ContactSection() {
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.5 }
+  };
+
   return (
-    // MAIN WRAPPER: Forced to Navy Gradient from index.css
-    <section className="py-16 bg-contact-gradient text-white overflow-hidden border-t border-white/5"> 
+    <section className="py-12 bg-secondary" aria-labelledby="contact-heading">
       <div className="section-container">
-        
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           
-          {/* --- LEFT COLUMN: INFO --- */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+          {/* Left Column: Information */}
+          <motion.div {...fadeInUp} transition={{ duration: 0.5 }}>
             <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
               Get in Touch
             </span>
-            
-            <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-white">
+            <h2 id="contact-heading" className="font-display text-3xl font-bold mb-4 leading-tight text-foreground">
               Let's Build Something Great Together
             </h2>
-            
-            <p className="text-white/60 mb-8 max-w-md text-sm leading-relaxed">
+            <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
-            {/* CONTACT LINKS */}
-            <div className="space-y-4 mb-8">
-              <a href="mailto:saadmazaa@gmail.com" className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm">
-                <Mail className="w-4 h-4 text-accent" />
-                <span className="font-medium">saadmazaa@gmail.com</span>
-              </a>
-              <a href="tel:+94720135801" className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm">
-                <Phone className="w-4 h-4 text-accent" />
-                <span className="font-medium">+94 72 01 358 01</span>
-              </a>
-              <div className="flex items-center gap-3 text-white/50 text-sm">
-                <MapPin className="w-4 h-4 text-accent" />
-                <span>Colombo, Sri Lanka</span>
-              </div>
+            <div className="space-y-3 mb-6">
+              <ContactMethod icon={Mail} text="saadmazaa@gmail.com" href="mailto:saadmazaa@gmail.com" />
+              <ContactMethod icon={Phone} text="+94 72 01 358 01" href="tel:+94720135801" />
+              <ContactMethod icon={MapPin} text="Colombo, Sri Lanka" />
             </div>
 
-            {/* SOCIAL ICONS */}
             <div className="flex items-center gap-3">
-              {[
-                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
-                { Icon: Github, href: "https://github.com/saadmaz" },
-                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
-                { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
-                { Icon: X, href: "https://x.com/SaadMazhar_" }
-              ].map((social, index) => (
-                <a 
-                  key={index}
-                  href={social.href}
+              {SOCIAL_LINKS.map(({ Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 rounded-lg bg-white/5 border border-white/10 hover:bg-accent hover:text-white transition-all shadow-sm group" 
+                  aria-label={label}
+                  className="p-2 rounded-md bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all"
                 >
-                  <social.Icon className="w-5 h-5" />
+                  <Icon className="w-5 h-5" />
                 </a>
               ))}
             </div>
           </motion.div>
 
-          {/* --- RIGHT COLUMN: CARDS --- */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+          {/* Right Column: Interactive Cards */}
+          <motion.div 
+            {...fadeInUp} 
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Link 
-                to="/contact" 
-                className="block p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group backdrop-blur-md"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <h3 className="font-display text-lg font-semibold flex items-center gap-2 text-white group-hover:text-accent transition-colors">
-                      <Mail className="w-4 h-4 text-accent" />
-                      Send a Message
-                    </h3>
-                    <p className="text-white/40 text-xs group-hover:text-white/70 transition-colors">
-                      Response within 24 hours.
-                    </p>
-                  </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
-                </div>
-              </Link>
+            {/* Internal CTA */}
+            <Link to="/contact" className="contact-card group">
+              <CardContent 
+                icon={Mail} 
+                title="Send a Message" 
+                description="Get a response within 24 hours." 
+              />
+            </Link>
 
-              <a 
-                href="https://cal.com/saad-mazhar" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group backdrop-blur-md"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <h3 className="font-display text-lg font-semibold flex items-center gap-2 text-white group-hover:text-accent transition-colors">
-                      <Calendar className="w-4 h-4 text-accent" />
-                      Schedule a Call
-                    </h3>
-                    <p className="text-white/40 text-xs group-hover:text-white/70 transition-colors">
-                      Book a chat via Cal.com
-                    </p>
-                  </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
-                </div>
-              </a>
-            </div>
+            {/* External CTA */}
+            <a href="https://cal.com/saad-mazhar" target="_blank" rel="noopener noreferrer" className="contact-card group">
+              <CardContent 
+                icon={Calendar} 
+                title="Schedule a Call" 
+                description="Book a 30-minute chat." 
+              />
+            </a>
           </motion.div>
+          
         </div>
       </div>
     </section>
   );
 }
+
+// Helper for Card Layout
+const CardContent = ({ icon: Icon, title, description }: { icon: LucideIcon, title: string, description: string }) => (
+  <div className="flex items-center justify-between p-5 rounded-xl bg-card border border-border hover:border-accent/50 transition-all">
+    <div className="space-y-1">
+      <h3 className="font-display text-lg font-semibold flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
+        <Icon className="w-4 h-4 text-accent" />
+        {title}
+      </h3>
+      <p className="text-muted-foreground text-xs group-hover:text-foreground/80 transition-colors">
+        {description}
+      </p>
+    </div>
+    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
+  </div>
+);
