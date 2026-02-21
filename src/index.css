@@ -8,12 +8,13 @@
 
 @layer base {
   :root {
-    /* Core Colors - Light Theme */
-    --background: 0 0% 100%;
+    /* Core Colors - Light Theme (softened for professional feel) */
+    /* background shifted off‑white to reduce glare */
+    --background: 0 0% 98%; /* ~#fafafa instead of pure white */
     --foreground: 222 47% 11%;
     
-    /* Card & Surface */
-    --card: 0 0% 100%;
+    /* Card & Surface: very light grey rather than stark white */
+    --card: 0 0% 99%; /* ~#fcfcfc */
     --card-foreground: 222 47% 11%;
     
     /* Popover */
@@ -28,8 +29,8 @@
     --secondary: 222 47% 15%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Muted - Light Gray */
-    --muted: 220 14% 96%;
+    /* Muted - Light Gray (even softer) */
+    --muted: 220 14% 98%;
     --muted-foreground: 220 9% 46%;
     
     /* Accent - Slate Blue */
@@ -41,8 +42,8 @@
     --destructive-foreground: 0 0% 100%;
     
     /* Border & Input */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --border: 220 13% 93%;
+    --input: 220 13% 93%;
     --ring: 222 47% 11%;
     
     /* Radius */
@@ -330,6 +331,11 @@
 }
 
 @layer utilities {
+  /* unify existing bg-white usages with card background for light theme */
+  .bg-white {
+    background-color: hsl(var(--card)) !important;
+  }
+
   /* Smooth Fade In */
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;

@@ -54,7 +54,7 @@ const ProjectDetailPage = () => {
   return (
     <Layout>
       {/* Background container: Neutral, sleek tones */}
-      <section className="pt-8 pb-24 bg-slate-50 dark:bg-[#09090b] transition-colors duration-300">
+      <section className="pt-8 pb-24 bg-background dark:bg-[#09090b] transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* --- BREADCRUMB --- */}
@@ -196,7 +196,7 @@ const ProjectDetailPage = () => {
                 {/* 5. STACK DEEP DIVE */}
                 {project.stackDeepDive && (
                   <section className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e] overflow-hidden">
-                    <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50">
+                    <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-background dark:bg-slate-900/50">
                       <Cpu className="w-5 h-5 text-slate-500" />
                       <h2 className="text-lg font-bold text-slate-900 dark:text-white">Stack Deep-Dive</h2>
                     </div>
@@ -397,7 +397,7 @@ const ProjectDetailPage = () => {
                     {project.metrics.lighthouseScore && (
                       <div className="flex gap-2 mb-6">
                         {Object.entries(project.metrics.lighthouseScore).map(([label, score]) => (
-                          <div key={label} className="flex-1 flex flex-col items-center justify-center py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                          <div key={label} className="flex-1 flex flex-col items-center justify-center py-3 rounded-xl bg-background dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                             <span className={`text-sm font-bold ${Number(score) >= 90 ? 'text-emerald-500' : 'text-amber-500'}`}>{score}</span>
                             <span className="text-[9px] uppercase font-bold text-slate-500 mt-0.5">{label.substring(0, 4)}</span>
                           </div>
@@ -431,7 +431,7 @@ const ProjectDetailPage = () => {
 
                 {/* 3. FUTURE ROADMAP CARD */}
                 {project.roadmap && project.roadmap.length > 0 && (
-                  <div className="p-6 md:p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                  <div className="p-6 md:p-8 rounded-2xl bg-background dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-5 flex items-center gap-2">
                       <Target className="w-4 h-4" /> Next Milestones
                     </h3>
