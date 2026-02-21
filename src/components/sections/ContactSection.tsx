@@ -1,47 +1,47 @@
-import { motion } from "framer-motion"; // Imports motion for scroll-triggered and state-based animations
-import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react"; // SVG icons for contact methods and social media
-import { Link } from "react-router-dom"; // Hook for client-side routing within the application
+import { motion } from "framer-motion"; // Library for smooth, high-performance scroll and state animations
+import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react"; // Modern SVG icon set for clear communication
+import { Link } from "react-router-dom"; // Essential for single-page application navigation without refreshing
 
 export function ContactSection() {
   return (
     // MAIN SECTION WRAPPER: 
-    // py-12 provides vertical padding.
-    // Fixed linear gradient ensures the background remains the same regardless of Light/Dark mode.
+    // py-12: Standard vertical padding.
+    // background: Custom linear gradient ensures a consistent brand feel regardless of light/dark mode settings.
     <section 
       className="py-12" 
       style={{ 
         background: 'linear-gradient(135deg, hsl(222 47% 20%) 0%, hsl(222 47% 11%) 100%)' 
       }}
     >
-      <div className="section-container"> {/* Utility class for centered horizontal alignment and standard gutters */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center"> {/* Establishes a 2-column grid on large screens, centered vertically */}
+      <div className="section-container"> {/* Utility class to keep content centered with standard responsive gutters */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center"> {/* Two-column layout on desktop, single-column on mobile */}
           
-          {/* --- LEFT COLUMN: COMPACT CONTACT INFO --- */}
-          {/* motion.div: Handles the entry animation (fading in and sliding from the left) when the section enters the viewport */}
+          {/* --- LEFT COLUMN: BRANDING AND DIRECT CONTACT --- */}
+          {/* motion.div: Animates the left side content sliding in as the user scrolls down */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }} // Animation start state
-            whileInView={{ opacity: 1, x: 0 }} // Animation end state triggered by scroll
-            viewport={{ once: true }} // Ensures the animation only plays the first time the section is seen
-            transition={{ duration: 0.5 }} // Half-second animation speed
+            initial={{ opacity: 0, x: -20 }} // Starts transparent and slightly offset to the left
+            whileInView={{ opacity: 1, x: 0 }} // Smoothly fades in and moves to its final position
+            viewport={{ once: true }} // Animation only triggers once per page load for a cleaner experience
+            transition={{ duration: 0.5 }} // Animation speed of 500ms
           >
-            {/* SUBTITLE: Small, bold, uppercase accent text to introduce the section */}
+            {/* SUBTITLE: Highly visible uppercase text to anchor the section */}
             <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
               Get in Touch
             </span>
             
-            {/* PRIMARY HEADING: Uses font-display for brand-consistent typography; set to text-white for the dark gradient */}
+            {/* PRIMARY HEADING: White text used here specifically to pop against the dark HSL background */}
             <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-white">
               Let's Build Something Great Together
             </h2>
             
-            {/* SUPPORTING TEXT: Using a light slate color to ensure readability on the dark background */}
+            {/* SUPPORTING TEXT: Muted slate color provides good contrast without being overwhelming */}
             <p className="text-slate-300 mb-6 max-w-md text-sm leading-relaxed">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
-            {/* CONTACT METHOD LIST: Vertical list of interactive communication links */}
+            {/* CONTACT METHOD LIST: A collection of interactive links for direct communication */}
             <div className="space-y-3 mb-6">
-              {/* Email Link: Uses 'mailto' protocol to trigger default email clients */}
+              {/* EMAIL: Opens the system's default mail client */}
               <a
                 href="mailto:saadmazaa@gmail.com"
                 className="flex items-center gap-3 text-slate-300 hover:text-accent transition-colors group text-sm"
@@ -50,7 +50,7 @@ export function ContactSection() {
                 <span>saadmazaa@gmail.com</span>
               </a>
 
-              {/* Phone Link: Uses 'tel' protocol for mobile interactivity */}
+              {/* PHONE: Allows mobile users to click and dial directly */}
               <a
                 href="tel:+94720135801"
                 className="flex items-center gap-3 text-slate-300 hover:text-accent transition-colors group text-sm"
@@ -59,14 +59,14 @@ export function ContactSection() {
                 <span>+94 72 01 358 01</span>
               </a>
 
-              {/* Physical Location: Non-link item providing geographic context */}
+              {/* LOCATION: Static information with a consistent icon style */}
               <div className="flex items-center gap-3 text-slate-300 text-sm">
                 <MapPin className="w-4 h-4 text-accent" />
                 <span>Colombo, Sri Lanka</span>
               </div>
             </div>
 
-            {/* SOCIAL MEDIA LINKS: Horizontal row of branded icon buttons */}
+            {/* SOCIAL MEDIA LINKS: Branded icons with customized hover states */}
             <div className="flex items-center gap-3">
               {[
                 { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
@@ -78,11 +78,11 @@ export function ContactSection() {
                 <a
                   key={index}
                   href={social.href}
-                  target="_blank" // Opens link in a new browser tab
-                  rel="noopener noreferrer" // Essential security attribute for external links
-                  // CHANGE APPLIED: Icons are white by default (text-white) and blue on hover (hover:text-accent)
-                  // bg-white/5 and border-white/10 provide a subtle "glass" effect on the dark gradient
-                  className="p-2 rounded-md bg-white/5 border border-white/10 text-white hover:text-accent hover:bg-white/10 transition-all"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // CHANGES: Icons are text-white. Hover triggers text-accent (blue) and a subtle glow shadow.
+                  // bg-white/5: Low-opacity background to create depth on the gradient.
+                  className="p-2 rounded-md bg-white/5 border border-white/10 text-white hover:text-accent hover:bg-white/10 hover:border-accent/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all duration-300"
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -90,8 +90,8 @@ export function ContactSection() {
             </div>
           </motion.div>
 
-          {/* --- RIGHT COLUMN: COMPACT CTA CARDS --- */}
-          {/* motion.div: Animates in from the right with a slight delay after the left column */}
+          {/* --- RIGHT COLUMN: CALL-TO-ACTION CARDS --- */}
+          {/* motion.div: Staggered entrance animation coming from the right side */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -99,17 +99,15 @@ export function ContactSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-4"
           >
-            {/* GRID FOR CTA CARDS: Stacks on mobile, side-by-side on tablet/medium screens */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* SEND MESSAGE CARD: Navigates to a deeper contact form page within the React app */}
+              {/* SEND MESSAGE CARD: Internal navigation card */}
               <Link
                 to="/contact"
-                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 transition-all group"
+                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    {/* Header: Changes color smoothly when the parent card is hovered via 'group-hover' */}
                     <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
                       <Mail className="w-4 h-4 text-accent" />
                       Send a Message
@@ -118,17 +116,16 @@ export function ContactSection() {
                       Get a response within 24 hours.
                     </p>
                   </div>
-                  {/* Visual Cue: Arrow translates 4 pixels to the right on hover to indicate forward motion */}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
                 </div>
               </Link>
 
-              {/* SCHEDULE CALL CARD: External link to an appointment booking service (Cal.com) */}
+              {/* SCHEDULE CALL CARD: External booking card */}
               <a
                 href="https://cal.com/saad-mazhar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 transition-all group"
+                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
