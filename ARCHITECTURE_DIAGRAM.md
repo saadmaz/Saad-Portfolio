@@ -261,7 +261,7 @@ projects.json (All)
 
 Featured Projects (limit 3)
 ┌──────────────────────────────┐
-│ Project 1 (Latest) ✨        │
+│ Project 1 (Latest)           │
 ├──────────────────────────────┤
 │ Project 4                    │
 ├──────────────────────────────┤

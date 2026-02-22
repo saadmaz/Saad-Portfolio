@@ -6,10 +6,7 @@
 
 import { motion } from "framer-motion"; // Handles entry animations and hover effects
 import { Layout } from "@/components/layout/Layout"; // Standard page wrapper (Navbar/Footer)
-import { 
-  GraduationCap, MapPin, Trophy, Heart, 
-  Dumbbell, Globe, Star 
-} from "lucide-react"; // SVG icons for visual storytelling
+import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star } from "lucide-react"; // SVG icons for visual storytelling
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge"; // Shadcn/ui Badge component for tags
