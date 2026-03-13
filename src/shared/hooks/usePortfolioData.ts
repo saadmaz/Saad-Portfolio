@@ -19,8 +19,10 @@ export const useBlogs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setBlogs(dataManager.getBlogs());
-    setLoading(false);
+    dataManager.getBlogs().then((data) => {
+      setBlogs(data);
+      setLoading(false);
+    });
   }, []);
 
   return { blogs, loading };
@@ -34,8 +36,10 @@ export const useFeaturedBlogs = (limit?: number) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setBlogs(dataManager.getFeaturedBlogs(limit));
-    setLoading(false);
+    dataManager.getFeaturedBlogs(limit).then((data) => {
+      setBlogs(data);
+      setLoading(false);
+    });
   }, [limit]);
 
   return { blogs, loading };
@@ -49,8 +53,10 @@ export const useWorkExperience = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setExperience(dataManager.getWorkExperience());
-    setLoading(false);
+    dataManager.getWorkExperience().then((data) => {
+      setExperience(data);
+      setLoading(false);
+    });
   }, []);
 
   return { experience, loading };
@@ -64,8 +70,10 @@ export const useCertificates = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setCertificates(dataManager.getCertificates());
-    setLoading(false);
+    dataManager.getCertificates().then((data) => {
+      setCertificates(data);
+      setLoading(false);
+    });
   }, []);
 
   return { certificates, loading };
@@ -79,8 +87,10 @@ export const useSkills = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSkills(dataManager.getSkills());
-    setLoading(false);
+    dataManager.getSkills().then((data) => {
+      setSkills(data);
+      setLoading(false);
+    });
   }, []);
 
   return { skills, loading };
@@ -94,8 +104,10 @@ export const useProjects = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProjects(dataManager.getProjects());
-    setLoading(false);
+    dataManager.getProjects().then((data) => {
+      setProjects(data);
+      setLoading(false);
+    });
   }, []);
 
   return { projects, loading };
@@ -113,8 +125,10 @@ export const useFeaturedProjects = (limit?: number) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProjects(dataManager.getRecentProjects(limit));
-    setLoading(false);
+    dataManager.getFeaturedBlogs(limit).then((data) => {
+      setProjects(data);
+      setLoading(false);
+    });
   }, [limit]);
 
   return { projects, loading };
@@ -128,8 +142,10 @@ export const useEvents = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setEvents(dataManager.getEvents());
-    setLoading(false);
+    dataManager.getEvents().then((data) => {
+      setEvents(data);
+      setLoading(false);
+    });
   }, []);
 
   return { events, loading };
@@ -143,8 +159,10 @@ export const useNewsletters = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setNewsletters(dataManager.getNewsletters());
-    setLoading(false);
+    dataManager.getNewsletters().then((data) => {
+      setNewsletters(data);
+      setLoading(false);
+    });
   }, []);
 
   return { newsletters, loading };
@@ -158,8 +176,10 @@ export const useNewslettersByType = (type: "founder" | "cse") => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setNewsletters(dataManager.getNewslettersByType(type));
-    setLoading(false);
+    dataManager.getNewsletters().then((data) => {
+      setNewsletters(data.filter(n => n.type === type));
+      setLoading(false);
+    });
   }, [type]);
 
   return { newsletters, loading };

@@ -3,14 +3,8 @@
  * Automatically loads data from JSON files and sorts by date (latest first)
  */
 
-import blogsData from "@/data/content/blogs.json";
-import workExperienceData from "@/data/personal/workExperience.json";
-import certificatesData from "@/data/certificates.json";
-import skillsData from "@/data/skills.json";
-import projectsData from "@/data/projects.json";
-import eventsData from "@/data/content/events.json";
-import newslettersData from "@/data/content/newsletters.json";
-import hostingData from "@/data/content/hosting.json";
+// DataManager now fetches from backend API endpoints
+// Remove static imports
 
 // Type definitions
 export interface Blog {
@@ -236,69 +230,54 @@ const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate
 /**
  * Data Manager class - provides access to all portfolio data
  */
-class DataManager {
-  private blogs: Blog[];
-  private workExperience: WorkExperience[];
-  private certificates: Certificate[];
-  private skills: Skill[];
-  private projects: Project[];
-  private events: Event[];
-  private newsletters: Newsletter[];
-  private hosting: Hosting[];
-
-  constructor() {
-    // Initialize all data, sorted by date (latest first)
-    this.blogs = sortByDateDesc(blogsData as Blog[]);
-    this.workExperience = sortByDateDesc(workExperienceData as WorkExperience[]);
-    this.certificates = sortByDateDesc(certificatesData as any) as Certificate[];
-    this.skills = skillsData as any;
-    this.projects = sortByDateDesc(projectsData as any);
-    this.events = sortByDateDesc(eventsData as Event[]);
-    this.newsletters = sortByDateDesc(newslettersData as Newsletter[]);
-    this.hosting = sortByDateDesc(hostingData as Hosting[]);
-  }
+  // No constructor needed; all methods fetch from API
 
   /**
    * Get all blogs (latest first)
    */
-  getBlogs(): Blog[] {
-    return this.blogs;
+  async getBlogs(): Promise<Blog[]> {
+    const res = await fetch("http://localhost:3001/api/blog-posts");
+    return await res.json();
   }
 
   /**
    * Get featured blogs only
    */
-  getFeaturedBlogs(limit?: number): Blog[] {
-    const featured = this.blogs.slice(0, limit || this.blogs.length);
-    return featured;
+  async getFeaturedBlogs(limit?: number): Promise<Blog[]> {
+    const blogs = await this.getBlogs();
+    return blogs.slice(0, limit || blogs.length);
   }
 
   /**
    * Get blog by slug
    */
-  getBlogBySlug(slug: string): Blog | undefined {
-    return this.blogs.find((blog) => blog.slug === slug);
+  async getBlogBySlug(slug: string): Promise<Blog | undefined> {
+    const blogs = await this.getBlogs();
+    return blogs.find((blog) => blog.slug === slug);
   }
 
   /**
    * Get all work experience (latest first)
    */
-  getWorkExperience(): WorkExperience[] {
-    return this.workExperience;
+  async getWorkExperience(): Promise<WorkExperience[]> {
+    const res = await fetch("http://localhost:3001/api/work-experience");
+    return await res.json();
   }
 
   /**
    * Get all certificates (latest first)
    */
-  getCertificates(): Certificate[] {
-    return this.certificates;
+  async getCertificates(): Promise<Certificate[]> {
+    const res = await fetch("http://localhost:3001/api/certificates");
+    return await res.json();
   }
 
   /**
    * Get all skills grouped by category
    */
-  getSkills(): Skill[] {
-    return this.skills;
+  async getSkills(): Promise<Skill[]> {
+    const res = await fetch("http://localhost:3001/api/skills");
+    return await res.json();
   }
 
   /**
@@ -311,8 +290,9 @@ class DataManager {
   /**
    * Get all projects (latest first)
    */
-  getProjects(): Project[] {
-    return this.projects;
+  async getProjects(): Promise<Project[]> {
+    const res = await fetch("http://localhost:3001/api/projects");
+    return await res.json();
   }
 
   /**
@@ -366,15 +346,17 @@ class DataManager {
   /**
    * Get all events (latest first)
    */
-  getEvents(): Event[] {
-    return this.events;
+  async getEvents(): Promise<Event[]> {
+    const res = await fetch("http://localhost:3001/api/events");
+    return await res.json();
   }
 
   /**
    * Get all newsletters (latest first)
    */
-  getNewsletters(): Newsletter[] {
-    return this.newsletters;
+  async getNewsletters(): Promise<Newsletter[]> {
+    const res = await fetch("http://localhost:3001/api/newsletters");
+    return await res.json();
   }
 
   /**
@@ -387,8 +369,9 @@ class DataManager {
   /**
    * Get all hosting info (latest first)
    */
-  getHosting(): Hosting[] {
-    return this.hosting;
+  async getHosting(): Promise<Hosting[]> {
+    const res = await fetch("http://localhost:3001/api/hosting");
+    return await res.json();
   }
 
   /**

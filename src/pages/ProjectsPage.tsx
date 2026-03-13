@@ -5,15 +5,29 @@ import { Link } from "react-router-dom";
 
 import { dataManager, Project } from "@/shared/lib/dataManager";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { useEffect } from "react";
 
-const allProjects: Project[] = dataManager.getProjects();
+const ProjectsPage = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    dataManager.getProjects().then((data) => {
+      setProjects(data);
+      setLoading(false);
+    });
+  }, []);
 
-// derive categories dynamically from data
-const categories = [
-  "All",
-  ...Array.from(new Set(allProjects.map((p) => p.category || "").filter(Boolean)))
-];
+  // derive categories dynamically from data
+  const categories = [
+    "All",
+    ...Array.from(new Set(projects.map((p) => p.category || "").filter(Boolean)))
+  ];
+
+  const filteredProjects = activeCategory === "All"
+    ? projects
+    : projects.filter(p => p.category === activeCategory);
 
 const ProjectsPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");

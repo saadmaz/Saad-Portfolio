@@ -5,7 +5,7 @@ import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X, Layer
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { certificatesData } from "@/data";
+import { dataManager, Certificate } from "@/shared/lib/dataManager";
 
 /**
  * INTERFACE: Matches your JSON structure
@@ -40,18 +40,17 @@ const CertificationsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllCerts, setShowAllCerts] = useState(false);
 
-  // --- DATA LOADING & NORMALIZATION ---
+  // --- DATA LOADING ---
   useEffect(() => {
-    const raw = Array.isArray(certificatesData) ? certificatesData : [certificatesData];
-    
-    const sorted = [...raw].sort((a, b) => {
-      const dateA = new Date(a.issue_date || 0).getTime();
-      const dateB = new Date(b.issue_date || 0).getTime();
-      return dateB - dateA;
+    dataManager.getCertificates().then((data) => {
+      const sorted = [...data].sort((a, b) => {
+        const dateA = new Date(a.issue_date || 0).getTime();
+        const dateB = new Date(b.issue_date || 0).getTime();
+        return dateB - dateA;
+      });
+      setCertificates(sorted);
+      setLoading(false);
     });
-
-    setCertificates(sorted as Certificate[]);
-    setLoading(false);
   }, []);
 
   // --- CATEGORY EXTRACTION ---
