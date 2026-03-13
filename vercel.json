@@ -1,8 +1,18 @@
 {
-  "rewrites": [
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "backend/src/server.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "src/main.tsx",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
+  ],
+  "rewrites": [
+    { "source": "/admin/:match*", "destination": "/api/admin/:match*" }
   ]
 }
