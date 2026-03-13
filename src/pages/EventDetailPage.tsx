@@ -129,9 +129,9 @@ const eventsData: Record<string, {
 const roleColors: Record<string, string> = {
   Host: "bg-accent text-accent-foreground",
   Compere: "bg-accent text-accent-foreground",
-  Speaker: "bg-green-600 text-white",
-  Organizer: "bg-purple-600 text-white",
-  Attended: "bg-secondary text-secondary-foreground",
+  Speaker: "bg-success text-success-foreground",
+  Organizer: "bg-secondary text-secondary-foreground",
+  Attended: "bg-muted text-muted-foreground",
 };
 
 const EventDetailPage = () => {

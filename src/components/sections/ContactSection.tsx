@@ -30,12 +30,12 @@ export function ContactSection() {
             </span>
             
             {/* PRIMARY HEADING: White text used here specifically to pop against the dark HSL background */}
-            <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-white">
+            <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-foreground">
               Let's Build Something Great Together
             </h2>
             
             {/* SUPPORTING TEXT: Muted slate color provides good contrast without being overwhelming */}
-            <p className="text-slate-300 mb-6 max-w-md text-sm leading-relaxed">
+            <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
             </p>
 
@@ -44,7 +44,7 @@ export function ContactSection() {
               {/* EMAIL: Opens the system's default mail client */}
               <a
                 href="mailto:saadmazaa@gmail.com"
-                className="flex items-center gap-3 text-slate-300 hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
               >
                 <Mail className="w-4 h-4 text-accent" />
                 <span>saadmazaa@gmail.com</span>
@@ -53,14 +53,14 @@ export function ContactSection() {
               {/* PHONE: Allows mobile users to click and dial directly */}
               <a
                 href="tel:+94720135801"
-                className="flex items-center gap-3 text-slate-300 hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
               >
                 <Phone className="w-4 h-4 text-accent" />
                 <span>+94 72 01 358 01</span>
               </a>
 
               {/* LOCATION: Static information with a consistent icon style */}
-              <div className="flex items-center gap-3 text-slate-300 text-sm">
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
                 <MapPin className="w-4 h-4 text-accent" />
                 <span>Colombo, Sri Lanka</span>
               </div>
@@ -82,7 +82,7 @@ export function ContactSection() {
                   rel="noopener noreferrer"
                   // CHANGES: Icons are text-white. Hover triggers text-accent (blue) and a subtle glow shadow.
                   // bg-white/5: Low-opacity background to create depth on the gradient.
-                  className="p-2 rounded-md bg-white/5 border border-white/10 text-white hover:text-accent hover:bg-white/10 hover:border-accent/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all duration-300"
+                  className="p-2 rounded-md bg-muted/10 border border-border text-foreground hover:text-accent hover:bg-muted/20 hover:border-accent/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all duration-300"
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -104,15 +104,15 @@ export function ContactSection() {
               {/* SEND MESSAGE CARD: Internal navigation card */}
               <Link
                 to="/contact"
-                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
+                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
                       <Mail className="w-4 h-4 text-accent" />
                       Send a Message
                     </h3>
-                    <p className="text-slate-400 text-xs group-hover:text-slate-200 transition-colors">
+                    <p className="text-muted-foreground text-xs group-hover:text-foreground transition-colors">
                       Get a response within 24 hours.
                     </p>
                   </div>
@@ -125,15 +125,15 @@ export function ContactSection() {
                 href="https://cal.com/saad-mazhar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
+                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
                       <Calendar className="w-4 h-4 text-accent" />
                       Schedule a Call
                     </h3>
-                    <p className="text-slate-400 text-xs group-hover:text-slate-200 transition-colors">
+                    <p className="text-muted-foreground text-xs group-hover:text-foreground transition-colors">
                       Book a 30-minute chat via Cal.com
                     </p>
                   </div>

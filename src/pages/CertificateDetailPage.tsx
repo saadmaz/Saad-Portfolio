@@ -117,13 +117,13 @@ const CertificateDetailPage = () => {
                 
                 {/* Issuer Branding with Blue Ring Aesthetic */}
                 <div className="mb-8 flex flex-col items-center">
-                  <div className="relative p-2 rounded-full border-4 border-blue-500/10 bg-blue-500/5 mb-4">
-                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center border-2 border-blue-200 shadow-md overflow-hidden">
+                  <div className="relative p-2 rounded-full border-4 border-accent/10 bg-accent/5 mb-4">
+                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-card flex items-center justify-center border-2 border-border shadow-md overflow-hidden">
                       {/* Using the specific JSON key 'issuer_logo' */}
                       {cert.issuer_logo ? (
                         <img src={cert.issuer_logo} alt={cert.issuer} className="w-20 h-20 object-contain" />
                       ) : (
-                        <Award className="w-14 h-14 text-blue-500" />
+                        <Award className="w-14 h-14 text-accent" />
                       )}
                     </div>
                   </div>
@@ -187,7 +187,7 @@ const CertificateDetailPage = () => {
                   </div>
 
                   {cert.credential_url && (
-                    <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-7 rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-95">
+                    <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold py-7 rounded-2xl shadow-xl shadow-accent/20 transition-all active:scale-95">
                       <a href={cert.credential_url} target="_blank" rel="noopener noreferrer">
                         Verify on Provider Site <ExternalLink className="w-4 h-4 ml-2" />
                       </a>

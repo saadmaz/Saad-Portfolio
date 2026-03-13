@@ -152,7 +152,7 @@ const ProjectDetailPage = () => {
                     )}
                     {project.solution && (
                       <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <Rocket className="w-5 h-5 text-blue-500 mb-4" />
+                        <Rocket className="w-5 h-5 text-accent mb-4" />
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">The Solution</h3>
                         <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{project.solution}</p>
                       </div>

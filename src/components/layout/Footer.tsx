@@ -53,7 +53,7 @@ export function Footer() {
 
   return (
     /* Main wrapper: Deep dark background (#1a1a1a) with a subtle top border. */
-    <footer className="bg-[#1a1a1a] text-white border-t border-white/10"> 
+    <footer className="bg-card text-card-foreground border-t border-border"> 
       <div className="section-container">
         
         {/* TOP SECTION: Information Grid */}
@@ -63,22 +63,22 @@ export function Footer() {
             
             {/* COLUMN 1: BRAND IDENTITY - Brief summary of the persona. */}
             <div className="lg:col-span-1">
-              <h3 className="font-display text-xl font-bold text-white mb-4">Saad Mazhar</h3>
+              <h3 className="font-display text-xl font-bold text-card-foreground mb-4">Saad Mazhar</h3>
               <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
                 CS Undergraduate. Startup Founder. Tech Entrepreneur.
               </p>
-              <p className="text-zinc-500 text-xs leading-relaxed">
+              <p className="text-muted-foreground text-xs leading-relaxed">
                 Building at the intersection of technology and impact. 
               </p>
             </div>
 
             {/* COLUMNS 2, 3, 4: Mapping link arrays to generate vertical lists. */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Explore</h4>
+              <h4 className="text-sm font-semibold text-card-foreground uppercase tracking-wider mb-5">Explore</h4>
               <ul className="space-y-3">
                 {exploreLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
+                    <Link to={link.href} className="text-muted-foreground hover:text-card-foreground transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -87,11 +87,11 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Personal</h4>
+              <h4 className="text-sm font-semibold text-card-foreground uppercase tracking-wider mb-5">Personal</h4>
               <ul className="space-y-3">
                 {personalLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
+                    <Link to={link.href} className="text-muted-foreground hover:text-card-foreground transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -100,11 +100,11 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Knowledge</h4>
+              <h4 className="text-sm font-semibold text-card-foreground uppercase tracking-wider mb-5">Knowledge</h4>
               <ul className="space-y-3">
                 {knowledgeLinks.map((link) => (
                   <li key={link.href}>
-                    <Link to={link.href} className="text-zinc-400 hover:text-white transition-colors text-sm">
+                    <Link to={link.href} className="text-muted-foreground hover:text-card-foreground transition-colors text-sm">
                       {link.title}
                     </Link>
                   </li>
@@ -114,12 +114,12 @@ export function Footer() {
 
             {/* COLUMN 5: CONNECT - Direct contact and social icon bar. */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Connect</h4>
+              <h4 className="text-sm font-semibold text-card-foreground uppercase tracking-wider mb-5">Connect</h4>
               <div className="space-y-4">
-                <a href="mailto:saadmazaa@gmail.com" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                <a href="mailto:saadmazaa@gmail.com" className="text-muted-foreground hover:text-card-foreground transition-colors flex items-center gap-2 text-sm">
                   <Mail className="w-4 h-4" /> saadmazaa@gmail.com
                 </a>
-                <a href="tel:+94720135801" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                <a href="tel:+94720135801" className="text-muted-foreground hover:text-card-foreground transition-colors flex items-center gap-2 text-sm">
                   <Phone className="w-4 h-4" /> +(94) 72 01 358 01
                 </a>
                 
@@ -131,7 +131,7 @@ export function Footer() {
                       href={social.href}
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="p-2 rounded-lg text-zinc-400 transition-all hover:text-white hover:bg-blue-900 active:scale-95" 
+                      className="p-2 rounded-lg text-muted-foreground transition-all hover:text-card-foreground hover:bg-accent active:scale-95" 
                       aria-label={social.label}
                     >
                       <social.icon className="w-5 h-5" />
@@ -144,8 +144,8 @@ export function Footer() {
         </div>
 
         {/* BOTTOM BAR: Legal & Utility */}
-        <div className="py-6 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500">
+        <div className="py-6 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             {/* Dynamic Year rendering via the Date object. */}
             <div className="md:order-1">
               <span>© {new Date().getFullYear()} Saad Mazhar</span>
@@ -154,7 +154,7 @@ export function Footer() {
             {/* Back to top trigger button. */}
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors md:order-2"
+              className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors md:order-2"
               aria-label="Scroll to top"
             >
               <span>Back to top</span>

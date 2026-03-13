@@ -99,7 +99,7 @@ export function HeroSection() {
               <h1 className="font-display whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
                 Hi, I'm{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-blue-900">Saad Mazhar</span>    
+                <span className="relative z-10 text-primary">Saad Mazhar</span>    
                   {/* Decorative blue-tinted box behind the name */}
                   <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-2 bg-accent/20 -z-0" />
                 </span>
@@ -138,7 +138,7 @@ export function HeroSection() {
               <Button 
                 asChild 
                 variant="outline" 
-                className="btn-outline gap-2 w-full sm:w-auto transition-all duration-300 hover:bg-blue-900 hover:text-white hover:border-blue-900"
+                className="btn-outline gap-2 w-full sm:w-auto transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:border-accent"
               >
                 <Link to="/contact">
                   Get in Touch
@@ -170,7 +170,7 @@ export function HeroSection() {
                     href={social.href}
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-2.5 rounded-lg text-muted-foreground transition-all hover:text-white hover:bg-blue-900 active:scale-95"
+                    className="p-2.5 rounded-lg text-muted-foreground transition-all hover:text-accent-foreground hover:bg-accent active:scale-95"
                     aria-label={social.label}
                   >
                     <social.icon className="w-5 h-5" />
