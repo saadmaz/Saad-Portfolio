@@ -138,7 +138,7 @@ const ContactPage = () => {
               <div className="p-6 rounded-xl bg-primary text-primary-foreground">
                 <div className="flex items-center gap-3 mb-3">
                   <Calendar className="w-5 h-5" />
-                  <h4 className="font-semibold text-blue">Schedule a Call</h4>
+                  <h4 className="font-semibold text-accent">Schedule a Call</h4>
                 </div>
                 <p className="text-sm text-primary-foreground/80 mb-4">
                   Prefer to chat live? Book a 30-minute meeting through this link and let's discuss your project.

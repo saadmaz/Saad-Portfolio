@@ -29,13 +29,13 @@ export function BlogListExample() {
       <h2>Latest Blog Posts</h2>
       <div className="grid gap-4">
         {blogs.map((blog) => (
-          <article key={blog.id} className="p-4 border rounded">
-            <h3>{blog.title}</h3>
-            <p className="text-gray-600">{blog.excerpt}</p>
-            <div className="flex gap-2 text-sm mt-2">
-              <span className="bg-blue-100 px-2 py-1 rounded">{blog.category}</span>
-              <span className="text-gray-500">{blog.readTime}</span>
-              <span className="text-gray-500">{blog.date}</span>
+            <article key={blog.id} className="p-4 border border-border rounded bg-card">
+              <h3 className="text-foreground font-semibold">{blog.title}</h3>
+              <p className="text-muted-foreground">{blog.excerpt}</p>
+              <div className="flex gap-2 text-sm mt-2">
+                <span className="bg-accent/10 px-2 py-1 rounded text-accent">{blog.category}</span>
+                <span className="text-muted-foreground">{blog.readTime}</span>
+                <span className="text-muted-foreground">{blog.date}</span>
             </div>
           </article>
         ))}
@@ -58,7 +58,7 @@ export function FeaturedProjectsExample() {
       <h2>Featured Projects</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <div key={project.id} className="border rounded overflow-hidden">
+          <div key={project.id} className="border border-border rounded overflow-hidden bg-card">
             {/* fallback to heroImage or legacy image field */}
             <img
               src={project.heroImage || project.image}
@@ -66,11 +66,11 @@ export function FeaturedProjectsExample() {
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h3 className="font-bold">{project.title}</h3>
-              <p className="text-gray-600 text-sm">{project.tagline || project.description}</p>
+              <h3 className="font-bold text-foreground">{project.title}</h3>
+              <p className="text-muted-foreground text-sm">{project.tagline || project.description}</p>
               <div className="flex gap-2 mt-2 flex-wrap">
                 {(project.techStack || project.technologies || []).map((tech) => (
-                  <span key={tech} className="bg-gray-100 px-2 py-1 text-xs rounded">
+                  <span key={tech} className="bg-muted px-2 py-1 text-xs rounded text-muted-foreground">
                     {tech}
                   </span>
                 ))}
@@ -81,7 +81,7 @@ export function FeaturedProjectsExample() {
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-blue-500 text-white px-2 py-1 rounded text-center text-sm"
+                    className="flex-1 bg-accent text-accent-foreground px-2 py-1 rounded text-center text-sm"
                   >
                     View
                   </a>
@@ -91,7 +91,7 @@ export function FeaturedProjectsExample() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-gray-800 text-white px-2 py-1 rounded text-center text-sm"
+                    className="flex-1 bg-secondary text-secondary-foreground px-2 py-1 rounded text-center text-sm"
                   >
                     GitHub
                   </a>
@@ -121,24 +121,24 @@ export function WorkExperienceExample() {
         {experience.map((job, index) => (
           <div key={job.id} className="relative pl-6">
             {index !== experience.length - 1 && (
-              <div className="absolute left-1 top-8 w-px h-12 bg-gray-200" />
+              <div className="absolute left-1 top-8 w-px h-12 bg-muted/50" />
             )}
-            <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-blue-500" />
+            <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-accent" />
             <div>
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold">{job.position}</h3>
-                  <p className="text-gray-600">{job.company}</p>
+                  <p className="text-muted-foreground">{job.company}</p>
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   {job.startDate} - {job.endDate}
                 </span>
               </div>
-              <p className="text-gray-600 text-sm mt-1">{job.location}</p>
+              <p className="text-muted-foreground text-sm mt-1">{job.location}</p>
               <p className="mt-2">{job.description}</p>
               <div className="flex gap-2 mt-2 flex-wrap">
                 {job.technologies.map((tech) => (
-                  <span key={tech} className="bg-blue-50 px-2 py-1 text-xs rounded">
+                  <span key={tech} className="bg-accent/10 text-accent px-2 py-1 text-xs rounded">
                     {tech}
                   </span>
                 ))}
@@ -165,18 +165,18 @@ export function SkillsExample() {
       <h2>Skills</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {skills.map((category) => (
-          <div key={category.category} className="border rounded p-4">
+          <div key={category.category} className="border border-border rounded p-4 bg-card">
             <h3 className="font-bold mb-3">{category.category}</h3>
             <div className="space-y-2">
               {category.skills.map((skill) => (
                 <div key={skill.name}>
                   <div className="flex justify-between text-sm">
                     <span>{skill.name}</span>
-                    <span className="text-gray-500">{skill.years} yrs</span>
+                    <span className="text-muted-foreground">{skill.years} yrs</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded h-2">
+                  <div className="w-full bg-muted/30 rounded h-2">
                     <div
-                      className="bg-blue-500 h-2 rounded"
+                      className="bg-accent h-2 rounded"
                       // use years (numeric) for example width; avoids casting string level to number
                       style={{ width: `${(skill.years / 10) * 100}%` }}
                     />
@@ -214,18 +214,18 @@ export function NewslettersExample() {
               href={letter.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-3 border rounded hover:bg-gray-50"
+              className="block p-3 border border-border rounded hover:bg-muted/10"
             >
               <div className="flex justify-between items-start">
                 <div>
                   <h4 className="font-semibold">{letter.title}</h4>
-                  <p className="text-sm text-gray-600">{letter.description}</p>
+                  <p className="text-sm text-muted-foreground">{letter.description}</p>
                 </div>
-                <span className="text-xs bg-blue-100 px-2 py-1 rounded">
+                <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded">
                   #{letter.issue}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 mt-2">
+              <div className="text-xs text-muted-foreground mt-2">
                 {letter.date} • {letter.subscribers} subscribers
               </div>
             </a>
@@ -243,18 +243,18 @@ export function NewslettersExample() {
               href={letter.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-3 border rounded hover:bg-gray-50"
+              className="block p-3 border border-border rounded hover:bg-muted/10"
             >
               <div className="flex justify-between items-start">
                 <div>
                   <h4 className="font-semibold">{letter.title}</h4>
-                  <p className="text-sm text-gray-600">{letter.description}</p>
+                  <p className="text-sm text-muted-foreground">{letter.description}</p>
                 </div>
-                <span className="text-xs bg-green-100 px-2 py-1 rounded">
+                <span className="text-xs bg-success/10 text-success px-2 py-1 rounded">
                   #{letter.issue}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 mt-2">
+              <div className="text-xs text-muted-foreground mt-2">
                 {letter.date} • {letter.subscribers} subscribers
               </div>
             </a>
@@ -284,7 +284,7 @@ export function EventsExample() {
             href={event.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex gap-4 p-4 border rounded hover:bg-gray-50"
+            className="flex gap-4 p-4 border border-border rounded hover:bg-muted/10"
           >
             <img
               src={event.image}
@@ -295,19 +295,19 @@ export function EventsExample() {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold">{event.title}</h3>
-                  <p className="text-gray-600 text-sm">{event.location}</p>
+                  <p className="text-muted-foreground text-sm">{event.location}</p>
                 </div>
-                <span className="bg-blue-100 px-2 py-1 text-xs rounded">
+                <span className="bg-accent/10 text-accent px-2 py-1 text-xs rounded">
                   {event.type}
                 </span>
               </div>
               <p className="text-sm mt-2">{event.description}</p>
               {event.achievement && (
-                <p className="text-sm font-semibold text-green-600 mt-1">
+                <p className="text-sm font-semibold text-success mt-1">
                   🏆 {event.achievement}
                 </p>
               )}
-              <p className="text-xs text-gray-500 mt-2">{event.date}</p>
+              <p className="text-xs text-muted-foreground mt-2">{event.date}</p>
             </div>
           </a>
         ))}
@@ -338,12 +338,12 @@ export function CertificatesExample() {
             className="p-4 border rounded hover:shadow-lg transition"
           >
             <h3 className="font-bold">{cert.title}</h3>
-            <p className="text-gray-600 text-sm">{cert.issuer}</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-muted-foreground text-sm">{cert.issuer}</p>
+            <p className="text-xs text-muted-foreground mt-1">
               Issued: {cert.issueDate}
               {cert.expiryDate && ` • Expires: ${cert.expiryDate}`}
             </p>
-            <p className="text-xs text-blue-600 mt-2">ID: {cert.credentialId}</p>
+            <p className="text-xs text-accent mt-2">ID: {cert.credentialId}</p>
           </a>
         ))}
       </div>
@@ -370,22 +370,22 @@ export function ActiveHostingExample() {
             href={service.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex justify-between items-center p-3 border rounded hover:bg-gray-50"
+            className="flex justify-between items-center p-3 border border-border rounded hover:bg-muted/10"
           >
             <div>
               <h3 className="font-semibold">{service.title}</h3>
-              <p className="text-sm text-gray-600">{service.description}</p>
+              <p className="text-sm text-muted-foreground">{service.description}</p>
               <div className="flex gap-1 mt-1 flex-wrap">
                 {service.technologies.map((tech) => (
-                  <span key={tech} className="text-xs bg-gray-100 px-1 py-0.5 rounded">
+                  <span key={tech} className="text-xs bg-muted/10 text-muted-foreground px-1 py-0.5 rounded">
                     {tech}
                   </span>
                 ))}
               </div>
             </div>
             <div className="text-right">
-              <span className="bg-green-100 px-2 py-1 text-xs rounded">{service.platform}</span>
-              <p className="text-xs text-gray-500 mt-1">{service.deployDate}</p>
+              <span className="bg-success/10 text-success px-2 py-1 text-xs rounded">{service.platform}</span>
+              <p className="text-xs text-muted-foreground mt-1">{service.deployDate}</p>
             </div>
           </a>
         ))}

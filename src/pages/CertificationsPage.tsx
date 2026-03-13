@@ -163,7 +163,7 @@ const CertificationsPage = () => {
                             
                             {/* Header: Logo + Badge */}
                             <div className="flex items-start justify-between mb-4 pb-4 border-b border-border/30">
-                              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white flex items-center justify-center border-2 border-slate-200 group-hover:border-accent/50 transition-all duration-300 flex-shrink-0 overflow-hidden shadow-sm">
+                              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-muted flex items-center justify-center border-2 border-border/40 group-hover:border-accent/50 transition-all duration-300 flex-shrink-0 overflow-hidden shadow-sm">
                                 {cert.issuer_logo ? (
                                   <img src={cert.issuer_logo} alt={cert.issuer} className="w-9 h-9 md:w-11 md:h-11 object-contain" />
                                 ) : (
@@ -172,8 +172,8 @@ const CertificationsPage = () => {
                               </div>
 
                               {cert.is_verifiable && (
-                                <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider">
-                                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                                <div className="flex items-center gap-1.5 bg-success/10 text-success px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                                  <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
                                   Verifiable
                                 </div>
                               )}
