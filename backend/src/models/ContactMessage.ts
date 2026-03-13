@@ -1,28 +1,48 @@
-import { query } from '../utils/database.js';
+import { getDB } from '../utils/database.js';
 import { ContactMessage } from '../types/index.js';
 
 export class ContactMessageModel {
+  private static collection = 'contact_messages';
+
   static async create(message: Omit<ContactMessage, 'id' | 'created_at' | 'sent'>): Promise<ContactMessage> {
-    const { name, email, subject, message: msg, ip_address, user_agent } = message;
+    const db = getDB();
+    const now = new Date();
 
-    const result = await query(`
-      INSERT INTO contact_messages (name, email, subject, message, ip_address, user_agent)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
-    `, [name, email, subject, msg, ip_address, user_agent]);
+    const messageData = {
+      ...message,
+      sent: false,
+      created_at: now
+    };
 
-    return result.rows[0];
+    const docRef = await db.collection(this.collection).add(messageData);
+
+    return {
+      id: parseInt(docRef.id),
+      ...messageData
+    };
   }
 
   static async findAll(): Promise<ContactMessage[]> {
-    const result = await query('SELECT * FROM contact_messages ORDER BY created_at DESC');
-    return result.rows;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .orderBy('created_at', 'desc')
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as ContactMessage));
   }
 
-  static async markAsSent(id: number): Promise<void> {
-    await query('UPDATE contact_messages SET sent = true WHERE id = $1', [id]);
+  static async markAsSent(id: string): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).update({
+      sent: true
+    });
   }
 
-  static async delete(id: number): Promise<void> {
-    await query('DELETE FROM contact_messages WHERE id = $1', [id]);
+  static async delete(id: string): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).delete();
   }
 }

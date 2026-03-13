@@ -5,17 +5,17 @@ A Node.js/Express backend API for the Saad Malik Portfolio website.
 ## Features
 
 - **RESTful API** for portfolio data
-- **PostgreSQL database** for data persistence
+- **Firebase Firestore** for data persistence
 - **Contact form** with email notifications
 - **Admin panel** (coming soon)
 - **Type-safe** with TypeScript
-- **Security** with Helmet and rate limiting
+- **Security** with Helmet, CORS, and rate limiting
 
 ## Tech Stack
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: PostgreSQL
+- **Database**: Firebase Firestore (NoSQL)
 - **Language**: TypeScript
 - **Email**: SendGrid
 - **Development**: tsx (for hot reload)
@@ -25,7 +25,7 @@ A Node.js/Express backend API for the Saad Malik Portfolio website.
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database
+- Firebase project with Firestore enabled
 - SendGrid account (for email)
 
 ### Installation
@@ -33,21 +33,57 @@ A Node.js/Express backend API for the Saad Malik Portfolio website.
 1. **Install dependencies:**
    ```bash
    cd backend
-   bun install
+   npm install
    ```
 
-2. **Set up environment variables:**
+2. **Set up Firebase:**
+   - Create a Firebase project at https://console.firebase.google.com/
+   - Enable Firestore Database
+   - Generate a service account key:
+   - Go to Project Settings > Service Accounts
+   - Generate new private key (JSON file)
+   - Download the JSON file (e.g., saadportfolio03-firebase-adminsdk-fbsvc-0756564855.json)
+   - Place it in backend/
+   - Set FIREBASE_SERVICE_ACCOUNT_PATH in .env to ./saadportfolio03-firebase-adminsdk-fbsvc-0756564855.json
+
+3. **Configure environment variables:**
    ```bash
    cp .env.example .env
    ```
 
    Edit `.env` with your configuration:
    ```env
-   DATABASE_URL=postgresql://username:password@localhost:5432/portfolio_db
+   FIREBASE_PROJECT_ID=saadportfolio03
+   FIREBASE_SERVICE_ACCOUNT_PATH=./saadportfolio03-firebase-adminsdk-fbsvc-0756564855.json
+
+   # JWT Configuration
    JWT_SECRET=your-super-secret-jwt-key-here
+   JWT_EXPIRES_IN=7d
+
+   # Email Configuration (SendGrid)
    SENDGRID_API_KEY=your-sendgrid-api-key-here
    FROM_EMAIL=noreply@saadmalik.dev
    TO_EMAIL=saadmazaa@gmail.com
+
+   # Server Configuration
+   PORT=3001
+   NODE_ENV=development
+
+   # CORS Configuration
+   FRONTEND_URL=http://localhost:5173
+   ```
+
+4. **Migrate existing data:**
+   ```bash
+   npm run db:migrate
+   ```
+
+5. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+The API will be available at `http://localhost:3001`
    ```
 
 3. **Set up database:**

@@ -1,53 +1,79 @@
-import { query } from '../utils/database.js';
-import { Project, BlogPost, WorkExperience, Skill, Certificate, ContactMessage, User } from '../types/index.js';
+import { getDB } from '../utils/database.js';
+import { Project } from '../types/index.js';
 
 export class ProjectModel {
+  private static collection = 'projects';
+
   static async findAll(): Promise<Project[]> {
-    const result = await query('SELECT * FROM projects ORDER BY order_index ASC, created_at DESC');
-    return result.rows;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .orderBy('order_index', 'asc')
+      .orderBy('created_at', 'desc')
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as Project));
   }
 
   static async findBySlug(slug: string): Promise<Project | null> {
-    const result = await query('SELECT * FROM projects WHERE slug = $1', [slug]);
-    return result.rows[0] || null;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .where('slug', '==', slug)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) return null;
+
+    const doc = snapshot.docs[0];
+    return {
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as Project;
   }
 
   static async findFeatured(): Promise<Project[]> {
-    const result = await query('SELECT * FROM projects WHERE featured = true ORDER BY order_index ASC');
-    return result.rows;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .where('featured', '==', true)
+      .orderBy('order_index', 'asc')
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as Project));
   }
 
   static async create(project: Omit<Project, 'id' | 'created_at' | 'updated_at'>): Promise<Project> {
-    const {
-      slug, title, description, long_description, date, start_date, end_date, duration,
-      status, stage, version, image, images, thumbnail, video, live_preview, link,
-      github, case_study, figma, documentation, play_store, app_store, type, category,
-      tags, featured, order_index, technologies, tech_stack, metrics, role, team_size,
-      contributions, challenges, learnings, highlights, colour
-    } = project;
+    const db = getDB();
+    const now = new Date();
 
-    const result = await query(`
-      INSERT INTO projects (
-        slug, title, description, long_description, date, start_date, end_date, duration,
-        status, stage, version, image, images, thumbnail, video, live_preview, link,
-        github, case_study, figma, documentation, play_store, app_store, type, category,
-        tags, featured, order_index, technologies, tech_stack, metrics, role, team_size,
-        contributions, challenges, learnings, highlights, colour
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,
-        $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32,
-        $33, $34, $35, $36, $37, $38
-      ) RETURNING *
-    `, [
-      slug, title, description, long_description, date, start_date, end_date, duration,
-      status, stage, version, image, JSON.stringify(images), thumbnail, video, live_preview, link,
-      github, case_study, figma, documentation, play_store, app_store, type, category,
-      JSON.stringify(tags), featured, order_index, JSON.stringify(technologies),
-      JSON.stringify(tech_stack), JSON.stringify(metrics), role, team_size,
-      JSON.stringify(contributions), JSON.stringify(challenges), JSON.stringify(learnings),
-      JSON.stringify(highlights), colour
-    ]);
+    const projectData = {
+      ...project,
+      created_at: now,
+      updated_at: now
+    };
 
-    return result.rows[0];
+    const docRef = await db.collection(this.collection).add(projectData);
+
+    return {
+      id: parseInt(docRef.id),
+      ...projectData
+    };
+  }
+
+  static async update(id: string, updates: Partial<Project>): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).update({
+      ...updates,
+      updated_at: new Date()
+    });
+  }
+
+  static async delete(id: string): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).delete();
   }
 }

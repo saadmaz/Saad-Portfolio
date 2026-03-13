@@ -1,38 +1,82 @@
-import { query } from '../utils/database.js';
+import { getDB } from '../utils/database.js';
 import { BlogPost } from '../types/index.js';
 
 export class BlogPostModel {
+  private static collection = 'blog_posts';
+
   static async findAll(): Promise<BlogPost[]> {
-    const result = await query('SELECT * FROM blog_posts WHERE published = true ORDER BY date DESC');
-    return result.rows;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .where('published', '==', true)
+      .orderBy('date', 'desc')
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as BlogPost));
   }
 
   static async findBySlug(slug: string): Promise<BlogPost | null> {
-    const result = await query('SELECT * FROM blog_posts WHERE slug = $1 AND published = true', [slug]);
-    return result.rows[0] || null;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .where('slug', '==', slug)
+      .where('published', '==', true)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) return null;
+
+    const doc = snapshot.docs[0];
+    return {
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as BlogPost;
   }
 
   static async findLatest(): Promise<BlogPost[]> {
-    const result = await query('SELECT * FROM blog_posts WHERE is_latest = true AND published = true ORDER BY date DESC LIMIT 5');
-    return result.rows;
+    const db = getDB();
+    const snapshot = await db.collection(this.collection)
+      .where('is_latest', '==', true)
+      .where('published', '==', true)
+      .orderBy('date', 'desc')
+      .limit(5)
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: parseInt(doc.id),
+      ...doc.data()
+    } as BlogPost));
   }
 
   static async create(blogPost: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>): Promise<BlogPost> {
-    const {
-      slug, title, excerpt, content, date, category, read_time, author,
-      is_latest, tags, cover_image, published
-    } = blogPost;
+    const db = getDB();
+    const now = new Date();
 
-    const result = await query(`
-      INSERT INTO blog_posts (
-        slug, title, excerpt, content, date, category, read_time, author,
-        is_latest, tags, cover_image, published
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
-    `, [
-      slug, title, excerpt, content, date, category, read_time, author,
-      is_latest, JSON.stringify(tags), cover_image, published
-    ]);
+    const blogData = {
+      ...blogPost,
+      created_at: now,
+      updated_at: now
+    };
 
-    return result.rows[0];
+    const docRef = await db.collection(this.collection).add(blogData);
+
+    return {
+      id: parseInt(docRef.id),
+      ...blogData
+    };
+  }
+
+  static async update(id: string, updates: Partial<BlogPost>): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).update({
+      ...updates,
+      updated_at: new Date()
+    });
+  }
+
+  static async delete(id: string): Promise<void> {
+    const db = getDB();
+    await db.collection(this.collection).doc(id).delete();
   }
 }
