@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Github, ExternalLink } from "lucide-react";
-import { Project } from "@/lib/dataManager";
+import { Project } from "@/shared/lib/dataManager";
 
 interface ProjectCardProps {
   project: Project;

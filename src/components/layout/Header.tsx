@@ -12,8 +12,8 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/useTheme";
+import { cn } from "@/shared/lib/utils";
+import { useTheme } from "@/shared/hooks/useTheme";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 const workItems = [

@@ -11,7 +11,7 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 // Event data - in real app, this would come from an API or CMS
 const eventsData: Record<string, {

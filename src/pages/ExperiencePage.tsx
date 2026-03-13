@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 
-import { dataManager, WorkExperience } from "@/lib/dataManager";
+import { dataManager, WorkExperience } from "@/shared/lib/dataManager";
 
 const experiences: WorkExperience[] = dataManager.getWorkExperience();
 

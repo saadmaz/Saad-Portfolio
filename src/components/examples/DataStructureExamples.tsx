@@ -13,7 +13,7 @@ import {
   useEvents,
   useCertificates,
   useActiveHosting,
-} from "@/hooks/usePortfolioData";
+} from "@/shared/hooks/usePortfolioData";
 
 /**
  * Example 1: Blog List Component

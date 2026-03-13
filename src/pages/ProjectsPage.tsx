@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { dataManager, Project } from "@/lib/dataManager";
+import { dataManager, Project } from "@/shared/lib/dataManager";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 const allProjects: Project[] = dataManager.getProjects();

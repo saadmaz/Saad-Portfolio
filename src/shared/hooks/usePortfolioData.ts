@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { dataManager } from "@/lib/dataManager";
+import { dataManager } from "@/shared/lib/dataManager";
 import type {
   Blog,
   WorkExperience,
@@ -9,7 +9,7 @@ import type {
   Event,
   Newsletter,
   Hosting,
-} from "@/lib/dataManager";
+} from "@/shared/lib/dataManager";
 
 /**
  * Hook to get blogs data

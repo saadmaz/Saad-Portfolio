@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { dataManager, Project } from "@/lib/dataManager";
+import { dataManager, Project } from "@/shared/lib/dataManager";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ExternalLink, Github, ChevronLeft, PlayCircle, 

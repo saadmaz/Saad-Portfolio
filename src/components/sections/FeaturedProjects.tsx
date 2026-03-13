@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-import { dataManager, Project } from "@/lib/dataManager";
+import { dataManager, Project } from "@/shared/lib/dataManager";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 // use the three most recent projects regardless of featured flag

@@ -3,7 +3,7 @@ import { ArrowUpRight, Calendar, Building, MapPin, ExternalLink } from "lucide-r
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-import { dataManager, WorkExperience } from "@/lib/dataManager";
+import { dataManager, WorkExperience } from "@/shared/lib/dataManager";
 
 const experiences: WorkExperience[] = dataManager.getWorkExperience();
 
