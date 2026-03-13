@@ -1,3 +1,19 @@
+## Admin Route Protection
+
+All admin API routes are now available at `/admin/*` (e.g., `/admin/projects`).
+These routes are password protected using a Bearer token.
+
+To access, send requests with:
+
+```
+Authorization: Bearer <your-admin-password>
+```
+
+Set your password in `.env` as `ADMIN_SECRET`.
+
+## Vercel Rewrite
+
+The backend is configured with `vercel.json` to rewrite `/admin/*` to `/api/admin/*`.
 # Portfolio Backend API
 
 A Node.js/Express backend API for the Saad Malik Portfolio website.

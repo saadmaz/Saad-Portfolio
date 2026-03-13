@@ -45,7 +45,16 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api', publicRoutes);
-app.use('/api/admin', adminRoutes);
+
+// Basic authentication middleware for /api/admin
+app.use('/api/admin', (req, res, next) => {
+  const auth = req.headers.authorization;
+  const expected = `Bearer ${process.env.ADMIN_SECRET || 'adminpassword'}`;
+  if (!auth || auth !== expected) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}, adminRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
