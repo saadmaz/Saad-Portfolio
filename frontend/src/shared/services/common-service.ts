@@ -1,8 +1,8 @@
 import { apiClient } from './api-client';
-import { Experience, SkillSet, Certificate, ApiResponse } from '../types';
-import { workExperiences as staticExperiences } from '../data/static/workExperience';
-import { skillSets as staticSkills } from '../data/static/skills';
-import { certificates as staticCertificates } from '../data/static/certificates';
+import { Experience, SkillSet, Certificate, ApiResponse } from '../../types';
+import { workExperiences as staticExperiences } from '../../data/static/workExperience';
+import { skillSets as staticSkills } from '../../data/static/skills';
+import { certificates as staticCertificates } from '../../data/static/certificates';
 
 export class CommonService {
   static async getWorkExperience(): Promise<Experience[]> {

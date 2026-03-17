@@ -12,7 +12,7 @@ export class BlogPostModel {
       .get();
 
     return snapshot.docs.map(doc => ({
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as BlogPost));
   }
@@ -29,7 +29,7 @@ export class BlogPostModel {
 
     const doc = snapshot.docs[0];
     return {
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as BlogPost;
   }
@@ -44,7 +44,7 @@ export class BlogPostModel {
       .get();
 
     return snapshot.docs.map(doc => ({
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as BlogPost));
   }
@@ -62,7 +62,7 @@ export class BlogPostModel {
     const docRef = await db.collection(this.collection).add(blogData);
 
     return {
-      id: parseInt(docRef.id),
+      id: docRef.id,
       ...blogData
     };
   }

@@ -1,6 +1,6 @@
 // Database Types
 export interface Project {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   description: string;
@@ -55,7 +55,7 @@ export interface Project {
 }
 
 export interface BlogPost {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   excerpt: string;
@@ -73,7 +73,7 @@ export interface BlogPost {
 }
 
 export interface WorkExperience {
-  id: number;
+  id: string;
   company: string;
   position: string;
   start_date: string;
@@ -88,7 +88,7 @@ export interface WorkExperience {
 }
 
 export interface Skill {
-  id: number;
+  id: string;
   category: string;
   skills: Array<{
     name: string;
@@ -123,7 +123,7 @@ export interface Certificate {
 }
 
 export interface ContactMessage {
-  id: number;
+  id: string;
   name: string;
   email: string;
   subject?: string;
@@ -135,7 +135,7 @@ export interface ContactMessage {
 }
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
   password_hash: string;
   role: string;

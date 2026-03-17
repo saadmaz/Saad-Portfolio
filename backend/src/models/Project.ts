@@ -12,7 +12,7 @@ export class ProjectModel {
       .get();
 
     return snapshot.docs.map(doc => ({
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as Project));
   }
@@ -28,7 +28,7 @@ export class ProjectModel {
 
     const doc = snapshot.docs[0];
     return {
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as Project;
   }
@@ -41,7 +41,7 @@ export class ProjectModel {
       .get();
 
     return snapshot.docs.map(doc => ({
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as Project));
   }
@@ -59,7 +59,7 @@ export class ProjectModel {
     const docRef = await db.collection(this.collection).add(projectData);
 
     return {
-      id: parseInt(docRef.id),
+      id: docRef.id,
       ...projectData
     };
   }

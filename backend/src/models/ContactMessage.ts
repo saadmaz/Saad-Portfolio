@@ -17,7 +17,7 @@ export class ContactMessageModel {
     const docRef = await db.collection(this.collection).add(messageData);
 
     return {
-      id: parseInt(docRef.id),
+      id: docRef.id,
       ...messageData
     };
   }
@@ -29,7 +29,7 @@ export class ContactMessageModel {
       .get();
 
     return snapshot.docs.map(doc => ({
-      id: parseInt(doc.id),
+      id: doc.id,
       ...doc.data()
     } as ContactMessage));
   }

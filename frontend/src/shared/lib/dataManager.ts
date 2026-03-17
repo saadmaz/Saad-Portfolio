@@ -86,7 +86,7 @@ export interface Skill {
 }
 
 export interface Project {
-  id: number;
+  id: string;
   slug?: string;
   title: string;
 
@@ -229,7 +229,7 @@ const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate
   });
 };
 
-import { apiClient } from "../../services/api-client";
+import { apiClient } from "../services/api-client";
 
 /**
  * Data Manager class - provides access to all portfolio data
@@ -239,7 +239,13 @@ export class DataManager {
    * Get all blogs (latest first)
    */
   async getBlogs(): Promise<Blog[]> {
-    return await apiClient.get("/blog-posts");
+    const data = await apiClient.get("/blog-posts") as any[];
+    return data.map(blog => ({
+      ...blog,
+      readTime: blog.read_time || blog.readTime,
+      coverImage: blog.cover_image || blog.coverImage,
+      isLatest: blog.is_latest || blog.isLatest
+    })) as Blog[];
   }
 
   /**
@@ -283,8 +289,16 @@ export class DataManager {
    * Get all projects (latest first)
    */
   async getProjects(): Promise<Project[]> {
-    const res = await fetch("http://localhost:3001/api/projects");
-    return await res.json();
+    const data = await apiClient.get("/projects") as any[];
+    return data.map(project => ({
+      ...project,
+      githubUrl: project.github || project.githubUrl,
+      liveUrl: project.link || project.live_preview || project.liveUrl,
+      heroImage: project.image || project.heroImage,
+      screenshots: project.images || project.screenshots,
+      isLatest: project.is_latest || project.isLatest,
+      techStack: project.technologies || project.techStack
+    })) as Project[];
   }
 
   /**
@@ -312,7 +326,7 @@ export class DataManager {
   /**
    * Get project by id
    */
-  async getProjectById(id: number): Promise<Project | undefined> {
+  async getProjectById(id: string): Promise<Project | undefined> {
     const projects = await this.getProjects();
     return projects.find((p) => p.id === id);
   }

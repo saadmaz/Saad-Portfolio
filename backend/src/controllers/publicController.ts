@@ -22,7 +22,7 @@ export const getProjects = async (req: Request, res: Response, next: NextFunctio
       data: projects
     };
     res.json(response);
-  } catch (error) {
+  } catch (error: any) {
     next(error);
   }
 };
@@ -179,7 +179,7 @@ export const submitContactForm = async (req: Request, res: Response, next: NextF
       data: contactMessageId ? { id: contactMessageId } : null
     };
     res.json(response);
-  } catch (error) {
+  } catch (error: any) {
     next(error);
   }
 };

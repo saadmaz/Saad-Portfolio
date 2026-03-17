@@ -38,9 +38,15 @@ export const connectDB = async (): Promise<admin.firestore.Firestore | null> => 
         const absolutePath = resolve(process.cwd(), serviceAccountPath);
         const serviceAccount = JSON.parse(readFileSync(absolutePath, 'utf8'));
         credential = admin.credential.cert(serviceAccount);
-      } catch (err) {
+      } catch (err: any) {
         console.error(`❌ Failed to load service account from ${serviceAccountPath}:`, err.message);
-        throw err;
+        // Fallback to individual env vars instead of throwing
+        console.warn('Trying individual environment variables instead...');
+        credential = admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        } as admin.ServiceAccount);
       }
     } else {
       credential = admin.credential.cert({
@@ -59,7 +65,7 @@ export const connectDB = async (): Promise<admin.firestore.Firestore | null> => 
     isInitialized = true;
     console.log('✅ Firebase connected successfully');
     return db;
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Firebase connection failed:', error.message);
     db = null;
     isInitialized = false;

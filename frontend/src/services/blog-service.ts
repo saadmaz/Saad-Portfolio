@@ -1,4 +1,4 @@
-import { apiClient } from './api-client';
+import { apiClient } from '../shared/services/api-client';
 import { BlogPost, ApiResponse } from '../types';
 
 export class BlogService {
