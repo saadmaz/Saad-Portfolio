@@ -1,23 +1,25 @@
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps, getApp, ServiceAccount } from 'firebase-admin/app';
+import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-let db: admin.firestore.Firestore | null = null;
+let db: Firestore | null = null;
 let isInitialized = false;
 
 /**
  * Initializes the Firebase Admin SDK and returns the Firestore instance.
  * Supports both service account JSON file and environment variables.
  */
-export const connectDB = async (): Promise<admin.firestore.Firestore | null> => {
+export const connectDB = async (): Promise<Firestore | null> => {
   if (isInitialized) {
     return db;
   }
 
   try {
-    // Check if Firebase is already initialized via admin.apps
-    if (admin.apps.length > 0) {
-      db = admin.firestore();
+    // Check if Firebase is already initialized
+    const apps = getApps();
+    if (apps.length > 0) {
+      db = getFirestore(apps[0]);
       isInitialized = true;
       console.log('✅ Firebase already initialized');
       return db;
@@ -31,37 +33,37 @@ export const connectDB = async (): Promise<admin.firestore.Firestore | null> => 
       return null;
     }
 
-    let credential;
+    let credentialDetails;
 
     if (serviceAccountPath) {
       try {
         const absolutePath = resolve(process.cwd(), serviceAccountPath);
         const serviceAccount = JSON.parse(readFileSync(absolutePath, 'utf8'));
-        credential = admin.credential.cert(serviceAccount);
+        credentialDetails = cert(serviceAccount);
       } catch (err: any) {
         console.error(`❌ Failed to load service account from ${serviceAccountPath}:`, err.message);
         // Fallback to individual env vars instead of throwing
         console.warn('Trying individual environment variables instead...');
-        credential = admin.credential.cert({
+        credentialDetails = cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
           privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-        } as admin.ServiceAccount);
+        } as ServiceAccount);
       }
     } else {
-      credential = admin.credential.cert({
+      credentialDetails = cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      } as admin.ServiceAccount);
+      } as ServiceAccount);
     }
 
-    admin.initializeApp({
-      credential,
+    initializeApp({
+      credential: credentialDetails,
       databaseURL: `https://${projectId || 'portfolio'}.firebaseio.com`
     });
 
-    db = admin.firestore();
+    db = getFirestore();
     isInitialized = true;
     console.log('✅ Firebase connected successfully');
     return db;
@@ -77,7 +79,7 @@ export const connectDB = async (): Promise<admin.firestore.Firestore | null> => 
  * Returns the initialized Firestore instance.
  * @throws Error if Firebase is not connected.
  */
-export const getDB = (): admin.firestore.Firestore => {
+export const getDB = (): Firestore => {
   if (!db) {
     throw new Error('Firebase not connected. Please call connectDB() first and ensure configuration is correct.');
   }

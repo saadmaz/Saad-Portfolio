@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { FieldValue, WhereFilterOp } from 'firebase-admin/firestore';
 import { getDB } from '../utils/database.js';
 
 interface CacheEntry<T> {
@@ -86,7 +86,7 @@ export abstract class BaseRepository<T extends { id?: string | number }> {
    */
   async create(data: Omit<T, 'id'>, id?: string): Promise<T> {
     const docRef = id ? this.collection.doc(id) : this.collection.doc();
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+    const timestamp = FieldValue.serverTimestamp();
     
     const docData = {
       ...data,
@@ -110,7 +110,7 @@ export abstract class BaseRepository<T extends { id?: string | number }> {
     const docRef = this.collection.doc(id);
     await docRef.update({
       ...data,
-      updated_at: admin.firestore.FieldValue.serverTimestamp(),
+      updated_at: FieldValue.serverTimestamp(),
     });
     this.invalidateCache();
   }
@@ -126,7 +126,7 @@ export abstract class BaseRepository<T extends { id?: string | number }> {
   /**
    * Query documents with a single filter.
    */
-  async findByField(field: string, op: admin.firestore.WhereFilterOp, value: any): Promise<T[]> {
+  async findByField(field: string, op: WhereFilterOp, value: any): Promise<T[]> {
     const cacheKey = `${this.collectionName}_${field}_${op}_${value}`;
     const cached = this.getCache<T[]>(cacheKey);
     if (cached) return cached;

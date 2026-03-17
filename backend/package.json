@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "tsx src/scripts/seedDatabase.ts"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.3",
