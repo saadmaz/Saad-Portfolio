@@ -7,10 +7,10 @@
   ],
   "scripts": {
     "frontend:dev": "bun --cwd frontend run dev",
-    "backend:dev": "bun --cwd backend run dev",
+    "backend:dev": "npm --prefix backend run dev",
     "dev": "concurrently \"bun frontend:dev\" \"bun backend:dev\"",
-    "build": "bun --cwd frontend run build && bun --cwd backend run build",
-    "lint": "bun --cwd frontend run lint && bun --cwd backend run lint"
+    "build": "bun --cwd frontend run build && npm --prefix backend run build",
+    "lint": "bun --cwd frontend run lint && npm --prefix backend run lint"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
