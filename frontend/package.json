@@ -94,5 +94,8 @@
   "bugs": {
     "url": "https://github.com/saadmaz/Portfolio/issues"
   },
-  "homepage": "https://github.com/saadmaz/Portfolio#readme"
+  "homepage": "https://github.com/saadmaz/Portfolio#readme",
+  "engines": {
+    "node": "20.x"
+  }
 }
