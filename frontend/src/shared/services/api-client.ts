@@ -9,6 +9,15 @@ export const apiClient = axios.create({
   },
 });
 
+// Add request interceptor to inject token
+apiClient.interceptors.request.use((config) => {
+  const secret = localStorage.getItem('admin_secret');
+  if (secret) {
+    config.headers.Authorization = `Bearer ${secret}`;
+  }
+  return config;
+});
+
 // Add response interceptor for easy data access
 apiClient.interceptors.response.use(
   (response) => response.data,

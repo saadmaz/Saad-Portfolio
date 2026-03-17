@@ -25,6 +25,20 @@ const EventDetailPage = React.lazy(() => import("../pages/EventDetailPage"));
 const ProjectDetailPage = React.lazy(() => import("../pages/ProjectDetailPage"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
 
+// --- Admin Routes ---
+const AdminLayout = React.lazy(() => import("../components/admin/AdminLayout"));
+const AdminLoginPage = React.lazy(() => import("../pages/admin/AdminLoginPage"));
+const AdminDashboard = React.lazy(() => import("../pages/admin/AdminDashboard"));
+const AdminProjects = React.lazy(() => import("../pages/admin/AdminProjects"));
+const ProjectForm = React.lazy(() => import("../components/admin/ProjectForm"));
+const AdminBlogs = React.lazy(() => import("../pages/admin/AdminBlogs"));
+const BlogForm = React.lazy(() => import("../components/admin/BlogForm"));
+const AdminExperience = React.lazy(() => import("../pages/admin/AdminExperience"));
+const ExperienceForm = React.lazy(() => import("../components/admin/ExperienceForm"));
+const AdminSkills = React.lazy(() => import("../pages/admin/AdminSkills"));
+const AdminCertificates = React.lazy(() => import("../pages/admin/AdminCertificates"));
+const CertificateForm = React.lazy(() => import("../components/admin/CertificateForm"));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -69,6 +83,27 @@ const App = () => (
                 <Route path="/newsletters" element={<NewslettersPage />} />
                 <Route path="/events" element={<EventsPage />} />
                 <Route path="/events/:id" element={<EventDetailPage />} />
+
+                {/* Admin Routes */}
+                <Route path="/admin/login" element={<AdminLoginPage />} />
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="projects/new" element={<ProjectForm />} />
+                  <Route path="projects/:id" element={<ProjectForm />} />
+                  <Route path="blogs" element={<AdminBlogs />} />
+                  <Route path="blogs/new" element={<BlogForm />} />
+                  <Route path="blogs/:id" element={<BlogForm />} />
+                  <Route path="experience" element={<AdminExperience />} />
+                  <Route path="experience/new" element={<ExperienceForm />} />
+                  <Route path="experience/:id" element={<ExperienceForm />} />
+                  <Route path="skills" element={<AdminSkills />} />
+                  <Route path="certificates" element={<AdminCertificates />} />
+                  <Route path="certificates/new" element={<CertificateForm />} />
+                  <Route path="certificates/:id" element={<CertificateForm />} />
+                  <Route index element={<AdminDashboard />} />
+                </Route>
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

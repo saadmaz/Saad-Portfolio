@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { getStorage } from 'firebase-admin/storage';
 import { 
   projectRepository,
   experienceRepository,
@@ -80,3 +81,46 @@ export const deleteHosting = deleteItem(hostingRepository);
 export const createBlog = createItem(blogRepository);
 export const updateBlog = updateItem(blogRepository);
 export const deleteBlog = deleteItem(blogRepository);
+
+/**
+ * Handle image uploads to Firebase Storage
+ */
+export const uploadImage = async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    const bucket = getStorage().bucket();
+    const blob = bucket.file(`uploads/${Date.now()}-${req.file.originalname}`);
+    const blobStream = blob.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+    });
+
+    blobStream.on('error', (err) => {
+      res.status(500).json({ success: false, error: err.message });
+    });
+
+    blobStream.on('finish', async () => {
+      // Make the file public if needed, or get a signed URL
+      // For simplicity, we'll use the public URL format if the bucket is public
+      // Or better, get the download URL
+      await blob.makePublic();
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      
+      res.json({ 
+        success: true, 
+        data: { 
+          url: publicUrl,
+          name: blob.name 
+        } 
+      });
+    });
+
+    blobStream.end(req.file.buffer);
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

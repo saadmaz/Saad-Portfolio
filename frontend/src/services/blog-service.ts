@@ -29,4 +29,18 @@ export class BlogService {
       return null;
     }
   }
+
+  static async create(post: Partial<BlogPost>): Promise<BlogPost> {
+    const response = await apiClient.post<ApiResponse<BlogPost>>('/admin/blogs', post) as unknown as ApiResponse<BlogPost>;
+    return response.data;
+  }
+
+  static async update(id: string | number, post: Partial<BlogPost>): Promise<BlogPost> {
+    const response = await apiClient.put<ApiResponse<BlogPost>>(`/admin/blogs/${id}`, post) as unknown as ApiResponse<BlogPost>;
+    return response.data;
+  }
+
+  static async delete(id: string | number): Promise<void> {
+    await apiClient.delete(`/admin/blogs/${id}`);
+  }
 }

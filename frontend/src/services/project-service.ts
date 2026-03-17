@@ -31,4 +31,18 @@ export class ProjectService {
       return null;
     }
   }
+
+  static async create(project: Partial<Project>): Promise<Project> {
+    const response = await apiClient.post<ApiResponse<Project>>('/admin/projects', project) as unknown as ApiResponse<Project>;
+    return response.data;
+  }
+
+  static async update(id: string | number, project: Partial<Project>): Promise<Project> {
+    const response = await apiClient.put<ApiResponse<Project>>(`/admin/projects/${id}`, project) as unknown as ApiResponse<Project>;
+    return response.data;
+  }
+
+  static async delete(id: string | number): Promise<void> {
+    await apiClient.delete(`/admin/projects/${id}`);
+  }
 }

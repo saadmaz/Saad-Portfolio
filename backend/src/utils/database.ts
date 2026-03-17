@@ -60,7 +60,8 @@ export const connectDB = async (): Promise<Firestore | null> => {
 
     initializeApp({
       credential: credentialDetails,
-      databaseURL: `https://${projectId || 'portfolio'}.firebaseio.com`
+      databaseURL: `https://${projectId || 'portfolio'}.firebaseio.com`,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${projectId}.appspot.com`
     });
 
     db = getFirestore();

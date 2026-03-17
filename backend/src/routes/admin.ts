@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import * as AdminController from '../controllers/AdminController.js';
+import multer from 'multer';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Projects
 router.post('/projects', AdminController.createProject);
@@ -43,4 +45,7 @@ router.post('/hosting', AdminController.createHosting);
 router.put('/hosting/:id', AdminController.updateHosting);
 router.delete('/hosting/:id', AdminController.deleteHosting);
 
-export default router;
+// Media
+router.post('/upload', upload.single('file'), AdminController.uploadImage);
+
+export default router;

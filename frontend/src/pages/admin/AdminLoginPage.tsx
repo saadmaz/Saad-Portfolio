@@ -1,0 +1,84 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Lock, Rocket, ShieldCheck } from 'lucide-react';
+import { toast } from "sonner";
+
+const AdminLoginPage = () => {
+  const [secretKey, setSecretKey] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // In a real scenario, we might hit an endpoint to verify the key, 
+    // but for now, we'll store it and the backend will reject if it's wrong.
+    if (secretKey.trim()) {
+      localStorage.setItem('admin_secret', secretKey);
+      toast.success('Authenticated successfully');
+      navigate('/admin/dashboard');
+    } else {
+      toast.error('Please enter a valid secret key');
+    }
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <Card className="w-full max-w-md bg-black/40 border-white/10 backdrop-blur-xl z-10 shadow-2xl">
+        <CardHeader className="text-center space-y-2">
+          <div className="mx-auto w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center mb-2 border border-accent/20 ring-4 ring-accent/5">
+            <ShieldCheck className="w-6 h-6 text-accent" />
+          </div>
+          <CardTitle className="text-2xl font-bold tracking-tight text-white">Admin Portal</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Enter your secret key to build your portfolio
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleLogin}>
+          <CardContent className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <div className="relative group">
+                <Lock className="absolute left-3 top-3 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-accent" />
+                <Input
+                  type="password"
+                  placeholder="Secret Key"
+                  className="pl-10 bg-white/5 border-white/10 ring-offset-black focus:ring-accent transition-all duration-300"
+                  value={secretKey}
+                  onChange={(e) => setSecretKey(e.target.value)}
+                  autoFocus
+                />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4 pb-8">
+            <Button 
+              type="submit" 
+              className="w-full bg-accent hover:bg-accent/90 text-white font-semibold transform transition-all active:scale-[0.98]"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Verifying...' : 'Launch Builder'}
+              <Rocket className="ml-2 w-4 h-4" />
+            </Button>
+            <p className="text-xs text-center text-muted-foreground/60 italic">
+              "Great things are done by a series of small things brought together."
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+      
+      {/* Decorative dots */}
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+    </div>
+  );
+};
+
+export default AdminLoginPage;
