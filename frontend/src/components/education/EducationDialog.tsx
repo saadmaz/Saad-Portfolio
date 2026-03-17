@@ -10,10 +10,22 @@ import { Badge } from "@/components/ui/badge";
 import { GraduationCap, MapPin, Trophy, Dumbbell, Globe, Star, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 
-// In a real app, we'd define a proper interface for the Education object.
-// For now, I'll allow any structure that matches our data.
+interface Education {
+    institution: string;
+    institutionLogo: string;
+    institutionUrl?: string;
+    degree: string;
+    period: string;
+    location: string;
+    description: string;
+    skills?: string[];
+    associatedProjects?: string[];
+    associatedAwards?: string[];
+    courses?: string[];
+}
+
 interface EducationDialogProps {
-    education: any;
+    education: Education;
     children: ReactNode;
 }
 

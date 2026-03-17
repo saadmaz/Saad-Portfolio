@@ -7,7 +7,7 @@ import { certificates as staticCertificates } from '../../data/static/certificat
 export class CommonService {
   static async getWorkExperience(): Promise<Experience[]> {
     try {
-      const response = await apiClient.get<any, ApiResponse<Experience[]>>('/work-experience');
+      const response = await apiClient.get<ApiResponse<Experience[]>>('/work-experience') as unknown as ApiResponse<Experience[]>;
       return response.data;
     } catch (error) {
       return staticExperiences;
@@ -16,7 +16,7 @@ export class CommonService {
 
   static async getSkills(): Promise<SkillSet[]> {
     try {
-      const response = await apiClient.get<any, ApiResponse<SkillSet[]>>('/skills');
+      const response = await apiClient.get<ApiResponse<SkillSet[]>>('/skills') as unknown as ApiResponse<SkillSet[]>;
       return response.data;
     } catch (error) {
       return staticSkills;
@@ -25,7 +25,7 @@ export class CommonService {
 
   static async getCertificates(): Promise<Certificate[]> {
     try {
-      const response = await apiClient.get<any, ApiResponse<Certificate[]>>('/certificates');
+      const response = await apiClient.get<ApiResponse<Certificate[]>>('/certificates') as unknown as ApiResponse<Certificate[]>;
       return response.data;
     } catch (error) {
       return staticCertificates;

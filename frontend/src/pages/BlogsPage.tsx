@@ -5,16 +5,11 @@ import { useBlogPosts } from "../shared/hooks/useBlog";
 import { X, Search } from "lucide-react";
 import "./BlogsPage.css";
 
+import { Blog } from "../shared/lib/dataManager";
+
 interface BlogPreview {
   slug: string;
-  metadata: {
-    title: string;
-    excerpt: string;
-    publishedDate: string;
-    tags?: string[];
-    coverImage?: string;
-    author: string;
-  };
+  metadata: Blog;
 }
 
 const BlogsPage: React.FC = () => {
@@ -27,16 +22,21 @@ const BlogsPage: React.FC = () => {
   // Extract all unique tags
   const allTags = Array.from(new Set(blogPosts.flatMap(post => post.tags || []))).sort();
 
-  // Mapping from BlogPost to the internal BlogPreview structure
+  // Mapping from BlogPost to the internal structure expected by BlogCard
   const blogPreviews = blogPosts.map(post => ({
     slug: post.slug,
     metadata: {
+      id: post.id,
       title: post.title,
       excerpt: post.excerpt,
-      publishedDate: post.date,
-      tags: post.tags,
-      coverImage: post.image,
+      date: post.date,
+      category: post.category,
+      readTime: "5 min", // Default or extract if available
+      slug: post.slug,
       author: post.author,
+      coverImage: post.image,
+      tags: post.tags,
+      isLatest: post.is_latest
     }
   }));
 
