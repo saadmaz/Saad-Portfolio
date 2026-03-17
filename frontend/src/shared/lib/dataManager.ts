@@ -227,17 +227,17 @@ const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate
   });
 };
 
+import { apiClient } from "../../services/api-client";
+
 /**
  * Data Manager class - provides access to all portfolio data
  */
-  // No constructor needed; all methods fetch from API
-
+export class DataManager {
   /**
    * Get all blogs (latest first)
    */
   async getBlogs(): Promise<Blog[]> {
-    const res = await fetch("http://localhost:3001/api/blog-posts");
-    return await res.json();
+    return await apiClient.get("/blog-posts");
   }
 
   /**
@@ -260,24 +260,21 @@ const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate
    * Get all work experience (latest first)
    */
   async getWorkExperience(): Promise<WorkExperience[]> {
-    const res = await fetch("http://localhost:3001/api/work-experience");
-    return await res.json();
+    return await apiClient.get("/work-experience");
   }
 
   /**
    * Get all certificates (latest first)
    */
   async getCertificates(): Promise<Certificate[]> {
-    const res = await fetch("http://localhost:3001/api/certificates");
-    return await res.json();
+    return await apiClient.get("/certificates");
   }
 
   /**
    * Get all skills grouped by category
    */
   async getSkills(): Promise<Skill[]> {
-    const res = await fetch("http://localhost:3001/api/skills");
-    return await res.json();
+    return await apiClient.get("/skills");
   }
 
   /**
@@ -347,16 +344,14 @@ const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate
    * Get all events (latest first)
    */
   async getEvents(): Promise<Event[]> {
-    const res = await fetch("http://localhost:3001/api/events");
-    return await res.json();
+    return await apiClient.get("/events");
   }
 
   /**
    * Get all newsletters (latest first)
    */
   async getNewsletters(): Promise<Newsletter[]> {
-    const res = await fetch("http://localhost:3001/api/newsletters");
-    return await res.json();
+    return await apiClient.get("/newsletters");
   }
 
   /**
