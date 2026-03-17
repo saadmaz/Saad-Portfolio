@@ -278,73 +278,11 @@ export class DataManager {
   }
 
   /**
-   * Get skills by category
-   */
-  getSkillsByCategory(category: string): Skill | undefined {
-    return this.skills.find((s) => s.category.toLowerCase() === category.toLowerCase());
-  }
-
-  /**
    * Get all projects (latest first)
    */
   async getProjects(): Promise<Project[]> {
     const res = await fetch("http://localhost:3001/api/projects");
     return await res.json();
-  }
-
-  /**
-   * Get project by slug
-   */
-  getProjectBySlug(slug: string): Project | undefined {
-    return this.projects.find((p) => p.slug === slug || p.slug === `/${slug}`);
-  }
-
-  /**
-   * Get project by id
-   */
-  getProjectById(id: number): Project | undefined {
-    return this.projects.find((p) => p.id === id);
-  }
-
-  /**
-   * Get featured projects only
-   */
-  getFeaturedProjects(limit?: number): Project[] {
-    const featured = this.projects.filter((p) => p.featured || p.isLatest);
-    return limit ? featured.slice(0, limit) : featured;
-  }
-
-  /**
-   * Return the most recent projects from the sorted list.
-   * Used by homepage to show the 3 newest items regardless of featured flag.
-   */
-  getRecentProjects(limit?: number): Project[] {
-    return limit ? this.projects.slice(0, limit) : this.projects;
-  }
-
-  /**
-   * Ensure each project defines a unique gradientStart/gradientEnd pair.
-   * Emits a console warning if duplicates are found.
-   */
-  private ensureUniqueGradients(): void {
-    const seen = new Set<string>();
-    this.projects.forEach((p) => {
-      if (p.gradientStart && p.gradientEnd) {
-        const key = `${p.gradientStart}-${p.gradientEnd}`;
-        if (seen.has(key)) {
-          console.warn(`Duplicate gradient for project ${p.slug || p.id}: ${key}`);
-        } else {
-          seen.add(key);
-        }
-      }
-    });
-  }
-
-  /**
-   * Get all events (latest first)
-   */
-  async getEvents(): Promise<Event[]> {
-    return await apiClient.get("/events");
   }
 
   /**
@@ -355,10 +293,52 @@ export class DataManager {
   }
 
   /**
+   * Get all events (latest first)
+   */
+  async getEvents(): Promise<Event[]> {
+    return await apiClient.get("/events");
+  }
+
+  /**
+   * Get project by slug
+   */
+  async getProjectBySlug(slug: string): Promise<Project | undefined> {
+    const projects = await this.getProjects();
+    return projects.find((p) => p.slug === slug || p.slug === `/${slug}`);
+  }
+
+  /**
+   * Get project by id
+   */
+  async getProjectById(id: number): Promise<Project | undefined> {
+    const projects = await this.getProjects();
+    return projects.find((p) => p.id === id);
+  }
+
+  /**
+   * Get featured projects only
+   */
+  async getFeaturedProjects(limit?: number): Promise<Project[]> {
+    const projects = await this.getProjects();
+    const featured = projects.filter((p) => p.featured || p.isLatest);
+    return limit ? featured.slice(0, limit) : featured;
+  }
+
+  /**
+   * Return the most recent projects from the sorted list.
+   * Used by homepage to show the 3 newest items regardless of featured flag.
+   */
+  async getRecentProjects(limit?: number): Promise<Project[]> {
+    const projects = await this.getProjects();
+    return limit ? projects.slice(0, limit) : projects;
+  }
+
+  /**
    * Get newsletters by type
    */
-  getNewslettersByType(type: "founder" | "cse"): Newsletter[] {
-    return this.newsletters.filter((n) => n.type === type);
+  async getNewslettersByType(type: "founder" | "cse"): Promise<Newsletter[]> {
+    const newsletters = await this.getNewsletters();
+    return newsletters.filter((n) => n.type === type);
   }
 
   /**
@@ -372,29 +352,17 @@ export class DataManager {
   /**
    * Get hosting by type
    */
-  getHostingByType(type: "blog" | "app" | "api"): Hosting[] {
-    return this.hosting.filter((h) => h.type === type);
+  async getHostingByType(type: "blog" | "app" | "api"): Promise<Hosting[]> {
+    const hosting = await this.getHosting();
+    return hosting.filter((h) => h.type === type);
   }
 
   /**
    * Get active hosting only
    */
-  getActiveHosting(): Hosting[] {
-    return this.hosting.filter((h) => h.status === "active");
-  }
-
-  /**
-   * Reload data (useful if you update JSON files)
-   */
-  reload(): void {
-    this.blogs = sortByDateDesc(blogsData as Blog[]);
-    this.workExperience = sortByDateDesc(workExperienceData as WorkExperience[]);
-    this.certificates = sortByDateDesc(certificatesData as any) as Certificate[];
-    this.skills = skillsData as any;
-    this.projects = sortByDateDesc(projectsData as any);
-    this.events = sortByDateDesc(eventsData as Event[]);
-    this.newsletters = sortByDateDesc(newslettersData as Newsletter[]);
-    this.hosting = sortByDateDesc(hostingData as Hosting[]);
+  async getActiveHosting(): Promise<Hosting[]> {
+    const hosting = await this.getHosting();
+    return hosting.filter((h) => h.status === "active");
   }
 }
 

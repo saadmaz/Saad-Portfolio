@@ -6,11 +6,11 @@
     "backend"
   ],
   "scripts": {
-    "frontend:dev": "bun --cwd frontend run dev",
+    "frontend:dev": "npm --prefix frontend run dev",
     "backend:dev": "npm --prefix backend run dev",
-    "dev": "concurrently \"bun frontend:dev\" \"bun backend:dev\"",
-    "build": "bun --cwd frontend run build && npm --prefix backend run build",
-    "lint": "bun --cwd frontend run lint && npm --prefix backend run lint"
+    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
