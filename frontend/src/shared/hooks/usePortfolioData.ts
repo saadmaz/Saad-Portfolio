@@ -115,17 +115,13 @@ export const useProjects = () => {
 
 /**
  * Hook to get a small set of projects for spotlight sections.
- * Historically this returned projects with the `featured` flag; we
- * now fetch the most recent items to satisfy the "top 3 most recent
- * projects" requirement. The old behaviour is still available via
- * `dataManager.getFeaturedProjects` if callers need it.
  */
 export const useFeaturedProjects = (limit?: number) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dataManager.getFeaturedBlogs(limit).then((data) => {
+    dataManager.getFeaturedProjects(limit).then((data) => {
       setProjects(data);
       setLoading(false);
     });
@@ -176,8 +172,8 @@ export const useNewslettersByType = (type: "founder" | "cse") => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dataManager.getNewsletters().then((data) => {
-      setNewsletters(data.filter(n => n.type === type));
+    dataManager.getNewslettersByType(type).then((data) => {
+      setNewsletters(data);
       setLoading(false);
     });
   }, [type]);
@@ -193,8 +189,10 @@ export const useHosting = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setHosting(dataManager.getHosting());
-    setLoading(false);
+    dataManager.getHosting().then((data) => {
+      setHosting(data);
+      setLoading(false);
+    });
   }, []);
 
   return { hosting, loading };
@@ -208,8 +206,10 @@ export const useActiveHosting = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setHosting(dataManager.getActiveHosting());
-    setLoading(false);
+    dataManager.getActiveHosting().then((data) => {
+      setHosting(data);
+      setLoading(false);
+    });
   }, []);
 
   return { hosting, loading };

@@ -3,19 +3,11 @@ import { Calendar, User, ArrowRight } from "lucide-react";
 import { formatDate } from "../../../shared/utils/dateUtils";
 import "./BlogCard.css";
 import { useState } from "react";
-
-interface BlogMetadata {
-  title: string;
-  author: string;
-  publishedDate: string;
-  excerpt: string;
-  coverImage?: string;
-  tags?: string[];
-}
+import type { Blog } from "@/shared/lib/dataManager";
 
 interface BlogCardProps {
   slug: string;
-  metadata: BlogMetadata;
+  metadata: Blog;
 }
 
 const MAX_VISIBLE_TAGS = 3;
@@ -54,7 +46,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ slug, metadata }) => {
         <div className="card-meta-top">
           <span className="card-meta-item">
             <Calendar size={12} />
-            {formatDate(metadata.publishedDate)}
+            {formatDate(metadata.date)}
           </span>
           <span className="card-meta-item">
             <User size={12} />

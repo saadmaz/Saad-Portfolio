@@ -1,10 +1,10 @@
-import { BlogMetadata } from "../types/blog";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./BlogTemplate.css";
+import type { Blog } from "@/shared/lib/dataManager";
 
 interface BlogTemplateProps {
-  metadata: BlogMetadata;
+  metadata: Blog;
   content: React.ReactNode;
 }
 
@@ -37,7 +37,7 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
               </div>
               <div className="meta-item">
                 <Calendar size={14} />
-                <span>{new Date(metadata.publishedDate).toLocaleDateString()}</span>
+                <span>{new Date(metadata.date).toLocaleDateString()}</span>
               </div>
             </div>
 
@@ -66,8 +66,8 @@ export const BlogTemplate: React.FC<BlogTemplateProps> = ({ metadata, content })
       <footer className="blog-footer-area">
         <div className="author-signature">
           <p className="author-name">Written by <strong>{metadata.author}</strong></p>
-          {metadata.updatedDate && (
-            <p className="update-date">Last revised: {new Date(metadata.updatedDate).toLocaleDateString()}</p>
+          {metadata.date && (
+            <p className="update-date">Published on: {new Date(metadata.date).toLocaleDateString()}</p>
           )}
         </div>
         <Link to="/blogs" className="footer-back-link">

@@ -16,6 +16,8 @@ export interface Blog {
   readTime: string;
   slug: string;
   author: string;
+  coverImage?: string;
+  tags?: string[];
   isLatest?: boolean;
 }
 
