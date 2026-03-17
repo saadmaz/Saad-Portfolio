@@ -1,23 +1,14 @@
 import { motion } from "framer-motion";
-import { Layout } from "@/components/layout/Layout";
+import { Layout } from "../components/layout/Layout";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { dataManager, Project } from "@/shared/lib/dataManager";
+import { useProjects } from "@/shared/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { useEffect } from "react";
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { data: projects = [], isLoading } = useProjects();
   const [activeCategory, setActiveCategory] = useState("All");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    dataManager.getProjects().then((data) => {
-      setProjects(data);
-      setLoading(false);
-    });
-  }, []);
 
   // derive categories dynamically from data
   const categories = [
@@ -29,12 +20,15 @@ const ProjectsPage = () => {
     ? projects
     : projects.filter(p => p.category === activeCategory);
 
-const ProjectsPage = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
-
-  const filteredProjects = activeCategory === "All"
-    ? allProjects
-    : allProjects.filter(p => p.category === activeCategory);
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="section-padding flex items-center justify-center min-vh-50">
+          <div className="animate-pulse text-muted-foreground">Loading projects...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

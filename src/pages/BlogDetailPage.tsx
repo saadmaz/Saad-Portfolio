@@ -1,66 +1,35 @@
-import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Layout } from "@/components/layout/Layout";
-import { getBlogBySlug } from "@/data/blog/utils/blogUtils";
+import { useBlogPost } from "../shared/hooks/useBlog";
 import { ArrowLeft, Calendar, User, Edit } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Layout } from "../components/layout/Layout";
 
-interface BlogModule {
-  metadata: any;
-  content: React.ReactNode;
-}
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [blog, setBlog] = useState<BlogModule | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const loadBlog = async () => {
-      try {
-        const blogData = await getBlogBySlug(slug);
-        if (!blogData) {
-          setNotFound(true);
-        } else {
-          setBlog(blogData);
-        }
-      } catch (error) {
-        console.error("Error loading blog:", error);
-        setNotFound(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBlog();
-  }, [slug]);
+  const { data: blog, isLoading } = useBlogPost(slug || "");
 
   const handleTagClick = (tag: string) => {
     navigate(`/blog?tag=${encodeURIComponent(tag)}`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Layout>
-        <div className="section-padding">
-          <div className="section-container text-center text-muted-foreground">
-            Loading blog...
-          </div>
+      <div className="section-padding">
+        <div className="section-container text-center text-muted-foreground pt-20">
+          Loading blog...
         </div>
-      </Layout>
+      </div>
     );
   }
 
-  if (notFound || !blog) {
+  if (!blog) {
     return <Navigate to="/blog" replace />;
   }
 
-  const { metadata, content } = blog;
+  const { title, date: publishedDate, excerpt, tags, image: coverImage, author, content } = blog;
 
   return (
     <Layout>
@@ -79,7 +48,7 @@ export default function BlogDetailPage() {
           </motion.div>
 
           {/* Cover Image */}
-          {metadata.coverImage && (
+          {coverImage && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -87,8 +56,8 @@ export default function BlogDetailPage() {
               className="blog-cover-wrapper"
             >
               <img
-                src={metadata.coverImage}
-                alt={metadata.title}
+                src={coverImage}
+                alt={title}
                 className="blog-cover-image"
               />
             </motion.div>
@@ -102,31 +71,25 @@ export default function BlogDetailPage() {
             className="blog-header-section"
           >
             <h1 className="blog-title">
-              {metadata.title}
+              {title}
             </h1>
 
             {/* Metadata */}
             <div className="blog-metadata">
               <div className="metadata-item">
                 <User className="metadata-icon" />
-                <span>{metadata.author}</span>
+                <span>{author}</span>
               </div>
               <div className="metadata-item">
                 <Calendar className="metadata-icon" />
-                <span>Published: {new Date(metadata.publishedDate).toLocaleDateString()}</span>
+                <span>Published: {new Date(publishedDate).toLocaleDateString()}</span>
               </div>
-              {metadata.updatedDate && (
-                <div className="metadata-item">
-                  <Edit className="metadata-icon" />
-                  <span>Updated: {new Date(metadata.updatedDate).toLocaleDateString()}</span>
-                </div>
-              )}
             </div>
 
             {/* Tags */}
-            {metadata.tags && metadata.tags.length > 0 && (
+            {tags && tags.length > 0 && (
               <div className="blog-tags">
-                {metadata.tags.map((tag: string) => (
+                {tags.map((tag: string) => (
                   <button
                     key={tag}
                     className="blog-tag"

@@ -78,7 +78,6 @@ export function TestimonialsSection() {
   return (
     <section className="section-padding">
       <div className="section-container">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -95,7 +94,6 @@ export function TestimonialsSection() {
           </p>
         </motion.div>
 
-        {/* Scroll Controls */}
         <div className="flex justify-end gap-2 mb-6">
           <Button
             variant="outline"
@@ -115,7 +113,6 @@ export function TestimonialsSection() {
           </Button>
         </div>
 
-        {/* Scrollable Testimonials */}
         <div
           ref={scrollContainerRef}
           className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
@@ -136,7 +133,6 @@ export function TestimonialsSection() {
                   "{testimonial.quote}"
                 </blockquote>
                 <div className="pt-4 border-t border-border flex items-center gap-4">
-                  {/* Author Image */}
                   <img
                     src={testimonial.image}
                     alt={testimonial.author}
@@ -146,7 +142,6 @@ export function TestimonialsSection() {
                     <p className="font-medium text-foreground">{testimonial.author}</p>
                     <p className="text-xs text-muted-foreground">{testimonial.role}</p>
                   </div>
-                  {/* LinkedIn Link */}
                   <a
                     href={testimonial.linkedIn}
                     target="_blank"
@@ -162,7 +157,6 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Scroll indicator */}
         <div className="flex justify-center gap-1 mt-6">
           {testimonials.map((_, index) => (
             <div

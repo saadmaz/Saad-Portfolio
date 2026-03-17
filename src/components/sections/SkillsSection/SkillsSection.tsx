@@ -3,23 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import skillsData from "@/data/skills.json";
+import { useSkills } from "@/shared/hooks/useCommon";
+import { SkillSet } from "@/types";
 
-interface Skill {
-  name: string;
-  level: string;
-  years: number;
-}
-
-interface SkillCategory {
-  category: string;
-  skills: Skill[];
-}
-
-/**
- * Strict color mapping as requested:
- * Beginner: Red, Intermediate: Yellow, Advanced: Green, Expert: Blue
- */
 const levelColors: Record<string, string> = {
     Beginner: "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive/80",
     Intermediate: "bg-warning/10 text-warning dark:bg-warning/20 dark:text-warning/80",
@@ -28,16 +14,11 @@ const levelColors: Record<string, string> = {
 };
 
 export function SkillsSection() {
-  const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
+  const { data: skillCategories = [], isLoading } = useSkills();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(4);
-  const [direction, setDirection] = useState(0); // Track direction for better sliding animation
+  const [direction, setDirection] = useState(0);
 
-  useEffect(() => {
-    setSkillCategories(skillsData as SkillCategory[]);
-  }, []);
-
-  // Responsive logic to determine how many cards to show per view
   useEffect(() => {
     const updateCount = () => {
       const w = window.innerWidth;
@@ -50,7 +31,6 @@ export function SkillsSection() {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  // Navigation handlers that track direction to ensure smooth CSS transitions
   const moveNext = useCallback(() => {
     setDirection(1);
     const len = skillCategories.length || 1;
@@ -63,17 +43,15 @@ export function SkillsSection() {
     setCurrentIndex((prev) => (prev - 1 + len) % len);
   }, [skillCategories.length]);
 
-  // Auto-play timer
   useEffect(() => {
     if (skillCategories.length === 0) return;
-    const timer = setInterval(moveNext, 3500); // Increased to 3.5s for readability
+    const timer = setInterval(moveNext, 3500);
     return () => clearInterval(timer);
   }, [moveNext, skillCategories.length]);
 
-  // Logic to grab a slice of the categories for a "looping" effect
   const getVisibleCategories = () => {
     if (skillCategories.length === 0) return [];
-    const items: { data: SkillCategory; originalIndex: number }[] = [];
+    const items: { data: SkillSet; originalIndex: number }[] = [];
     for (let i = 0; i < visibleCount; i++) {
       const idx = (currentIndex + i) % skillCategories.length;
       items.push({ data: skillCategories[idx], originalIndex: idx });
@@ -81,10 +59,19 @@ export function SkillsSection() {
     return items;
   };
 
+  if (isLoading) {
+    return (
+      <section className="section-padding bg-secondary/30">
+        <div className="section-container text-center text-muted-foreground">
+          Loading skills...
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="section-padding bg-secondary/30 overflow-hidden">
       <div className="section-container">
-        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -121,15 +108,13 @@ export function SkillsSection() {
           </div>
         </motion.div>
 
-        {/* Sliding Grid with Enhanced Transitions */}
         <div className="relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[380px]">
             <AnimatePresence mode="popLayout" initial={false} custom={direction}>
-              {getVisibleCategories().map((item, idx) => (
+              {getVisibleCategories().map((item) => (
                 <motion.div
                   key={`${item.data.category}-${item.originalIndex}`}
                   layout
-                  // Custom variant logic to make cards slide smoothly based on direction
                   initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
@@ -150,7 +135,7 @@ export function SkillsSection() {
                             <span className="text-sm text-foreground font-medium">{skill.name}</span>
                             <span className="text-[11px] text-muted-foreground">{skill.years}y</span>
                           </div>
-                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level]}`}>
+                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level] || levelColors.Advance}`}>
                             {skill.level}
                           </span>
                         </li>

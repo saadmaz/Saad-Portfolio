@@ -1,38 +1,29 @@
 import { Router } from 'express';
-import {
-  getProjects,
-  getProjectBySlug,
-  getFeaturedProjects,
-  getBlogPosts,
-  getBlogPostBySlug,
-  submitContactForm
-} from '../controllers/publicController.js';
+import * as ProjectController from '../controllers/ProjectController.js';
+import * as BlogController from '../controllers/BlogController.js';
+import * as CommonController from '../controllers/CommonController.js';
+import { validate } from '../middleware/validate.js';
+import { ContactMessageSchema } from '../schemas/index.js';
+import { z } from 'zod';
 
 const router = Router();
 
 // Project routes
-router.get('/projects', getProjects);
-router.get('/projects/featured', getFeaturedProjects);
-router.get('/projects/:slug', getProjectBySlug);
+router.get('/projects', ProjectController.getProjects);
+router.get('/projects/featured', ProjectController.getFeaturedProjects);
+router.get('/projects/:slug', ProjectController.getProjectBySlug);
 
 // Blog routes
-router.get('/blog-posts', getBlogPosts);
-router.get('/blog-posts/:slug', getBlogPostBySlug);
+router.get('/blog-posts', BlogController.getBlogPosts);
+router.get('/blog-posts/latest', BlogController.getLatestBlogPost);
+router.get('/blog-posts/:slug', BlogController.getBlogPostBySlug);
 
-// Contact route
-router.post('/contact', submitContactForm);
+// Experience & Skills & Certificates
+router.get('/work-experience', CommonController.getWorkExperience);
+router.get('/skills', CommonController.getSkills);
+router.get('/certificates', CommonController.getCertificates);
 
-// Placeholder routes for other data (to be implemented)
-router.get('/work-experience', (req, res) => {
-  res.json({ success: true, data: [], message: 'Work experience endpoint - coming soon' });
-});
-
-router.get('/skills', (req, res) => {
-  res.json({ success: true, data: [], message: 'Skills endpoint - coming soon' });
-});
-
-router.get('/certificates', (req, res) => {
-  res.json({ success: true, data: [], message: 'Certificates endpoint - coming soon' });
-});
+// Contact route with validation
+router.post('/contact', validate(z.object({ body: ContactMessageSchema })), CommonController.submitContactForm);
 
 export default router;

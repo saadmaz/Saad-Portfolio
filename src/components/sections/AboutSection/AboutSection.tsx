@@ -13,7 +13,6 @@ export function AboutSection() {
   return (
     <section className="section-padding">
       <div className="section-container">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,7 +30,6 @@ export function AboutSection() {
           </p>
         </motion.div>
 
-        {/* Education Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -94,9 +92,7 @@ export function AboutSection() {
           </div>
         </motion.div>
 
-        {/* Grid Layout for Other Sections */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Events */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +119,6 @@ export function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Volunteer */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -148,7 +143,6 @@ export function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Sports */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -172,7 +166,6 @@ export function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Languages */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -198,7 +191,6 @@ export function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Awards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -1,64 +1,43 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"; // Animation hooks
-import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react"; // Icons
-import { Link } from "react-router-dom"; // Navigation link
-import { Button } from "@/components/ui/button"; // Standardized UI button component
-import profilePhoto from "@/assets/profile-photo.png"; // User image asset
-import { useRef } from "react"; // React reference hook
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf"; // PDF asset import
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import profilePhoto from "@/assets/profile-photo.png";
+import { useRef } from "react";
+import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 export function HeroSection() {
-  // --- 1. REF & MOTION VALUES ---
-  // Tracks the physical div containing the image for coordinate calculations
   const ref = useRef<HTMLDivElement>(null);
-  
-  // Create reactive values for mouse position (x and y) that don't trigger re-renders
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
-  // Apply a spring physics layer to make the movement feel smooth and "organic" rather than robotic
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
-  
-  // Transform mouse percentages (-0.5 to 0.5) into rotation degrees for a 3D effect
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
 
-  // --- 2. EVENT HANDLERS ---
-  // Updates the motion values based on the mouse position relative to the center of the image
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect(); // Get dimensions of the image container
+    const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    
-    // Calculate how many pixels the mouse is from the top-left of the container
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
-    // Convert pixels to a decimal range where center is 0, left is -0.5, and right is 0.5
     const xPct = mouseX / width - 0.5;
     const yPct = mouseY / height - 0.5;
-    
-    x.set(xPct); // Update motion values
+    x.set(xPct);
     y.set(yPct);
   };
 
-  // Resets the image to a flat/straight position when the cursor leaves the area
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
   };
 
   return (
-    /* MAIN SECTION: Min-height is full screen; pt-24 provides space for the fixed header on mobile */
     <section className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
-      
-      {/* --- BACKGROUND DECORATION --- */}
       <div className="absolute inset-0 -z-10">
-        {/* Decorative gradients for depth */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/30" />
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-soft/30 to-transparent" />
-        {/* Subtle grid pattern background */}
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -69,14 +48,8 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
-        {/* GRID LAYOUT: Stacks on mobile, splits into 2 columns on large screens; centered block */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-5xl mx-auto justify-center">
-          
-          {/* --- LEFT COLUMN: TEXT & CONTENT --- */}
-          {/* order-2 puts text below image on mobile; text-center centers it for small screens */}
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
-            
-            {/* Status Badge: Animates in from the bottom */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -89,7 +62,6 @@ export function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Main Heading: Uses relative span for the decorative underline highlight */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -100,7 +72,6 @@ export function HeroSection() {
                 Hi, I'm{" "}
                 <span className="relative inline-block">
                 <span className="relative z-10 text-primary">Saad Mazhar</span>    
-                  {/* Decorative blue-tinted box behind the name */}
                   <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-2 bg-accent/20 -z-0" />
                 </span>
               </h1>
@@ -110,7 +81,6 @@ export function HeroSection() {
               </p>
             </motion.div>
 
-            {/* Short Bio: mx-auto ensures centering on mobile */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,7 +91,6 @@ export function HeroSection() {
               of technology, design, and business. Always learning, always shipping. 
             </motion.p>
 
-            {/* CTA Buttons: Changes to vertical stacking on the smallest screens (flex-col) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -147,7 +116,6 @@ export function HeroSection() {
               </Button>
             </motion.div>
 
-            {/* Social Media Links: Maps through array to render icons with a uniform hover effect */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -180,8 +148,6 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* --- RIGHT COLUMN: INTERACTIVE PROFILE IMAGE --- */}
-          {/* order-1 puts image at the top on mobile; mb-8 adds space from the text below */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -193,29 +159,24 @@ export function HeroSection() {
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               className="relative"
-              style={{ perspective: "1000px" }} // Necessary for 3D depth perception
+              style={{ perspective: "1000px" }}
             >
-              {/* Decorative blurred background glows */}
               <div className="absolute -top-8 -left-8 w-48 h-48 md:w-72 md:h-72 bg-accent/10 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-64 md:h-64 bg-blue-soft rounded-full blur-2xl" />
               
-              {/* This motion.div performs the actual tilt based on mouse position */}
               <motion.div
                 style={{ rotateX, rotateY }}
                 className="relative"
               >
-                {/* Main Image frame: Responsive sizing (w-64 on small, w-96 on large) */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-background group">
                   <motion.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Subtle color overlay that appears when hovering over the image */}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Floating Stats Card: Bottom-left badge */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -227,7 +188,6 @@ export function HeroSection() {
                       <p className="text-xl md:text-2xl font-display font-bold text-foreground">5+</p>
                       <p className="text-[10px] md:text-xs text-muted-foreground">Years Coding</p>
                     </div>
-                    {/* Vertical separator line */}
                     <div className="w-px h-8 md:h-10 bg-border" />
                     <div className="text-center">
                       <p className="text-xl md:text-2xl font-display font-bold text-foreground">20+</p>
@@ -236,7 +196,6 @@ export function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* Building Badge: Top-right badge */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -244,7 +203,6 @@ export function HeroSection() {
                   className="absolute -top-4 -right-2 md:-right-8 bg-card rounded-xl shadow-xl border border-border p-2 md:p-3 backdrop-blur-sm max-w-[140px] md:max-w-none"
                 >
                   <div className="flex items-center gap-2">
-                    {/* Square letter 'S' icon */}
                     <div className="hidden xs:flex w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/60 items-center justify-center text-accent-foreground font-bold text-sm">
                       S
                     </div>

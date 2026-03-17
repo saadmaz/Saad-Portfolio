@@ -2,12 +2,21 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
-import { dataManager, WorkExperience } from "@/shared/lib/dataManager";
-
-const experiences: WorkExperience[] = dataManager.getWorkExperience();
+import { useExperience } from "@/shared/hooks/useCommon";
 
 export function ExperienceSection() {
+  const { data: experiences, isLoading } = useExperience();
+
+  if (isLoading) {
+    return (
+      <section className="section-padding">
+        <div className="section-container text-center text-muted-foreground">
+          Loading work experience...
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="section-padding">
       <div className="section-container">
@@ -35,7 +44,7 @@ export function ExperienceSection() {
 
         {/* Experience Cards */}
         <div className="space-y-6">
-          {experiences.map((exp, index) => (
+          {experiences?.map((exp, index) => (
             <motion.div
               key={exp.id}
               initial={{ opacity: 0, y: 20 }}
@@ -50,18 +59,19 @@ export function ExperienceSection() {
                     {/* Left - Meta Info */}
                     <div className="space-y-4">
                       {/* Company Logo */}
-                      <a 
-                        href={exp.companyUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-block w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
-                      >
-                        <img 
-                          src={exp.companyLogo} 
-                          alt={`${exp.company} logo`}
-                          className="w-full h-full object-cover"
-                        />
-                      </a>
+                      <div className="inline-block w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors">
+                        {exp.companyLogo ? (
+                          <img 
+                            src={exp.companyLogo} 
+                            alt={`${exp.company} logo`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-accent/10">
+                            <Building className="w-8 h-8 text-accent" />
+                          </div>
+                        )}
+                      </div>
                       
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -79,20 +89,28 @@ export function ExperienceSection() {
                             </span>
                           )}
                         </div>
-                        <a 
-                          href={exp.companyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
-                        >
-                          <Building className="w-4 h-4" />
-                          {exp.company}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+                        {exp.companyUrl ? (
+                          <a 
+                            href={exp.companyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Building className="w-4 h-4" />
+                            {exp.company}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ) : (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Building className="w-4 h-4" />
+                            {exp.company}
+                          </div>
+                        )}
                       </div>
                       
                       <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
-                        {exp.role}
+                        {exp.position}
                       </h3>
                     </div>
 
@@ -103,7 +121,7 @@ export function ExperienceSection() {
                       </p>
                       
                       <ul className="space-y-2">
-                        {(exp.highlights || []).map((highlight, i) => (
+                        {(exp.responsibilities || []).map((highlight, i) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-foreground">
                             <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                             {highlight}

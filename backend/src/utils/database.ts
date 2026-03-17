@@ -1,61 +1,84 @@
 import * as admin from 'firebase-admin';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 let db: admin.firestore.Firestore | null = null;
+let isInitialized = false;
 
-export const connectDB = async () => {
+/**
+ * Initializes the Firebase Admin SDK and returns the Firestore instance.
+ * Supports both service account JSON file and environment variables.
+ */
+export const connectDB = async (): Promise<admin.firestore.Firestore | null> => {
+  if (isInitialized) {
+    return db;
+  }
+
   try {
-    // Check if Firebase is already initialized
-    if (admin.apps && admin.apps.length > 0) {
+    // Check if Firebase is already initialized via admin.apps
+    if (admin.apps.length > 0) {
       db = admin.firestore();
+      isInitialized = true;
       console.log('✅ Firebase already initialized');
-      return;
+      return db;
     }
 
-    // Check if we have Firebase credentials
-    if (!process.env.FIREBASE_PROJECT_ID && !process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+
+    if (!projectId && !serviceAccountPath) {
       console.warn('⚠️  Firebase credentials not set. Running without database connection.');
-      return;
+      return null;
     }
 
-    // Initialize Firebase Admin SDK
-    let serviceAccount;
+    let credential;
 
-    if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-      // Use service account file
-      serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
+    if (serviceAccountPath) {
+      try {
+        const absolutePath = resolve(process.cwd(), serviceAccountPath);
+        const serviceAccount = JSON.parse(readFileSync(absolutePath, 'utf8'));
+        credential = admin.credential.cert(serviceAccount);
+      } catch (err) {
+        console.error(`❌ Failed to load service account from ${serviceAccountPath}:`, err.message);
+        throw err;
+      }
     } else {
-      // Use environment variables
-      serviceAccount = {
-        type: 'service_account',
-        project_id: process.env.FIREBASE_PROJECT_ID,
-        private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-        private_key: process.env.FIREBASE_PRIVATE_KEY,
-        client_email: process.env.FIREBASE_CLIENT_EMAIL,
-        client_id: process.env.FIREBASE_CLIENT_ID,
-        auth_uri: process.env.FIREBASE_AUTH_URI,
-        token_uri: process.env.FIREBASE_TOKEN_URI,
-        auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
-      };
+      credential = admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      } as admin.ServiceAccount);
     }
 
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: `https://${process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id}.firebaseio.com`
+      credential,
+      databaseURL: `https://${projectId || 'portfolio'}.firebaseio.com`
     });
 
     db = admin.firestore();
+    isInitialized = true;
     console.log('✅ Firebase connected successfully');
+    return db;
   } catch (error) {
-    console.warn('⚠️  Firebase connection failed. Running without database:', error.message);
+    console.error('❌ Firebase connection failed:', error.message);
     db = null;
+    isInitialized = false;
+    return null;
   }
 };
 
-export const getDB = () => {
+/**
+ * Returns the initialized Firestore instance.
+ * @throws Error if Firebase is not connected.
+ */
+export const getDB = (): admin.firestore.Firestore => {
   if (!db) {
-    throw new Error('Firebase not connected. Please check your Firebase configuration.');
+    throw new Error('Firebase not connected. Please call connectDB() first and ensure configuration is correct.');
   }
   return db;
 };
 
-export const isDBConnected = () => db !== null;
+/**
+ * Checks if the database is currently connected.
+ */
+export const isDBConnected = (): boolean => isInitialized && db !== null;

@@ -1,0 +1,74 @@
+import { Experience } from '../../types';
+
+export const workExperiences: Experience[] = [
+  {
+    id: 1,
+    company: "Current Company",
+    position: "Senior Developer",
+    employmentType: "Full-time",
+    startDate: "2024-06",
+    endDate: "",
+    isCurrent: true,
+    location: "Remote",
+    workMode: "Remote",
+    department: "Engineering",
+    description: "Leading development of core products, mentoring junior developers, and architecting scalable solutions.",
+    responsibilities: [
+      "Architect scalable microservices",
+      "Mentor team members",
+      "Design system components"
+    ],
+    technologies: ["React", "TypeScript", "Node.js", "AWS", "GraphQL"],
+    achievements: [
+      "Led migration of legacy codebase to React",
+      "Reduced load time by 40%",
+      "Mentored 3 junior developers"
+    ],
+    companyUrl: "https://currentcompany.com",
+    companyLogo: "", 
+    companyIndustry: "SaaS",
+    companySize: "Mid-size",
+    teamSize: 10,
+    reportsTo: "CTO",
+    directReports: 2,
+    projectsHighlighted: ["Core Dashboard", "Authentication Service"],
+    referenceAvailable: true,
+    linkedinUrl: "",
+    mediaLinks: []
+  },
+  {
+    id: 2,
+    company: "Previous Company",
+    position: "Full Stack Developer",
+    employmentType: "Full-time",
+    startDate: "2023-01",
+    endDate: "2024-05",
+    isCurrent: false,
+    location: "London, UK",
+    workMode: "Hybrid",
+    department: "Engineering",
+    description: "Developed and maintained full-stack web applications using modern technologies.",
+    responsibilities: [
+      "Implement new features",
+      "Fix bugs and improve performance",
+      "Participate in code reviews"
+    ],
+    technologies: ["React", "Node.js", "MongoDB", "Docker"],
+    achievements: [
+      "Built real-time collaboration features",
+      "Improved database query performance by 35%",
+      "Implemented CI/CD pipelines"
+    ],
+    companyUrl: "https://previouscompany.com",
+    companyLogo: "",
+    companyIndustry: "E-commerce",
+    companySize: "Mid-size",
+    teamSize: 15,
+    reportsTo: "Engineering Manager",
+    directReports: 0,
+    projectsHighlighted: ["Realtime Chat", "Payments Integration"],
+    referenceAvailable: false,
+    linkedinUrl: "",
+    mediaLinks: []
+  }
+];

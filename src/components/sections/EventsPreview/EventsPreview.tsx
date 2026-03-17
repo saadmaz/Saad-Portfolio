@@ -58,7 +58,6 @@ export function EventsPreview() {
                 building community and sharing knowledge.
               </p>
             </div>
-            {/* FIXED: Removed whitespace inside asChild */}
             <Button asChild variant="ghost" className="text-accent hover:text-accent gap-1 w-fit">
               <Link to="/events">See All Events<ArrowRight className="w-4 h-4" /></Link>
             </Button>

@@ -1,9 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Calendar, User, ArrowRight } from "lucide-react";
-import { BlogMetadata } from "../types/blog";
-import { formatDate } from "../utils/blogUtils";
+import { formatDate } from "../../../shared/utils/dateUtils";
 import "./BlogCard.css";
 import { useState } from "react";
+
+interface BlogMetadata {
+  title: string;
+  author: string;
+  publishedDate: string;
+  excerpt: string;
+  coverImage?: string;
+  tags?: string[];
+}
 
 interface BlogCardProps {
   slug: string;

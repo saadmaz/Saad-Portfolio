@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 import { connectDB } from './utils/database.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { adminAuth } from './middleware/auth.js';
 
 // Import routes
 import publicRoutes from './routes/public.js';
@@ -16,10 +17,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Connect to database
-connectDB();
+// Initialize Database
+connectDB().then(() => {
+  console.log('📦 Database initialization process complete');
+});
 
-// Security middleware
+// Security & Base Middleware
 app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -29,34 +32,35 @@ app.use(cors({
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  max: 100,
+  message: {
+    success: false,
+    error: 'Too many requests from this IP, please try again later.'
+  }
 });
 app.use('/api/', limiter);
 
-// Body parsing middleware
+// Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    success: true, 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV
+  });
 });
 
 // API routes
 app.use('/api', publicRoutes);
 
-// Basic authentication middleware for /api/admin
-app.use('/api/admin', (req, res, next) => {
-  const auth = req.headers.authorization;
-  const expected = `Bearer ${process.env.ADMIN_SECRET || 'adminpassword'}`;
-  if (!auth || auth !== expected) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-  next();
-}, adminRoutes);
+// Admin routes with protection
+app.use('/api/admin', adminAuth, adminRoutes);
 
-// Error handling middleware (must be last)
+// Global Error Handler
 app.use(errorHandler);
 
 app.listen(PORT, () => {

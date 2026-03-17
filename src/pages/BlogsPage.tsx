@@ -1,77 +1,57 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { BlogCard } from "@/data/blog/components/BlogCard";
-import { getAllBlogs } from "@/data/blog/utils/blogUtils";
-import { BlogMetadata } from "@/data/blog/types/blog";
+import { BlogCard } from "../components/blog/BlogCard/BlogCard";
+import { useBlogPosts } from "../shared/hooks/useBlog";
 import { X, Search } from "lucide-react";
 import "./BlogsPage.css";
 
 interface BlogPreview {
   slug: string;
-  metadata: BlogMetadata;
+  metadata: {
+    title: string;
+    excerpt: string;
+    publishedDate: string;
+    tags?: string[];
+    coverImage?: string;
+    author: string;
+  };
 }
 
-export const BlogsPage: React.FC = () => {
-  const [blogs, setBlogs] = useState<BlogPreview[]>([]);
-  const [filteredBlogs, setFilteredBlogs] = useState<BlogPreview[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [allTags, setAllTags] = useState<string[]>([]);
+const BlogsPage: React.FC = () => {
+  const { data: blogPosts = [], isLoading } = useBlogPosts();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const selectedTag = searchParams.get("tag");
 
-  useEffect(() => {
-    const loadBlogs = async () => {
-      try {
-        const allBlogs = await getAllBlogs();
-        setBlogs(allBlogs);
+  // Extract all unique tags
+  const allTags = Array.from(new Set(blogPosts.flatMap(post => post.tags || []))).sort();
 
-        // Extract all unique tags
-        const tags = new Set<string>();
-        allBlogs.forEach((blog) => {
-          blog.metadata.tags?.forEach((tag) => tags.add(tag));
-        });
-        setAllTags(Array.from(tags).sort());
-      } catch (error) {
-        console.error("Error loading blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBlogs();
-  }, []);
-
-  // Filter blogs when selectedTag or searchQuery changes
-  useEffect(() => {
-    let filtered = blogs;
-
-    // Apply tag filter
-    if (selectedTag) {
-      const decodedTag = decodeURIComponent(selectedTag);
-      filtered = filtered.filter((blog) =>
-        blog.metadata.tags?.includes(decodedTag)
-      );
+  // Mapping from BlogPost to the internal BlogPreview structure
+  const blogPreviews = blogPosts.map(post => ({
+    slug: post.slug,
+    metadata: {
+      title: post.title,
+      excerpt: post.excerpt,
+      publishedDate: post.date,
+      tags: post.tags,
+      coverImage: post.image,
+      author: post.author,
     }
+  }));
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((blog) =>
-        blog.metadata.title.toLowerCase().includes(query) ||
-        blog.metadata.excerpt.toLowerCase().includes(query) ||
-        (blog.metadata.tags?.some((tag) =>
-          tag.toLowerCase().includes(query)
-        ) ?? false)
-      );
-    }
-
-    setFilteredBlogs(filtered);
-  }, [selectedTag, searchQuery, blogs]);
+  const filteredBlogs = blogPreviews.filter(blog => {
+    const matchesTag = !selectedTag || (blog.metadata.tags?.includes(decodeURIComponent(selectedTag)));
+    const query = searchQuery.toLowerCase().trim();
+    const matchesSearch = !query || 
+      blog.metadata.title.toLowerCase().includes(query) ||
+      blog.metadata.excerpt.toLowerCase().includes(query) ||
+      blog.metadata.tags?.some(tag => tag.toLowerCase().includes(query));
+    
+    return matchesTag && matchesSearch;
+  });
 
   const handleTagClick = (tag: string) => {
-    // Toggle logic: if clicking the same tag, clear it. Otherwise, set it.
     if (selectedTag === tag) {
       setSearchParams({});
     } else {
@@ -89,11 +69,11 @@ export const BlogsPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (loading) {
-    return <div className="blogs-page">Loading blogs...</div>;
+  if (isLoading) {
+    return <div className="blogs-page flex items-center justify-center min-h-[50vh]">Loading blogs...</div>;
   }
 
-  if (blogs.length === 0) {
+  if (blogPosts.length === 0) {
     return (
       <div className="blogs-page">
         <header className="blogs-header">
@@ -255,3 +235,5 @@ export const BlogsPage: React.FC = () => {
     </div>
   );
 };
+
+export default BlogsPage;

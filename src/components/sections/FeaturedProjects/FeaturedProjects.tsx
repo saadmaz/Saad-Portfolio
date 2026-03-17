@@ -2,12 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
-import { dataManager, Project } from "@/shared/lib/dataManager";
+import { useFeaturedProjects } from "@/shared/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-
-// use the three most recent projects regardless of featured flag
-const featuredProjects: Project[] = dataManager.getRecentProjects(3);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,6 +25,18 @@ const itemVariants = {
 };
 
 export function FeaturedProjects() {
+  const { data: featuredProjects, isLoading, error } = useFeaturedProjects();
+
+  if (isLoading) {
+    return (
+      <section className="py-12 bg-secondary/30">
+        <div className="section-container text-center">
+          <p className="text-muted-foreground">Loading featured projects...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-12 bg-secondary/30">
       <div className="section-container">
@@ -59,7 +67,7 @@ export function FeaturedProjects() {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-center"
         >
-          {featuredProjects.map((project) => (
+          {featuredProjects?.map((project) => (
             <motion.div
               key={project.id}
               variants={itemVariants}
@@ -78,7 +86,6 @@ export function FeaturedProjects() {
           transition={{ delay: 0.5 }}
           className="text-center mt-10"
         >
-          {/* FIX: Tight syntax for asChild to prevent hydration/child errors */}
           <Button asChild variant="outline" className="btn-outline gap-2">
             <Link to="/projects">View All Projects<ArrowUpRight className="w-4 h-4" /></Link>
           </Button>

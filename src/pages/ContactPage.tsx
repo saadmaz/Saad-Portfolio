@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useContactMutation } from "@/shared/hooks/useCommon";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -16,10 +17,18 @@ const ContactPage = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const contactMutation = useContactMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent successfully! I'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    
+    try {
+      await contactMutation.mutateAsync(formData);
+      toast.success("Message sent successfully! I'll get back to you soon.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      toast.error("Failed to send message. Please try again later.");
+    }
   };
 
   return (
@@ -213,9 +222,13 @@ const ContactPage = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="btn-primary w-full gap-2">
+                  <Button 
+                    type="submit" 
+                    className="btn-primary w-full gap-2"
+                    disabled={contactMutation.isPending}
+                  >
                     <Send className="w-4 h-4" />
-                    Send Message
+                    {contactMutation.isPending ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </div>

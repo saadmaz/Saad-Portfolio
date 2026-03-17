@@ -87,7 +87,6 @@ export function NewsletterSection() {
                     </div>
                   </div>
 
-                  {/* FIXED: No whitespace inside asChild to prevent hydration/child count errors */}
                   <Button asChild className="btn-primary w-full gap-2 mt-auto">
                     <Link to={newsletter.link}><Send className="w-4 h-4" />Subscribe Now</Link>
                   </Button>
@@ -107,7 +106,6 @@ export function NewsletterSection() {
           <p className="text-muted-foreground mb-4 text-sm"> 
             Prefer to read at your own pace?
           </p>
-          {/* FIXED: No whitespace inside asChild */}
           <Button asChild variant="outline" className="btn-outline gap-2">
             <Link to="/blog">Read the Blog<ArrowRight className="w-4 h-4" /></Link>
           </Button>

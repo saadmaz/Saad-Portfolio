@@ -13,7 +13,7 @@ import CertificationsPage from "../pages/CertificationsPage";
 import CertificateDetailPage from "../pages/CertificateDetailPage";
 import AboutPage from "../pages/AboutPage";
 import ContactPage from "../pages/ContactPage";
-import BlogPage from "../pages/BlogPage";
+import BlogsPage from "../pages/BlogsPage";
 import BlogDetailPage from "../pages/BlogDetailPage";
 import NewslettersPage from "../pages/NewslettersPage";
 import EventsPage from "../pages/EventsPage";
@@ -41,7 +41,7 @@ const App = () => (
             <Route path="/certifications/:id" element={<CertificateDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog" element={<BlogsPage />} />
             <Route path="/blog/:slug" element={<BlogDetailPage />} />
             <Route path="/newsletters" element={<NewslettersPage />} />
             <Route path="/events" element={<EventsPage />} />
