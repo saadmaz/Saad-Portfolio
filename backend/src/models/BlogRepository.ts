@@ -10,11 +10,18 @@ export class BlogRepository extends BaseRepository<BlogPost> {
    * Get all published blog posts.
    */
   async getPublished(): Promise<BlogPost[]> {
+    const cacheKey = `${this.collectionName}_published`;
+    const cached = this.getCache<BlogPost[]>(cacheKey);
+    if (cached) return cached;
+
     const snapshot = await this.collection.where('published', '==', true).orderBy('date', 'desc').get();
-    return snapshot.docs.map(doc => ({
+    const result = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id
     } as unknown as BlogPost));
+    
+    this.setCache(cacheKey, result);
+    return result;
   }
 
   /**
@@ -29,6 +36,10 @@ export class BlogRepository extends BaseRepository<BlogPost> {
    * Get the latest published blog post.
    */
   async getLatest(): Promise<BlogPost | null> {
+    const cacheKey = `${this.collectionName}_latest`;
+    const cached = this.getCache<BlogPost>(cacheKey);
+    if (cached) return cached;
+
     const snapshot = await this.collection
       .where('published', '==', true)
       .where('is_latest', '==', true)
@@ -36,10 +47,14 @@ export class BlogRepository extends BaseRepository<BlogPost> {
       .get();
     
     if (snapshot.empty) return null;
-    return {
+    
+    const result = {
       ...snapshot.docs[0].data(),
       id: snapshot.docs[0].id
     } as unknown as BlogPost;
+    
+    this.setCache(cacheKey, result);
+    return result;
   }
 }
 

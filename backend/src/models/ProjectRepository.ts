@@ -10,11 +10,18 @@ export class ProjectRepository extends BaseRepository<Project> {
    * Get all featured projects.
    */
   async getFeatured(): Promise<Project[]> {
+    const cacheKey = `${this.collectionName}_featured`;
+    const cached = this.getCache<Project[]>(cacheKey);
+    if (cached) return cached;
+
     const snapshot = await this.collection.where('featured', '==', true).orderBy('order_index', 'asc').get();
-    return snapshot.docs.map(doc => ({
+    const result = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id
     } as unknown as Project));
+    
+    this.setCache(cacheKey, result);
+    return result;
   }
 
   /**

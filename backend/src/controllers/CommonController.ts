@@ -3,9 +3,13 @@ import {
   experienceRepository, 
   skillRepository, 
   certificateRepository, 
-  contactRepository 
+  contactRepository,
+  eventRepository,
+  newsletterRepository,
+  hostingRepository
 } from '../models/index.js';
 import { ContactMessageSchema } from '../schemas/index.js';
+import { sendContactEmail } from '../utils/email.js';
 
 export const getWorkExperience = async (req: Request, res: Response) => {
   try {
@@ -39,22 +43,81 @@ export const getCertificates = async (req: Request, res: Response) => {
 
 export const submitContactForm = async (req: Request, res: Response) => {
   try {
-    // Note: validation happens in middleware
-    const contactData = req.body;
+    // Validation happens in middleware via ContactMessageSchema
+    const { name, email, subject, message } = req.body;
+
+    // 1. Save to Firestore
     const newMessage = await contactRepository.create({
-      ...contactData,
-      sent: true,
+      name,
+      email,
+      subject,
+      message,
+      sent: false,
       user_agent: req.headers['user-agent'],
       ip_address: req.ip
     });
-    
-    // TODO: Integrate with SendGrid if needed
-    
+
+    // 2. Send email notification via SendGrid (non-blocking on failure)
+    try {
+      await sendContactEmail({ name, email, subject, message });
+      // Mark as sent in Firestore only if email succeeded
+      await contactRepository.update(newMessage.id as string, { sent: true });
+    } catch (emailError: unknown) {
+      const emailMsg = emailError instanceof Error ? emailError.message : 'Unknown email error';
+      console.error('⚠️  Email notification failed (message still saved):', emailMsg);
+    }
+
     res.status(201).json({ 
       success: true, 
-      data: newMessage, 
-      message: 'Contact form submitted successfully' 
+      data: { id: newMessage.id }, 
+      message: "Message sent successfully! I'll get back to you soon." 
     });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getEvents = async (req: Request, res: Response) => {
+  try {
+    const events = await eventRepository.getAll();
+    res.json({ success: true, data: events });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getNewsletters = async (req: Request, res: Response) => {
+  try {
+    const { type } = req.query;
+    let newsletters;
+    
+    if (type === 'founder' || type === 'cse') {
+      newsletters = await newsletterRepository.getByType(type);
+    } else {
+      newsletters = await newsletterRepository.getAll();
+    }
+    
+    res.json({ success: true, data: newsletters });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getHosting = async (req: Request, res: Response) => {
+  try {
+    const { active } = req.query;
+    let hosting;
+    
+    if (active === 'true') {
+      hosting = await hostingRepository.getActive();
+    } else {
+      hosting = await hostingRepository.getAll();
+    }
+    
+    res.json({ success: true, data: hosting });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({ success: false, error: message });

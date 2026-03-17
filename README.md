@@ -1,129 +1,94 @@
-# Portfolio
+# 🗂️ Portfolio Monorepo
 
-A modern, professional portfolio website built with React, TypeScript, and Tailwind CSS.
+A modern, professional portfolio built with a React/Vite frontend and a Node.js/Express backend powered by Firebase Firestore.
 
 ## 🚀 Features
 
-- **Responsive Design**: Optimized for all devices
-- **Modern UI**: Clean, professional interface
-- **Type-Safe**: Full TypeScript implementation
-- **Scalable Architecture**: Modular, maintainable codebase
-- **Performance Optimized**: Fast loading and smooth interactions
+- **Monorepo Architecture**: Clean separation between frontend client and backend API.
+- **Frontend**: React 18, TypeScript, TailwindCSS, Framer Motion, and TanStack Query (React Query) for smart caching.
+- **Backend**: Node.js, Express, TypeScript, Zod validation, and Firebase Admin.
+- **Database**: Firebase Firestore with a robust `BaseRepository` caching layer.
+- **Zero-Downtime Data**: Frontend elegantly falls back to local static JSON files if the backend goes down.
+- **Performance**: Code splitting via React `lazy()` and aggressive memory caching on the API.
 
 ## 🏗️ Architecture
 
+```text
+Portfolio/
+├── package.json           # Root workspace config & concurrently scripts
+├── frontend/              # React + Vite Client
+│   ├── src/
+│   │   ├── app/           # React bootstrap & QueryClient setup
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Lazy-loaded route components
+│   │   └── shared/        # Hooks (TanStack Query) & generic API clients
+│   └── .env.example
+└── backend/               # Node + Express API
+    ├── src/
+    │   ├── server.ts      # Express bootstrap & rate-limiting
+    │   ├── controllers/   # Request handling logic
+    │   ├── models/        # Firestore Repositories with TTL Caching
+    │   ├── schemas/       # Zod validation schemas
+    │   └── routes/        # Public & Admin Express routers
+    └── .env.example
 ```
-src/
-├── app/                 # Application entry points
-│   ├── App.tsx         # Main app component
-│   ├── main.tsx        # React entry point
-│   └── index.css       # Global styles
-├── components/         # Reusable UI components
-├── pages/             # Page components
-├── shared/            # Shared utilities
-│   ├── hooks/         # Custom React hooks
-│   └── lib/           # Utility libraries
-├── services/          # External services & APIs
-├── types/             # TypeScript type definitions
-├── constants/         # Application constants
-├── data/              # Static data & content
-└── assets/            # Static assets
-```
 
-## 🛠️ Tech Stack
-
-- **Frontend**: React 18, TypeScript
-- **Styling**: Tailwind CSS
-- **Build Tool**: Vite
-- **Package Manager**: Bun
-- **Deployment**: Vercel
-
-## 📁 Project Structure
-
-This project follows an industrial-grade folder structure designed for scalability:
-
-- **`app/`**: Application bootstrap and global configuration
-- **`components/`**: Reusable UI components organized by feature
-- **`pages/`**: Route-level page components
-- **`shared/`**: Cross-cutting concerns (hooks, utilities, types)
-- **`services/`**: API clients and external service integrations
-- **`data/`**: Static content and configuration data
-- **`assets/`**: Images, fonts, and other static resources
-
-## 🚀 Getting Started
+## 🛠️ Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- Bun (recommended) or npm
+- **Node.js**: v20+ recommended
+- **Firebase**: A Firebase project with Firestore enabled
 
-### Installation
+### 1. Installation
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd portfolio
-
-# Install dependencies
-bun install
-
-# Start development server
-bun run dev
-
-# Build for production
-bun run build
-```
-
-### Available Scripts
-
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run preview` - Preview production build
-- `bun run lint` - Run ESLint
-
-## 📚 Documentation
-
-Detailed documentation is available in the `docs/` folder:
-
-- [Data Structure Guide](docs/PORTFOLIO_SUMMARY.md) - Complete data organization guide
-
-## 🔧 Development
-
-### Code Style
-
-- **TypeScript**: Strict type checking enabled
-- **ESLint**: Code linting and formatting
-- **Prettier**: Consistent code formatting
-
-### Folder Conventions
-
-- Use `PascalCase` for component files (e.g., `Button.tsx`)
-- Use `kebab-case` for utility files (e.g., `date-utils.ts`)
-- Group related components in subfolders
-- Export from `index.ts` files for clean imports
-
-## 🚀 Deployment
-
-This project is configured for deployment on Vercel:
+Install dependencies for the root, frontend, and backend simultaneously:
 
 ```bash
-# Deploy to Vercel
-bun run build
-vercel --prod
+cd Portfolio
+npm install
 ```
 
-## 🤝 Contributing
+### 2. Environment Variables
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+**Backend (`backend/.env`):**
+Copy `backend/.env.example` to `backend/.env` and fill in your Firebase credentials.
 
-## 📄 License
+```env
+PORT=3001
+FIREBASE_PROJECT_ID=your-project-id
+# (Optional) Admin authentication
+ADMIN_SECRET=your-secure-password
+```
 
-This project is private and proprietary.
+**Frontend (`frontend/.env`):**
+Copy `frontend/.env.example` to `frontend/.env`.
 
----
+```env
+VITE_API_URL=http://localhost:3001/api
+```
 
-Built with ❤️ using modern web technologies.
+### 3. Local Development
+
+Run both the frontend and backend concurrently from the root directory:
+
+```bash
+npm run dev
+```
+
+- **Frontend**: <http://localhost:5173>
+- **Backend API**: <http://localhost:3001/health>
+
+## 📦 Deployment
+
+### Frontend (Vercel)
+
+The frontend is optimized for zero-config Vercel deployment. Ensure the Build Command is `npm run build` and the output directory is `dist`. Set the `VITE_API_URL` environment variable to your production backend URL.
+
+### Backend (Render / Railway / Vercel API)
+
+The backend compiles to raw JavaScript (`npm run build`). It can be hosted on any Node.js provider. Ensure you set all required production environment variables.
+
+## 🧪 CI/CD
+
+This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that automatically runs linting, backend type-checking, and frontend builds on every Push and Pull Request to the `main` branch.

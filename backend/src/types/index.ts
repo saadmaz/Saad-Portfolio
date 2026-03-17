@@ -131,7 +131,49 @@ export interface ContactMessage {
   ip_address?: string;
   user_agent?: string;
   sent: boolean;
-  created_at: Date;
+  created_at?: Date;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  location: string;
+  description: string;
+  image?: string;
+  link?: string;
+  achievement?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Newsletter {
+  id: string;
+  type: 'founder' | 'cse';
+  title: string;
+  date: string;
+  issue: number;
+  description: string;
+  link: string;
+  subscribers: number;
+  is_latest?: boolean;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Hosting {
+  id: string;
+  type: 'blog' | 'app' | 'api';
+  title: string;
+  url: string;
+  platform: string;
+  deploy_date: string;
+  status: string;
+  description: string;
+  technologies: string[];
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface User {
@@ -141,6 +183,7 @@ export interface User {
   role: string;
   created_at: Date;
 }
+
 
 // API Response Types
 export interface ApiResponse<T = any> {

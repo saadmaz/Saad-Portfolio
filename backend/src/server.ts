@@ -14,6 +14,23 @@ import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
+// --- Startup Environment Validation ---
+const REQUIRED_ENV = ['FIREBASE_PROJECT_ID'];
+const OPTIONAL_BUT_WARN = ['ADMIN_SECRET', 'SENDGRID_API_KEY', 'FRONTEND_URL'];
+
+REQUIRED_ENV.forEach(key => {
+  if (!process.env[key]) {
+    console.error(`❌ Missing required environment variable: ${key}. Exiting.`);
+    process.exit(1);
+  }
+});
+
+OPTIONAL_BUT_WARN.forEach(key => {
+  if (!process.env[key]) {
+    console.warn(`⚠️  Optional env variable not set: ${key}. Some features may be disabled.`);
+  }
+});
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -25,7 +42,8 @@ connectDB().then(() => {
 // Security & Base Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+  // FIX: changed default from :8080 to :5173 (Vite default dev port)
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
 }));
 
@@ -39,6 +57,17 @@ const limiter = rateLimit({
   }
 });
 app.use('/api/', limiter);
+
+// Stricter rate limit specifically for the contact form (anti-spam)
+const contactLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5,
+  message: {
+    success: false,
+    error: 'Too many contact form submissions. Please wait before trying again.'
+  }
+});
+app.use('/api/contact', contactLimiter);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));

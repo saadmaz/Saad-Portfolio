@@ -22,7 +22,9 @@ router.get('/blog-posts/:slug', BlogController.getBlogPostBySlug);
 router.get('/work-experience', CommonController.getWorkExperience);
 router.get('/skills', CommonController.getSkills);
 router.get('/certificates', CommonController.getCertificates);
-
+router.get('/events', CommonController.getEvents);
+router.get('/newsletters', CommonController.getNewsletters);
+router.get('/hosting', CommonController.getHosting);
 // Contact route with validation
 router.post('/contact', validate(z.object({ body: ContactMessageSchema })), CommonController.submitContactForm);
 

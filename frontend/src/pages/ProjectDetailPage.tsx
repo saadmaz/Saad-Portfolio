@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useProject } from "@/shared/hooks/useProjects";
 import { Layout } from "@/components/layout/Layout";
-import { dataManager, Project } from "@/shared/lib/dataManager";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ExternalLink, Github, ChevronLeft, PlayCircle, 
@@ -18,23 +19,40 @@ import {
  * - Naturally scrolling sidebar (un-frozen)
  */
 const ProjectDetailPage = () => {
-  // --- 1. STATE & ROUTING ---
   const { slug } = useParams<{ slug: string }>();
-  // State to track which image is currently selected for the full-screen lightbox
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  let project: Project | undefined;
+  // Fetch project via TanStack Query – falls back to static data if API is offline
+  const { data: project, isLoading, isError } = useProject(slug || "");
 
-  // Retrieve project by slug; fallback to numeric ID if needed
-  if (slug) {
-    project = dataManager.getProjectBySlug(slug);
-    if (!project && !isNaN(Number(slug))) {
-      project = dataManager.getProjectById(Number(slug));
-    }
+  // --- LOADING STATE ---
+  if (isLoading) {
+    return (
+      <Layout>
+        <section className="pt-8 pb-24 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Skeleton className="h-4 w-32 mb-10" />
+            <Skeleton className="h-12 w-2/3 mb-4" />
+            <Skeleton className="h-6 w-1/2 mb-8" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+              <div className="lg:col-span-8 space-y-6">
+                <Skeleton className="h-[450px] w-full rounded-2xl" />
+                <Skeleton className="h-32 w-full rounded-xl" />
+                <Skeleton className="h-48 w-full rounded-xl" />
+              </div>
+              <div className="lg:col-span-4 space-y-6">
+                <Skeleton className="h-64 w-full rounded-2xl" />
+                <Skeleton className="h-48 w-full rounded-2xl" />
+              </div>
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
   }
 
-  // --- 2. 404 ERROR STATE ---
-  if (!project) {
+  // --- 404 / ERROR STATE ---
+  if (isError || !project) {
     return (
       <Layout>
         <section className="min-h-[70vh] flex flex-col items-center justify-center text-center">

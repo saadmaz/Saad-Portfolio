@@ -361,8 +361,7 @@ export class DataManager {
    * Get all hosting info (latest first)
    */
   async getHosting(): Promise<Hosting[]> {
-    const res = await fetch("http://localhost:3001/api/hosting");
-    return await res.json();
+    return await apiClient.get("/hosting");
   }
 
   /**
