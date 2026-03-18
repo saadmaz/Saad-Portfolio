@@ -6,6 +6,8 @@
     "backend"
   ],
   "scripts": {
+    "prefrontend:dev": "npx kill-port 8080",
+    "prebackend:dev": "npx kill-port 3001",
     "frontend:dev": "npm --prefix frontend run dev",
     "backend:dev": "npm --prefix backend run dev",
     "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
