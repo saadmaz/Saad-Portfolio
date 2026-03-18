@@ -44,7 +44,9 @@
     /* ==========================================
        THE "PROFESSIONAL BLUE" UPGRADE
        ========================================== */
-    --accent: 190 90% 45%; 
+    /* Accent - Professional "Enterprise Blue" (Stripe/Vercel inspired).
+       This is a deep, rich cobalt that conveys seniority. */
+    --accent: 224 76% 48%; 
     --accent-foreground: 0 0% 100%;
 
     /* LEGACY BLUE (Get in Touch): 
@@ -68,8 +70,8 @@
     --navy-light: 222 47% 20%;
     --slate: 215 20% 65%;
     --slate-light: 220 14% 96%;
-    --blue-accent: 190 90% 45%; 
-    --blue-soft: 190 90% 95%;
+    --blue-accent: 224 76% 48%; 
+    --blue-soft: 217 91% 95%;
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
     
@@ -77,8 +79,8 @@
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 99%) 100%);
     --gradient-navy: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 18%) 100%);
-    /* Hover Gradient: Shifts from Teal to a deeper Cyan */
-    --gradient-accent: linear-gradient(135deg, hsl(190 90% 45%) 0%, hsl(195 100% 40%) 100%);
+    /* Hover Gradient: Shifts from Royal Blue to a deeper Cobalt-Navy */
+    --gradient-accent: linear-gradient(135deg, hsl(224 76% 48%) 0%, hsl(226 71% 40%) 100%);
     
     /* --- REFINED SHADOWS --- */
     --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
@@ -119,9 +121,9 @@
     --muted: 222 47% 15%;
     --muted-foreground: 215 20% 65%;
     
-    /* Luminous Teal for Dark Mode visibility */
-    --accent: 190 100% 50%;
-    --accent-foreground: 222 47% 6%;
+    /* Luminous Blue for Dark Mode visibility */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -134,8 +136,8 @@
     --navy-light: 215 20% 85%;
     --slate: 215 20% 45%;
     --slate-light: 222 47% 15%;
-    --blue-accent: 190 100% 50%;
-    --blue-soft: 190 100% 10%;
+    --blue-accent: 217 91% 60%;
+    --blue-soft: 217 91% 15%;
     
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 10%) 100%);
@@ -312,7 +314,7 @@
   }
 
   .btn-outline:hover {
-    @apply text-foreground border-transparent shadow-lg scale-[1.02];
+    @apply text-white border-transparent shadow-lg scale-[1.02];
     background-image: var(--gradient-accent);
   }
   
