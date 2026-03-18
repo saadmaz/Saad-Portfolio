@@ -130,7 +130,7 @@ export function Header() {
                 </motion.div>
               </button>
               
-              <Button asChild variant="default" size="sm" className="btn-primary gap-2">
+              <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-white/90 gap-2 shadow-sm">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Download Resume</a>
               </Button>
             </div>
@@ -140,7 +140,7 @@ export function Header() {
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
-              <Button asChild variant="default" size="sm" className="btn-primary gap-2 px-3">
+              <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-white/90 gap-2 px-3 shadow-sm">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Resume</a>
               </Button>
 

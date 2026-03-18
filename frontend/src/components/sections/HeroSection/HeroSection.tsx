@@ -56,7 +56,7 @@ export function HeroSection() {
               transition={{ duration: 0.5 }}
               className="flex justify-center lg:justify-start"
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] md:text-xs font-bold uppercase tracking-widest">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0a1618] border border-accent/20 text-accent text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.1)]">
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                 Currently building Tank Sudda & Stopwash
               </span>
@@ -71,8 +71,8 @@ export function HeroSection() {
               <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.05] tracking-tight">
                 Hi, I'm{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-primary dark:text-white">Saad Mazhar</span>    
-                  <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-3 md:h-4 bg-accent/20 -z-10 rounded-sm" />
+                  <span className="relative z-10 text-foreground dark:text-white">Saad Mazhar</span>    
+                  <span className="absolute bottom-1 md:bottom-2 left-0 w-full h-4 md:h-6 bg-accent/10 -z-10 rounded-lg blur-md" />
                 </span>
               </h1>
               
@@ -97,7 +97,7 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-2"
             >
-              <Button asChild className="btn-primary gap-2 h-12 shadow-xl shadow-primary/10">
+              <Button asChild className="bg-white text-black hover:bg-white/90 gap-2 h-12 shadow-xl shadow-white/5 border-none">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf">
                   <Download className="w-4 h-4" />
                   Download Resume
@@ -107,7 +107,7 @@ export function HeroSection() {
               <Button 
                 asChild 
                 variant="outline" 
-                className="btn-outline gap-2 h-12 border-accent/30 hover:border-accent"
+                className="btn-outline gap-2 h-12 border-accent/30 hover:border-accent group bg-transparent"
               >
                 <Link to="/contact">
                   Get in Touch
@@ -136,7 +136,7 @@ export function HeroSection() {
                     href={social.href}
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl bg-white/[0.03] border border-white/5 text-muted-foreground transition-all hover:text-accent hover:border-accent/40 hover:bg-accent/5 active:scale-90"
+                    className="p-3 rounded-lg bg-white/[0.03] border border-white/5 text-muted-foreground transition-all hover:text-accent hover:border-accent/40 hover:bg-accent/5 active:scale-90"
                     aria-label={social.label}
                   >
                     <social.icon className="w-4 h-4" />
