@@ -1,0 +1,157 @@
+import React, { useEffect, useState } from 'react';
+import { CommonService } from '@/shared/services/common-service';
+import { Testimonial } from '@/types';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Quote, Edit2, Trash2, User } from 'lucide-react';
+import { toast } from "sonner";
+import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
+import * as z from 'zod';
+
+const testimonialSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  position: z.string().min(1, 'Position is required'),
+  company: z.string().min(1, 'Company is required'),
+  content: z.string().min(10, 'Content must be at least 10 characters'),
+  avatar: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+});
+
+const testimonialFields = [
+  { name: 'name', label: 'Author Name', type: 'text', placeholder: 'e.g. John Doe' },
+  { name: 'position', label: 'Position', type: 'text', placeholder: 'e.g. Senior Software Engineer' },
+  { name: 'company', label: 'Company', type: 'text', placeholder: 'e.g. Tech Corp' },
+  { name: 'content', label: 'Testimonial Content', type: 'textarea', placeholder: 'What did they say?' },
+  { name: 'avatar', label: 'Avatar URL (Optional)', type: 'text', placeholder: 'https://...' },
+] as const;
+
+const AdminTestimonials = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const fetchTestimonials = async () => {
+    setIsLoading(true);
+    try {
+      const data = await CommonService.getTestimonials();
+      setTestimonials(data);
+    } catch (error) {
+      toast.error('Failed to load testimonials');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    setCurrentTestimonial(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (test: Testimonial) => {
+    setCurrentTestimonial(test);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
+    try {
+      await CommonService.deleteTestimonial(id);
+      toast.success('Testimonial deleted successfully');
+      fetchTestimonials();
+    } catch (error) {
+      toast.error('Failed to delete testimonial');
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    try {
+      if (currentTestimonial) {
+        await CommonService.updateTestimonial(currentTestimonial.id, data);
+        toast.success('Testimonial updated successfully');
+      } else {
+        await CommonService.createTestimonial(data);
+        toast.success('Testimonial created successfully');
+      }
+      fetchTestimonials();
+    } catch (error) {
+      toast.error('Failed to save testimonial');
+      throw error;
+    }
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-1">Testimonials</h1>
+          <p className="text-muted-foreground">Manage recommendations from colleagues and clients.</p>
+        </div>
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+          <Plus className="w-4 h-4 mr-2" /> Add Testimonial
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {isLoading && !isDialogOpen ? (
+          [1, 2].map(i => (
+            <div key={i} className="h-48 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+          ))
+        ) : testimonials.length > 0 ? (
+          testimonials.map((test) => (
+            <Card key={test.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden relative group">
+              <CardContent className="p-6">
+                <Quote className="absolute top-4 right-4 w-10 h-10 text-white/5 group-hover:text-accent/10 transition-colors" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 border border-white/10 flex items-center justify-center text-accent overflow-hidden">
+                    {test.avatar ? (
+                      <img src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-lg font-bold">{test.name.charAt(0)}</span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white">{test.name}</h3>
+                    <p className="text-xs text-muted-foreground">{test.position} at {test.company}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-white/70 italic leading-relaxed line-clamp-4 mb-4">
+                  "{test.content}"
+                </p>
+                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(test)} className="h-8 w-8 hover:bg-white/10">
+                    <Edit2 className="w-4 h-4 text-muted-foreground" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="md:col-span-2 rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
+            <h3 className="text-lg font-medium text-white mb-1">No testimonials yet</h3>
+            <p className="text-muted-foreground">Showcase what people are saying about your work.</p>
+          </div>
+        )}
+      </div>
+
+      <AdminEntityDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={currentTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}
+        fields={testimonialFields}
+        schema={testimonialSchema}
+        defaultValues={currentTestimonial || {}}
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
+    </div>
+  );
+};
+
+export default AdminTestimonials;

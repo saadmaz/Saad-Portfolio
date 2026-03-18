@@ -54,58 +54,66 @@ const AdminExperience = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Experience</h1>
-          <p className="text-muted-foreground">Manage your career timeline and roles.</p>
+          <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Experience</h1>
+          <p className="text-muted-foreground">Manage your professional career timeline and roles.</p>
         </div>
         <Button 
           onClick={() => navigate('/admin/experience/new')}
-          className="bg-accent hover:bg-accent/90 text-black font-semibold"
+          className="bg-accent hover:bg-accent/90 text-black font-bold shadow-[0_0_20px_rgba(255,184,0,0.2)] rounded-xl transition-all hover:scale-105 active:scale-95"
         >
-          <Plus className="w-4 h-4 mr-2" /> Add Experience
+          <Plus className="w-5 h-5 mr-2" /> Add Experience
         </Button>
       </div>
 
       <div className="grid gap-4">
         {isLoading ? (
-          [1, 2].map(i => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)
+          [1, 2].map(i => <div key={i} className="h-28 bg-white/5 border border-white/5 rounded-2xl animate-pulse" />)
         ) : experience.length > 0 ? (
           experience.map((exp) => (
-            <Card key={exp.id} className="bg-white/5 border-white/10 overflow-hidden group">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/20">
-                  <Briefcase className="w-6 h-6 text-accent" />
+            <Card key={exp.id} className="bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all group overflow-hidden rounded-2xl">
+              <CardContent className="p-5 flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0 shadow-lg">
+                  <Briefcase className="w-7 h-7" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-white">{exp.position}</h3>
-                  <p className="text-sm text-muted-foreground font-medium">{exp.company}</p>
-                  <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground uppercase tracking-wider font-bold">
-                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {exp.location}</span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-white text-lg group-hover:text-accent transition-colors truncate">{exp.position}</h3>
+                    {exp.isCurrent && (
+                      <span className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-[10px] font-black uppercase tracking-widest border border-green-500/20">Current</span>
+                    )}
+                  </div>
+                  <p className="text-white/60 font-semibold mb-2">{exp.company}</p>
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-white/40 font-medium">
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-accent" /> {exp.startDate} — {exp.isCurrent ? 'Present' : exp.endDate}</span>
+                    <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-accent" /> {exp.location}</span>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="hover:bg-white/10">
-                      <MoreVertical className="w-4 h-4 text-muted-foreground" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-[#0a0a0a] border-white/10 text-white">
-                    <DropdownMenuItem 
-                      className="hover:bg-accent hover:text-black cursor-pointer"
-                      onClick={() => navigate(`/admin/experience/${exp.id}`)}
-                    >
-                      <Edit2 className="w-4 h-4 mr-2" /> Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      className="hover:bg-red-500 hover:text-white cursor-pointer text-red-400"
-                      onClick={() => handleDelete(exp.id)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" /> Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                
+                <div className="flex items-center gap-2 ml-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/10 active:scale-90 transition-all">
+                        <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-[#0f0f0f] border-white/10 text-white rounded-xl shadow-2xl p-1">
+                      <DropdownMenuItem 
+                        className="hover:bg-accent hover:text-black cursor-pointer rounded-lg m-1 py-2 font-semibold"
+                        onClick={() => navigate(`/admin/experience/${exp.id}`)}
+                      >
+                        <Edit2 className="w-4 h-4 mr-2" /> Edit Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="hover:bg-red-500/20 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-2 font-semibold"
+                        onClick={() => handleDelete(exp.id)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </CardContent>
             </Card>
           ))

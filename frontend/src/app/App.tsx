@@ -38,6 +38,13 @@ const ExperienceForm = React.lazy(() => import("../components/admin/ExperienceFo
 const AdminSkills = React.lazy(() => import("../pages/admin/AdminSkills"));
 const AdminCertificates = React.lazy(() => import("../pages/admin/AdminCertificates"));
 const CertificateForm = React.lazy(() => import("../components/admin/CertificateForm"));
+const AdminAwards = React.lazy(() => import("../pages/admin/AdminAwards"));
+const AdminLanguages = React.lazy(() => import("../pages/admin/AdminLanguages"));
+const AdminHackathons = React.lazy(() => import("../pages/admin/AdminHackathons"));
+const AdminTestimonials = React.lazy(() => import("../pages/admin/AdminTestimonials"));
+const AdminVolunteer = React.lazy(() => import("../pages/admin/AdminVolunteer"));
+const AdminEducation = React.lazy(() => import("../pages/admin/AdminEducation"));
+const AdminLogs = React.lazy(() => import("../pages/admin/AdminLogs"));
 
 import { AuthProvider } from "@/shared/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -112,6 +119,13 @@ const App = () => (
                     <Route path="certificates" element={<AdminCertificates />} />
                     <Route path="certificates/new" element={<CertificateForm />} />
                     <Route path="certificates/:id" element={<CertificateForm />} />
+                    <Route path="awards" element={<AdminAwards />} />
+                    <Route path="languages" element={<AdminLanguages />} />
+                    <Route path="hackathons" element={<AdminHackathons />} />
+                    <Route path="testimonials" element={<AdminTestimonials />} />
+                    <Route path="volunteer" element={<AdminVolunteer />} />
+                    <Route path="education" element={<AdminEducation />} />
+                    <Route path="logs" element={<AdminLogs />} />
                     <Route index element={<AdminDashboard />} />
                   </Route>
 

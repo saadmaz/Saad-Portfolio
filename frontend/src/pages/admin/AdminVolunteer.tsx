@@ -1,0 +1,155 @@
+import React, { useEffect, useState } from 'react';
+import { CommonService } from '@/shared/services/common-service';
+import { VolunteerExperience } from '@/types';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Heart, Edit2, Trash2, Calendar, MapPin } from 'lucide-react';
+import { toast } from "sonner";
+import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
+import * as z from 'zod';
+
+const volunteerSchema = z.object({
+  role: z.string().min(1, 'Role is required'),
+  organization: z.string().min(1, 'Organization is required'),
+  startDate: z.string().min(1, 'Start date is required'),
+  endDate: z.string().optional(),
+  isCurrent: z.boolean().optional(),
+  description: z.string().optional(),
+});
+
+const volunteerFields = [
+  { name: 'role', label: 'Role / Position', type: 'text', placeholder: 'e.g. Volunteer Teacher' },
+  { name: 'organization', label: 'Organization', type: 'text', placeholder: 'e.g. Red Cross' },
+  { name: 'startDate', label: 'Start Date', type: 'text', placeholder: 'e.g. Jan 2022' },
+  { name: 'endDate', label: 'End Date (Optional)', type: 'text', placeholder: 'e.g. Dec 2022' },
+  { name: 'description', label: 'Description', type: 'textarea', placeholder: 'What was your impact?' },
+] as const;
+
+const AdminVolunteer = () => {
+  const [volunteer, setVolunteer] = useState<VolunteerExperience[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentExp, setCurrentExp] = useState<VolunteerExperience | null>(null);
+
+  useEffect(() => {
+    fetchVolunteer();
+  }, []);
+
+  const fetchVolunteer = async () => {
+    setIsLoading(true);
+    try {
+      const data = await CommonService.getVolunteerExperience();
+      setVolunteer(data);
+    } catch (error) {
+      toast.error('Failed to load volunteer experience');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    setCurrentExp(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (exp: VolunteerExperience) => {
+    setCurrentExp(exp);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this experience?')) return;
+    try {
+      await CommonService.deleteVolunteerExperience(id);
+      toast.success('Experience deleted successfully');
+      fetchVolunteer();
+    } catch (error) {
+      toast.error('Failed to delete experience');
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    try {
+      if (currentExp) {
+        await CommonService.updateVolunteerExperience(currentExp.id, data);
+        toast.success('Experience updated successfully');
+      } else {
+        await CommonService.createVolunteerExperience(data);
+        toast.success('Experience created successfully');
+      }
+      fetchVolunteer();
+    } catch (error) {
+      toast.error('Failed to save experience');
+      throw error;
+    }
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-1">Volunteer Work</h1>
+          <p className="text-muted-foreground">Manage your community service and volunteer experiences.</p>
+        </div>
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+          <Plus className="w-4 h-4 mr-2" /> Add Experience
+        </Button>
+      </div>
+
+      <div className="grid gap-4">
+        {isLoading && !isDialogOpen ? (
+          [1, 2].map(i => (
+            <div key={i} className="h-28 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+          ))
+        ) : volunteer.length > 0 ? (
+          volunteer.map((exp) => (
+            <Card key={exp.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden group">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 flex-shrink-0">
+                      <Heart className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg">{exp.role}</h3>
+                      <p className="text-accent font-medium">{exp.organization}</p>
+                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 self-end md:self-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(exp)} className="hover:bg-white/10">
+                      <Edit2 className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(exp.id)} className="hover:bg-red-500/10 text-red-400">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
+            <h3 className="text-lg font-medium text-white mb-1">No volunteer work added</h3>
+            <p className="text-muted-foreground">Highlight your contributions to the community.</p>
+          </div>
+        )}
+      </div>
+
+      <AdminEntityDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={currentExp ? 'Edit Experience' : 'Add Experience'}
+        fields={volunteerFields}
+        schema={volunteerSchema}
+        defaultValues={currentExp || {}}
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
+    </div>
+  );
+};
+
+export default AdminVolunteer;

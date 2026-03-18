@@ -85,16 +85,24 @@ const AdminSkills = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Skills & Tools</h1>
-          <p className="text-muted-foreground">Manage your technical expertise and categories.</p>
+          <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Skills & Tools</h1>
+          <p className="text-muted-foreground">Manage your technical expertise and group them by category.</p>
         </div>
-        <div className="flex gap-2">
-            <Button variant="outline" onClick={addCategory} className="border-white/10 hover:bg-white/5">
+        <div className="flex flex-wrap gap-3">
+            <Button 
+              variant="outline" 
+              onClick={addCategory} 
+              className="border-white/10 hover:bg-white/5 rounded-xl px-4 py-2 text-white/80 hover:text-white transition-all shadow-lg"
+            >
                 <Plus className="w-4 h-4 mr-2" /> Add Category
             </Button>
-            <Button onClick={handleSave} disabled={isSaving} className="bg-accent hover:bg-accent/90 text-black font-bold">
+            <Button 
+              onClick={handleSave} 
+              disabled={isSaving} 
+              className="bg-accent hover:bg-accent/90 text-black font-bold shadow-[0_0_20px_rgba(255,184,0,0.2)] rounded-xl transition-all hover:scale-105 active:scale-95"
+            >
                 <Save className="w-4 h-4 mr-2" /> {isSaving ? 'Saving...' : 'Save All Changes'}
             </Button>
         </div>
@@ -104,64 +112,75 @@ const AdminSkills = () => {
         {isLoading ? (
             <div className="h-40 bg-white/5 rounded-2xl animate-pulse" />
         ) : skillSets.map((set, catIndex) => (
-          <Card key={catIndex} className="bg-white/5 border-white/10 overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-white/5 bg-white/[0.02]">
-              <div className="flex items-center gap-3">
-                <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
-                <Input 
-                  value={set.category} 
-                  onChange={(e) => {
-                    const next = [...skillSets];
-                    next[catIndex].category = e.target.value;
-                    setSkillSets(next);
-                  }}
-                  className="bg-transparent border-none text-lg font-bold p-0 h-auto focus-visible:ring-0 w-48"
-                />
+          <Card key={catIndex} className="bg-white/5 border-white/10 overflow-hidden rounded-2xl shadow-xl shadow-black/20 group/card transition-all hover:border-white/20">
+            <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-white/5 bg-white/[0.03]">
+              <div className="flex items-center gap-4 flex-1">
+                <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab active:cursor-grabbing hover:text-accent transition-colors" />
+                <div className="relative group/input flex-1 max-w-sm">
+                  <Input 
+                    value={set.category} 
+                    onChange={(e) => {
+                      const next = [...skillSets];
+                      next[catIndex].category = e.target.value;
+                      setSkillSets(next);
+                    }}
+                    className="bg-transparent border-none text-xl font-bold p-0 h-auto focus-visible:ring-0 text-white placeholder:text-white/20"
+                    placeholder="Enter category name..."
+                  />
+                  <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-accent transition-all duration-300 group-focus-within/input:w-full" />
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
+              <div className="flex items-center gap-1.5">
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-white/10" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
                     <ChevronUp className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-white/10" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
                     <ChevronDown className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-500/10" onClick={() => removeCategory(catIndex)}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg ml-1" onClick={() => removeCategory(catIndex)}>
                     <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {set.skills.map((skill, skillIndex) => (
-                  <div key={skillIndex} className="p-3 rounded-xl bg-white/3 border border-white/5 space-y-3 relative group">
-                    <div className="flex items-center justify-between">
+                  <div key={skillIndex} className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-4 relative group transition-all hover:bg-white/[0.05] hover:border-white/10 shadow-lg">
+                    <div className="flex items-center justify-between gap-2">
                         <Input 
                             value={skill.name} 
                             onChange={(e) => updateSkill(catIndex, skillIndex, 'name', e.target.value)}
-                            className="bg-transparent border-none font-medium p-0 h-auto focus-visible:ring-0 text-sm"
+                            className="bg-transparent border-none font-bold p-0 h-auto focus-visible:ring-0 text-sm text-white/90 group-hover:text-white transition-colors"
+                            placeholder="Skill name"
                         />
-                        <button onClick={() => removeSkill(catIndex, skillIndex)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500 transition-opacity">
-                            <Trash2 className="w-3 h-3" />
+                        <button 
+                          onClick={() => removeSkill(catIndex, skillIndex)} 
+                          className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500 transition-all active:scale-90"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
                         </button>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3 pt-2">
                         <select 
                             value={skill.level}
                             onChange={(e) => updateSkill(catIndex, skillIndex, 'level', e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded px-2 py-1 text-[10px] w-full"
+                            className="bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] font-bold text-white/70 outline-none focus:border-accent/50 cursor-pointer"
                         >
                             <option value="Beginner">Beginner</option>
                             <option value="Intermediate">Intermediate</option>
                             <option value="Advance">Advance</option>
                             <option value="Expert">Expert</option>
                         </select>
-                        <Input 
-                            type="number"
-                            value={skill.years}
-                            onChange={(e) => updateSkill(catIndex, skillIndex, 'years', parseInt(e.target.value))}
-                            className="bg-white/5 border-white/10 h-6 text-[10px] py-0 px-2"
-                            placeholder="Yrs"
-                        />
+                        <div className="relative">
+                          <Input 
+                              type="number"
+                              value={skill.years}
+                              onChange={(e) => updateSkill(catIndex, skillIndex, 'years', parseInt(e.target.value))}
+                              className="bg-black/40 border-white/10 h-8 text-[11px] py-0 px-3 pl-7 rounded-lg font-mono focus:border-accent/50 ring-0"
+                              placeholder="Yrs"
+                          />
+                          <Zap className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-accent" />
+                        </div>
                     </div>
                   </div>
                 ))}

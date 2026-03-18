@@ -1,0 +1,170 @@
+import React, { useEffect, useState } from 'react';
+import { CommonService } from '@/shared/services/common-service';
+import { Language } from '@/types';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Globe, Edit2, Trash2 } from 'lucide-react';
+import { toast } from "sonner";
+import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
+import * as z from 'zod';
+
+const languageSchema = z.object({
+  name: z.string().min(1, 'Language name is required'),
+  level: z.string().min(1, 'Proficiency level is required'),
+  percentage: z.number().min(0).max(100, 'Percentage must be between 0 and 100'),
+});
+
+const languageFields = [
+  { name: 'name', label: 'Language Name', type: 'text', placeholder: 'e.g. English' },
+  { 
+    name: 'level', 
+    label: 'Proficiency Level', 
+    type: 'select', 
+    placeholder: 'Select level',
+    options: [
+      { label: 'Native / Bilingual', value: 'Native / Bilingual' },
+      { label: 'Professional Working', value: 'Professional Working' },
+      { label: 'Limited Working', value: 'Limited Working' },
+      { label: 'Elementary', value: 'Elementary' },
+    ]
+  },
+  { name: 'percentage', label: 'Proficiency Percentage', type: 'number', placeholder: 'e.g. 95' },
+] as const;
+
+const AdminLanguages = () => {
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<Language | null>(null);
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const fetchLanguages = async () => {
+    setIsLoading(true);
+    try {
+      const data = await CommonService.getLanguages();
+      setLanguages(data);
+    } catch (error) {
+      toast.error('Failed to load languages');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    setCurrentLanguage(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (lang: Language) => {
+    setCurrentLanguage(lang);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this language?')) return;
+    try {
+      await CommonService.deleteLanguage(id);
+      toast.success('Language deleted successfully');
+      fetchLanguages();
+    } catch (error) {
+      toast.error('Failed to delete language');
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    try {
+      if (currentLanguage) {
+        await CommonService.updateLanguage(currentLanguage.id, data);
+        toast.success('Language updated successfully');
+      } else {
+        await CommonService.createLanguage(data);
+        toast.success('Language created successfully');
+      }
+      fetchLanguages();
+    } catch (error) {
+      toast.error('Failed to save language');
+      throw error;
+    }
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-1">Languages</h1>
+          <p className="text-muted-foreground">Manage the languages you speak and your proficiency levels.</p>
+        </div>
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+          <Plus className="w-4 h-4 mr-2" /> Add New Language
+        </Button>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {isLoading && !isDialogOpen ? (
+          [1, 2, 3, 4].map(i => (
+            <div key={i} className="h-32 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+          ))
+        ) : languages.length > 0 ? (
+          languages.map((lang) => (
+            <Card key={lang.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg">{lang.name}</h3>
+                      <p className="text-sm text-accent">{lang.level}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(lang)} className="h-8 w-8 hover:bg-white/10">
+                      <Edit2 className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Proficiency</span>
+                    <span>{lang.percentage}%</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div 
+                      className="h-full bg-accent transition-all duration-1000 ease-out"
+                      style={{ width: `${lang.percentage}%` }}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="md:col-span-2 rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
+            <h3 className="text-lg font-medium text-white mb-1">No languages added</h3>
+            <p className="text-muted-foreground">Add languages to showcase your communication skills.</p>
+          </div>
+        )}
+      </div>
+
+      <AdminEntityDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={currentLanguage ? 'Edit Language' : 'Add New Language'}
+        fields={languageFields}
+        schema={languageSchema}
+        defaultValues={currentLanguage || { percentage: 80 }}
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
+    </div>
+  );
+};
+
+export default AdminLanguages;
