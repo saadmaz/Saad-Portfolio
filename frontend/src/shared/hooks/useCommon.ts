@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { CommonService } from '../services/common-service';
+import { CommonService } from '@/shared/services/common-service';
 
 export const useExperience = () => {
   return useQuery({

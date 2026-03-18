@@ -91,4 +91,4 @@ The backend compiles to raw JavaScript (`npm run build`). It can be hosted on an
 
 ## 🧪 CI/CD
 
-This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that automatically runs linting, backend type-checking, and frontend builds on every Push and Pull Request to the `main` branch.
+This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that automatically runs linting, backend type-checking, and frontend builds on every Push and Pull Request to the `main` branch.
