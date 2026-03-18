@@ -7,7 +7,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Projects
 router.post('/projects', AdminController.createProject);
-router.get('/projects', AdminController.getAllBlogs); // Wait, this should be getAllProjects if it existed, but projects uses public controller usually.
+router.get('/projects', AdminController.getAllProjects);
 // Actually, projects list is fine via public, but for consistency:
 router.put('/projects/:id', AdminController.updateProject);
 router.delete('/projects/:id', AdminController.deleteProject);

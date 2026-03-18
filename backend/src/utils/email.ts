@@ -27,7 +27,8 @@ export const sendContactEmail = async (data: ContactEmailData) => {
 
   const msg = {
     to: process.env.TO_EMAIL,
-    from: process.env.FROM_EMAIL!,
+    from: process.env.FROM_EMAIL || 'noreply@saadmaz.com',
+    replyTo: email,
     subject: `Portfolio Contact: ${subject || 'New Message'}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

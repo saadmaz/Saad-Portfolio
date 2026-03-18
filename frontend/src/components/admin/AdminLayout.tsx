@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { auth } from '@/services/firebase';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Overview', path: '/admin/dashboard' },
@@ -55,7 +56,12 @@ const AdminLayout = () => {
     }
   }, [navigate, location.pathname]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error('Firebase signout error:', error);
+    }
     localStorage.removeItem('admin_secret');
     navigate('/admin/login');
   };

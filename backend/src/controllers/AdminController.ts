@@ -231,6 +231,42 @@ export const getAllVolunteer = async (req: Request, res: Response) => {
   }
 };
 
+export const getAllProjects = async (req: Request, res: Response) => {
+  try {
+    const data = await projectRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllLanguages = async (req: Request, res: Response) => {
+  try {
+    const data = await languageRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllHackathons = async (req: Request, res: Response) => {
+  try {
+    const data = await hackathonRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllTestimonials = async (req: Request, res: Response) => {
+  try {
+    const data = await testimonialRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 /**
  * Handle image uploads to Firebase Storage
  */

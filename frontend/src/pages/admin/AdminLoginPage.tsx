@@ -23,7 +23,10 @@ const AdminLoginPage = () => {
 
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      localStorage.setItem('admin_secret', token);
+      
       toast.success('Authenticated successfully');
       navigate('/admin/dashboard');
     } catch (error: any) {
