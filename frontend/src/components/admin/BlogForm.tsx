@@ -53,13 +53,7 @@ const BlogForm = () => {
     }
   });
 
-  useEffect(() => {
-    if (isEditMode) {
-      loadPost();
-    }
-  }, [id]);
-
-  const loadPost = async () => {
+  const loadPost = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const post = await BlogService.getById(id!);
@@ -81,7 +75,13 @@ const BlogForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, reset]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      loadPost();
+    }
+  }, [isEditMode, loadPost]);
 
   const onSubmit = async (data: BlogFormValues) => {
     try {
@@ -97,8 +97,9 @@ const BlogForm = () => {
         toast.success('Post created');
       }
       navigate('/admin/blogs');
-    } catch (error: any) {
-      toast.error(error.message || 'Operation failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Operation failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -111,8 +112,9 @@ const BlogForm = () => {
       await BlogService.delete(id!);
       toast.success('Post deleted');
       navigate('/admin/blogs');
-    } catch (error: any) {
-      toast.error(error.message || 'Delete failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Delete failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

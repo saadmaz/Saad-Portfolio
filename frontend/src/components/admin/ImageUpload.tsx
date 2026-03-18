@@ -42,12 +42,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange, label, class
       });
 
       if (response.data?.success) {
-        const url = (response.data as any).data.url;
+        const url = (response.data as { data: { url: string } }).data.url;
         onChange(url);
         toast.success('Image uploaded successfully');
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Upload failed');
+    } catch (error) {
+      const message = error && typeof error === 'object' && 'response' in error 
+        ? (error as any).response?.data?.error 
+        : (error instanceof Error ? error.message : 'Upload failed');
+      toast.error(message || 'Upload failed');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';

@@ -62,9 +62,10 @@ const AdminSkills = () => {
     setSkillSets(newSkillSets);
   };
 
-  const updateSkill = (catIndex: number, skillIndex: number, field: keyof Skill, value: any) => {
+  const updateSkill = (catIndex: number, skillIndex: number, field: keyof Skill, value: string | number) => {
     const newSkillSets = [...skillSets];
-    (newSkillSets[catIndex].skills[skillIndex] as any)[field] = value;
+    const skill = { ...newSkillSets[catIndex].skills[skillIndex], [field]: value };
+    newSkillSets[catIndex].skills[skillIndex] = skill as Skill;
     setSkillSets(newSkillSets);
   };
 

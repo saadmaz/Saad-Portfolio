@@ -52,13 +52,7 @@ const CertificateForm = () => {
     }
   });
 
-  useEffect(() => {
-    if (isEditMode) {
-      loadCertificate();
-    }
-  }, [id]);
-
-  const loadCertificate = async () => {
+  const loadCertificate = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await CommonService.getCertificates();
@@ -83,7 +77,13 @@ const CertificateForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, reset]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      loadCertificate();
+    }
+  }, [isEditMode, loadCertificate]);
 
   const onSubmit = async (data: CertFormValues) => {
     try {
@@ -96,8 +96,9 @@ const CertificateForm = () => {
         toast.success('Certificate added');
       }
       navigate('/admin/certificates');
-    } catch (error: any) {
-      toast.error(error.message || 'Operation failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Operation failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

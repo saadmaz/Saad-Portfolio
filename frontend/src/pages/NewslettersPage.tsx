@@ -24,7 +24,15 @@ interface NewsletterData {
 // ----------------------------------------------------------------------
 // Use the centralized newsletters JSON in `src/data/content`
 import allNewsRaw from "@/data/content/newsletters.json";
-const allNews = allNewsRaw as any[];
+const allNews = allNewsRaw as Array<{
+  id: number;
+  type: string;
+  title: string;
+  date: string;
+  link?: string;
+  linkedinUrl?: string;
+  isLatest?: boolean;
+}>;
 
 // ----------------------------------------------------------------------
 // 3. COMPONENT CONFIGURATION

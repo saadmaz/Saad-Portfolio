@@ -71,7 +71,7 @@ export interface Certificate {
   pdf_document_link?: string;
   is_verifiable?: boolean;
   is_featured?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface Skill {
@@ -239,13 +239,16 @@ export class DataManager {
    * Get all blogs (latest first)
    */
   async getBlogs(): Promise<Blog[]> {
-    const data = await apiClient.get("/blog-posts") as any[];
-    return data.map(blog => ({
-      ...blog,
-      readTime: blog.read_time || blog.readTime,
-      coverImage: blog.cover_image || blog.coverImage,
-      isLatest: blog.is_latest || blog.isLatest
-    })) as Blog[];
+    const data = await apiClient.get<Record<string, unknown>[]>("/blog-posts") as unknown as Record<string, unknown>[];
+    return data.map(blog => {
+      const b = blog as Record<string, unknown> & { read_time?: string; readTime?: string; cover_image?: string; coverImage?: string; is_latest?: boolean; isLatest?: boolean };
+      return {
+        ...b,
+        readTime: b.read_time || b.readTime || '',
+        coverImage: b.cover_image || b.coverImage,
+        isLatest: b.is_latest || b.isLatest
+      } as Blog;
+    });
   }
 
   /**
@@ -289,16 +292,19 @@ export class DataManager {
    * Get all projects (latest first)
    */
   async getProjects(): Promise<Project[]> {
-    const data = await apiClient.get("/projects") as any[];
-    return data.map(project => ({
-      ...project,
-      githubUrl: project.github || project.githubUrl,
-      liveUrl: project.link || project.live_preview || project.liveUrl,
-      heroImage: project.image || project.heroImage,
-      screenshots: project.images || project.screenshots,
-      isLatest: project.is_latest || project.isLatest,
-      techStack: project.technologies || project.techStack
-    })) as Project[];
+    const data = await apiClient.get<Record<string, unknown>[]>("/projects") as unknown as Record<string, unknown>[];
+    return data.map(project => {
+      const p = project as Record<string, unknown> & { github?: string; githubUrl?: string; link?: string; live_preview?: string; liveUrl?: string; image?: string; heroImage?: string; images?: string[]; screenshots?: string[]; is_latest?: boolean; isLatest?: boolean; technologies?: string[]; techStack?: string[] };
+      return {
+        ...p,
+        githubUrl: p.github || p.githubUrl,
+        liveUrl: p.link || p.live_preview || p.liveUrl,
+        heroImage: p.image || p.heroImage,
+        screenshots: p.images || p.screenshots,
+        isLatest: p.is_latest || p.isLatest,
+        techStack: p.technologies || p.techStack
+      } as Project;
+    });
   }
 
   /**

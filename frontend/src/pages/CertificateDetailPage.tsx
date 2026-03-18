@@ -12,29 +12,28 @@ import {
   Tag 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { certificatesData } from "@/data";
+import { Certificate } from '@/types';
+import { CommonService } from '@/shared/services/common-service';
 
-/**
- * CERTIFICATE DETAIL PAGE
- * Fixed Layout version: Enforces strict container boundaries for mobile alignment.
- */
 const CertificateDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [cert, setCert] = useState<any | null>(null);
+  const [cert, setCert] = useState<Certificate | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /**
-   * DATA INITIALIZATION
-   * Mapped strictly to your provided JSON keys.
-   */
   useEffect(() => {
-    // Standardizing data source as an array for search
-    const raw = Array.isArray(certificatesData) ? certificatesData : [certificatesData];
-    const found = raw.find((x) => String(x.id) === String(id));
-    
-    setCert(found || null);
-    setLoading(false);
+    const fetchCert = async () => {
+      try {
+        const data = await CommonService.getCertificates();
+        const found = data.find((x) => String(x.id) === String(id));
+        setCert(found || null);
+      } catch (error) {
+        console.error("Failed to load certificate", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCert();
   }, [id]);
 
   /**

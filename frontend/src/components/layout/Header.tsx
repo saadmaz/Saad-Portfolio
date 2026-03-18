@@ -55,7 +55,7 @@ export function Header() {
 
   useEffect(() => {
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-  }, [location]);
+  }, [location, isMobileMenuOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";

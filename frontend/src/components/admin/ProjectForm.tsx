@@ -57,13 +57,7 @@ const ProjectForm = () => {
 
   const techStack = watch('techStack');
 
-  useEffect(() => {
-    if (isEditMode) {
-      loadProject();
-    }
-  }, [id]);
-
-  const loadProject = async () => {
+  const loadProject = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const project = await ProjectService.getById(id!);
@@ -86,7 +80,13 @@ const ProjectForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, reset]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      loadProject();
+    }
+  }, [isEditMode, loadProject]);
 
   const onSubmit = async (data: ProjectFormValues) => {
     try {
@@ -99,8 +99,9 @@ const ProjectForm = () => {
         toast.success('Project created successfully');
       }
       navigate('/admin/projects');
-    } catch (error: any) {
-      toast.error(error.message || 'Operation failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Operation failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -114,8 +115,9 @@ const ProjectForm = () => {
       await ProjectService.delete(id!);
       toast.success('Project deleted successfully');
       navigate('/admin/projects');
-    } catch (error: any) {
-      toast.error(error.message || 'Delete failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Delete failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

@@ -58,13 +58,7 @@ const ExperienceForm = () => {
   const responsibilities = watch('responsibilities') || [];
   const technologies = watch('technologies') || [];
 
-  useEffect(() => {
-    if (isEditMode) {
-      loadExperience();
-    }
-  }, [id]);
-
-  const loadExperience = async () => {
+  const loadExperience = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await CommonService.getWorkExperience();
@@ -89,7 +83,13 @@ const ExperienceForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, reset]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      loadExperience();
+    }
+  }, [isEditMode, loadExperience]);
 
   const onSubmit = async (data: ExperienceFormValues) => {
     try {
@@ -102,8 +102,9 @@ const ExperienceForm = () => {
         toast.success('Experience added');
       }
       navigate('/admin/experience');
-    } catch (error: any) {
-      toast.error(error.message || 'Operation failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Operation failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
