@@ -10,10 +10,25 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+let auth;
 
-// Initialize Firebase Auth
-export const auth = getAuth(app);
+try {
+  // Check if critical config is missing
+  if (!import.meta.env.VITE_FIREBASE_API_KEY) {
+    console.warn("Firebase configuration is missing. Auth features will not work.");
+    // We'll initialize with an empty config and catch the error, or just not initialize
+    app = initializeApp({ apiKey: "none", authDomain: "none", projectId: "none", storageBucket: "none", messagingSenderId: "none", appId: "none" });
+  } else {
+    app = initializeApp(firebaseConfig);
+  }
+  auth = getAuth(app);
+} catch (error) {
+  console.error("Failed to initialize Firebase:", error);
+  // Fallback to avoid breaking imports
+  app = {} as any;
+  auth = {} as any;
+}
 
+export { auth };
 export default app;
