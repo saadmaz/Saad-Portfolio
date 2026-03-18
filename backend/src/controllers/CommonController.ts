@@ -6,7 +6,13 @@ import {
   contactRepository,
   eventRepository,
   newsletterRepository,
-  hostingRepository
+  hostingRepository,
+  awardRepository,
+  languageRepository,
+  hackathonRepository,
+  testimonialRepository,
+  volunteerRepository,
+  educationRepository
 } from '../models/index.js';
 import { ContactMessageSchema } from '../schemas/index.js';
 import { sendContactEmail } from '../utils/email.js';
@@ -118,6 +124,66 @@ export const getHosting = async (req: Request, res: Response) => {
     }
     
     res.json({ success: true, data: hosting });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getAwards = async (req: Request, res: Response) => {
+  try {
+    const awards = await awardRepository.getAll();
+    res.json({ success: true, data: awards });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getLanguages = async (req: Request, res: Response) => {
+  try {
+    const languages = await languageRepository.getAll();
+    res.json({ success: true, data: languages });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getHackathons = async (req: Request, res: Response) => {
+  try {
+    const hackathons = await hackathonRepository.getAll();
+    res.json({ success: true, data: hackathons });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getTestimonials = async (req: Request, res: Response) => {
+  try {
+    const testimonials = await testimonialRepository.getAll();
+    res.json({ success: true, data: testimonials });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getVolunteerExperience = async (req: Request, res: Response) => {
+  try {
+    const volunteer = await volunteerRepository.getAll();
+    res.json({ success: true, data: volunteer });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};
+
+export const getEducation = async (req: Request, res: Response) => {
+  try {
+    const education = await educationRepository.getAll();
+    res.json({ success: true, data: education });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({ success: false, error: message });

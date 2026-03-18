@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 import { connectDB } from './utils/database.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { adminAuth } from './middleware/auth.js';
+import { firebaseAuth } from './middleware/firebaseAuth.js';
 
 // Import routes
 import publicRoutes from './routes/public.js';
@@ -84,7 +84,7 @@ app.get('/health', (req, res) => {
 });
 
 // Admin routes with protection (MORE SPECIFIC ROUTES FIRST)
-app.use('/api/admin', adminAuth, adminRoutes);
+app.use('/api/admin', firebaseAuth, adminRoutes);
 app.use('/api', publicRoutes);
 
 // Global Error Handler

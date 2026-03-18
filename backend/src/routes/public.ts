@@ -27,6 +27,13 @@ router.get('/certificates', CommonController.getCertificates);
 router.get('/events', CommonController.getEvents);
 router.get('/newsletters', CommonController.getNewsletters);
 router.get('/hosting', CommonController.getHosting);
+router.get('/awards', CommonController.getAwards);
+router.get('/languages', CommonController.getLanguages);
+router.get('/hackathons', CommonController.getHackathons);
+router.get('/testimonials', CommonController.getTestimonials);
+router.get('/volunteer', CommonController.getVolunteerExperience);
+router.get('/education', CommonController.getEducation);
+
 // Contact route with validation
 router.post('/contact', validate(z.object({ body: ContactMessageSchema })), CommonController.submitContactForm);
 

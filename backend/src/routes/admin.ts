@@ -46,7 +46,46 @@ router.post('/hosting', AdminController.createHosting);
 router.put('/hosting/:id', AdminController.updateHosting);
 router.delete('/hosting/:id', AdminController.deleteHosting);
 
+// Awards
+router.get('/awards', AdminController.getAllAwards);
+router.post('/awards', AdminController.createAward);
+router.put('/awards/:id', AdminController.updateAward);
+router.delete('/awards/:id', AdminController.deleteAward);
+
+// Languages
+router.get('/languages', AdminController.getAllLanguages);
+router.post('/languages', AdminController.createLanguage);
+router.put('/languages/:id', AdminController.updateLanguage);
+router.delete('/languages/:id', AdminController.deleteLanguage);
+
+// Hackathons
+router.get('/hackathons', AdminController.getAllHackathons);
+router.post('/hackathons', AdminController.createHackathon);
+router.put('/hackathons/:id', AdminController.updateHackathon);
+router.delete('/hackathons/:id', AdminController.deleteHackathon);
+
+// Testimonials
+router.get('/testimonials', AdminController.getAllTestimonials);
+router.post('/testimonials', AdminController.createTestimonial);
+router.put('/testimonials/:id', AdminController.updateTestimonial);
+router.delete('/testimonials/:id', AdminController.deleteTestimonial);
+
+// Volunteer Experience
+router.get('/volunteer', AdminController.getAllVolunteer);
+router.post('/volunteer', AdminController.createVolunteer);
+router.put('/volunteer/:id', AdminController.updateVolunteer);
+router.delete('/volunteer/:id', AdminController.deleteVolunteer);
+
+// Education
+router.get('/education', AdminController.getAllEducation);
+router.post('/education', AdminController.createEducation);
+router.put('/education/:id', AdminController.updateEducation);
+router.delete('/education/:id', AdminController.deleteEducation);
+
 // Media
 router.post('/upload', upload.single('file'), AdminController.uploadImage);
+
+// Activity Logs
+router.get('/logs', AdminController.getLogs);
 
 export default router;

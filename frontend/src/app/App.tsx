@@ -39,6 +39,9 @@ const AdminSkills = React.lazy(() => import("../pages/admin/AdminSkills"));
 const AdminCertificates = React.lazy(() => import("../pages/admin/AdminCertificates"));
 const CertificateForm = React.lazy(() => import("../components/admin/CertificateForm"));
 
+import { AuthProvider } from "@/shared/contexts/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -60,57 +63,66 @@ const PageLoader = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <ErrorBoundary>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-                <Route path="/experience" element={<ExperiencePage />} />
-                <Route path="/skills" element={<SkillsOnlyPage />} />
-                <Route path="/certifications" element={<CertificationsPage />} />
-                <Route path="/certifications/:id" element={<CertificateDetailPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/blog" element={<BlogsPage />} />
-                <Route path="/blog/:slug" element={<BlogDetailPage />} />
-                <Route path="/newsletters" element={<NewslettersPage />} />
-                <Route path="/events" element={<EventsPage />} />
-                <Route path="/events/:id" element={<EventDetailPage />} />
+    <AuthProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+                  <Route path="/experience" element={<ExperiencePage />} />
+                  <Route path="/skills" element={<SkillsOnlyPage />} />
+                  <Route path="/certifications" element={<CertificationsPage />} />
+                  <Route path="/certifications/:id" element={<CertificateDetailPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/blog" element={<BlogsPage />} />
+                  <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                  <Route path="/newsletters" element={<NewslettersPage />} />
+                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/events/:id" element={<EventDetailPage />} />
 
-                {/* Admin Routes */}
-                <Route path="/admin/login" element={<AdminLoginPage />} />
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="dashboard" element={<AdminDashboard />} />
-                  <Route path="projects" element={<AdminProjects />} />
-                  <Route path="projects/new" element={<ProjectForm />} />
-                  <Route path="projects/:id" element={<ProjectForm />} />
-                  <Route path="blogs" element={<AdminBlogs />} />
-                  <Route path="blogs/new" element={<BlogForm />} />
-                  <Route path="blogs/:id" element={<BlogForm />} />
-                  <Route path="experience" element={<AdminExperience />} />
-                  <Route path="experience/new" element={<ExperienceForm />} />
-                  <Route path="experience/:id" element={<ExperienceForm />} />
-                  <Route path="skills" element={<AdminSkills />} />
-                  <Route path="certificates" element={<AdminCertificates />} />
-                  <Route path="certificates/new" element={<CertificateForm />} />
-                  <Route path="certificates/:id" element={<CertificateForm />} />
-                  <Route index element={<AdminDashboard />} />
-                </Route>
+                  {/* Admin Routes */}
+                  <Route path="/admin/login" element={<AdminLoginPage />} />
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <ProtectedRoute>
+                        <AdminLayout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="projects" element={<AdminProjects />} />
+                    <Route path="projects/new" element={<ProjectForm />} />
+                    <Route path="projects/:id" element={<ProjectForm />} />
+                    <Route path="blogs" element={<AdminBlogs />} />
+                    <Route path="blogs/new" element={<BlogForm />} />
+                    <Route path="blogs/:id" element={<BlogForm />} />
+                    <Route path="experience" element={<AdminExperience />} />
+                    <Route path="experience/new" element={<ExperienceForm />} />
+                    <Route path="experience/:id" element={<ExperienceForm />} />
+                    <Route path="skills" element={<AdminSkills />} />
+                    <Route path="certificates" element={<AdminCertificates />} />
+                    <Route path="certificates/new" element={<CertificateForm />} />
+                    <Route path="certificates/:id" element={<CertificateForm />} />
+                    <Route index element={<AdminDashboard />} />
+                  </Route>
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

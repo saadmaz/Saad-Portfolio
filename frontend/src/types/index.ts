@@ -130,6 +130,79 @@ export interface BlogPost {
   is_latest?: boolean;
 }
 
+export interface Award {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  description: string;
+  icon?: string;
+  link?: string;
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  level: string; // e.g., 'Native', 'Fluent', 'Professional'
+  percentage: number;
+}
+
+export interface Hackathon {
+  id: string;
+  name: string;
+  organizer: string;
+  date: string;
+  role: string;
+  projectTitle?: string;
+  achievement?: string;
+  description: string;
+  link?: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  position: string;
+  company: string;
+  content: string;
+  avatar?: string;
+  link?: string;
+}
+
+export interface VolunteerExperience {
+  id: string;
+  organization: string;
+  role: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  description: string;
+  link?: string;
+}
+
+export interface Education {
+  id: string;
+  institution: string;
+  degree: string;
+  fieldOfStudy: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  grade?: string;
+  description?: string;
+}
+
+export interface ActivityLog {
+  id: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  entityType: string;
+  entityId: string;
+  adminId: string;
+  adminEmail: string;
+  details?: string;
+  timestamp: any; // Firestore Timestamp
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

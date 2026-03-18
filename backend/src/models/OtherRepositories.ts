@@ -1,5 +1,20 @@
 import { BaseRepository } from './BaseRepository.js';
-import { WorkExperience, Skill, Certificate, ContactMessage, Event, Newsletter, Hosting } from '../types/index.js';
+import { 
+  WorkExperience, 
+  Skill, 
+  Certificate, 
+  ContactMessage, 
+  Event, 
+  Newsletter, 
+  Hosting,
+  Award,
+  Language,
+  Hackathon,
+  Testimonial,
+  VolunteerExperience,
+  Education,
+  ActivityLog
+} from '../types/index.js';
 
 export class ExperienceRepository extends BaseRepository<WorkExperience> {
   constructor() {
@@ -118,6 +133,57 @@ export class HostingRepository extends BaseRepository<Hosting> {
   }
 }
 
+export class AwardRepository extends BaseRepository<Award> {
+  constructor() {
+    super('awards');
+  }
+}
+
+export class LanguageRepository extends BaseRepository<Language> {
+  constructor() {
+    super('languages');
+  }
+}
+
+export class HackathonRepository extends BaseRepository<Hackathon> {
+  constructor() {
+    super('hackathons');
+  }
+}
+
+export class TestimonialRepository extends BaseRepository<Testimonial> {
+  constructor() {
+    super('testimonials');
+  }
+}
+
+export class VolunteerRepository extends BaseRepository<VolunteerExperience> {
+  constructor() {
+    super('volunteer_experience');
+  }
+}
+
+export class EducationRepository extends BaseRepository<Education> {
+  constructor() {
+    super('education');
+  }
+}
+
+export class ActivityLogRepository extends BaseRepository<ActivityLog> {
+  constructor() {
+    super('activity_logs');
+  }
+
+  async getRecent(limit: number = 50): Promise<ActivityLog[]> {
+    const snapshot = await this.collection.orderBy('timestamp', 'desc').limit(limit).get();
+    return snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+      timestamp: doc.data().timestamp?.toDate()
+    } as unknown as ActivityLog));
+  }
+}
+
 export const experienceRepository = new ExperienceRepository();
 export const skillRepository = new SkillRepository();
 export const certificateRepository = new CertificateRepository();
@@ -125,3 +191,10 @@ export const contactRepository = new ContactRepository();
 export const eventRepository = new EventRepository();
 export const newsletterRepository = new NewsletterRepository();
 export const hostingRepository = new HostingRepository();
+export const awardRepository = new AwardRepository();
+export const languageRepository = new LanguageRepository();
+export const hackathonRepository = new HackathonRepository();
+export const testimonialRepository = new TestimonialRepository();
+export const volunteerRepository = new VolunteerRepository();
+export const educationRepository = new EducationRepository();
+export const activityLogRepository = new ActivityLogRepository();

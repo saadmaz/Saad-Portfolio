@@ -184,6 +184,89 @@ export interface User {
   created_at: Date;
 }
 
+export interface Award {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  description: string;
+  image?: string;
+  link?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  proficiency: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Hackathon {
+  id: string;
+  name: string;
+  date: string;
+  role: string;
+  description: string;
+  project_name?: string;
+  project_link?: string;
+  achievement?: string;
+  technologies?: string[];
+  image?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  position: string;
+  company: string;
+  content: string;
+  avatar?: string;
+  link?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface VolunteerExperience {
+  id: string;
+  organization: string;
+  role: string;
+  start_date: string;
+  end_date?: string;
+  description: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Education {
+  id: string;
+  institution: string;
+  degree: string;
+  field_of_study: string;
+  start_date: string;
+  end_date?: string;
+  grade?: string;
+  description?: string;
+  activities?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface ActivityLog {
+  id: string;
+  admin_id: string;
+  admin_email: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT';
+  entity_type: string;
+  entity_id?: string;
+  details: string;
+  timestamp: Date;
+}
+
 
 // API Response Types
 export interface ApiResponse<T = any> {
