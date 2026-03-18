@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useExperience } from "@/shared/hooks/useCommon";
 
 export function ExperienceSection() {
@@ -33,12 +32,10 @@ export function ExperienceSection() {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
               Where I've Worked
             </h2>
-            <Button asChild variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10 gap-1 w-fit">
-              <Link to="/experience">
-                View Full History
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </Button>
+            <Link to="/experience" className="btn-ghost-arrow w-fit">
+              View Full History
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
         </motion.div>
 
@@ -47,14 +44,14 @@ export function ExperienceSection() {
           {experiences?.map((exp, index) => (
             <motion.div
               key={exp.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
               className="group"
             >
               <Link to="/experience" className="block">
-                <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8">
+                <div className="bg-card rounded-xl border border-border card-hover p-6 md:p-8 border-l-4 border-l-transparent group-hover:border-l-accent transition-all duration-300">
                   <div className="grid md:grid-cols-[1fr_2fr] gap-6">
                     {/* Left - Meta Info */}
                     <div className="space-y-4">

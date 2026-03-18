@@ -2,125 +2,169 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const socialLinks = [
+  { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
+  { Icon: Github, href: "https://github.com/saadmaz" },
+  { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
+  { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
+  { Icon: X, href: "https://x.com/SaadMazhar_" },
+];
+
 export function ContactSection() {
   return (
-    <section 
-      className="py-12" 
-      style={{ 
-        background: 'var(--gradient-accent)' 
+    <section
+      className="py-16 relative overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, hsl(196 55% 8%) 0%, hsl(180 50% 12%) 100%)",
       }}
     >
-      <div className="section-container">
+      {/* Ambient teal glow blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/8 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/6 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="section-container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
+
+          {/* ── LEFT: Info Column ──────────────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="inline-block text-2xl font-bold uppercase tracking-wider text-accent mb-2">
+            <span className="inline-block text-sm font-bold uppercase tracking-[0.2em] text-teal-400 mb-3">
               Get in Touch
             </span>
-            
-            <h2 className="font-display text-3xl font-bold mb-4 leading-tight text-foreground">
-              Let's Build Something Great Together
+
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 leading-tight text-white">
+              Let's Build Something{" "}
+              <span className="text-teal-400">Great</span> Together
             </h2>
-            
-            <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
-              Whether you're looking to collaborate on a project or just want to say hello, I'd love to hear from you.
+
+            <p className="text-white/60 mb-8 max-w-md text-sm leading-relaxed">
+              Whether you're looking to collaborate on a project or just want to
+              say hello, I'd love to hear from you.
             </p>
 
-            <div className="space-y-3 mb-6">
+            {/* Contact details */}
+            <div className="space-y-3 mb-8">
               <a
                 href="mailto:saadmazaa@gmail.com"
-                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-3 text-white/70 hover:text-teal-400 transition-colors group text-sm"
               >
-                <Mail className="w-4 h-4 text-accent" />
+                <Mail className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
                 <span>saadmazaa@gmail.com</span>
               </a>
 
               <a
                 href="tel:+94720135801"
-                className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-colors group text-sm"
+                className="flex items-center gap-3 text-white/70 hover:text-teal-400 transition-colors group text-sm"
               >
-                <Phone className="w-4 h-4 text-accent" />
+                <Phone className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
                 <span>+94 72 01 358 01</span>
               </a>
 
-              <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                <MapPin className="w-4 h-4 text-accent" />
+              <div className="flex items-center gap-3 text-white/50 text-sm">
+                <MapPin className="w-4 h-4 text-teal-400/70" />
                 <span>Colombo, Sri Lanka</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              {[
-                { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
-                { Icon: Github, href: "https://github.com/saadmaz" },
-                { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
-                { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
-                { Icon: X, href: "https://x.com/SaadMazhar_" }
-              ].map((social, index) => (
-                <a
+            {/* Social Icons — Staggered entrance with spring bounce */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } },
+                hidden: {},
+              }}
+              className="flex items-center gap-3"
+            >
+              {socialLinks.map((social, index) => (
+                <motion.a
                   key={index}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-muted/10 border border-border text-foreground hover:text-accent hover:bg-muted/20 hover:border-accent/50 hover:shadow-[0_0_15px_hsl(174_72%_44%_/_0.3)] transition-all duration-300"
+                  variants={{
+                    hidden: { opacity: 0, y: 15, scale: 0.8 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      transition: { type: "spring", stiffness: 400, damping: 15 },
+                    },
+                  }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.2,
+                    transition: { type: "spring", stiffness: 400, damping: 10 },
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2.5 rounded-lg bg-white/8 border border-white/10 text-white/70 hover:text-teal-400 hover:bg-white/15 hover:border-teal-400/40 transition-colors duration-200"
                 >
                   <social.Icon className="w-5 h-5" />
-                </a>
+                </motion.a>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
 
+          {/* ── RIGHT: CTA Cards ──────────────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-4"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              <Link
-                to="/contact"
-                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_hsl(174_72%_44%_/_0.15)] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
-                      <Mail className="w-4 h-4 text-accent" />
-                      Send a Message
-                    </h3>
-                    <p className="text-muted-foreground text-xs group-hover:text-foreground transition-colors">
-                      Get a response within 24 hours.
-                    </p>
+              {/* Send a Message — Glass card */}
+              <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <Link
+                  to="/contact"
+                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-teal-400/40 transition-all duration-300 group h-full"
+                  style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-teal-400 transition-colors">
+                        <Mail className="w-4 h-4 text-teal-400" />
+                        Send a Message
+                      </h3>
+                      <p className="text-white/50 text-xs group-hover:text-white/70 transition-colors">
+                        Get a response within 24 hours.
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
 
-              <a
-                href="https://cal.com/saad-mazhar"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_hsl(174_72%_44%_/_0.15)] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-display text-lg font-semibold mb-1 flex items-center gap-2 text-foreground group-hover:text-accent transition-colors">
-                      <Calendar className="w-4 h-4 text-accent" />
-                      Schedule a Call
-                    </h3>
-                    <p className="text-muted-foreground text-xs group-hover:text-foreground transition-colors">
-                      Book a 30-minute chat via Cal.com
-                    </p>
+              {/* Schedule a Call — Glass card */}
+              <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                <a
+                  href="https://cal.com/saad-mazhar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-teal-400/40 transition-all duration-300 group h-full"
+                  style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-teal-400 transition-colors">
+                        <Calendar className="w-4 h-4 text-teal-400" />
+                        Schedule a Call
+                      </h3>
+                      <p className="text-white/50 text-xs group-hover:text-white/70 transition-colors">
+                        Book a 30-minute chat via Cal.com
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-accent" />
-                </div>
-              </a>
+                </a>
+              </motion.div>
 
             </div>
           </motion.div>

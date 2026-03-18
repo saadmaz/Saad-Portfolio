@@ -56,13 +56,19 @@ export function NewsletterSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
-              <div className="bg-card rounded-xl border border-border card-hover overflow-hidden h-full flex flex-col transition-all duration-300">
+              <motion.div
+                className="bg-card rounded-xl border border-border card-hover overflow-hidden h-full flex flex-col transition-all duration-300"
+                whileHover={{ scale: 1.02, y: -4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 <div className={`h-2 bg-gradient-to-r ${newsletter.color}`} /> 
                 
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 rounded-lg bg-accent/10">
-                      <newsletter.icon className="w-5 h-5 text-accent" />
+                    <div className="p-3 rounded-lg bg-accent/10 relative">
+                      {/* Pulsing ring aura */}
+                      <div className="absolute inset-0 rounded-lg bg-accent/20 animate-ping opacity-30" style={{ animationDuration: '3s' }} />
+                      <newsletter.icon className="w-5 h-5 text-accent relative z-10" />
                     </div>
                     <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
                       {newsletter.frequency}
@@ -91,7 +97,7 @@ export function NewsletterSection() {
                     <Link to={newsletter.link}><Send className="w-4 h-4" />Subscribe Now</Link>
                   </Button>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>

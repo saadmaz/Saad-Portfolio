@@ -71,6 +71,12 @@ export function FeaturedProjects() {
             <motion.div
               key={project.id}
               variants={itemVariants}
+              whileHover={{
+                y: -6,
+                rotateY: 2,
+                transition: { type: "spring", stiffness: 300, damping: 20 },
+              }}
+              style={{ perspective: 800 }}
               className="group"
             >
               <ProjectCard project={project} />

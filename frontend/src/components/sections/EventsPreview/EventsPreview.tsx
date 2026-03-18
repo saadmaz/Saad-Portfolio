@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Mic2, Users, Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 const featuredEvents = [
   {
@@ -58,9 +57,10 @@ export function EventsPreview() {
                 building community and sharing knowledge.
               </p>
             </div>
-            <Button asChild variant="ghost" className="text-accent hover:text-accent gap-1 w-fit">
-              <Link to="/events">See All Events<ArrowRight className="w-4 h-4" /></Link>
-            </Button>
+            <Link to="/events" className="btn-ghost-arrow w-fit">
+              See All Events
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </motion.div>
 
@@ -79,7 +79,7 @@ export function EventsPreview() {
                     <img
                       src={event.image}
                       alt={event.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute top-4 left-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${event.roleColor} shadow-lg`}>
@@ -88,7 +88,9 @@ export function EventsPreview() {
                         {event.role}
                       </span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                    {/* Dark cinematic overlay on hover */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
                   </div>
                   <div className="p-5">
                     <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-accent transition-colors">

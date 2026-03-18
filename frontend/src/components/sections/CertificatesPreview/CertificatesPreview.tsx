@@ -107,7 +107,7 @@ export function CertificatesPreview() {
 
                         <div className="relative z-10 flex-1 flex flex-col">
                           <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors overflow-hidden">
+                            <div className="w-12 h-12 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 group-hover:shadow-[0_0_12px_hsl(174_72%_44%_/_0.25)] transition-all duration-300 overflow-hidden">
                               {cert.issuer_logo ? (
                                 <img src={cert.issuer_logo} alt={cert.issuer} className="w-10 h-10 object-contain" />
                               ) : (

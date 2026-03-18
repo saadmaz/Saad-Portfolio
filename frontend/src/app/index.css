@@ -337,6 +337,52 @@
     @apply scale-[1.03] -translate-y-px;
   }
 
+  /* GLASS BUTTON: Translucent, frosted — for dark backgrounds (contact, footers) */
+  .btn-glass {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-sm;
+    @apply backdrop-blur-md border transition-all duration-300;
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: hsl(174 72% 44% / 0.5);
+    box-shadow: 0 0 20px hsl(174 72% 44% / 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    @apply scale-[1.02] -translate-y-px;
+  }
+
+  /* GHOST-ARROW BUTTON: Text only, arrow slides right + underline sweeps in */
+  .btn-ghost-arrow {
+    @apply inline-flex items-center gap-2 font-semibold text-sm text-accent;
+    @apply bg-transparent border-none transition-all duration-300 relative;
+    padding: 0.5rem 0;
+  }
+
+  .btn-ghost-arrow::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-300;
+    width: 0;
+  }
+
+  .btn-ghost-arrow:hover {
+    @apply brightness-125;
+  }
+
+  .btn-ghost-arrow:hover::after {
+    width: 100%;
+  }
+
+  .btn-ghost-arrow:hover svg {
+    transform: translateX(5px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-ghost-arrow svg {
+    transition: transform 0.3s ease;
+  }
+
   /* FOOTER LINKS */
   .footer-link {
     @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm;

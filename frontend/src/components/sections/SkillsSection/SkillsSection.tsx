@@ -124,7 +124,9 @@ export function SkillsSection() {
                   }}
                   className="h-full"
                 >
-                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-accent/30 transition-all duration-300">
+                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-accent/30 transition-all duration-300 relative overflow-hidden group/card">
+                    {/* Shimmer sweep on hover */}
+                    <div className="absolute inset-0 -translate-x-full group-hover/card:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
                     <h3 className="font-display text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">
                       {item.data.category}
                     </h3>
