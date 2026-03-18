@@ -11,14 +11,15 @@ router.put('/projects/:id', AdminController.updateProject);
 router.delete('/projects/:id', AdminController.deleteProject);
 
 // Blog Posts
-router.post('/blog-posts', AdminController.createBlog);
-router.put('/blog-posts/:id', AdminController.updateBlog);
-router.delete('/blog-posts/:id', AdminController.deleteBlog);
+router.get('/blogs', AdminController.getAllBlogs);
+router.post('/blogs', AdminController.createBlog);
+router.put('/blogs/:id', AdminController.updateBlog);
+router.delete('/blogs/:id', AdminController.deleteBlog);
 
 // Experience
-router.post('/work-experience', AdminController.createExperience);
-router.put('/work-experience/:id', AdminController.updateExperience);
-router.delete('/work-experience/:id', AdminController.deleteExperience);
+router.post('/experience', AdminController.createExperience);
+router.put('/experience/:id', AdminController.updateExperience);
+router.delete('/experience/:id', AdminController.deleteExperience);
 
 // Skills
 router.post('/skills', AdminController.createSkill);

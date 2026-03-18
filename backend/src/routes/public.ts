@@ -11,11 +11,13 @@ const router = Router();
 // Project routes
 router.get('/projects', ProjectController.getProjects);
 router.get('/projects/featured', ProjectController.getFeaturedProjects);
+router.get('/projects/id/:id', ProjectController.getProjectById);
 router.get('/projects/:slug', ProjectController.getProjectBySlug);
 
 // Blog routes
 router.get('/blog-posts', BlogController.getBlogPosts);
 router.get('/blog-posts/latest', BlogController.getLatestBlogPost);
+router.get('/blog-posts/id/:id', BlogController.getBlogPostById);
 router.get('/blog-posts/:slug', BlogController.getBlogPostBySlug);
 
 // Experience & Skills & Certificates

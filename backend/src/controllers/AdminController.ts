@@ -81,6 +81,14 @@ export const deleteHosting = deleteItem(hostingRepository);
 export const createBlog = createItem(blogRepository);
 export const updateBlog = updateItem(blogRepository);
 export const deleteBlog = deleteItem(blogRepository);
+export const getAllBlogs = async (req: Request, res: Response) => {
+  try {
+    const blogs = await blogRepository.getAll();
+    res.json({ success: true, data: blogs });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 /**
  * Handle image uploads to Firebase Storage

@@ -66,7 +66,7 @@ const ProjectForm = () => {
   const loadProject = async () => {
     try {
       setIsLoading(true);
-      const project = await ProjectService.getBySlug(id!); // Using slug as ID in this API
+      const project = await ProjectService.getById(id!);
       if (project) {
         reset({
           title: project.title,

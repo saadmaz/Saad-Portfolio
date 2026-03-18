@@ -5,7 +5,7 @@ import { BlogPost } from '../../types';
 export const useBlogPosts = () => {
   return useQuery<BlogPost[]>({
     queryKey: ['blog-posts'],
-    queryFn: () => BlogService.getAll(),
+    queryFn: () => BlogService.getPublished(),
   });
 };
 

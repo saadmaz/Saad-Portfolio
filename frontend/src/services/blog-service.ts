@@ -4,10 +4,19 @@ import { BlogPost, ApiResponse } from '../types';
 export class BlogService {
   static async getAll(): Promise<BlogPost[]> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost[]>>('/blog-posts') as unknown as ApiResponse<BlogPost[]>;
+      const response = await apiClient.get<ApiResponse<BlogPost[]>>('/admin/blogs') as unknown as ApiResponse<BlogPost[]>;
       return response.data;
     } catch (error) {
       console.warn('Backend unavailable, returning empty blog posts');
+      return [];
+    }
+  }
+
+  static async getPublished(): Promise<BlogPost[]> {
+    try {
+      const response = await apiClient.get<ApiResponse<BlogPost[]>>('/blog-posts') as unknown as ApiResponse<BlogPost[]>;
+      return response.data;
+    } catch (error) {
       return [];
     }
   }
@@ -17,6 +26,16 @@ export class BlogService {
       const response = await apiClient.get<ApiResponse<BlogPost>>('/blog-posts/latest') as unknown as ApiResponse<BlogPost>;
       return response.data;
     } catch (error) {
+      return null;
+    }
+  }
+
+  static async getById(id: string): Promise<BlogPost | null> {
+    try {
+      const response = await apiClient.get<ApiResponse<BlogPost>>(`/blog-posts/id/${id}`) as unknown as ApiResponse<BlogPost>;
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching blog by id ${id}:`, error);
       return null;
     }
   }

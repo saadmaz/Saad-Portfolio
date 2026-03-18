@@ -22,6 +22,16 @@ export class ProjectService {
     }
   }
 
+  static async getById(id: string): Promise<Project | null> {
+    try {
+      const response = await apiClient.get<ApiResponse<Project>>(`/projects/id/${id}`) as unknown as ApiResponse<Project>;
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching project by id ${id}:`, error);
+      return null;
+    }
+  }
+
   static async getBySlug(slug: string): Promise<Project | null> {
     try {
       const response = await apiClient.get<ApiResponse<Project>>(`/projects/${slug}`) as unknown as ApiResponse<Project>;

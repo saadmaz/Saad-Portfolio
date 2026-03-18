@@ -34,3 +34,17 @@ export const getLatestBlogPost = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: message });
   }
 };
+
+export const getBlogPostById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const post = await blogRepository.getById(id);
+    if (!post) {
+      return res.status(404).json({ success: false, error: 'Blog post not found' });
+    }
+    res.json({ success: true, data: post });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, error: message });
+  }
+};

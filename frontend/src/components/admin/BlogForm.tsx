@@ -62,7 +62,7 @@ const BlogForm = () => {
   const loadPost = async () => {
     try {
       setIsLoading(true);
-      const post = await BlogService.getBySlug(id!); // Using id as identifier
+      const post = await BlogService.getById(id!);
       if (post) {
         reset({
           title: post.title,
