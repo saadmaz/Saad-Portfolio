@@ -15,7 +15,8 @@ import {
   testimonialRepository,
   volunteerRepository,
   educationRepository,
-  activityLogRepository
+  activityLogRepository,
+  contactRepository
 } from '../models/index.js';
 
 /**
@@ -158,6 +159,73 @@ export const getAllBlogs = async (req: Request, res: Response) => {
   try {
     const blogs = await blogRepository.getAll();
     res.json({ success: true, data: blogs });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Contact Messages
+export const getAllMessages = async (req: Request, res: Response) => {
+  try {
+    const messages = await contactRepository.getRecent();
+    res.json({ success: true, data: messages });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+export const updateMessage = updateItem(contactRepository, 'ContactMessage');
+export const deleteMessage = deleteItem(contactRepository, 'ContactMessage');
+
+// Missing list methods for other entities to ensure admin has full access
+export const getAllExperience = async (req: Request, res: Response) => {
+  try {
+    const data = await experienceRepository.getOrdered();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllSkills = async (req: Request, res: Response) => {
+  try {
+    const data = await skillRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllCertificates = async (req: Request, res: Response) => {
+  try {
+    const data = await certificateRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllEvents = async (req: Request, res: Response) => {
+  try {
+    const data = await eventRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllNewsletters = async (req: Request, res: Response) => {
+  try {
+    const data = await newsletterRepository.getAll();
+    res.json({ success: true, data: data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllVolunteer = async (req: Request, res: Response) => {
+  try {
+    const data = await volunteerRepository.getAll();
+    res.json({ success: true, data: data });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }

@@ -44,6 +44,9 @@ const AdminHackathons = React.lazy(() => import("../pages/admin/AdminHackathons"
 const AdminTestimonials = React.lazy(() => import("../pages/admin/AdminTestimonials"));
 const AdminVolunteer = React.lazy(() => import("../pages/admin/AdminVolunteer"));
 const AdminEducation = React.lazy(() => import("../pages/admin/AdminEducation"));
+const AdminEvents = React.lazy(() => import("../pages/admin/AdminEvents"));
+const AdminNewsletters = React.lazy(() => import("../pages/admin/AdminNewsletters"));
+const AdminMessages = React.lazy(() => import("../pages/admin/AdminMessages"));
 const AdminLogs = React.lazy(() => import("../pages/admin/AdminLogs"));
 
 import { AuthProvider } from "@/shared/contexts/AuthContext";
@@ -125,6 +128,9 @@ const App = () => (
                     <Route path="testimonials" element={<AdminTestimonials />} />
                     <Route path="volunteer" element={<AdminVolunteer />} />
                     <Route path="education" element={<AdminEducation />} />
+                    <Route path="events" element={<AdminEvents />} />
+                    <Route path="newsletters" element={<AdminNewsletters />} />
+                    <Route path="messages" element={<AdminMessages />} />
                     <Route path="logs" element={<AdminLogs />} />
                     <Route index element={<AdminDashboard />} />
                   </Route>

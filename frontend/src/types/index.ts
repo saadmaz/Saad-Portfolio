@@ -203,6 +203,40 @@ export interface ActivityLog {
   timestamp: any; // Firestore Timestamp
 }
 
+export interface Message {
+  id: string;
+  name: string;
+  email: string;
+  subject?: string;
+  message: string;
+  created_at: any;
+  read: boolean;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  organizer: string;
+  date: string;
+  location: string;
+  description: string;
+  image?: string;
+  link?: string;
+  tags?: string[];
+  type: string;
+}
+
+export interface Newsletter {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  content_url: string;
+  image?: string;
+  type: 'founder' | 'cse' | string;
+  tags?: string[];
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

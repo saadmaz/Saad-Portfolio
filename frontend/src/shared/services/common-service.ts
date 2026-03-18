@@ -10,7 +10,10 @@ import {
   Testimonial, 
   VolunteerExperience, 
   Education, 
-  ActivityLog 
+  ActivityLog,
+  Message,
+  Event,
+  Newsletter 
 } from '../../types';
 
 export class CommonService {
@@ -186,5 +189,53 @@ export class CommonService {
 
   static async submitContact(data: { name: string; email: string; subject?: string; message: string }): Promise<void> {
     await apiClient.post('/contact', data);
+  }
+
+  // Admin Messages management
+  static async getMessages(): Promise<Message[]> {
+    const response = await apiClient.get<ApiResponse<Message[]>>('/admin/messages') as unknown as ApiResponse<Message[]>;
+    return response.data;
+  }
+
+  static async updateMessage(id: string, data: Partial<Message>): Promise<void> {
+    await apiClient.put(`/admin/messages/${id}`, data);
+  }
+
+  static async deleteMessage(id: string): Promise<void> {
+    await apiClient.delete(`/admin/messages/${id}`);
+  }
+
+  // Events CRUD
+  static async getEvents(): Promise<Event[]> {
+    const response = await apiClient.get<ApiResponse<Event[]>>('/events') as unknown as ApiResponse<Event[]>;
+    return response.data;
+  }
+  static async createEvent(data: Partial<Event>): Promise<Event> {
+    const response = await apiClient.post<ApiResponse<Event>>('/admin/events', data) as unknown as ApiResponse<Event>;
+    return response.data;
+  }
+  static async updateEvent(id: string, data: Partial<Event>): Promise<Event> {
+    const response = await apiClient.put<ApiResponse<Event>>(`/admin/events/${id}`, data) as unknown as ApiResponse<Event>;
+    return response.data;
+  }
+  static async deleteEvent(id: string): Promise<void> {
+    await apiClient.delete(`/admin/events/${id}`);
+  }
+
+  // Newsletters CRUD
+  static async getNewsletters(): Promise<Newsletter[]> {
+    const response = await apiClient.get<ApiResponse<Newsletter[]>>('/newsletters') as unknown as ApiResponse<Newsletter[]>;
+    return response.data;
+  }
+  static async createNewsletter(data: Partial<Newsletter>): Promise<Newsletter> {
+    const response = await apiClient.post<ApiResponse<Newsletter>>('/admin/newsletters', data) as unknown as ApiResponse<Newsletter>;
+    return response.data;
+  }
+  static async updateNewsletter(id: string, data: Partial<Newsletter>): Promise<Newsletter> {
+    const response = await apiClient.put<ApiResponse<Newsletter>>(`/admin/newsletters/${id}`, data) as unknown as ApiResponse<Newsletter>;
+    return response.data;
+  }
+  static async deleteNewsletter(id: string): Promise<void> {
+    await apiClient.delete(`/admin/newsletters/${id}`);
   }
 }

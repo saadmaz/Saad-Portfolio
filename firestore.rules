@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper to check if user is admin (using Firebase Auth)
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Public Collections: Read-only for all, Write for Admin
+    match /projects/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /blogs/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /experience/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /skills/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /certificates/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /awards/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /languages/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /hackathons/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /testimonials/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /volunteer/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /education/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /events/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /newsletters/{docId} { allow read: if true; allow write: if isAdmin(); }
+
+    // Contact Messages: Public can CREATE, only Admin can READ/UPDATE/DELETE
+    match /contact-messages/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Activity Logs: Admin only
+    match /activity-logs/{docId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Default: Deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
