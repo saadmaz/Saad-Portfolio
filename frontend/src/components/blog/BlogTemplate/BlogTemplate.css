@@ -31,7 +31,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #3b82f6;
+  color: hsl(174 72% 38%);
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 2rem;
@@ -88,7 +88,7 @@
   font-weight: 700;
   margin: 2.5rem 0 1.25rem;
   color: #f8fafc;
-  border-left: 3px solid #3b82f6; /* Blue accent line */
+  border-left: 3px solid hsl(174 72% 38%); /* Teal accent line */
   padding-left: 1rem;
 }
 
@@ -111,7 +111,7 @@
 .blog-body-content blockquote {
   padding: 1.5rem;
   background: rgba(30, 41, 59, 0.5);
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid hsl(174 72% 38%);
   border-radius: 8px;
   margin: 2rem 0;
   font-style: italic;
@@ -144,7 +144,7 @@
 }
 
 .footer-back-link {
-  color: #3b82f6;
+  color: hsl(174 72% 38%);
   text-decoration: none;
   font-weight: 600;
 }

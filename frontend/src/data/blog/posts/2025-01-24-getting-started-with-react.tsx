@@ -35,7 +35,7 @@ export const content = (
       style={{ margin: "2rem 0", borderRadius: "8px" }}
     />
 
-    <blockquote style={{ borderLeft: "4px solid #3b82f6", paddingLeft: "1rem" }}>
+    <blockquote style={{ borderLeft: "4px solid hsl(174 72% 38%)", paddingLeft: "1rem" }}>
       "React makes creating interactive UIs painless. Design simple views for each
       state in your application."
     </blockquote>

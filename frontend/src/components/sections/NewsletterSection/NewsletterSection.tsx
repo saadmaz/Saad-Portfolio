@@ -11,7 +11,7 @@ const newsletters = [
     audience: "Investors, Analysts, & Traders",
     frequency: "Every Sunday",
     subscribers: "6.2K+",
-    color: "from-blue-600 to-cyan-500",
+    color: "from-teal-600 to-cyan-400",
     link: "/newsletters#cse"
   },
   {

@@ -7,7 +7,7 @@ export function ContactSection() {
     <section 
       className="py-12" 
       style={{ 
-        background: 'linear-gradient(135deg, hsl(222 47% 20%) 0%, hsl(222 47% 11%) 100%)' 
+        background: 'var(--gradient-accent)' 
       }}
     >
       <div className="section-container">
@@ -67,7 +67,7 @@ export function ContactSection() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-muted/10 border border-border text-foreground hover:text-accent hover:bg-muted/20 hover:border-accent/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all duration-300"
+                  className="p-2 rounded-md bg-muted/10 border border-border text-foreground hover:text-accent hover:bg-muted/20 hover:border-accent/50 hover:shadow-[0_0_15px_hsl(174_72%_44%_/_0.3)] transition-all duration-300"
                 >
                   <social.Icon className="w-5 h-5" />
                 </a>
@@ -86,7 +86,7 @@ export function ContactSection() {
 
               <Link
                 to="/contact"
-                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
+                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_hsl(174_72%_44%_/_0.15)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -106,7 +106,7 @@ export function ContactSection() {
                 href="https://cal.com/saad-mazhar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
+                className="block p-5 rounded-xl bg-muted/10 border border-border hover:border-accent/50 hover:shadow-[0_0_20px_hsl(174_72%_44%_/_0.15)] transition-all group"
               >
                 <div className="flex items-center justify-between">
                   <div>

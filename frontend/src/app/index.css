@@ -5,185 +5,197 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   PROFESSIONAL PORTFOLIO DESIGN SYSTEM
-   ========================================================================== 
-   This system is optimized for a high-end engineering portfolio. 
-   - Light Mode: Pearl White background with Enterprise Blue accents.
-   - Dark Mode: Deep Space background with luminous Blue accents.
-   - Interactive: Smooth hover gradients and lift animations.
+   PROFESSIONAL PORTFOLIO DESIGN SYSTEM — DARK TEAL EDITION
+   ==========================================================================
+   - Light Mode: Pearl White background with Deep Teal accents.
+   - Dark Mode: Deep Teal-Space gradient background with luminous Teal accents.
+   - Interactive: Glowing hover gradients, lift animations, and bounce icons.
    ========================================================================== */
 
 @layer base {
   :root {
-    /* --- CORE COLORS - LIGHT THEME (Pearl & Cobalt Aesthetic) --- */
-    
-    /* Background: A premium 'Pearl White' to reduce glare and look professional. */
-    --background: 210 20% 98%; 
-    --foreground: 222 47% 11%; /* Deep navy for sharp, readable text */
-    
-    /* Card & Surface: Pure white cards pop naturally against the pearl background. */
-    --card: 0 0% 100%; 
-    --card-foreground: 222 47% 11%;
-    
-    /* Popover/Menus: Clean white with subtle depth. */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    
-    /* Primary - Structural Navy used for dark text and heavy accents. */
-    --primary: 222 47% 11%;
-    --primary-foreground: 0 0% 100%;
-    
-    /* Secondary - Muted blue-gray for secondary buttons and backgrounds. */
-    --secondary: 210 14% 95%;
-    --secondary-foreground: 222 47% 11%;
-    
-    /* Muted - Soft gray for subtitles and non-essential text hierarchy. */
-    --muted: 210 14% 93%;
-    --muted-foreground: 215 16% 47%;
-    
-    /* ==========================================
-       THE "PROFESSIONAL BLUE" UPGRADE
-       ========================================== */
-    /* Accent - Professional "Enterprise Blue" (Stripe/Vercel inspired).
-       This is a deep, rich cobalt that conveys seniority. */
-    --accent: 224 76% 48%; 
-    --accent-foreground: 0 0% 100%;
+    /* --- CORE COLORS - LIGHT THEME (Pearl & Teal Aesthetic) --- */
 
-    /* LEGACY BLUE (Get in Touch): 
-       This variable locks the original bright blue specifically for the contact section. */
-    --contact-blue: 217 91% 60%; 
-    
-    /* Destructive - For error states and critical actions. */
+    /* Background: Premium 'Pearl White' */
+    --background: 180 20% 98%;
+    --foreground: 200 40% 10%; /* Deep teal-navy for sharp text */
+
+    /* Card & Surface */
+    --card: 0 0% 100%;
+    --card-foreground: 200 40% 10%;
+
+    /* Popover/Menus */
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 40% 10%;
+
+    /* Primary - Deep Teal used for heavy accents */
+    --primary: 200 40% 10%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Muted teal-gray */
+    --secondary: 180 14% 94%;
+    --secondary-foreground: 200 40% 10%;
+
+    /* Muted - Soft teal-gray */
+    --muted: 180 14% 92%;
+    --muted-foreground: 180 12% 45%;
+
+    /* ==========================================
+       THE DARK TEAL ACCENT
+       ========================================== */
+    /* Accent - Professional "Dark Teal" inspired by the image reference */
+    --accent: 174 72% 32%;
+    --accent-foreground: 0 0% 100%;
+    --accent-glow: 174 72% 32%;
+
+    /* Teal highlight (brighter for dark mode) */
+    --accent-bright: 174 72% 44%;
+
+    /* LEGACY CONTACT BLUE (preserved) */
+    --contact-blue: 174 72% 32%;
+
+    /* Destructive */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    
-    /* Border & Input: Crisp, professional dividers. */
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 224 76% 48%; /* Focus rings match the Enterprise Blue */
-    
-    /* Radius: Modern standard rounding. */
+
+    /* Border & Input */
+    --border: 180 20% 88%;
+    --input: 180 20% 88%;
+    --ring: 174 72% 32%;
+
+    /* Radius */
     --radius: 0.625rem;
-    
+
     /* Custom Portfolio Tokens */
-    --navy: 222 47% 11%;
-    --navy-light: 222 47% 20%;
-    --slate: 215 20% 65%;
-    --slate-light: 220 14% 96%;
-    --blue-accent: 224 76% 48%; 
-    --blue-soft: 217 91% 95%;
+    --navy: 200 40% 10%;
+    --navy-light: 200 40% 20%;
+    --slate: 180 12% 60%;
+    --slate-light: 180 14% 94%;
+    --blue-accent: 174 72% 32%;
+    --blue-soft: 174 72% 92%;
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
-    
-    /* --- PREMIUM GRADIENTS --- */
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 99%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 18%) 100%);
-    /* Hover Gradient: Shifts from Royal Blue to a deeper Cobalt-Navy */
-    --gradient-accent: linear-gradient(135deg, hsl(224 76% 48%) 0%, hsl(226 71% 40%) 100%);
-    
+
+    /* --- PREMIUM TEAL GRADIENTS --- */
+    --gradient-hero: linear-gradient(135deg, hsl(180 20% 98%) 0%, hsl(174 30% 95%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(180 20% 99%) 100%);
+    --gradient-navy: linear-gradient(135deg, hsl(200 40% 10%) 0%, hsl(200 40% 18%) 100%);
+    /* Main Teal Gradient: Rich teal → deeper teal-green */
+    --gradient-accent: linear-gradient(135deg, hsl(174 72% 38%) 0%, hsl(180 65% 26%) 100%);
+    --gradient-accent-hover: linear-gradient(135deg, hsl(174 72% 44%) 0%, hsl(180 65% 32%) 100%);
+
     /* --- REFINED SHADOWS --- */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
-    --shadow-card: 0 0 0 1px hsl(214 32% 91%), 0 4px 6px -1px hsl(222 47% 11% / 0.05);
-    --shadow-card-hover: 0 0 0 1px hsl(224 76% 48% / 0.3), 0 10px 20px -5px hsl(222 47% 11% / 0.1);
-    
+    --shadow-sm: 0 1px 2px 0 hsl(200 40% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(174 72% 32% / 0.1), 0 2px 4px -2px hsl(174 72% 32% / 0.08);
+    --shadow-lg: 0 10px 15px -3px hsl(174 72% 32% / 0.12), 0 4px 6px -4px hsl(174 72% 32% / 0.08);
+    --shadow-xl: 0 20px 25px -5px hsl(174 72% 32% / 0.12), 0 8px 10px -6px hsl(174 72% 32% / 0.08);
+    --shadow-card: 0 0 0 1px hsl(180 20% 88%), 0 4px 6px -1px hsl(200 40% 10% / 0.05);
+    --shadow-card-hover: 0 0 0 1px hsl(174 72% 32% / 0.35), 0 10px 20px -5px hsl(174 72% 32% / 0.15);
+    --shadow-glow: 0 0 20px hsl(174 72% 32% / 0.4), 0 0 40px hsl(174 72% 32% / 0.15);
+
     /* Sidebar Tokens */
-    --sidebar-background: 210 20% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-background: 180 20% 98%;
+    --sidebar-foreground: 200 40% 15%;
+    --sidebar-primary: 200 40% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 224 76% 48%;
+    --sidebar-accent: 180 14% 94%;
+    --sidebar-accent-foreground: 200 40% 10%;
+    --sidebar-border: 180 20% 88%;
+    --sidebar-ring: 174 72% 32%;
   }
 
-  /* --- DARK THEME OVERRIDES --- */
+  /* --- DARK THEME OVERRIDES: Deep Teal-Space gradient --- */
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-    
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-    
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-    
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47% 11%;
-    
-    --secondary: 222 47% 15%;
-    --secondary-foreground: 210 40% 98%;
-    
-    --muted: 222 47% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    /* Luminous Blue for Dark Mode visibility */
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    
+    /* Deep Space with Teal tint backgrounds */
+    --background: 196 60% 4%;
+    --foreground: 174 20% 95%;
+
+    --card: 196 55% 7%;
+    --card-foreground: 174 20% 95%;
+
+    --popover: 196 55% 7%;
+    --popover-foreground: 174 20% 95%;
+
+    --primary: 174 20% 95%;
+    --primary-foreground: 196 60% 6%;
+
+    --secondary: 196 50% 12%;
+    --secondary-foreground: 174 20% 95%;
+
+    --muted: 196 50% 12%;
+    --muted-foreground: 174 18% 55%;
+
+    /* Luminous Teal for Dark Mode */
+    --accent: 174 72% 44%;
+    --accent-foreground: 196 60% 4%;
+    --accent-bright: 174 72% 54%;
+
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
-    --ring: 217 91% 60%;
-    
-    --navy: 210 40% 98%;
-    --navy-light: 215 20% 85%;
-    --slate: 215 20% 45%;
-    --slate-light: 222 47% 15%;
-    --blue-accent: 217 91% 60%;
-    --blue-soft: 217 91% 15%;
-    
-    --gradient-hero: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 10%) 100%);
-    
-    --shadow-card: 0 0 0 1px hsl(222 47% 18%), 0 4px 6px -1px hsl(0 0% 0% / 0.2);
-    --shadow-card-hover: 0 0 0 1px hsl(217 91% 60% / 0.3), 0 10px 20px -5px hsl(0 0% 0% / 0.3);
-    
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 18%;
-    --sidebar-ring: 217 91% 60%;
+    --destructive-foreground: 174 20% 95%;
+
+    --border: 196 50% 15%;
+    --input: 196 50% 15%;
+    --ring: 174 72% 44%;
+
+    --navy: 174 20% 95%;
+    --navy-light: 174 18% 75%;
+    --slate: 174 12% 45%;
+    --slate-light: 196 50% 12%;
+    --blue-accent: 174 72% 44%;
+    --blue-soft: 174 72% 10%;
+
+    /* Deep teal-space gradient for hero section */
+    --gradient-hero: linear-gradient(135deg, hsl(196 65% 5%) 0%, hsl(196 60% 8%) 50%, hsl(180 60% 6%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(196 55% 7%) 0%, hsl(196 55% 9%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(174 72% 44%) 0%, hsl(180 65% 32%) 100%);
+    --gradient-accent-hover: linear-gradient(135deg, hsl(174 72% 52%) 0%, hsl(180 65% 38%) 100%);
+
+    --shadow-card: 0 0 0 1px hsl(196 50% 15%), 0 4px 6px -1px hsl(0 0% 0% / 0.25);
+    --shadow-card-hover: 0 0 0 1px hsl(174 72% 44% / 0.4), 0 10px 20px -5px hsl(174 72% 32% / 0.3);
+    --shadow-glow: 0 0 20px hsl(174 72% 44% / 0.5), 0 0 60px hsl(174 72% 32% / 0.2);
+
+    --sidebar-background: 196 55% 7%;
+    --sidebar-foreground: 174 20% 95%;
+    --sidebar-primary: 174 72% 44%;
+    --sidebar-primary-foreground: 196 60% 4%;
+    --sidebar-accent: 196 50% 12%;
+    --sidebar-accent-foreground: 174 20% 95%;
+    --sidebar-border: 196 50% 15%;
+    --sidebar-ring: 174 72% 44%;
   }
 }
 
 @layer base {
   * {
-    /* Globally apply structural borders using the border token */
     @apply border-border;
   }
-  
+
   html {
-    /* Silky smooth scrolling for internal anchor links */
     scroll-behavior: smooth;
   }
-  
+
   body {
-    /* Establish core theme background and typography smoothing */
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
+
+  /* Dark mode background: teal-space gradient applied to the entire body */
+  .dark body {
+    background: var(--gradient-hero);
+    background-attachment: fixed;
+  }
+
   /* TYPOGRAPHY SYSTEM: DM Sans for Headings, Inter for Body */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'DM Sans', system-ui, sans-serif;
     @apply font-semibold tracking-tight text-foreground;
   }
-  
+
   h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
   h2 { @apply text-3xl md:text-4xl; }
   h3 { @apply text-xl md:text-2xl; }
   h4 { @apply text-lg md:text-xl; }
-  
+
   p { @apply leading-relaxed; }
 }
 
@@ -193,238 +205,295 @@
       @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Wide screen support for ultra-wide monitors */
   @media (min-width: 1536px) {
     .section-container {
       max-width: 1600px;
     }
   }
-  
-  /* Standardized Vertical Spacing (min 5rem / py-20) */
+
   .section-padding {
     @apply py-20 md:py-24 lg:py-32;
   }
 
-  /* Create more corner space on larger screens */
   @screen xl { .section-container { @apply px-12; } }
   @screen 2xl { .section-container { @apply px-20; } }
-  
-  /* CARD EFFECTS: High-end lift and elevation */
+
+  /* CARD EFFECTS */
   .card-hover {
     @apply transition-all duration-300 ease-out;
     box-shadow: var(--shadow-card);
   }
-  
+
   .card-hover:hover {
     box-shadow: var(--shadow-card-hover);
     @apply -translate-y-1 scale-[1.005];
   }
-  
-  /* TECH CHIPS: Small badges for skills/tags */
+
+  /* TECH CHIPS */
   .tech-chip {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide;
     @apply bg-secondary text-secondary-foreground border border-black/5 dark:border-white/5;
     @apply transition-all duration-200;
   }
-  
+
   .tech-chip:hover {
     @apply bg-accent text-accent-foreground border-accent;
   }
-  
-  /* SECTION TITLE: Small bold headers above main sections */
+
+  /* SECTION TITLE */
   .section-title {
     @apply text-sm font-bold uppercase tracking-widest text-accent mb-3;
   }
-  
-  /* GRADIENT TEXT CLIPPING */
+
+  /* GRADIENT TEXT */
   .gradient-text {
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-accent);
   }
-  
-  /* LINK ANIMATIONS: Bottom border slides in on hover */
+
+  /* LINK ANIMATIONS */
   .link-underline {
     @apply relative;
   }
-  
+
   .link-underline::after {
     content: '';
     @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300;
   }
-  
+
   .link-underline:hover::after {
     @apply w-full;
   }
-  
+
   /* NAVIGATION LINKS */
   .nav-link {
     @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-semibold;
   }
-  
+
   .nav-link-active {
     @apply text-accent font-bold;
   }
-  
+
   /* ==========================================
-     BUTTON SYSTEM (Professional Overhaul)
+     BUTTON SYSTEM — DARK TEAL PREMIUM
      ========================================== */
-     
-  /* PRIMARY NAVY BUTTON: Solid structural emphasis */
+
+  /* PRIMARY BUTTON: Teal gradient — visible on both light and dark */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
-    @apply bg-primary text-primary-foreground;
-    @apply transition-all duration-300 shadow-md;
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
+    color: white !important;
+    @apply border border-transparent transition-all duration-300;
+    background: var(--gradient-accent);
+    box-shadow: var(--shadow-md);
   }
-  
+
   .btn-primary:hover {
-    background: linear-gradient(135deg, hsl(222 47% 20%) 0%, hsl(222 47% 11%) 100%);
-    @apply shadow-lg scale-[1.02];
+    background: var(--gradient-accent-hover);
+    box-shadow: var(--shadow-glow);
+    @apply scale-[1.02] -translate-y-px;
   }
-  
-  /* SECONDARY PEARL BUTTON: For muted actions */
+
+  /* SECONDARY BUTTON: Teal-stroked outline with fill-on-hover */
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
     @apply bg-secondary text-secondary-foreground border border-border;
     @apply transition-all duration-300;
   }
-  
+
   .btn-secondary:hover {
-    @apply bg-accent/10 border-accent/30 text-accent;
+    @apply bg-accent/10 border-accent/40 text-accent;
+    @apply scale-[1.02] -translate-y-px;
   }
-  
-  /* ACCENT BLUE BUTTON: Primary CTA with dynamic hover gradient */
+
+  /* ACCENT TEAL BUTTON: Header CTA — same teal gradient */
   .btn-accent {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
-    @apply bg-accent text-accent-foreground;
-    @apply transition-all duration-300 shadow-md;
-    background-size: 200% auto;
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
+    color: white !important;
+    @apply border border-transparent transition-all duration-300;
+    background: var(--gradient-accent);
+    box-shadow: var(--shadow-md);
   }
-  
+
   .btn-accent:hover {
-    background-image: var(--gradient-accent);
-    background-position: right center; /* Pulls the gradient across button */
-    @apply shadow-lg scale-[1.02];
+    background: var(--gradient-accent-hover);
+    box-shadow: var(--shadow-glow);
+    @apply scale-[1.03] -translate-y-px;
   }
-  
-  /* OUTLINE INTERACTION BUTTON: Modern ghost style */
+
+  /* OUTLINE TEAL BUTTON:
+     Light: teal text + teal border on pearl bg → fills teal on hover.
+     Dark:  teal text + teal border on dark bg  → fills teal on hover. */
   .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm;
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
     @apply border-2 border-accent text-accent bg-transparent;
     @apply transition-all duration-300;
   }
 
   .btn-outline:hover {
-    @apply text-white border-transparent shadow-lg scale-[1.02];
-    background-image: var(--gradient-accent);
+    color: white !important;
+    border-color: transparent !important;
+    background: var(--gradient-accent);
+    box-shadow: var(--shadow-glow);
+    @apply scale-[1.03] -translate-y-px;
   }
-  
+
   /* FOOTER LINKS */
   .footer-link {
     @apply text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm;
   }
-  
+
   /* STATUS SYSTEM */
   .status-badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border;
   }
-  
+
   .status-live {
     @apply bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30;
   }
-  
+
   .status-mvp {
     @apply bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-500/30;
   }
-  
+
   .status-progress {
-    @apply bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30;
+    @apply bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-500/20 dark:text-teal-400 dark:border-teal-500/30;
   }
 }
 
 @layer utilities {
-  /* UNIFIED WHITE UTILITY: Enforces dynamic card color switching */
+  /* UNIFIED WHITE UTILITY */
   .bg-white {
     background-color: hsl(var(--card)) !important;
   }
 
   /* ==========================================
-     GET IN TOUCH PRESERVATION
+     CONTACT BLUE (legacy, now teal)
      ========================================== */
-  /* This specifically keeps the contact section blue even in Light Mode. */
   .bg-contact-blue {
-    background-color: hsl(var(--contact-blue)) !important;
+    background: var(--gradient-accent) !important;
   }
-  
+
   .text-contact-blue {
-    color: hsl(var(--contact-blue)) !important;
+    color: hsl(var(--accent)) !important;
   }
 
   /* --- CORE ANIMATIONS --- */
   .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
   .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-  
+
   /* Staggered entrance delays */
   .animate-fade-in-delay-1 { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
   .animate-fade-in-delay-2 { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
   .animate-fade-in-delay-3 { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
-  
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
+
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  
+
   @keyframes slideInLeft {
     from { opacity: 0; transform: translateX(-30px); }
     to { opacity: 1; transform: translateX(0); }
   }
-  
+
   @keyframes slideInRight {
     from { opacity: 0; transform: translateX(30px); }
     to { opacity: 1; transform: translateX(0); }
   }
-  
-  .animate-slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+  /* BOUNCE SOFT: Social icon hover bounce */
+  @keyframes bounceSoft {
+    0%, 100% { transform: translateY(0) scale(1); }
+    30%       { transform: translateY(-5px) scale(1.12); }
+    60%       { transform: translateY(-2px) scale(1.06); }
+    80%       { transform: translateY(-3px) scale(1.08); }
+  }
+
+  /* GLOW PULSE: Soft radial glow for badges/indicators */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 hsl(174 72% 44% / 0.5); }
+    50%       { box-shadow: 0 0 0 6px hsl(174 72% 44% / 0); }
+  }
+
+  /* SHIMMER: Scanning highlight for skill bars / cards */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* STATUS PULSE: Very slow, gentle pulse for the "Currently building" indicator */
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.65; transform: scale(0.9); }
+  }
+
+  /* LETTER TRACK: Slight letter-spacing expansion for name entrance */
+  @keyframes letterTrack {
+    from { letter-spacing: -0.05em; opacity: 0; }
+    to   { letter-spacing: normal; opacity: 1; }
+  }
+
+  .animate-slide-in-left  { animation: slideInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
   .animate-slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-  
+  .animate-glow-pulse     { animation: glowPulse 2s ease-in-out infinite; }
+  .animate-status-pulse   { animation: statusPulse 3s ease-in-out infinite; }
+  .animate-letter-track   { animation: letterTrack 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  /* SOCIAL ICON BOUNCE: Applied on hover via group/peer or direct hover */
+  .social-icon {
+    @apply p-2.5 rounded-lg text-muted-foreground transition-colors duration-200;
+    @apply hover:text-accent-foreground hover:bg-accent active:scale-95;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .social-icon:hover {
+    animation: bounceSoft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
   /* SCROLL REVEAL (Intersection Observer Ready) */
   .reveal {
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  
+
   .reveal.active {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   /* PREMIUM PROFESSIONAL TOGGLE SWITCH */
   .toggle-professional {
     @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full;
     @apply transition-all duration-300 ease-out border border-transparent shadow-inner;
     background: hsl(var(--accent));
   }
-  
+
   .toggle-professional[data-state="unchecked"] {
     background: hsl(var(--muted));
     @apply border-border shadow-none;
   }
-  
+
   .toggle-professional-thumb {
     @apply pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0;
     @apply transition-transform duration-300 ease-out;
   }
-  
+
   .toggle-professional[data-state="checked"] .toggle-professional-thumb {
     transform: translateX(20px);
   }
-  
+
   .toggle-professional[data-state="unchecked"] .toggle-professional-thumb {
     transform: translateX(2px);
+  }
+
+  /* THEME TRANSITION: smooth cross-fade when toggling dark/light */
+  html {
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 }

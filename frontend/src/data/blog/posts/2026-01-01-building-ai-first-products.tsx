@@ -26,7 +26,7 @@ export const content = (
       <li><strong>Iterative Feedback:</strong> Implement loops where user corrections improve the model.</li>
     </ul>
 
-    <blockquote style={{ borderLeft: "4px solid #3b82f6", paddingLeft: "1rem" }}>
+    <blockquote style={{ borderLeft: "4px solid hsl(174 72% 38%)", paddingLeft: "1rem" }}>
       "AI shouldn't just do what a human does; it should enable humans to do things previously impossible."
     </blockquote>
 

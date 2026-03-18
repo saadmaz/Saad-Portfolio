@@ -47,7 +47,7 @@ const newsletterConfigs = [
     audience: "Investors & Traders",
     frequency: "Weekly",
     subscribers: "6,200+",
-    color: "from-blue-600 to-cyan-500",
+    color: "from-teal-600 to-cyan-400",
     // UNIQUE LINK: Direct LinkedIn Follow URL for CSE
     subscribeUrl: "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7337874498160848896",
     // UNIQUE LINK: Full LinkedIn Archive for CSE

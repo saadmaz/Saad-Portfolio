@@ -124,23 +124,23 @@ export function Header() {
             </nav>
 
             <div className="hidden lg:flex items-center gap-3">
-              <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all duration-300 hover:scale-110" aria-label="Toggle theme">
+              <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all duration-300 hover:scale-110" aria-label="Toggle theme">
                 <motion.div initial={false} animate={{ rotate: theme === "dark" ? 180 : 0 }} transition={{ duration: 0.3 }}>
                   {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </motion.div>
               </button>
               
-              <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-white/90 gap-2 shadow-sm">
+              <Button asChild variant="ghost" size="sm" className="btn-accent gap-2 h-auto">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Download Resume</a>
               </Button>
             </div>
 
             <div className="flex lg:hidden items-center gap-2 relative z-[60]">
-              <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-foreground transition-all">
+              <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
-              <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-white/90 gap-2 px-3 shadow-sm">
+              <Button asChild variant="ghost" size="sm" className="btn-accent gap-2 px-3 h-auto">
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Resume</a>
               </Button>
 

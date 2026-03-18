@@ -44,7 +44,7 @@ const AdminLoginPage = () => {
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">
       {/* Background Glows */}
       <div className="absolute top-1/4 -left-20 w-80 h-80 bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
 
       <Card className="w-full max-w-md bg-black/40 border-white/10 backdrop-blur-xl z-10 shadow-2xl">
         <CardHeader className="text-center space-y-2">

@@ -92,10 +92,10 @@ export function SkillsSection() {
             
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-2">
-                <button onClick={movePrev} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
+                <button onClick={movePrev} className="p-2 rounded-md bg-card border border-border hover:border-accent/50 transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button onClick={moveNext} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
+                <button onClick={moveNext} className="p-2 rounded-md bg-card border border-border hover:border-accent/50 transition-colors">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -124,7 +124,7 @@ export function SkillsSection() {
                   }}
                   className="h-full"
                 >
-                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-blue-500/30 transition-all duration-300">
+                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-accent/30 transition-all duration-300">
                     <h3 className="font-display text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">
                       {item.data.category}
                     </h3>
