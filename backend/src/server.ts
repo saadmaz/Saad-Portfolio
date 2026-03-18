@@ -42,8 +42,8 @@ connectDB().then(() => {
 // Security & Base Middleware
 app.use(helmet());
 app.use(cors({
-  // FIX: changed default from :8080 to :5173 (Vite default dev port)
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  // FIX: changed default from :5173 to :8080 (Matches vite.config.ts)
+  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
   credentials: true
 }));
 
@@ -83,11 +83,9 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
-app.use('/api', publicRoutes);
-
-// Admin routes with protection
+// Admin routes with protection (MORE SPECIFIC ROUTES FIRST)
 app.use('/api/admin', adminAuth, adminRoutes);
+app.use('/api', publicRoutes);
 
 // Global Error Handler
 app.use(errorHandler);
@@ -96,3 +94,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
+
+export default app;
