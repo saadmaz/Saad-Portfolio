@@ -2,12 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDj2ey71wzBBXyTAQdpv50RJ4ApDpTbisM",
+  authDomain: "saadportfolio03.firebaseapp.com",
+  projectId: "saadportfolio03",
+  storageBucket: "saadportfolio03.firebasestorage.app",
+  messagingSenderId: "929582814050",
+  appId: "1:929582814050:web:98cc7b1fa382a804be523b",
+  measurementId: "G-B9DKBTHYF6"
 };
 
 let app;
