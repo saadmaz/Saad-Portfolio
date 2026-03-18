@@ -1,16 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Cpu } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSkills } from "@/shared/hooks/useCommon";
-import { cn } from "@/shared/lib/utils";
+import { SkillSet } from "@/types";
 
 const levelColors: Record<string, string> = {
-    Beginner: "text-rose-500 bg-rose-500/10 border-rose-500/20",
-    Intermediate: "text-amber-500 bg-amber-500/10 border-amber-500/20",
-    Advance: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
-    Expert: "text-sky-500 bg-sky-500/10 border-sky-500/20",
+    Beginner: "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive/80",
+    Intermediate: "bg-warning/10 text-warning dark:bg-warning/20 dark:text-warning/80",
+    Advance: "bg-success/10 text-success dark:bg-success/20 dark:text-success/80",
+    Expert: "bg-accent/10 text-accent dark:bg-accent/20 dark:text-accent/80",
 };
 
 export function SkillsSection() {
@@ -24,7 +24,6 @@ export function SkillsSection() {
       const w = window.innerWidth;
       if (w < 640) setVisibleCount(1);
       else if (w < 1024) setVisibleCount(2);
-      else if (w < 1280) setVisibleCount(3);
       else setVisibleCount(4);
     };
     updateCount();
@@ -33,182 +32,115 @@ export function SkillsSection() {
   }, []);
 
   const moveNext = useCallback(() => {
-    if (skillCategories.length <= visibleCount) return;
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % skillCategories.length);
-  }, [skillCategories.length, visibleCount]);
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prev) => (prev + 1) % len);
+  }, [skillCategories.length]);
 
   const movePrev = useCallback(() => {
-    if (skillCategories.length <= visibleCount) return;
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + skillCategories.length) % skillCategories.length);
-  }, [skillCategories.length, visibleCount]);
+    const len = skillCategories.length || 1;
+    setCurrentIndex((prev) => (prev - 1 + len) % len);
+  }, [skillCategories.length]);
 
   useEffect(() => {
-    if (skillCategories.length <= visibleCount) return;
-    const timer = setInterval(moveNext, 5000);
+    if (skillCategories.length === 0) return;
+    const timer = setInterval(moveNext, 3500);
     return () => clearInterval(timer);
-  }, [moveNext, skillCategories.length, visibleCount]);
+  }, [moveNext, skillCategories.length]);
 
   const getVisibleCategories = () => {
     if (skillCategories.length === 0) return [];
-    if (skillCategories.length <= visibleCount) {
-        return skillCategories.map((data, idx) => ({ data, originalIndex: idx }));
-    }
-    const items = [];
+    const items: { data: SkillSet; originalIndex: number }[] = [];
     for (let i = 0; i < visibleCount; i++) {
-        const idx = (currentIndex + i) % skillCategories.length;
-        items.push({ data: skillCategories[idx], originalIndex: idx });
+      const idx = (currentIndex + i) % skillCategories.length;
+      items.push({ data: skillCategories[idx], originalIndex: idx });
     }
     return items;
   };
 
   if (isLoading) {
     return (
-      <section className="section-padding bg-background/50 backdrop-blur-3xl">
-        <div className="section-container text-center py-20">
-          <div className="flex flex-col items-center gap-6">
-            <div className="relative">
-              <div className="w-16 h-16 border-2 border-primary/20 rounded-full" />
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-primary rounded-full animate-spin" />
-              <Cpu className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-primary/40" />
-            </div>
-            <p className="text-muted-foreground font-display font-medium text-lg animate-pulse tracking-wide">Syncing Knowledge Base...</p>
-          </div>
+      <section className="section-padding bg-secondary/30">
+        <div className="section-container text-center text-muted-foreground">
+          Loading skills...
         </div>
       </section>
     );
   }
 
   return (
-    <section className="section-padding bg-background relative overflow-hidden">
-      {/* Abstract Background Decoration */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/3 pointer-events-none" />
-
-      <div className="section-container relative z-10">
-        
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-left max-w-2xl"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-8 h-px bg-accent" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Arsenal</span>
+    <section className="section-padding bg-secondary/30 overflow-hidden">
+      <div className="section-container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-16"
+        >
+          <span className="section-title">Technical Skills</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+                Tech Stack & Skills
+              </h2>
+              <p className="text-muted-foreground max-w-xl">
+                Technologies I've worked with across the full stack.
+              </p>
             </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Technical <span className="text-primary italic">Expertise</span>
-            </h2>
-            <p className="text-muted-foreground/80 md:text-lg leading-relaxed font-medium">
-              A comprehensive breakdown of my digital toolkit, categorized by 
-              domain and proficiency levels.
-            </p>
-          </motion.div>
-
-          <div className="flex items-center gap-4">
-            {skillCategories.length > visibleCount && (
-              <div className="flex items-center gap-2 p-1 bg-secondary/30 backdrop-blur-md rounded-xl border border-border/50">
-                <button 
-                  onClick={movePrev} 
-                  className="p-2.5 rounded-lg bg-background/50 border border-border/50 hover:bg-background hover:text-primary transition-all duration-300 shadow-sm"
-                >
-                  <ChevronLeft className="w-5 h-5" />
+            
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2">
+                <button onClick={movePrev} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button 
-                  onClick={moveNext} 
-                  className="p-2.5 rounded-lg bg-background/50 border border-border/50 hover:bg-background hover:text-primary transition-all duration-300 shadow-sm"
-                >
-                  <ChevronRight className="w-5 h-5" />
+                <button onClick={moveNext} className="p-2 rounded-md bg-card border border-border hover:border-blue-500/50 transition-colors">
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-            )}
-            <Button asChild variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10 gap-2 h-12 px-6 font-bold uppercase tracking-widest text-[10px]">
-              <Link to="/skills">
-                Discover All
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </Button>
+              <Button asChild className="bg-accent text-accent-foreground gap-1">
+                <Link to="/skills">
+                  View All Skills <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Carousel Content */}
-        <div className="relative -mx-4 px-4 h-full min-h-[420px]">
-          <div className={cn(
-            "grid gap-6 h-full",
-            visibleCount === 1 ? "grid-cols-1" : 
-            visibleCount === 2 ? "grid-cols-2" : 
-            visibleCount === 3 ? "grid-cols-3" : "grid-cols-4"
-          )}>
-            <AnimatePresence mode="popLayout" initial={false}>
-              {getVisibleCategories().map((item, idx) => (
+        <div className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[380px]">
+            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+              {getVisibleCategories().map((item) => (
                 <motion.div
                   key={`${item.data.category}-${item.originalIndex}`}
                   layout
-                  initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -30 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: idx * 0.05,
-                    ease: [0.16, 1, 0.3, 1]
+                  initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
+                  transition={{
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.4 }
                   }}
                   className="h-full"
                 >
-                  <div className="bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 p-8 h-full flex flex-col group transition-all duration-500 hover:border-primary/30 hover:bg-card/60 hover:shadow-2xl hover:shadow-primary/5">
-                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/50">
-                      <h3 className="font-display text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                        {item.data.category}
-                      </h3>
-                      <div className="w-2 h-2 rounded-full bg-primary/20 group-hover:bg-primary transition-colors animate-pulse" />
-                    </div>
-                    
-                    <ul className="space-y-6 flex-grow">
-                      {item.data.skills.slice(0, 5).map((skill) => (
-                        <li key={skill.name} className="flex flex-col gap-2 group/skill">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-foreground/90 group-hover/skill:text-primary transition-colors tracking-wide">{skill.name}</span>
-                              <span className="text-[10px] font-black text-muted-foreground/40 uppercase tabular-nums">{skill.years}Y</span>
-                            </div>
-                            <span className={cn(
-                              "text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border transition-all duration-300",
-                              levelColors[skill.level] || levelColors.Advance
-                            )}>
-                              {skill.level}
-                            </span>
+                  <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col backdrop-blur-sm hover:border-blue-500/30 transition-all duration-300">
+                    <h3 className="font-display text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">
+                      {item.data.category}
+                    </h3>
+                    <ul className="space-y-4 flex-grow">
+                      {item.data.skills.map((skill) => (
+                        <li key={skill.name} className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-foreground font-medium">{skill.name}</span>
+                            <span className="text-[11px] text-muted-foreground">{skill.years}y</span>
                           </div>
-                          <div className="h-1 w-full bg-secondary/50 rounded-full overflow-hidden">
-                            <motion.div 
-                                initial={{ width: 0 }}
-                                whileInView={{ 
-                                    width: skill.level === 'Expert' ? '100%' : 
-                                           skill.level === 'Advance' ? '85%' : 
-                                           skill.level === 'Intermediate' ? '60%' : '35%' 
-                                }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1, delay: 0.5 }}
-                                className={cn(
-                                    "h-full rounded-full transition-all duration-1000",
-                                    skill.level === 'Expert' ? 'bg-sky-500' : 
-                                    skill.level === 'Advance' ? 'bg-emerald-500' : 
-                                    skill.level === 'Intermediate' ? 'bg-amber-500' : 'bg-rose-500'
-                                )}
-                            />
-                          </div>
+                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full font-bold border border-current/10 ${levelColors[skill.level] || levelColors.Advance}`}>
+                            {skill.level}
+                          </span>
                         </li>
                       ))}
                     </ul>
-                    
-                    {item.data.skills.length > 5 && (
-                      <p className="mt-6 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest text-center">
-                        + {item.data.skills.length - 5} more technologies
-                      </p>
-                    )}
                   </div>
                 </motion.div>
               ))}

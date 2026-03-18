@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Award, ExternalLink, Calendar, Tag, Layers, ShieldCheck } from "lucide-react";
+import { ArrowRight, Award, ExternalLink, Calendar, Tag, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useCertificates } from "@/shared/hooks/useCommon";
-import { cn } from "@/shared/lib/utils";
+import { Certificate } from "@/types";
 
 export function CertificatesPreview() {
   const { data: certificates, isLoading } = useCertificates();
@@ -35,65 +33,54 @@ export function CertificatesPreview() {
 
   if (isLoading) {
     return (
-      <section className="section-padding bg-background/50 backdrop-blur-3xl">
-        <div className="section-container text-center py-20">
-          <div className="flex flex-col items-center gap-6">
-            <div className="relative">
-              <div className="w-16 h-16 border-2 border-primary/20 rounded-full" />
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-primary rounded-full animate-spin" />
-              <ShieldCheck className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-primary/40" />
-            </div>
-            <p className="text-muted-foreground font-display font-medium text-lg animate-pulse tracking-wide">Verifying Credentials...</p>
-          </div>
+      <section className="py-16 bg-secondary/30">
+        <div className="section-container text-center text-muted-foreground">
+          Loading certificates...
         </div>
       </section>
     );
   }
 
   return (
-    <section className="section-padding bg-background relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[300px] bg-gradient-to-b from-accent/5 to-transparent blur-[100px] pointer-events-none" />
-
-      <div className="section-container relative z-10">
+    <section className="py-16 bg-secondary/30">
+      <div className="section-container">
 
         {/* --- SECTION HEADER --- */}
-        <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-left max-w-2xl"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-8 h-px bg-accent" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Validation</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-10"
+        >
+          <span className="section-title">Credentials</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+                Licenses & Certifications
+              </h2>
+              <p className="text-muted-foreground max-w-xl">
+                Industry-recognized credentials validating my expertise across cloud,
+                development, and data engineering.
+              </p>
             </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Licenses & <span className="text-primary italic">Certifications</span>
-            </h2>
-            <p className="text-muted-foreground/80 md:text-lg leading-relaxed font-medium">
-              Industry-standard proofs of proficiency across cloud architecture, 
-              full-stack development, and data systems.
-            </p>
-          </motion.div>
 
-          <Button asChild variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10 gap-2 h-12 px-6 font-bold uppercase tracking-widest text-[10px]">
-            <Link to="/certifications">
-              View All Credentials
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </Button>
-        </div>
+            <div className="mt-4 md:mt-0">
+              <Link to="/certifications" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground rounded-full font-semibold shadow-sm hover:opacity-95 transition">
+                See All Certificates
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </motion.div>
 
         {/* --- CERTIFICATES CAROUSEL --- */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative px-4 md:px-0"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="relative"
         >
           <Carousel
             opts={{
@@ -102,58 +89,56 @@ export function CertificatesPreview() {
             }}
             className="w-full"
           >
-            <CarouselContent className="-ml-6 py-4">
+            <CarouselContent className="-ml-4">
               {sortedCertificates.map((cert, index) => (
-                <CarouselItem key={cert.id || index} className="pl-6 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <CarouselItem key={cert.id || index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="h-full"
                   >
-                    <Link to={`/certifications/${cert.id}`} className="block h-full cursor-pointer">
-                      <div className="group h-full bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 p-8 transition-all duration-500 hover:border-accent/30 hover:bg-card/60 hover:shadow-2xl hover:shadow-accent/5 flex flex-col">
-                        
-                        <div className="flex items-start justify-between mb-8">
-                          <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black/20 border border-border p-3 shadow-sm group-hover:border-accent/50 transition-all duration-500 group-hover:scale-110">
-                            {cert.issuer_logo ? (
-                              <img src={cert.issuer_logo} alt={cert.issuer} className="w-full h-full object-contain" />
-                            ) : (
-                              <Award className="w-full h-full text-accent p-1" />
+                    <Link to={`/certifications/${cert.id}`} className="block h-full">
+                      <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30 flex flex-col`}>
+
+                        <div className={`absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+
+                        <div className="relative z-10 flex-1 flex flex-col">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-12 h-12 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 transition-colors overflow-hidden">
+                              {cert.issuer_logo ? (
+                                <img src={cert.issuer_logo} alt={cert.issuer} className="w-10 h-10 object-contain" />
+                              ) : (
+                                <Award className="w-5 h-5 text-accent" />
+                              )}
+                            </div>
+                            <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {formatDate(cert.issue_date)}
+                            </span>
+                          </div>
+
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
+                              {cert.title}
+                            </h4>
+                            <p className="text-sm text-muted-foreground mb-3">{cert.issuer}</p>
+                          </div>
+
+                          <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap gap-2">
+                            <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
+                              <Layers className="w-3 h-3" />
+                              {cert.category}
+                            </div>
+                            {cert.tags && cert.tags[0] && (
+                              <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
+                                <Tag className="w-3 h-3" />
+                                {cert.tags[0]}
+                              </div>
                             )}
                           </div>
-                          <div className="flex flex-col items-end gap-2">
-                             <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 px-3 py-1 bg-secondary/50 rounded-full">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(cert.issue_date)}
-                            </div>
-                            <Badge variant="outline" className="text-[8px] font-black uppercase tracking-[0.2em] border-primary/20 text-primary px-2 py-0">
-                                Verified
-                            </Badge>
-                          </div>
-                        </div>
-
-                        <div className="flex-1 space-y-2">
-                          <h4 className="font-display text-xl font-bold text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                            {cert.title}
-                          </h4>
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest group-hover:text-muted-foreground/80 transition-colors">
-                            {cert.issuer}
-                          </p>
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-border/40 flex flex-wrap gap-2">
-                          <div className="flex items-center text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 transition-colors group-hover:text-foreground/80 bg-secondary/30 px-3 py-1.5 rounded-lg border border-border/20">
-                            <Layers className="w-3 h-3 mr-1.5 text-accent" />
-                            {cert.category}
-                          </div>
-                          {cert.tags && cert.tags[0] && (
-                            <div className="flex items-center text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 transition-colors group-hover:text-foreground/80 bg-secondary/30 px-3 py-1.5 rounded-lg border border-border/20">
-                              <Tag className="w-3 h-3 mr-1.5 text-accent" />
-                              {cert.tags[0]}
-                            </div>
-                          )}
                         </div>
                       </div>
                     </Link>
@@ -161,25 +146,21 @@ export function CertificatesPreview() {
                 </CarouselItem>
               ))}
 
-              <CarouselItem className="pl-6 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+              <CarouselItem className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                 <Link to="/certifications" className="block h-full">
-                  <div className="h-full bg-gradient-to-br from-accent/10 to-transparent rounded-3xl border border-accent/20 border-dashed p-8 flex flex-col items-center justify-center gap-6 hover:bg-accent/5 transition-all duration-500 group min-h-[320px]">
-                    <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center border border-accent/20 group-hover:scale-110 group-hover:bg-accent/20 transition-all duration-500">
-                      <ExternalLink className="w-8 h-8 text-accent" />
+                  <div className="h-full bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/30 p-5 flex flex-col items-center justify-center gap-3 hover:bg-accent/15 transition-all duration-300 min-h-[180px] group">
+                    <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
+                      <ExternalLink className="w-5 h-5 text-accent" />
                     </div>
-                    <div className="text-center">
-                        <span className="block font-display text-xl font-bold text-accent mb-1">Full Inventory</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent/50 group-hover:text-accent/80 transition-colors">Explorer Profile</span>
-                    </div>
+                    <span className="font-medium text-accent text-center">See All Certificates</span>
+                    <ArrowRight className="w-4 h-4 text-accent group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               </CarouselItem>
             </CarouselContent>
 
-            <div className="flex justify-center gap-4 mt-12 md:static">
-                 <CarouselPrevious className="static translate-y-0 h-12 w-12 bg-card/50 border-border/50 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300" />
-                 <CarouselNext className="static translate-y-0 h-12 w-12 bg-card/50 border-border/50 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300" />
-            </div>
+            <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-secondary" />
+            <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-secondary" />
           </Carousel>
         </motion.div>
       </div>
