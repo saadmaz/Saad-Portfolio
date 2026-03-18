@@ -14,13 +14,15 @@ let app;
 let auth;
 
 try {
+  console.log("🔥 Firebase Init Check:", import.meta.env.VITE_FIREBASE_PROJECT_ID ? "Config Detected" : "MISSING CONFIG");
+  
   // Check if critical config is missing
   if (!import.meta.env.VITE_FIREBASE_API_KEY) {
-    console.warn("Firebase configuration is missing. Auth features will not work.");
-    // We'll initialize with an empty config and catch the error, or just not initialize
+    console.error("❌ CRITICAL: VITE_FIREBASE_API_KEY is missing! Auth will fail.");
     app = initializeApp({ apiKey: "none", authDomain: "none", projectId: "none", storageBucket: "none", messagingSenderId: "none", appId: "none" });
   } else {
     app = initializeApp(firebaseConfig);
+    console.log("✅ Firebase Initialized for:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
   }
   auth = getAuth(app);
 } catch (error) {
