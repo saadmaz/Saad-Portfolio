@@ -4,7 +4,8 @@ import {
   User, 
   signOut as firebaseSignOut 
 } from "firebase/auth";
-import { auth } from "@/services/firebase";
+// Import from the new central firebase lib (was @/services/firebase)
+import { auth } from "@/lib/firebase";
 
 interface AuthContextType {
   currentUser: User | null;

@@ -1,65 +1,149 @@
-import { apiClient } from '../shared/services/api-client';
-import { BlogPost, ApiResponse } from '../types';
+/**
+ * services/blog-service.ts
+ * ─────────────────────────────────────────────────────────────
+ * All blog-post CRUD operations using the Firebase SDK directly.
+ *
+ * BEFORE: browser → axios → Express (/api/blog-posts) → Firebase Admin → Firestore
+ * AFTER:  browser → Firebase SDK → Firestore
+ *
+ * Security is enforced by Firestore Security Rules:
+ *   match /blog_posts/{id} {
+ *     allow read: if true;
+ *     allow write: if request.auth != null;
+ *   }
+ *
+ * Public class API is kept identical — all hooks/pages stay unchanged.
+ */
+
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import type { BlogPost } from "@/types";
+
+// ─── Firestore collection name ───────────────────────────────────
+const COL = "blog_posts";
 
 export class BlogService {
+
+  // ─── Public reads ───────────────────────────────────────────────
+
+  /**
+   * Fetch ALL blog posts (published + drafts).
+   * Used in the admin panel to show all entries for management.
+   */
   static async getAll(): Promise<BlogPost[]> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost[]>>('/admin/blogs') as unknown as ApiResponse<BlogPost[]>;
-      return response.data;
+      const q = query(collection(db, COL), orderBy("date", "desc"));
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogPost));
     } catch (error) {
-      console.warn('Backend unavailable, returning empty blog posts');
+      console.warn("[BlogService] getAll:", error);
       return [];
     }
   }
 
+  /**
+   * Fetch only published posts (published === true).
+   * Used on the public /blog page.
+   */
   static async getPublished(): Promise<BlogPost[]> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost[]>>('/blog-posts') as unknown as ApiResponse<BlogPost[]>;
-      return response.data;
+      const q = query(
+        collection(db, COL),
+        where("published", "==", true),
+        orderBy("date", "desc")
+      );
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogPost));
     } catch (error) {
+      console.error("[BlogService] getPublished:", error);
       return [];
     }
   }
 
+  /**
+   * Fetch the single latest published post.
+   * Replaces the old GET /blog-posts/latest endpoint.
+   */
   static async getLatest(): Promise<BlogPost | null> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost>>('/blog-posts/latest') as unknown as ApiResponse<BlogPost>;
-      return response.data;
+      const q = query(
+        collection(db, COL),
+        where("published", "==", true),
+        orderBy("date", "desc"),
+        limit(1)  // only need one document
+      );
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const d = snap.docs[0];
+      return { id: d.id, ...d.data() } as BlogPost;
     } catch (error) {
+      console.error("[BlogService] getLatest:", error);
       return null;
     }
   }
 
+  /** Fetch one post by its Firestore document ID. */
   static async getById(id: string): Promise<BlogPost | null> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost>>(`/blog-posts/id/${id}`) as unknown as ApiResponse<BlogPost>;
-      return response.data;
+      const snap = await getDoc(doc(db, COL, id));
+      if (!snap.exists()) return null;
+      return { id: snap.id, ...snap.data() } as BlogPost;
     } catch (error) {
-      console.error(`Error fetching blog by id ${id}:`, error);
+      console.error("[BlogService] getById:", error);
       return null;
     }
   }
 
+  /** Fetch one post by its slug field. Used by /blog/:slug routes. */
   static async getBySlug(slug: string): Promise<BlogPost | null> {
     try {
-      const response = await apiClient.get<ApiResponse<BlogPost>>(`/blog-posts/${slug}`) as unknown as ApiResponse<BlogPost>;
-      return response.data;
+      const q = query(collection(db, COL), where("slug", "==", slug));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const d = snap.docs[0];
+      return { id: d.id, ...d.data() } as BlogPost;
     } catch (error) {
+      console.error("[BlogService] getBySlug:", error);
       return null;
     }
   }
 
+  // ─── Admin writes (require active Firebase Auth session) ────────
+
+  /** Create a new blog post. Firestore auto-generates the document ID. */
   static async create(post: Partial<BlogPost>): Promise<BlogPost> {
-    const response = await apiClient.post<ApiResponse<BlogPost>>('/admin/blogs', post) as unknown as ApiResponse<BlogPost>;
-    return response.data;
+    const ref = await addDoc(collection(db, COL), {
+      ...post,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
+    return { id: ref.id, ...post } as BlogPost;
   }
 
+  /** Merge-update an existing post. Only changed fields are overwritten. */
   static async update(id: string | number, post: Partial<BlogPost>): Promise<BlogPost> {
-    const response = await apiClient.put<ApiResponse<BlogPost>>(`/admin/blogs/${id}`, post) as unknown as ApiResponse<BlogPost>;
-    return response.data;
+    await updateDoc(doc(db, COL, String(id)), {
+      ...post,
+      updated_at: serverTimestamp(),
+    });
+    return { id, ...post } as BlogPost;
   }
 
+  /** Permanently delete a blog post by ID. */
   static async delete(id: string | number): Promise<void> {
-    await apiClient.delete(`/admin/blogs/${id}`);
+    await deleteDoc(doc(db, COL, String(id)));
   }
 }

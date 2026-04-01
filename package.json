@@ -1,26 +1,12 @@
 {
-  "name": "portfolio-monorepo",
+  "name": "portfolio",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "prefrontend:dev": "npx kill-port 8080",
-    "prebackend:dev": "npx kill-port 3001",
-    "frontend:dev": "npm --prefix frontend run dev",
-    "backend:dev": "npm --prefix backend run dev",
-    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
-    "build": "npm --prefix frontend run build && npm --prefix backend run build",
-    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint"
   },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "dependencies": {
-    "axios": "^1.13.6"
   }
 }

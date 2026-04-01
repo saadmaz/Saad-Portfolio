@@ -1,241 +1,366 @@
-import { apiClient } from './api-client';
-import { 
-  Experience, 
-  SkillSet, 
-  Certificate, 
-  ApiResponse, 
-  Award, 
-  Language, 
-  Hackathon, 
-  Testimonial, 
-  VolunteerExperience, 
-  Education, 
+/**
+ * shared/services/common-service.ts
+ * ─────────────────────────────────────────────────────────────
+ * CRUD operations for every entity that isn't a Project or BlogPost.
+ * All calls now go directly to Firestore — no Express proxy.
+ *
+ * BEFORE: browser → axios → Express (/api/...) → Firebase Admin → Firestore
+ * AFTER:  browser → Firebase SDK → Firestore
+ *
+ * The public class API (CommonService.*) is kept identical so every
+ * admin page compiles without changes.
+ *
+ * Contact form is the ONE exception that still uses an HTTP call —
+ * it hits /api/contact (a Vercel serverless function) because SendGrid
+ * credentials must never be exposed to the browser.
+ */
+
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import type {
+  Experience,
+  SkillSet,
+  Certificate,
+  Award,
+  Language,
+  Hackathon,
+  Testimonial,
+  VolunteerExperience,
+  Education,
   ActivityLog,
   Message,
   Event,
-  Newsletter 
-} from '../../types';
+  Newsletter,
+} from "@/types";
 
-export class CommonService {
-  static async getWorkExperience(): Promise<Experience[]> {
-    try {
-      const response = await apiClient.get<ApiResponse<Experience[]>>('/work-experience') as unknown as ApiResponse<Experience[]>;
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching work experience:', error);
-      return [];
-    }
+// ─── Helpers ─────────────────────────────────────────────────────
+
+/**
+ * Generic "get all documents from a collection" helper.
+ * Returns typed results or an empty array on error.
+ */
+async function fetchAll<T>(col: string, sortField?: string): Promise<T[]> {
+  try {
+    const q = sortField
+      ? query(collection(db, col), orderBy(sortField, "asc"))
+      : collection(db, col);
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as T));
+  } catch (error) {
+    console.error(`[CommonService] fetchAll(${col}):`, error);
+    return [];
   }
+}
+
+/** Generic add-document helper. Returns the new item with its generated ID. */
+async function createDoc<T>(col: string, data: Partial<T>): Promise<T> {
+  const ref = await addDoc(collection(db, col), {
+    ...data,
+    created_at: serverTimestamp(),
+    updated_at: serverTimestamp(),
+  });
+  return { id: ref.id, ...data } as T;
+}
+
+/** Generic merge-update helper. */
+async function updateDoc_<T>(col: string, id: string | number, data: Partial<T>): Promise<T> {
+  await updateDoc(doc(db, col, String(id)), {
+    ...data,
+    updated_at: serverTimestamp(),
+  });
+  return { id, ...data } as T;
+}
+
+/** Generic delete helper. */
+async function deleteDoc_(col: string, id: string | number): Promise<void> {
+  await deleteDoc(doc(db, col, String(id)));
+}
+
+// ─── Collection names (must match your Firestore database) ───────
+const COLLECTIONS = {
+  experience:   "work_experience",
+  skills:       "skills",
+  certificates: "certificates",
+  awards:       "awards",
+  languages:    "languages",
+  hackathons:   "hackathons",
+  testimonials: "testimonials",
+  volunteer:    "volunteer_experience",
+  education:    "education",
+  logs:         "activity_logs",
+  messages:     "contact_messages",
+  events:       "events",
+  newsletters:  "newsletters",
+} as const;
+
+// ─── Public class API ─────────────────────────────────────────────
+export class CommonService {
+
+  // ── Work Experience ──────────────────────────────────────────────
+
+  static async getWorkExperience(): Promise<Experience[]> {
+    return fetchAll<Experience>(COLLECTIONS.experience, "order_index");
+  }
+
+  static async createExperience(data: Partial<Experience>): Promise<Experience> {
+    return createDoc<Experience>(COLLECTIONS.experience, data);
+  }
+
+  static async updateExperience(id: string | number, data: Partial<Experience>): Promise<Experience> {
+    return updateDoc_<Experience>(COLLECTIONS.experience, id, data);
+  }
+
+  static async deleteExperience(id: string | number): Promise<void> {
+    return deleteDoc_(COLLECTIONS.experience, id);
+  }
+
+  // ── Skills ───────────────────────────────────────────────────────
+  // Each Firestore document is a skill category (SkillSet: { category, skills[] })
 
   static async getSkills(): Promise<SkillSet[]> {
-    try {
-      const response = await apiClient.get<ApiResponse<SkillSet[]>>('/skills') as unknown as ApiResponse<SkillSet[]>;
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching skills:', error);
-      return [];
-    }
+    return fetchAll<SkillSet>(COLLECTIONS.skills);
   }
+
+  /**
+   * Bulk-replace the entire skills dataset.
+   * Reads all existing docs, deletes them, then writes the new set.
+   * Used by the admin Skills page which manages skills as a group.
+   */
+  static async updateSkills(data: SkillSet[]): Promise<SkillSet[]> {
+    // 1. Delete every existing skill-set document
+    const existing = await getDocs(collection(db, COLLECTIONS.skills));
+    await Promise.all(existing.docs.map((d) => deleteDoc(d.ref)));
+
+    // 2. Write each new skill-set as its own document
+    const created = await Promise.all(
+      data.map((skillSet) =>
+        addDoc(collection(db, COLLECTIONS.skills), {
+          ...skillSet,
+          updated_at: serverTimestamp(),
+        })
+      )
+    );
+    return data.map((s, i) => ({ id: created[i].id, ...s })) as SkillSet[];
+  }
+
+  // ── Certificates ─────────────────────────────────────────────────
 
   static async getCertificates(): Promise<Certificate[]> {
-    try {
-      const response = await apiClient.get<ApiResponse<Certificate[]>>('/certificates') as unknown as ApiResponse<Certificate[]>;
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching certificates:', error);
-      return [];
+    return fetchAll<Certificate>(COLLECTIONS.certificates);
+  }
+
+  static async createCertificate(data: Partial<Certificate>): Promise<Certificate> {
+    return createDoc<Certificate>(COLLECTIONS.certificates, data);
+  }
+
+  static async updateCertificate(id: string | number, data: Partial<Certificate>): Promise<Certificate> {
+    return updateDoc_<Certificate>(COLLECTIONS.certificates, id, data);
+  }
+
+  static async deleteCertificate(id: string | number): Promise<void> {
+    return deleteDoc_(COLLECTIONS.certificates, id);
+  }
+
+  // ── Awards ───────────────────────────────────────────────────────
+
+  static async getAwards(): Promise<Award[]> {
+    return fetchAll<Award>(COLLECTIONS.awards);
+  }
+
+  static async createAward(data: Partial<Award>): Promise<Award> {
+    return createDoc<Award>(COLLECTIONS.awards, data);
+  }
+
+  static async updateAward(id: string, data: Partial<Award>): Promise<Award> {
+    return updateDoc_<Award>(COLLECTIONS.awards, id, data);
+  }
+
+  static async deleteAward(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.awards, id);
+  }
+
+  // ── Languages ────────────────────────────────────────────────────
+
+  static async getLanguages(): Promise<Language[]> {
+    return fetchAll<Language>(COLLECTIONS.languages);
+  }
+
+  static async createLanguage(data: Partial<Language>): Promise<Language> {
+    return createDoc<Language>(COLLECTIONS.languages, data);
+  }
+
+  static async updateLanguage(id: string, data: Partial<Language>): Promise<Language> {
+    return updateDoc_<Language>(COLLECTIONS.languages, id, data);
+  }
+
+  static async deleteLanguage(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.languages, id);
+  }
+
+  // ── Hackathons ───────────────────────────────────────────────────
+
+  static async getHackathons(): Promise<Hackathon[]> {
+    return fetchAll<Hackathon>(COLLECTIONS.hackathons);
+  }
+
+  static async createHackathon(data: Partial<Hackathon>): Promise<Hackathon> {
+    return createDoc<Hackathon>(COLLECTIONS.hackathons, data);
+  }
+
+  static async updateHackathon(id: string, data: Partial<Hackathon>): Promise<Hackathon> {
+    return updateDoc_<Hackathon>(COLLECTIONS.hackathons, id, data);
+  }
+
+  static async deleteHackathon(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.hackathons, id);
+  }
+
+  // ── Testimonials ─────────────────────────────────────────────────
+
+  static async getTestimonials(): Promise<Testimonial[]> {
+    return fetchAll<Testimonial>(COLLECTIONS.testimonials);
+  }
+
+  static async createTestimonial(data: Partial<Testimonial>): Promise<Testimonial> {
+    return createDoc<Testimonial>(COLLECTIONS.testimonials, data);
+  }
+
+  static async updateTestimonial(id: string, data: Partial<Testimonial>): Promise<Testimonial> {
+    return updateDoc_<Testimonial>(COLLECTIONS.testimonials, id, data);
+  }
+
+  static async deleteTestimonial(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.testimonials, id);
+  }
+
+  // ── Volunteer Experience ─────────────────────────────────────────
+
+  static async getVolunteerExperience(): Promise<VolunteerExperience[]> {
+    return fetchAll<VolunteerExperience>(COLLECTIONS.volunteer);
+  }
+
+  static async createVolunteerExperience(data: Partial<VolunteerExperience>): Promise<VolunteerExperience> {
+    return createDoc<VolunteerExperience>(COLLECTIONS.volunteer, data);
+  }
+
+  static async updateVolunteerExperience(id: string, data: Partial<VolunteerExperience>): Promise<VolunteerExperience> {
+    return updateDoc_<VolunteerExperience>(COLLECTIONS.volunteer, id, data);
+  }
+
+  static async deleteVolunteerExperience(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.volunteer, id);
+  }
+
+  // ── Education ────────────────────────────────────────────────────
+
+  static async getEducation(): Promise<Education[]> {
+    return fetchAll<Education>(COLLECTIONS.education);
+  }
+
+  static async createEducation(data: Partial<Education>): Promise<Education> {
+    return createDoc<Education>(COLLECTIONS.education, data);
+  }
+
+  static async updateEducation(id: string, data: Partial<Education>): Promise<Education> {
+    return updateDoc_<Education>(COLLECTIONS.education, id, data);
+  }
+
+  static async deleteEducation(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.education, id);
+  }
+
+  // ── Activity Logs (read-only from the frontend) ──────────────────
+
+  static async getActivityLogs(): Promise<ActivityLog[]> {
+    return fetchAll<ActivityLog>(COLLECTIONS.logs, "timestamp");
+  }
+
+  // ── Contact Form ─────────────────────────────────────────────────
+  /**
+   * Submits a contact form message.
+   *
+   * This is the ONE remaining HTTP call — it POSTs to the Vercel
+   * serverless function at /api/contact which:
+   *   1. Saves the message to Firestore via Firebase Admin SDK
+   *   2. Sends the email notification via SendGrid
+   *
+   * We can't do the email from the browser because the SendGrid API
+   * key must stay server-side.
+   */
+  static async submitContact(data: {
+    name: string;
+    email: string;
+    subject?: string;
+    message: string;
+  }): Promise<void> {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      throw new Error(json?.error ?? "Failed to send message");
     }
   }
 
-  // Experience CRUD
-  static async createExperience(data: Partial<Experience>): Promise<Experience> {
-    const response = await apiClient.post<ApiResponse<Experience>>('/admin/experience', data) as unknown as ApiResponse<Experience>;
-    return response.data;
-  }
-  static async updateExperience(id: string | number, data: Partial<Experience>): Promise<Experience> {
-    const response = await apiClient.put<ApiResponse<Experience>>(`/admin/experience/${id}`, data) as unknown as ApiResponse<Experience>;
-    return response.data;
-  }
-  static async deleteExperience(id: string | number): Promise<void> {
-    await apiClient.delete(`/admin/experience/${id}`);
-  }
+  // ── Admin Messages (contact submissions) ────────────────────────
 
-  // Skills CRUD
-  static async updateSkills(data: SkillSet[]): Promise<SkillSet[]> {
-    const response = await apiClient.post<ApiResponse<SkillSet[]>>('/admin/skills', { skillSets: data }) as unknown as ApiResponse<SkillSet[]>;
-    return response.data;
-  }
-
-  // Certificates CRUD
-  static async createCertificate(data: Partial<Certificate>): Promise<Certificate> {
-    const response = await apiClient.post<ApiResponse<Certificate>>('/admin/certificates', data) as unknown as ApiResponse<Certificate>;
-    return response.data;
-  }
-  static async updateCertificate(id: string | number, data: Partial<Certificate>): Promise<Certificate> {
-    const response = await apiClient.put<ApiResponse<Certificate>>(`/admin/certificates/${id}`, data) as unknown as ApiResponse<Certificate>;
-    return response.data;
-  }
-  static async deleteCertificate(id: string | number): Promise<void> {
-    await apiClient.delete(`/admin/certificates/${id}`);
-  }
-
-  // Awards CRUD
-  static async getAwards(): Promise<Award[]> {
-    const response = await apiClient.get<ApiResponse<Award[]>>('/awards') as unknown as ApiResponse<Award[]>;
-    return response.data;
-  }
-  static async createAward(data: Partial<Award>): Promise<Award> {
-    const response = await apiClient.post<ApiResponse<Award>>('/admin/awards', data) as unknown as ApiResponse<Award>;
-    return response.data;
-  }
-  static async updateAward(id: string, data: Partial<Award>): Promise<Award> {
-    const response = await apiClient.put<ApiResponse<Award>>(`/admin/awards/${id}`, data) as unknown as ApiResponse<Award>;
-    return response.data;
-  }
-  static async deleteAward(id: string): Promise<void> {
-    await apiClient.delete(`/admin/awards/${id}`);
-  }
-
-  // Languages CRUD
-  static async getLanguages(): Promise<Language[]> {
-    const response = await apiClient.get<ApiResponse<Language[]>>('/languages') as unknown as ApiResponse<Language[]>;
-    return response.data;
-  }
-  static async createLanguage(data: Partial<Language>): Promise<Language> {
-    const response = await apiClient.post<ApiResponse<Language>>('/admin/languages', data) as unknown as ApiResponse<Language>;
-    return response.data;
-  }
-  static async updateLanguage(id: string, data: Partial<Language>): Promise<Language> {
-    const response = await apiClient.put<ApiResponse<Language>>(`/admin/languages/${id}`, data) as unknown as ApiResponse<Language>;
-    return response.data;
-  }
-  static async deleteLanguage(id: string): Promise<void> {
-    await apiClient.delete(`/admin/languages/${id}`);
-  }
-
-  // Hackathons CRUD
-  static async getHackathons(): Promise<Hackathon[]> {
-    const response = await apiClient.get<ApiResponse<Hackathon[]>>('/hackathons') as unknown as ApiResponse<Hackathon[]>;
-    return response.data;
-  }
-  static async createHackathon(data: Partial<Hackathon>): Promise<Hackathon> {
-    const response = await apiClient.post<ApiResponse<Hackathon>>('/admin/hackathons', data) as unknown as ApiResponse<Hackathon>;
-    return response.data;
-  }
-  static async updateHackathon(id: string, data: Partial<Hackathon>): Promise<Hackathon> {
-    const response = await apiClient.put<ApiResponse<Hackathon>>(`/admin/hackathons/${id}`, data) as unknown as ApiResponse<Hackathon>;
-    return response.data;
-  }
-  static async deleteHackathon(id: string): Promise<void> {
-    await apiClient.delete(`/admin/hackathons/${id}`);
-  }
-
-  // Testimonials CRUD
-  static async getTestimonials(): Promise<Testimonial[]> {
-    const response = await apiClient.get<ApiResponse<Testimonial[]>>('/testimonials') as unknown as ApiResponse<Testimonial[]>;
-    return response.data;
-  }
-  static async createTestimonial(data: Partial<Testimonial>): Promise<Testimonial> {
-    const response = await apiClient.post<ApiResponse<Testimonial>>('/admin/testimonials', data) as unknown as ApiResponse<Testimonial>;
-    return response.data;
-  }
-  static async updateTestimonial(id: string, data: Partial<Testimonial>): Promise<Testimonial> {
-    const response = await apiClient.put<ApiResponse<Testimonial>>(`/admin/testimonials/${id}`, data) as unknown as ApiResponse<Testimonial>;
-    return response.data;
-  }
-  static async deleteTestimonial(id: string): Promise<void> {
-    await apiClient.delete(`/admin/testimonials/${id}`);
-  }
-
-  // Volunteer Experience CRUD
-  static async getVolunteerExperience(): Promise<VolunteerExperience[]> {
-    const response = await apiClient.get<ApiResponse<VolunteerExperience[]>>('/volunteer') as unknown as ApiResponse<VolunteerExperience[]>;
-    return response.data;
-  }
-  static async createVolunteerExperience(data: Partial<VolunteerExperience>): Promise<VolunteerExperience> {
-    const response = await apiClient.post<ApiResponse<VolunteerExperience>>('/admin/volunteer', data) as unknown as ApiResponse<VolunteerExperience>;
-    return response.data;
-  }
-  static async updateVolunteerExperience(id: string, data: Partial<VolunteerExperience>): Promise<VolunteerExperience> {
-    const response = await apiClient.put<ApiResponse<VolunteerExperience>>(`/admin/volunteer/${id}`, data) as unknown as ApiResponse<VolunteerExperience>;
-    return response.data;
-  }
-  static async deleteVolunteerExperience(id: string): Promise<void> {
-    await apiClient.delete(`/admin/volunteer/${id}`);
-  }
-
-  // Education CRUD
-  static async getEducation(): Promise<Education[]> {
-    const response = await apiClient.get<ApiResponse<Education[]>>('/education') as unknown as ApiResponse<Education[]>;
-    return response.data;
-  }
-  static async createEducation(data: Partial<Education>): Promise<Education> {
-    const response = await apiClient.post<ApiResponse<Education>>('/admin/education', data) as unknown as ApiResponse<Education>;
-    return response.data;
-  }
-  static async updateEducation(id: string, data: Partial<Education>): Promise<Education> {
-    const response = await apiClient.put<ApiResponse<Education>>(`/admin/education/${id}`, data) as unknown as ApiResponse<Education>;
-    return response.data;
-  }
-  static async deleteEducation(id: string): Promise<void> {
-    await apiClient.delete(`/admin/education/${id}`);
-  }
-
-  // Activity Logs
-  static async getActivityLogs(): Promise<ActivityLog[]> {
-    const response = await apiClient.get<ApiResponse<ActivityLog[]>>('/admin/logs') as unknown as ApiResponse<ActivityLog[]>;
-    return response.data;
-  }
-
-  static async submitContact(data: { name: string; email: string; subject?: string; message: string }): Promise<void> {
-    await apiClient.post('/contact', data);
-  }
-
-  // Admin Messages management
   static async getMessages(): Promise<Message[]> {
-    const response = await apiClient.get<ApiResponse<Message[]>>('/admin/messages') as unknown as ApiResponse<Message[]>;
-    return response.data;
+    return fetchAll<Message>(COLLECTIONS.messages, "created_at");
   }
 
   static async updateMessage(id: string, data: Partial<Message>): Promise<void> {
-    await apiClient.put(`/admin/messages/${id}`, data);
+    await updateDoc_<Message>(COLLECTIONS.messages, id, data);
   }
 
   static async deleteMessage(id: string): Promise<void> {
-    await apiClient.delete(`/admin/messages/${id}`);
+    return deleteDoc_(COLLECTIONS.messages, id);
   }
 
-  // Events CRUD
+  // ── Events ───────────────────────────────────────────────────────
+
   static async getEvents(): Promise<Event[]> {
-    const response = await apiClient.get<ApiResponse<Event[]>>('/events') as unknown as ApiResponse<Event[]>;
-    return response.data;
-  }
-  static async createEvent(data: Partial<Event>): Promise<Event> {
-    const response = await apiClient.post<ApiResponse<Event>>('/admin/events', data) as unknown as ApiResponse<Event>;
-    return response.data;
-  }
-  static async updateEvent(id: string, data: Partial<Event>): Promise<Event> {
-    const response = await apiClient.put<ApiResponse<Event>>(`/admin/events/${id}`, data) as unknown as ApiResponse<Event>;
-    return response.data;
-  }
-  static async deleteEvent(id: string): Promise<void> {
-    await apiClient.delete(`/admin/events/${id}`);
+    return fetchAll<Event>(COLLECTIONS.events, "date");
   }
 
-  // Newsletters CRUD
+  static async createEvent(data: Partial<Event>): Promise<Event> {
+    return createDoc<Event>(COLLECTIONS.events, data);
+  }
+
+  static async updateEvent(id: string, data: Partial<Event>): Promise<Event> {
+    return updateDoc_<Event>(COLLECTIONS.events, id, data);
+  }
+
+  static async deleteEvent(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.events, id);
+  }
+
+  // ── Newsletters ──────────────────────────────────────────────────
+
   static async getNewsletters(): Promise<Newsletter[]> {
-    const response = await apiClient.get<ApiResponse<Newsletter[]>>('/newsletters') as unknown as ApiResponse<Newsletter[]>;
-    return response.data;
+    return fetchAll<Newsletter>(COLLECTIONS.newsletters, "date");
   }
+
   static async createNewsletter(data: Partial<Newsletter>): Promise<Newsletter> {
-    const response = await apiClient.post<ApiResponse<Newsletter>>('/admin/newsletters', data) as unknown as ApiResponse<Newsletter>;
-    return response.data;
+    return createDoc<Newsletter>(COLLECTIONS.newsletters, data);
   }
+
   static async updateNewsletter(id: string, data: Partial<Newsletter>): Promise<Newsletter> {
-    const response = await apiClient.put<ApiResponse<Newsletter>>(`/admin/newsletters/${id}`, data) as unknown as ApiResponse<Newsletter>;
-    return response.data;
+    return updateDoc_<Newsletter>(COLLECTIONS.newsletters, id, data);
   }
+
   static async deleteNewsletter(id: string): Promise<void> {
-    await apiClient.delete(`/admin/newsletters/${id}`);
+    return deleteDoc_(COLLECTIONS.newsletters, id);
   }
 }

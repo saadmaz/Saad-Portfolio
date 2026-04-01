@@ -1,12 +1,28 @@
 /**
- * Data Manager - Centralized data loading and management
- * Automatically loads data from JSON files and sorts by date (latest first)
+ * shared/lib/dataManager.ts
+ * ─────────────────────────────────────────────────────────────
+ * Centralised data-access layer used by usePortfolioData hooks.
+ *
+ * BEFORE: all methods called apiClient (axios → Express → Firestore)
+ * AFTER:  all methods call Firestore directly via the Firebase SDK
+ *
+ * Type definitions are kept here as-is so that usePortfolioData.ts
+ * imports still resolve without changes.
  */
 
-// DataManager now fetches from backend API endpoints
-// Remove static imports
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-// Type definitions
+// ─── Type definitions ─────────────────────────────────────────────
+// These live here (not in /types) because usePortfolioData imports them
+// directly from this file. Keep them in sync with /types/index.ts.
+
 export interface Blog {
   id: string;
   title: string;
@@ -52,7 +68,6 @@ export interface WorkExperience {
 }
 
 export interface Certificate {
-  // JSON from assets contains various fields; we keep a flexible shape.
   id: string;
   title: string;
   issuer: string;
@@ -80,7 +95,6 @@ export interface Skill {
     name: string;
     level: string;
     years: number;
-    // JSON does not include endorsed field, but we keep optional
     endorsed?: number;
   }>;
 }
@@ -89,20 +103,17 @@ export interface Project {
   id: string;
   slug?: string;
   title: string;
-
-  // --- CORE FIELDS ---
   date?: string;
-  status?: "Live" | "In Progress" | "Archived" | string;
-  tagline?: string;           
-  gradientStart?: string;     
-  gradientEnd?: string;       
-  techStack?: string[];       
+  status?: string;
+  tagline?: string;
+  gradientStart?: string;
+  gradientEnd?: string;
+  techStack?: string[];
   role?: string;
   duration?: string;
   githubUrl?: string;
   liveUrl?: string;
-  // NEW: Added to fix the property error
-  pdfReport?: string;         
+  pdfReport?: string;
   heroImage?: string;
   screenshots?: string[];
   videoDemo?: string;
@@ -110,75 +121,25 @@ export interface Project {
   problem?: string;
   solution?: string;
   impact?: string;
-
-  // --- TECHNICAL DETAILS ---
-  architecture?: {
-    description?: string;
-    diagramUrl?: string;
-  };
+  architecture?: { description?: string; diagramUrl?: string };
   databaseSchema?: string;
   apiDocs?: string;
-  challenges?: Array<{
-    wall?: string;
-    fix?: string;
-    lesson?: string;
-  }>;
-  
-  // --- QUANTITATIVE DATA ---
+  challenges?: Array<{ wall?: string; fix?: string; lesson?: string }>;
   metrics?: {
     users?: number;
-    stars?: number;
-    forks?: number;
-    downloads?: number;
-    // Updated to handle both 3 and 4 metric scenarios
-    lighthouseScore?: {
-      performance?: number;
-      accessibility?: number;
-      seo?: number;
-      bestPractices?: number;
-    };
+    lighthouseScore?: { performance?: number; accessibility?: number; seo?: number };
     testCoverage?: number;
     cicd?: string;
   };
-
-  // --- DEEP DIVE & PLANNING ---
-  stackDeepDive?: {
-    frontend?: string;
-    backend?: string;
-    aiIntegration?: string;
-  };
+  stackDeepDive?: { frontend?: string; backend?: string; aiIntegration?: string };
   roadmap?: string[];
   features?: string[];
-  colour?: string; // Used for the dynamic card background
-
-  // --- LEGACY / COMPATIBILITY FIELDS ---
-  description?: string;
-  longDescription?: string;
-  startDate?: string;
-  endDate?: string;
-  image?: string;
-  images?: string[];
-  thumbnail?: string;
-  video?: string;
-  livePreview?: string;
-  link?: string;
-  github?: string;
-  caseStudy?: string;
-  figma?: string;
-  documentation?: string;
-  playStore?: string;
-  appStore?: string;
-  type?: string;
-  category?: string;
-  tags?: string[];
+  colour?: string;
   featured?: boolean;
   order?: number;
   technologies?: string[];
-  teamSize?: number;
-  contributions?: string[];
-  learnings?: string[];
-  highlights?: string[];
   isLatest?: boolean;
+  [key: string]: unknown;
 }
 
 export interface Event {
@@ -218,177 +179,225 @@ export interface Hosting {
   date?: string;
 }
 
-/**
- * Sort items by date in descending order (latest first)
- */
-const sortByDateDesc = <T extends { date?: string; startDate?: string; issueDate?: string }>(items: T[]): T[] => {
-  return [...items].sort((a, b) => {
-    const dateA = (a.date || a.startDate || a.issueDate) as string;
-    const dateB = (b.date || b.startDate || b.issueDate) as string;
-    return new Date(dateB).getTime() - new Date(dateA).getTime();
+// ─── Sort helper ──────────────────────────────────────────────────
+
+/** Sorts any array descending by date / startDate (latest first). */
+const sortByDateDesc = <T extends { date?: string; startDate?: string }>(
+  items: T[]
+): T[] =>
+  [...items].sort((a, b) => {
+    const dA = new Date(a.date ?? a.startDate ?? 0).getTime();
+    const dB = new Date(b.date ?? b.startDate ?? 0).getTime();
+    return dB - dA;
   });
-};
 
-import { apiClient } from "../services/api-client";
+// ─── Firestore collection names ───────────────────────────────────
+const COLS = {
+  blogs:       "blog_posts",
+  experience:  "work_experience",
+  certificates:"certificates",
+  skills:      "skills",
+  projects:    "projects",
+  events:      "events",
+  newsletters: "newsletters",
+  hosting:     "hosting",
+} as const;
+
+// ─── DataManager class ────────────────────────────────────────────
 
 /**
- * Data Manager class - provides access to all portfolio data
+ * Provides read access to all portfolio data.
+ * Used exclusively by usePortfolioData.ts hooks.
+ *
+ * All methods are async and return typed arrays.
+ * On error they return [] so pages never hard-crash.
  */
 export class DataManager {
-  /**
-   * Get all blogs (latest first)
-   */
+
+  // ── Blogs ────────────────────────────────────────────────────────
+
+  /** All published blog posts, latest first. */
   async getBlogs(): Promise<Blog[]> {
-    const data = await apiClient.get<Record<string, unknown>[]>("/blog-posts") as unknown as Record<string, unknown>[];
-    return data.map(blog => {
-      const b = blog as Record<string, unknown> & { read_time?: string; readTime?: string; cover_image?: string; coverImage?: string; is_latest?: boolean; isLatest?: boolean };
-      return {
-        ...b,
-        readTime: b.read_time || b.readTime || '',
-        coverImage: b.cover_image || b.coverImage,
-        isLatest: b.is_latest || b.isLatest
-      } as Blog;
-    });
+    try {
+      const q = query(
+        collection(db, COLS.blogs),
+        where("published", "==", true),
+        orderBy("date", "desc")
+      );
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => {
+        const data = d.data();
+        return {
+          ...data,
+          id: d.id,
+          // Normalise field name differences between old json files and Firestore
+          readTime:   data.read_time   ?? data.readTime   ?? "",
+          coverImage: data.cover_image ?? data.coverImage ?? undefined,
+          isLatest:   data.is_latest   ?? data.isLatest   ?? false,
+        } as Blog;
+      });
+    } catch (err) {
+      console.error("[DataManager] getBlogs:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get featured blogs only
-   */
+  /** Slice of the blog list, used for "recent posts" widgets. */
   async getFeaturedBlogs(limit?: number): Promise<Blog[]> {
     const blogs = await this.getBlogs();
-    return blogs.slice(0, limit || blogs.length);
+    return limit ? blogs.slice(0, limit) : blogs;
   }
 
-  /**
-   * Get blog by slug
-   */
+  /** Single blog by slug. */
   async getBlogBySlug(slug: string): Promise<Blog | undefined> {
     const blogs = await this.getBlogs();
-    return blogs.find((blog) => blog.slug === slug);
+    return blogs.find((b) => b.slug === slug);
   }
 
-  /**
-   * Get all work experience (latest first)
-   */
+  // ── Work Experience ──────────────────────────────────────────────
+
+  /** All work experience entries. */
   async getWorkExperience(): Promise<WorkExperience[]> {
-    return await apiClient.get("/work-experience");
+    try {
+      const snap = await getDocs(collection(db, COLS.experience));
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as WorkExperience));
+    } catch (err) {
+      console.error("[DataManager] getWorkExperience:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get all certificates (latest first)
-   */
+  // ── Certificates ─────────────────────────────────────────────────
+
   async getCertificates(): Promise<Certificate[]> {
-    return await apiClient.get("/certificates");
+    try {
+      const snap = await getDocs(collection(db, COLS.certificates));
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Certificate));
+    } catch (err) {
+      console.error("[DataManager] getCertificates:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get all skills grouped by category
-   */
+  // ── Skills ───────────────────────────────────────────────────────
+
+  /** Skills grouped by category (each Firestore doc = one category). */
   async getSkills(): Promise<Skill[]> {
-    return await apiClient.get("/skills");
+    try {
+      const snap = await getDocs(collection(db, COLS.skills));
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Skill));
+    } catch (err) {
+      console.error("[DataManager] getSkills:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get all projects (latest first)
-   */
+  // ── Projects ─────────────────────────────────────────────────────
+
+  /** All projects. Normalises legacy field names (github→githubUrl etc.). */
   async getProjects(): Promise<Project[]> {
-    const data = await apiClient.get<Record<string, unknown>[]>("/projects") as unknown as Record<string, unknown>[];
-    return data.map(project => {
-      const p = project as Record<string, unknown> & { github?: string; githubUrl?: string; link?: string; live_preview?: string; liveUrl?: string; image?: string; heroImage?: string; images?: string[]; screenshots?: string[]; is_latest?: boolean; isLatest?: boolean; technologies?: string[]; techStack?: string[] };
-      return {
-        ...p,
-        githubUrl: p.github || p.githubUrl,
-        liveUrl: p.link || p.live_preview || p.liveUrl,
-        heroImage: p.image || p.heroImage,
-        screenshots: p.images || p.screenshots,
-        isLatest: p.is_latest || p.isLatest,
-        techStack: p.technologies || p.techStack
-      } as Project;
-    });
+    try {
+      const q = query(collection(db, COLS.projects), orderBy("order_index", "asc"));
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => {
+        const p = d.data() as Record<string, unknown>;
+        return {
+          ...p,
+          id: d.id,
+          // Normalise field aliases so components get consistent keys
+          githubUrl:  p.github    ?? p.githubUrl,
+          liveUrl:    p.link      ?? p.live_preview ?? p.liveUrl,
+          heroImage:  p.image     ?? p.heroImage,
+          screenshots:p.images    ?? p.screenshots,
+          techStack:  p.technologies ?? p.techStack,
+          isLatest:   p.is_latest ?? p.isLatest ?? false,
+        } as Project;
+      });
+    } catch (err) {
+      console.error("[DataManager] getProjects:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get all newsletters (latest first)
-   */
-  async getNewsletters(): Promise<Newsletter[]> {
-    return await apiClient.get("/newsletters");
-  }
-
-  /**
-   * Get all events (latest first)
-   */
-  async getEvents(): Promise<Event[]> {
-    return await apiClient.get("/events");
-  }
-
-  /**
-   * Get project by slug
-   */
-  async getProjectBySlug(slug: string): Promise<Project | undefined> {
-    const projects = await this.getProjects();
-    return projects.find((p) => p.slug === slug || p.slug === `/${slug}`);
-  }
-
-  /**
-   * Get project by id
-   */
-  async getProjectById(id: string): Promise<Project | undefined> {
-    const projects = await this.getProjects();
-    return projects.find((p) => p.id === id);
-  }
-
-  /**
-   * Get featured projects only
-   */
+  /** Projects where featured===true or isLatest===true. */
   async getFeaturedProjects(limit?: number): Promise<Project[]> {
     const projects = await this.getProjects();
     const featured = projects.filter((p) => p.featured || p.isLatest);
     return limit ? featured.slice(0, limit) : featured;
   }
 
-  /**
-   * Return the most recent projects from the sorted list.
-   * Used by homepage to show the 3 newest items regardless of featured flag.
-   */
+  /** Slice off the top N most recently-ordered projects. */
   async getRecentProjects(limit?: number): Promise<Project[]> {
     const projects = await this.getProjects();
     return limit ? projects.slice(0, limit) : projects;
   }
 
-  /**
-   * Get newsletters by type
-   */
+  /** Single project by slug (client-side filter after full fetch). */
+  async getProjectBySlug(slug: string): Promise<Project | undefined> {
+    const projects = await this.getProjects();
+    return projects.find((p) => p.slug === slug || p.slug === `/${slug}`);
+  }
+
+  /** Single project by ID. */
+  async getProjectById(id: string): Promise<Project | undefined> {
+    const projects = await this.getProjects();
+    return projects.find((p) => p.id === id);
+  }
+
+  // ── Events ───────────────────────────────────────────────────────
+
+  async getEvents(): Promise<Event[]> {
+    try {
+      const q = query(collection(db, COLS.events), orderBy("date", "desc"));
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Event));
+    } catch (err) {
+      console.error("[DataManager] getEvents:", err);
+      return [];
+    }
+  }
+
+  // ── Newsletters ──────────────────────────────────────────────────
+
+  async getNewsletters(): Promise<Newsletter[]> {
+    try {
+      const q = query(collection(db, COLS.newsletters), orderBy("date", "desc"));
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Newsletter));
+    } catch (err) {
+      console.error("[DataManager] getNewsletters:", err);
+      return [];
+    }
+  }
+
   async getNewslettersByType(type: "founder" | "cse"): Promise<Newsletter[]> {
     const newsletters = await this.getNewsletters();
     return newsletters.filter((n) => n.type === type);
   }
 
-  /**
-   * Get all hosting info (latest first)
-   */
+  // ── Hosting ──────────────────────────────────────────────────────
+
   async getHosting(): Promise<Hosting[]> {
-    return await apiClient.get("/hosting");
+    try {
+      const snap = await getDocs(collection(db, COLS.hosting));
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Hosting));
+    } catch (err) {
+      console.error("[DataManager] getHosting:", err);
+      return [];
+    }
   }
 
-  /**
-   * Get hosting by type
-   */
   async getHostingByType(type: "blog" | "app" | "api"): Promise<Hosting[]> {
     const hosting = await this.getHosting();
     return hosting.filter((h) => h.type === type);
   }
 
-  /**
-   * Get active hosting only
-   */
   async getActiveHosting(): Promise<Hosting[]> {
     const hosting = await this.getHosting();
     return hosting.filter((h) => h.status === "active");
   }
 }
 
-// Export singleton instance
+// ─── Singleton export ─────────────────────────────────────────────
 export const dataManager = new DataManager();
-
-// Export default
 export default dataManager;

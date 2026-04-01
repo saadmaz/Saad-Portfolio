@@ -1,25 +1,37 @@
-import { useQuery } from '@tanstack/react-query';
-import { ProjectService } from '../../services/project-service';
-import { Project } from '../../types';
+/**
+ * shared/hooks/useProjects.ts
+ * ─────────────────────────────────────────────────────────────
+ * TanStack Query hooks for project data.
+ *
+ * ProjectService now calls Firestore directly — no Express proxy.
+ * React Query caches results for 5 min (staleTime in App.tsx).
+ */
 
-export const useProjects = () => {
-  return useQuery<Project[]>({
-    queryKey: ['projects'],
-    queryFn: () => ProjectService.getAll(),
-  });
-};
+import { useQuery } from "@tanstack/react-query";
+import { ProjectService } from "@/services/project-service";
+import type { Project } from "@/types";
 
-export const useFeaturedProjects = () => {
-  return useQuery<Project[]>({
-    queryKey: ['projects', 'featured'],
-    queryFn: () => ProjectService.getFeatured(),
+/** All projects ordered by order_index. */
+export const useProjects = () =>
+  useQuery<Project[]>({
+    queryKey: ["projects"],
+    queryFn:  () => ProjectService.getAll(),
   });
-};
 
-export const useProject = (slug: string) => {
-  return useQuery<Project | null>({
-    queryKey: ['projects', slug],
-    queryFn: () => ProjectService.getBySlug(slug),
-    enabled: !!slug,
+/** Featured projects only (featured === true). */
+export const useFeaturedProjects = () =>
+  useQuery<Project[]>({
+    queryKey: ["projects", "featured"],
+    queryFn:  () => ProjectService.getFeatured(),
   });
-};
+
+/**
+ * Single project by slug.
+ * Disabled until a slug value is present to avoid a premature fetch.
+ */
+export const useProject = (slug: string) =>
+  useQuery<Project | null>({
+    queryKey: ["projects", slug],
+    queryFn:  () => ProjectService.getBySlug(slug),
+    enabled:  !!slug,
+  });

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/services/firebase';
+// Import from the new central firebase lib (was @/services/firebase)
+import { auth } from '@/lib/firebase';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -23,10 +24,11 @@ const AdminLoginPage = () => {
 
     setIsLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      localStorage.setItem('admin_secret', token);
-      
+      // Sign in via Firebase Auth.
+      // The SDK automatically attaches the session token to every
+      // Firestore request — no manual token storage needed anymore.
+      await signInWithEmailAndPassword(auth, email, password);
+
       toast.success('Authenticated successfully');
       navigate('/admin/dashboard');
     } catch (error: any) {
