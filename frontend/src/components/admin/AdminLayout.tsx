@@ -22,7 +22,8 @@ import {
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { auth } from '@/services/firebase';
+// Updated: import from the new central firebase lib (old @/services/firebase was deleted)
+import { auth } from '@/lib/firebase';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Overview', path: '/admin/dashboard' },
@@ -48,21 +49,25 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Basic Auth Check
+  // Auth guard — redirect to login if Firebase session is not active.
+  // Using onAuthStateChanged instead of localStorage so it works correctly
+  // after the migration (we no longer write admin_secret to localStorage).
   useEffect(() => {
-    const secret = localStorage.getItem('admin_secret');
-    if (!secret && location.pathname !== '/admin/login') {
-      navigate('/admin/login');
-    }
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user && location.pathname !== '/admin/login') {
+        navigate('/admin/login');
+      }
+    });
+    return unsubscribe;
   }, [navigate, location.pathname]);
 
   const handleLogout = async () => {
     try {
+      // Firebase signOut clears the session — no manual token cleanup needed
       await auth.signOut();
     } catch (error) {
       console.error('Firebase signout error:', error);
     }
-    localStorage.removeItem('admin_secret');
     navigate('/admin/login');
   };
 
