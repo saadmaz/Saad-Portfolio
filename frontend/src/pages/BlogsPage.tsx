@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { BlogCard } from "../components/blog/BlogCard/BlogCard";
 import { useBlogPosts } from "../shared/hooks/useBlog";
 import { X, Search } from "lucide-react";
+import { SEO } from "@/components/SEO";
 import "./BlogsPage.css";
 
 import { Blog } from "../shared/lib/dataManager";
@@ -86,6 +87,11 @@ const BlogsPage: React.FC = () => {
 
   return (
     <div className="blogs-page">
+      <SEO
+        title="Blog"
+        description="Thoughts, tutorials, and insights from Saad Mazhar — covering startups, full-stack development, AI, and the Sri Lanka tech scene."
+        url="https://saadmaz.com/blog"
+      />
       <div className="blogs-page-container">
         <header className="blogs-header">
           <h1>Blog</h1>

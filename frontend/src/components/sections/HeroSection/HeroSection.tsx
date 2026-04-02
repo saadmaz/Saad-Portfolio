@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react";
+import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.png";
@@ -107,16 +107,22 @@ export function HeroSection() {
           {/* ── LEFT COLUMN: Text ───────────────────────────────────────────── */}
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
 
-            {/* Status badge with gentle pulse */}
+            {/* Status badges row */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex justify-center lg:justify-start"
+              className="flex flex-wrap justify-center lg:justify-start gap-2"
             >
+              {/* Currently building badge */}
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-xs md:text-sm font-medium border border-accent/20">
                 <span className="w-2 h-2 rounded-full bg-success animate-status-pulse" />
                 Currently building Tank Sudda &amp; Stopwash
+              </span>
+              {/* Open to Work badge */}
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-xs md:text-sm font-semibold border border-emerald-500/25">
+                <Briefcase className="w-3.5 h-3.5" />
+                Open to Opportunities
               </span>
             </motion.div>
 
@@ -160,17 +166,17 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.0 }}
-              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
+              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3"
             >
-              {/* Download Resume — dark solid button */}
+              {/* Primary: See My Work */}
               <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
-                  <Download className="w-4 h-4" />
-                  Download Resume
-                </a>
+                <Link to="/projects">
+                  See My Work
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </Button>
 
-              {/* Get in Touch — teal outline fills on hover */}
+              {/* Secondary: Get in Touch */}
               <Button
                 asChild
                 variant="outline"
@@ -178,8 +184,19 @@ export function HeroSection() {
               >
                 <Link to="/contact">
                   Get in Touch
-                  <ArrowRight className="w-4 h-4" />
                 </Link>
+              </Button>
+
+              {/* Tertiary: Resume download — icon-only on small screens */}
+              <Button
+                asChild
+                variant="ghost"
+                className="gap-2 w-full sm:w-auto text-muted-foreground hover:text-foreground"
+              >
+                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
+                  <Download className="w-4 h-4" />
+                  <span>Resume</span>
+                </a>
               </Button>
             </motion.div>
 

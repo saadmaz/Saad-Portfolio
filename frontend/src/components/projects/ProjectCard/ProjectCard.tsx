@@ -13,9 +13,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card className="overflow-hidden border-border/50 bg-secondary/20 hover:bg-secondary/40 transition-colors group">
       <div className="relative aspect-video overflow-hidden">
-        <img 
-          src={project.heroImage} 
-          alt={project.title}
+        <img
+          src={project.heroImage}
+          alt={`${project.title} — ${project.tagline || "project preview"}`}
+          loading="lazy"
+          decoding="async"
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">

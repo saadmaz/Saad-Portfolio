@@ -2,8 +2,9 @@ import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useBlogPost } from "../shared/hooks/useBlog";
-import { ArrowLeft, Calendar, User, Edit } from "lucide-react";
+import { ArrowLeft, Calendar, User, Edit, ChevronRight } from "lucide-react";
 import { Layout } from "../components/layout/Layout";
+import { SEO } from "@/components/SEO";
 
 
 export default function BlogDetailPage() {
@@ -31,21 +32,42 @@ export default function BlogDetailPage() {
 
   const { title, date: publishedDate, excerpt, tags, image: coverImage, author, content } = blog;
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: excerpt,
+    image: coverImage,
+    author: { "@type": "Person", name: author },
+    datePublished: publishedDate,
+    url: `https://saadmaz.com/blog/${slug}`,
+  };
+
   return (
     <Layout>
+      <SEO
+        title={title}
+        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog.`}
+        image={coverImage}
+        url={`https://saadmaz.com/blog/${slug}`}
+        type="article"
+        structuredData={articleSchema}
+      />
       <article className="blog-detail-page">
         <div className="blog-detail-container">
-          {/* Back Button */}
-          <motion.div
+          {/* Breadcrumb */}
+          <motion.nav
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="blog-back-button"
+            aria-label="Breadcrumb"
+            className="blog-back-button flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <Link to="/blog" className="back-link">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Blog
-            </Link>
-          </motion.div>
+            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+            <ChevronRight className="w-3 h-3 opacity-40" />
+            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            <ChevronRight className="w-3 h-3 opacity-40" />
+            <span className="text-foreground font-semibold truncate max-w-[220px]">{title}</span>
+          </motion.nav>
 
           {/* Cover Image */}
           {coverImage && (

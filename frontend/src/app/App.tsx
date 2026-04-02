@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -72,6 +73,7 @@ const PageLoader = () => (
 );
 
 const App = () => (
+  <HelmetProvider>
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -144,6 +146,7 @@ const App = () => (
       </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
+  </HelmetProvider>
 );
 
 export default App;

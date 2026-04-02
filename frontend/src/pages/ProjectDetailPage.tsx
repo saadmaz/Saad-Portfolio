@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useProject } from "@/shared/hooks/useProjects";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -69,16 +70,37 @@ const ProjectDetailPage = () => {
   // Helper function to validate non-empty strings from JSON
   const hasValue = (val?: string) => val && val.trim() !== "" && val.toLowerCase() !== "n/a" && val.toLowerCase() !== "none";
 
+  const projectSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: project.title,
+    description: project.tagline || project.overview,
+    url: project.liveUrl,
+    image: project.heroImage,
+    author: { "@type": "Person", name: "Saad Mazhar" },
+  };
+
   return (
     <Layout>
+      <SEO
+        title={project.title}
+        description={project.tagline || project.overview || `${project.title} — a project by Saad Mazhar`}
+        image={project.heroImage}
+        url={`https://saadmaz.com/projects/${project.slug}`}
+        structuredData={projectSchema}
+      />
       {/* Background container: Neutral, sleek tones */}
       <section className="pt-8 pb-24 bg-background transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* --- BREADCRUMB --- */}
-          <Link to="/projects" className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors mb-10 uppercase tracking-wider">
-            <ChevronLeft className="w-4 h-4" /> Back to Projects
-          </Link>
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground mb-10">
+            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+            <ChevronLeft className="w-3 h-3 rotate-180 opacity-40" />
+            <Link to="/projects" className="hover:text-foreground transition-colors">Projects</Link>
+            <ChevronLeft className="w-3 h-3 rotate-180 opacity-40" />
+            <span className="text-foreground font-semibold truncate max-w-[200px]">{project.title}</span>
+          </nav>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -201,10 +223,12 @@ const ProjectDetailPage = () => {
                         onClick={() => setSelectedImage(project!.architecture!.diagramUrl!)}
                         className="group p-2 rounded-2xl bg-card border border-border cursor-zoom-in overflow-hidden"
                       >
-                        <img 
-                          src={project.architecture.diagramUrl} 
-                          alt="Architecture Diagram" 
-                          className="w-full rounded-xl transition-transform duration-700 ease-out group-hover:scale-105" 
+                        <img
+                          src={project.architecture.diagramUrl}
+                          alt={`${project.title} architecture diagram`}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full rounded-xl transition-transform duration-700 ease-out group-hover:scale-105"
                         />
                       </div>
                     )}
@@ -299,10 +323,12 @@ const ProjectDetailPage = () => {
                           onClick={() => setSelectedImage(shot)}
                           className="group rounded-xl overflow-hidden border border-border bg-card cursor-zoom-in relative"
                         >
-                          <img 
-                            src={shot} 
-                            alt={`Gallery ${i}`} 
-                            className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
+                          <img
+                            src={shot}
+                            alt={`${project.title} screenshot ${i + 1}`}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                           />
                           {/* Subtle overlay hint on hover */}
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />

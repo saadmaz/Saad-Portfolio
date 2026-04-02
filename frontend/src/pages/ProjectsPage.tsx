@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Layout } from "../components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -32,6 +33,11 @@ const ProjectsPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Projects"
+        description="Browse all projects built by Saad Mazhar — web apps, mobile solutions, AI integrations and startup products."
+        url="https://saadmaz.com/projects"
+      />
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}

@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Mail, Phone, MapPin, Instagram, Facebook, Github, Linkedin, X, Send, Calendar } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useContactMutation } from "@/shared/hooks/useCommon";
 
@@ -33,6 +34,11 @@ const ContactPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Contact"
+        description="Get in touch with Saad Mazhar. Available for projects, collaborations, speaking engagements, and consulting. Based in Colombo, Sri Lanka."
+        url="https://saadmaz.com/contact"
+      />
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
@@ -112,57 +118,56 @@ const ContactPage = () => {
                 <h4 className="font-display text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
                   Follow Me
                 </h4>
-                <div className="flex items-center gap-3">
-                  <a 
-                    href="https://github.com/saaadmaz" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-
-
-                  <a 
-                    href="https://linkedin.com/in/saadmaz" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                  <a 
-                    href="https://x.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </a>
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    { href: "https://github.com/saadmaz/",         Icon: Github,   label: "GitHub" },
+                    { href: "https://linkedin.com/in/saadmaz/",    Icon: Linkedin, label: "LinkedIn" },
+                    { href: "https://x.com/SaadMazhar_",           Icon: X,        label: "X (Twitter)" },
+                  ].map(({ href, Icon, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="p-3 rounded-lg bg-card border border-border hover:border-accent/50 hover:bg-accent/10 hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  ))}
                 </div>
               </div>
 
-              {/* This block renders a call-to-action card for live consultations. */}
-              {/* On click, it triggers a navigation to Calendly for direct meeting scheduling. */}
-              <div className="p-6 rounded-xl bg-primary text-primary-foreground">
-                <div className="flex items-center gap-3 mb-3">
-                  <Calendar className="w-5 h-5" />
-                  <h4 className="font-semibold text-accent">Schedule a Call</h4>
+              {/* Availability card */}
+              <div className="p-5 rounded-xl bg-card border border-border space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe className="w-4 h-4 text-accent" />
+                  <h4 className="text-sm font-semibold text-foreground">Availability</h4>
                 </div>
-                <p className="text-sm text-primary-foreground/80 mb-4">
-                  Prefer to chat live? Book a 30-minute meeting through this link and let's discuss your project.
-                </p>
-                
-                {/* Using asChild allows the Button to render as an 'a' tag while keeping the secondary styles */}
-                <Button variant="secondary" className="w-full" asChild>
-                  <a 
-                    href="https://calendly.com/saadmaz/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    Book a Meeting
-                  </a>
-                </Button>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4 text-accent shrink-0" />
+                  <span>Sri Lanka Standard Time (UTC+5:30)</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  <span className="text-emerald-500 font-medium">Open to freelance &amp; full-time roles</span>
+                </div>
+              </div>
+
+              {/* Calendly embedded inline widget */}
+              <div className="rounded-xl border border-border overflow-hidden bg-card">
+                <div className="px-4 pt-4 pb-2 flex items-center gap-2 border-b border-border">
+                  <Calendar className="w-4 h-4 text-accent" />
+                  <h4 className="text-sm font-semibold text-foreground">Book a 30-min Call</h4>
+                </div>
+                {/* Calendly inline widget — loads their script via iframe URL */}
+                <iframe
+                  src="https://calendly.com/saadmaz/30min?embed_domain=saadmaz.com&embed_type=Inline&hide_gdpr_banner=1&background_color=050505&text_color=ffffff&primary_color=2dd4bf"
+                  title="Schedule a meeting with Saad Mazhar"
+                  className="w-full border-0"
+                  style={{ minHeight: "600px" }}
+                  loading="lazy"
+                />
               </div>
             </motion.div>
 

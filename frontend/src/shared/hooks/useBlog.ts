@@ -5,23 +5,25 @@
  *
  * BlogService now calls Firestore directly — no Express proxy.
  * React Query caches results for 5 min (staleTime in App.tsx).
+ * Query keys are sourced from the central queryKeys registry.
  */
 
 import { useQuery } from "@tanstack/react-query";
 import { BlogService } from "@/services/blog-service";
+import { queryKeys } from "@/shared/lib/queryKeys";
 import type { BlogPost } from "@/types";
 
 /** All published blog posts, latest first. */
 export const useBlogPosts = () =>
   useQuery<BlogPost[]>({
-    queryKey: ["blog-posts"],
+    queryKey: queryKeys.blog.published,
     queryFn:  () => BlogService.getPublished(),
   });
 
 /** Single most-recent published post. */
 export const useLatestBlogPost = () =>
   useQuery<BlogPost | null>({
-    queryKey: ["blog-posts", "latest"],
+    queryKey: queryKeys.blog.latest,
     queryFn:  () => BlogService.getLatest(),
   });
 
@@ -31,7 +33,7 @@ export const useLatestBlogPost = () =>
  */
 export const useBlogPost = (slug: string) =>
   useQuery<BlogPost | null>({
-    queryKey: ["blog-posts", slug],
+    queryKey: queryKeys.blog.detail(slug),
     queryFn:  () => BlogService.getBySlug(slug),
     enabled:  !!slug,
   });

@@ -1,4 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { CertificatesPreview } from "@/components/sections/CertificatesPreview";
@@ -10,9 +11,29 @@ import { NewsletterSection } from "@/components/sections/NewsletterSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 
+const PERSON_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Saad Mazhar",
+  url: "https://saadmaz.com",
+  image: "https://saadmaz.com/logo.png",
+  sameAs: [
+    "https://linkedin.com/in/saadmaz/",
+    "https://github.com/saadmaz/",
+    "https://x.com/SaadMazhar_",
+  ],
+  jobTitle: "Startup Founder & Full-Stack Developer",
+  worksFor: { "@type": "Organization", name: "TankSudda" },
+  address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
+};
+
 const Index = () => {
   return (
     <Layout>
+      <SEO
+        url="https://saadmaz.com"
+        structuredData={PERSON_SCHEMA}
+      />
       <HeroSection />
       <FeaturedProjects />
       <CertificatesPreview />

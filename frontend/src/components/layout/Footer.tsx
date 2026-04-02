@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { 
-  Linkedin, Github, Instagram, Facebook, X, Mail, Phone, ArrowUp
+import {
+  Linkedin, Github, Instagram, Facebook, X, Mail, Phone, ArrowUp, Heart
 } from "lucide-react";
 
 /** * DATA ARRAYS: Defined outside the component to prevent re-declaration.
@@ -145,16 +145,35 @@ export function Footer() {
 
         {/* BOTTOM BAR: Legal & Utility */}
         <div className="py-6 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            {/* Dynamic Year rendering via the Date object. */}
-            <div className="md:order-1">
-              <span>© {new Date().getFullYear()} Saad Mazhar</span>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-muted-foreground">
+
+            {/* Copyright */}
+            <div className="flex items-center gap-1.5 md:order-1">
+              <span>© {new Date().getFullYear()} Saad Mazhar.</span>
+              <span className="hidden sm:inline">All rights reserved.</span>
             </div>
-            
-            {/* Back to top trigger button. */}
+
+            {/* Built with — centred on desktop */}
+            <div className="flex items-center gap-1.5 text-xs md:order-2">
+              <span>Built with</span>
+              <Heart className="w-3 h-3 text-accent fill-accent" />
+              <span>using</span>
+              {[
+                { label: "React", color: "text-sky-500" },
+                { label: "Firebase", color: "text-amber-500" },
+                { label: "Tailwind", color: "text-cyan-500" },
+              ].map(({ label, color }, i, arr) => (
+                <span key={label}>
+                  <span className={`font-semibold ${color}`}>{label}</span>
+                  {i < arr.length - 1 && <span className="opacity-40"> · </span>}
+                </span>
+              ))}
+            </div>
+
+            {/* Back to top */}
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors md:order-2"
+              className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors md:order-3"
               aria-label="Scroll to top"
             >
               <span>Back to top</span>

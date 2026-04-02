@@ -5,13 +5,15 @@
 // --- Dependencies ---
 import { motion } from "framer-motion"; // Handles entry animations (fade-in, slide) and hover interactions
 import { Layout } from "@/components/layout/Layout"; // Standard page wrapper providing consistent Navbar and Footer
-import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star } from "lucide-react"; // Lightweight SVG icons for visual hierarchy
+import { SEO } from "@/components/SEO";
+import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal } from "lucide-react"; // Lightweight SVG icons for visual hierarchy
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge"; // Shadcn/ui Badge for rendering compact tags/labels
 import { educationList } from "@/data/education"; // Source of truth for academic history data
 import { languages, volunteer, sports, awards } from "@/data/personal/about"; // Localized personal data for sub-sections
 import { EducationDialog } from "@/components/education/EducationDialog"; // Trigger-based modal to display granular details about an education item
+import { useHackathons } from "@/shared/hooks/useCommon"; // Firestore-backed hackathons hook
 
 /**
  * STAR RATING COMPONENT
@@ -33,8 +35,15 @@ const StarRating = ({ filled }: { filled: number }) => (
 );
 
 const AboutPage = () => {
+  const { data: hackathons = [], isLoading: hackLoading } = useHackathons();
+
   return (
     <Layout>
+      <SEO
+        title="About"
+        description="Beyond the code — Saad Mazhar's education, languages, volunteer work, awards, and interests. A CS undergrad building products in Colombo, Sri Lanka."
+        url="https://saadmaz.com/about"
+      />
       {/* section-padding: custom utility for consistent vertical spacing across the site */}
       <section className="section-padding">
         <div className="section-container">
@@ -190,7 +199,7 @@ const AboutPage = () => {
           </div>
 
           {/* --- AWARDS SECTION --- */}
-          <div id="awards">
+          <div id="awards" className="mb-16">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-lg bg-accent/10">
                 <Trophy className="w-6 h-6 text-accent" />
@@ -210,6 +219,82 @@ const AboutPage = () => {
               ))}
             </div>
           </div>
+
+          {/* --- HACKATHONS SECTION --- */}
+          {!hackLoading && hackathons.length > 0 && (
+            <motion.div
+              id="hackathons"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Zap className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Hackathons</h2>
+                  <p className="text-sm text-muted-foreground">{hackathons.length} events participated</p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-5">
+                {hackathons.map((hack, i) => (
+                  <motion.div
+                    key={hack.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06, duration: 0.4 }}
+                    className="bg-card rounded-xl border border-border p-5 hover:border-accent/40 hover:shadow-sm transition-all duration-300 group relative overflow-hidden"
+                  >
+                    {/* Shimmer on hover */}
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/4 to-transparent pointer-events-none" />
+
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
+                          {hack.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-0.5">{hack.organizer} · {hack.date}</p>
+                      </div>
+                      {hack.achievement && (
+                        <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold border border-amber-500/20">
+                          <Medal className="w-3 h-3" />
+                          {hack.achievement}
+                        </span>
+                      )}
+                    </div>
+
+                    {hack.projectTitle && (
+                      <p className="text-sm text-accent font-medium mb-2">
+                        Project: {hack.projectTitle}
+                      </p>
+                    )}
+
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                      {hack.description}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary" className="text-[10px]">{hack.role}</Badge>
+                      {hack.link && (
+                        <a
+                          href={hack.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors"
+                        >
+                          View <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
         </div>
       </section>
