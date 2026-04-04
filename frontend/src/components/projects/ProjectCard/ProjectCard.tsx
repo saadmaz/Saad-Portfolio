@@ -46,14 +46,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {project.tagline}
         </p>
         <div className="flex flex-wrap gap-2 mb-6">
-          {project.techStack.slice(0, 3).map((tech) => (
+          {(project.techStack || []).slice(0, 3).map((tech) => (
             <Badge key={tech} variant="secondary" className="bg-secondary/50 text-[10px]">
               {tech}
             </Badge>
           ))}
-          {project.techStack.length > 3 && (
+          {(project.techStack || []).length > 3 && (
             <span className="text-[10px] text-muted-foreground self-center">
-              +{project.techStack.length - 3} more
+              +{(project.techStack || []).length - 3} more
             </span>
           )}
         </div>

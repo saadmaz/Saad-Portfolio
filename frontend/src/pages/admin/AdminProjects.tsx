@@ -225,11 +225,11 @@ const AdminProjects = () => {
                     </div>
                     <p className="text-xs text-white/40 truncate mb-2">{project.tagline}</p>
                     <div className="flex flex-wrap gap-1.5">
-                      {project.techStack.slice(0, 4).map(tech => (
+                      {(project.techStack || []).slice(0, 4).map(tech => (
                         <span key={tech} className="text-[10px] px-2 py-0.5 rounded-lg bg-white/5 text-white/35 border border-white/[0.06] font-medium">{tech}</span>
                       ))}
-                      {project.techStack.length > 4 && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-lg bg-white/5 text-white/25 border border-white/[0.06] font-medium">+{project.techStack.length - 4}</span>
+                      {(project.techStack || []).length > 4 && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-lg bg-white/5 text-white/25 border border-white/[0.06] font-medium">+{(project.techStack || []).length - 4}</span>
                       )}
                     </div>
                   </div>

@@ -66,7 +66,7 @@ const CertificationsPage = () => {
       cert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cert.issuer.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cert.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cert.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      (cert.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
       
     return matchesCategory && matchesSearch;
   });

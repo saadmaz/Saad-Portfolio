@@ -112,7 +112,7 @@ const AboutPage = () => {
                               Shows only the first 4 skills; if more exist, shows a "+X more" count.
                           */}
                           <div className="pt-2 flex flex-wrap gap-2">
-                            {edu.skills.slice(0, 4).map(skill => (
+                            {(edu.skills || []).slice(0, 4).map(skill => (
                               <span key={skill} className="text-xs px-2 py-1 bg-secondary rounded text-muted-foreground">{skill}</span>
                             ))}
                             {edu.skills.length > 4 && (
