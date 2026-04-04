@@ -146,7 +146,7 @@ const AdminBlogs = () => {
         </div>
         <Button
           onClick={() => navigate('/admin/blogs/new')}
-          className="bg-accent hover:bg-accent/90 text-black font-black shadow-[0_0_20px_rgba(255,184,0,0.15)] rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+          className="bg-accent hover:bg-accent/90 text-black font-black shadow-[0_0_20px_rgba(45,212,191,0.2)] rounded-xl transition-all hover:scale-[1.02] active:scale-95"
         >
           <Plus className="w-4 h-4 mr-2" /> Write New Post
         </Button>

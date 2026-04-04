@@ -277,7 +277,7 @@ const BlogForm = () => {
           <Button
             onClick={handleSubmit((d) => onSubmit(d, true))}
             disabled={isLoading}
-            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl shadow-[0_0_20px_rgba(255,184,0,0.15)] text-xs"
+            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.2)] text-xs"
           >
             <Send className="w-3.5 h-3.5 mr-1.5" />
             {isEditMode ? 'Update & Publish' : 'Publish'}
