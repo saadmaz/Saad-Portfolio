@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Code, 
-  BookOpen, 
-  Briefcase, 
-  TrendingUp, 
-  Clock, 
-  Zap, 
-  Award, 
-  MessageSquare, 
+import {
+  Code,
+  BookOpen,
+  Briefcase,
+  TrendingUp,
+  Clock,
+  Zap,
+  Award,
+  MessageSquare,
   History,
   Shield,
-  ExternalLink
+  ExternalLink,
+  Mail,
+  FileCheck,
+  CalendarDays,
 } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+} from 'recharts';
 import { ProjectService } from '@/services/project-service';
 import { BlogService } from '@/services/blog-service';
 import { CommonService } from '@/shared/services/common-service';
@@ -21,35 +30,93 @@ import { toast } from "sonner";
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 
+// ── Tiny sparkline placeholder data ──────────────────────────────
+const spark = (seed: number) =>
+  Array.from({ length: 7 }, (_, i) => ({
+    v: Math.max(1, Math.round(seed * 0.6 + Math.sin(i * seed * 0.8) * seed * 0.3 + i * 0.4)),
+  }));
+
+const Sparkline = ({ data, color }: { data: { v: number }[]; color: string }) => (
+  <ResponsiveContainer width="100%" height={40}>
+    <AreaChart data={data} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+      <defs>
+        <linearGradient id={`g-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.25} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <Area
+        type="monotone"
+        dataKey="v"
+        stroke={color}
+        strokeWidth={1.5}
+        fill={`url(#g-${color.replace('#', '')})`}
+        dot={false}
+        isAnimationActive={false}
+      />
+      <RechartsTooltip
+        contentStyle={{ display: 'none' }}
+        cursor={false}
+      />
+    </AreaChart>
+  </ResponsiveContainer>
+);
+
+// ── Stat card config ──────────────────────────────────────────────
+const makeStats = () => [
+  { key: 'projects',     label: 'Projects',       value: '-', icon: Code,       color: '#3b82f6', path: '/admin/projects' },
+  { key: 'blogs',        label: 'Blog Posts',      value: '-', icon: BookOpen,   color: '#a855f7', path: '/admin/blogs' },
+  { key: 'experience',   label: 'Experience',      value: '-', icon: Briefcase,  color: '#22d3ee', path: '/admin/experience' },
+  { key: 'skills',       label: 'Skill Sets',      value: '-', icon: Zap,        color: '#FFB800', path: '/admin/skills' },
+  { key: 'certificates', label: 'Certificates',    value: '-', icon: FileCheck,  color: '#10b981', path: '/admin/certificates' },
+  { key: 'awards',       label: 'Awards',          value: '-', icon: Award,      color: '#f59e0b', path: '/admin/awards' },
+  { key: 'testimonials', label: 'Testimonials',    value: '-', icon: MessageSquare, color: '#ec4899', path: '/admin/testimonials' },
+  { key: 'messages',     label: 'Unread Messages', value: '-', icon: Mail,       color: '#ef4444', path: '/admin/messages', alert: true },
+];
+
+const getActionColor = (action: string) => {
+  switch (action) {
+    case 'CREATE': return { text: 'text-emerald-400', border: 'border-l-emerald-500', bg: 'bg-emerald-500/10' };
+    case 'UPDATE': return { text: 'text-blue-400',    border: 'border-l-blue-500',    bg: 'bg-blue-500/10' };
+    case 'DELETE': return { text: 'text-red-400',     border: 'border-l-red-500',     bg: 'bg-red-500/10' };
+    default:       return { text: 'text-amber-400',   border: 'border-l-amber-500',   bg: 'bg-amber-500/10' };
+  }
+};
+
 const AdminDashboard = () => {
-  const [stats, setStats] = useState([
-    { label: 'Projects', value: '-', icon: Code, color: 'text-blue-500', path: '/admin/projects' },
-    { label: 'Blog Posts', value: '-', icon: BookOpen, color: 'text-purple-500', path: '/admin/blogs' },
-    { label: 'Awards', value: '-', icon: Award, color: 'text-yellow-500', path: '/admin/awards' },
-    { label: 'Testimonials', value: '-', icon: MessageSquare, color: 'text-pink-500', path: '/admin/testimonials' },
-  ]);
+  const [stats, setStats] = useState(makeStats());
   const [recentLogs, setRecentLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [projects, blogs, awards, testimonials, logs] = await Promise.all([
+        const [projects, blogs, awards, testimonials, logs, messages, experience, skills, certificates] = await Promise.all([
           ProjectService.getAll(),
           BlogService.getAll(),
           CommonService.getAwards(),
           CommonService.getTestimonials(),
-          CommonService.getActivityLogs()
+          CommonService.getActivityLogs(),
+          CommonService.getMessages(),
+          CommonService.getWorkExperience(),
+          CommonService.getSkills(),
+          CommonService.getCertificates(),
         ]);
+
+        const unread = messages.filter((m) => !m.read).length;
 
         setStats([
-          { label: 'Projects', value: projects.length.toString(), icon: Code, color: 'text-blue-500', path: '/admin/projects' },
-          { label: 'Blog Posts', value: blogs.length.toString(), icon: BookOpen, color: 'text-purple-500', path: '/admin/blogs' },
-          { label: 'Awards', value: awards.length.toString(), icon: Award, color: 'text-yellow-400', path: '/admin/awards' },
-          { label: 'Testimonials', value: testimonials.length.toString(), icon: MessageSquare, color: 'text-pink-500', path: '/admin/testimonials' },
-        ]);
+          { key: 'projects',     label: 'Projects',       value: String(projects.length),     icon: Code,          color: '#3b82f6', path: '/admin/projects' },
+          { key: 'blogs',        label: 'Blog Posts',      value: String(blogs.length),        icon: BookOpen,      color: '#a855f7', path: '/admin/blogs' },
+          { key: 'experience',   label: 'Experience',      value: String(experience.length),   icon: Briefcase,     color: '#22d3ee', path: '/admin/experience' },
+          { key: 'skills',       label: 'Skill Sets',      value: String(skills.length),       icon: Zap,           color: '#FFB800', path: '/admin/skills' },
+          { key: 'certificates', label: 'Certificates',    value: String(certificates.length), icon: FileCheck,     color: '#10b981', path: '/admin/certificates' },
+          { key: 'awards',       label: 'Awards',          value: String(awards.length),       icon: Award,         color: '#f59e0b', path: '/admin/awards' },
+          { key: 'testimonials', label: 'Testimonials',    value: String(testimonials.length), icon: MessageSquare, color: '#ec4899', path: '/admin/testimonials' },
+          { key: 'messages',     label: 'Unread Messages', value: String(unread),              icon: Mail,          color: '#ef4444', path: '/admin/messages', alert: unread > 0 },
+        ] as typeof stats);
 
-        setRecentLogs(logs.slice(0, 5));
+        setRecentLogs(logs.slice(0, 10));
       } catch (error) {
         toast.error('Failed to fetch dashboard data');
       } finally {
@@ -60,140 +127,174 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const getActionColor = (action: string) => {
-    switch (action) {
-      case 'CREATE': return 'text-green-500';
-      case 'UPDATE': return 'text-blue-500';
-      case 'DELETE': return 'text-red-500';
-      default: return 'text-gray-500';
-    }
-  };
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-            Dashboard Overview
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/30 mb-1">
+            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          </p>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white to-white/50 bg-clip-text text-transparent">
+            Dashboard
           </h1>
-          <p className="text-muted-foreground text-lg italic">Welcome back, Saad. Here's a snapshot of your digital domain.</p>
+          <p className="text-white/40 text-sm mt-1">Welcome back, Saad. Here's your portfolio at a glance.</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm font-medium text-white/80">System Live</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl self-start md:self-auto">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-xs font-bold text-white/70 uppercase tracking-widest">System Live</span>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Link key={stat.label} to={stat.path}>
-            <Card className="bg-white/5 border-white/10 hover:border-accent/40 hover:bg-white/[0.08] transition-all group relative overflow-hidden h-full">
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{stat.label}</CardTitle>
-                <stat.icon className={`w-5 h-5 ${stat.color} group-hover:scale-125 transition-transform duration-500`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-black text-white">{isLoading ? '...' : stat.value}</div>
-                <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground group-hover:text-accent transition-colors">
-                  <span>View Details</span>
-                  <ExternalLink className="w-3 h-3" />
+      {/* Stats Grid — 2×4 */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        {stats.map((stat, i) => (
+          <Link key={stat.key} to={stat.path}>
+            <Card className={`bg-white/[0.03] border-white/[0.07] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300 group relative overflow-hidden h-full cursor-pointer ${(stat as any).alert ? 'border-red-500/30 hover:border-red-500/50' : ''}`}>
+              <CardHeader className="flex flex-row items-start justify-between pb-1 pt-4 px-4 space-y-0">
+                <div className="p-2 rounded-xl" style={{ backgroundColor: stat.color + '15' }}>
+                  <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
                 </div>
+                {(stat as any).alert && (
+                  <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/20">
+                    New
+                  </span>
+                )}
+              </CardHeader>
+              <CardContent className="px-4 pb-2">
+                <div className="text-2xl font-black text-white mb-0.5">
+                  {isLoading ? (
+                    <span className="inline-block w-8 h-6 bg-white/10 rounded animate-pulse" />
+                  ) : stat.value}
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">{stat.label}</p>
               </CardContent>
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/5 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+              {/* Sparkline */}
+              <div className="px-2 pb-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                <Sparkline data={spark(i + 2)} color={stat.color} />
+              </div>
+              {/* Bottom accent line */}
+              <div
+                className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 rounded-full"
+                style={{ backgroundColor: stat.color + '60' }}
+              />
             </Card>
           </Link>
         ))}
       </div>
 
+      {/* Activity + Quick Actions */}
       <div className="grid gap-6 lg:grid-cols-12">
         {/* Recent Activity */}
-        <Card className="lg:col-span-8 bg-white/5 border-white/10 overflow-hidden">
-          <CardHeader className="border-b border-white/5 flex flex-row items-center justify-between">
+        <Card className="lg:col-span-8 bg-white/[0.03] border-white/[0.07] overflow-hidden">
+          <CardHeader className="border-b border-white/5 flex flex-row items-center justify-between py-4 px-5">
             <div className="flex items-center gap-2">
-              <History className="w-5 h-5 text-accent" />
-              <CardTitle>Recent Activity</CardTitle>
+              <History className="w-4 h-4 text-accent" />
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Recent Activity</CardTitle>
             </div>
-            <Link to="/admin/logs" className="text-xs text-muted-foreground hover:text-white transition-colors underline underline-offset-4">
-              View All Logs
+            <Link to="/admin/logs" className="text-[10px] font-bold text-white/30 hover:text-accent transition-colors flex items-center gap-1 uppercase tracking-wider">
+              View All <ExternalLink className="w-3 h-3" />
             </Link>
           </CardHeader>
           <CardContent className="p-0">
             {isLoading ? (
-              <div className="p-6 space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-16 w-full bg-white/5 rounded-xl animate-pulse" />
+              <div className="p-5 space-y-3">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="h-14 w-full bg-white/5 rounded-xl animate-pulse" />
                 ))}
               </div>
             ) : recentLogs.length > 0 ? (
-              <div className="divide-y divide-white/5">
-                {recentLogs.map((log) => (
-                  <div key={log.id} className="p-4 hover:bg-white/[0.02] transition-all flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-lg bg-white/5 border border-white/10 ${getActionColor(log.action)}`}>
-                        <Shield className="w-4 h-4" />
+              <div className="divide-y divide-white/[0.04]">
+                {recentLogs.map((log) => {
+                  const c = getActionColor(log.action);
+                  return (
+                    <div key={log.id} className={`flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] transition-all border-l-2 ${c.border}`}>
+                      <div className={`p-2 rounded-lg ${c.bg} flex-shrink-0`}>
+                        <Shield className={`w-3.5 h-3.5 ${c.text}`} />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
                           <span className="text-sm font-bold text-white/90">{log.entityType}</span>
-                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded border border-white/10 uppercase tracking-tighter ${getActionColor(log.action)}`}>
+                          <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border border-white/10 uppercase tracking-tight ${c.text} ${c.bg}`}>
                             {log.action}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-0.5 max-w-md truncate">
-                          {log.details || `Admin ${log.adminEmail} performed ${log.action.toLowerCase()}`}
+                        <p className="text-xs text-white/35 truncate max-w-xs md:max-w-sm">
+                          {log.details || `${log.adminEmail} · ${log.action.toLowerCase()}`}
                         </p>
                       </div>
+                      <div className="text-[10px] text-white/25 font-medium flex flex-col items-end gap-0.5 flex-shrink-0">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-2.5 h-2.5" />
+                          {format(log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp), 'h:mm a')}
+                        </span>
+                        <span className="text-white/15">
+                          {format(log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp), 'MMM d')}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {format(log.timestamp.toDate ? log.timestamp.toDate() : new Date(log.timestamp), 'h:mm a')}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <div className="p-12 text-center text-muted-foreground text-sm italic">
-                No recent activity to display.
+              <div className="py-16 text-center">
+                <History className="w-8 h-8 text-white/10 mx-auto mb-3" />
+                <p className="text-sm text-white/30 italic">No activity yet.</p>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Quick Actions & Tips */}
-        <div className="lg:col-span-4 space-y-6">
-          <Card className="bg-accent border-accent/20 text-black">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-black flex items-center gap-2">
-                <Zap className="w-5 h-5 fill-current" /> Quick Start
+        {/* Right column */}
+        <div className="lg:col-span-4 space-y-5">
+          {/* Quick Actions */}
+          <Card className="bg-accent border-0 overflow-hidden">
+            <CardHeader className="pb-2 pt-5 px-5">
+              <CardTitle className="text-base font-black text-black flex items-center gap-2">
+                <Zap className="w-4 h-4 fill-current" /> Quick Actions
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-2">
-              <Link to="/admin/blogs" className="w-full">
-                <button className="w-full text-left px-4 py-3 rounded-xl bg-black/10 hover:bg-black/20 transition-all font-bold flex items-center justify-between group">
-                  New Blog Post
-                  <TrendingUp className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </button>
-              </Link>
-              <Link to="/admin/projects" className="w-full">
-                <button className="w-full text-left px-4 py-3 rounded-xl bg-black/5 hover:bg-black/15 transition-all font-bold flex items-center justify-between group">
-                  Add Showcase Project
-                  <Code className="w-4 h-4" />
-                </button>
-              </Link>
+            <CardContent className="px-5 pb-5 grid gap-2">
+              {[
+                { label: 'New Blog Post',        icon: BookOpen,  path: '/admin/blogs/new' },
+                { label: 'Add Project',          icon: Code,      path: '/admin/projects/new' },
+                { label: 'Add Experience',       icon: Briefcase, path: '/admin/experience/new' },
+                { label: 'View Messages',        icon: Mail,      path: '/admin/messages' },
+              ].map((action) => (
+                <Link key={action.path} to={action.path}>
+                  <button className="w-full text-left px-3.5 py-2.5 rounded-xl bg-black/10 hover:bg-black/20 transition-all font-bold text-sm text-black flex items-center justify-between group">
+                    <span className="flex items-center gap-2.5">
+                      <action.icon className="w-3.5 h-3.5" />
+                      {action.label}
+                    </span>
+                    <TrendingUp className="w-3.5 h-3.5 opacity-50 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </button>
+                </Link>
+              ))}
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-bold text-muted-foreground uppercase flex items-center gap-2">
-                <Briefcase className="w-4 h-4" /> Pro Tip
+          {/* System status */}
+          <Card className="bg-white/[0.03] border-white/[0.07]">
+            <CardHeader className="pb-2 pt-4 px-5">
+              <CardTitle className="text-[10px] font-black text-white/30 uppercase tracking-widest flex items-center gap-2">
+                <CalendarDays className="w-3.5 h-3.5" /> System Status
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-white/80 leading-relaxed italic">
-                "Regularly updating your 'Testimonials' and 'Awards' sections helps build trust with potential clients and employers. Keep them fresh!"
-              </p>
+            <CardContent className="px-5 pb-5 space-y-2.5">
+              {[
+                { label: 'Firebase', status: 'Operational' },
+                { label: 'Vercel Deploy', status: 'Operational' },
+                { label: 'Auth', status: 'Active' },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between">
+                  <span className="text-xs text-white/40 font-medium">{item.label}</span>
+                  <span className="flex items-center gap-1.5 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    {item.status}
+                  </span>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
