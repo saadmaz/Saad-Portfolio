@@ -50,11 +50,11 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
     const newUrls: string[] = [];
     for (const file of valid) {
       try {
-        const url = await uploadImage(file, folder);
+        const url = await uploadImage(file, folder, () => {});
         newUrls.push(url);
         setUploadCount((c) => c + 1);
-      } catch {
-        toast.error(`Failed to upload ${file.name}`);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : `Failed to upload ${file.name}`);
       }
     }
 

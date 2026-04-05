@@ -18,18 +18,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  ArrowLeft,
-  Save,
-  Plus,
-  Trash2,
-  Image as ImageIcon,
-  Images,
-  Globe,
-  Github,
-  Layout,
-  Layers,
-  Sparkles,
-  X,
+  ArrowLeft, Save, Plus, Trash2, Image as ImageIcon, Images,
+  Globe, Github, Layout, Layers, Sparkles, X, Video,
+  BookOpen, Lightbulb, Tag, Star, Link2,
 } from 'lucide-react';
 import { ProjectService } from '@/services/project-service';
 import { toast } from "sonner";
@@ -39,22 +30,50 @@ import { cn } from "@/shared/lib/utils";
 
 // ── Schema ────────────────────────────────────────────────────────
 const projectSchema = z.object({
+  // Essentials
   title: z.string().min(2, 'Title is required'),
   slug: z.string().min(2, 'Slug is required'),
-  tagline: z.string().min(5, 'Tagline is required'),
-  heroImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  screenshots: z.array(z.string()).optional().default([]),
-  overview: z.string().min(20, 'Overview must be at least 20 characters'),
+  tagline: z.string().min(1, 'Tagline is required'),
+  date: z.string().optional().or(z.literal('')),
+  role: z.string().optional().or(z.literal('')),
+  type: z.string().optional().or(z.literal('')),
+  category: z.string().optional().or(z.literal('')),
+  stage: z.string().optional().or(z.literal('')),
   status: z.string().default('Completed'),
-  techStack: z.array(z.string()).min(1, 'Add at least one technology'),
-  githubUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
-  liveUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+  colour: z.string().optional().or(z.literal('')),
+  order_index: z.number().optional(),
   featured: z.boolean().default(false),
+
+  // Descriptions
+  description: z.string().optional().or(z.literal('')),
+  long_description: z.string().optional().or(z.literal('')),
+  overview: z.string().min(5, 'Overview is required'),
+
+  // Media
+  heroImage: z.string().optional().or(z.literal('')),
+  image: z.string().optional().or(z.literal('')),
+  screenshots: z.array(z.string()).optional().default([]),
+  images: z.array(z.string()).optional().default([]),
+  video: z.string().optional().or(z.literal('')),
+
+  // Tech
+  techStack: z.array(z.string()).default([]),
+  technologies: z.array(z.string()).default([]),
+
+  // Links
+  liveUrl: z.string().optional().or(z.literal('')),
+  live_preview: z.string().optional().or(z.literal('')),
+  githubUrl: z.string().optional().or(z.literal('')),
+  github: z.string().optional().or(z.literal('')),
+
+  // Content
+  challenges: z.array(z.string()).optional().default([]),
+  learnings: z.array(z.string()).optional().default([]),
+  features: z.array(z.string()).optional().default([]),
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
-// ── Slug helper ───────────────────────────────────────────────────
 const toSlug = (s: string) =>
   s.toLowerCase().trim()
     .replace(/[^\w\s-]/g, '')
@@ -64,83 +83,166 @@ const toSlug = (s: string) =>
 const FIELD_CLS = "bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 rounded-lg h-10";
 const LABEL_CLS = "text-[10px] font-black uppercase tracking-widest text-white/40 mb-1.5 block";
 
+// ── Reusable tag-list editor ──────────────────────────────────────
+const TagListEditor = ({
+  label, values, placeholder, onChange,
+}: {
+  label: string; values: string[]; placeholder: string;
+  onChange: (v: string[]) => void;
+}) => {
+  const [input, setInput] = useState('');
+  const add = () => {
+    const v = input.trim();
+    if (!v || values.includes(v)) { setInput(''); return; }
+    onChange([...values, v]);
+    setInput('');
+  };
+  return (
+    <div>
+      <label className={LABEL_CLS}>{label}</label>
+      <div className="flex flex-wrap gap-1.5 mb-2 min-h-[28px]">
+        {values.map((v, i) => (
+          <span key={i} className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-bold">
+            {v}
+            <button type="button" onClick={() => onChange(values.filter((_, j) => j !== i))} className="text-accent/50 hover:text-red-400 ml-0.5">
+              <X className="w-3 h-3" />
+            </button>
+          </span>
+        ))}
+        {values.length === 0 && <p className="text-xs text-white/20 italic">None added</p>}
+      </div>
+      <div className="flex gap-2">
+        <Input value={input} onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(); } }}
+          placeholder={placeholder} className={cn(FIELD_CLS, "flex-1 h-9 text-sm")} />
+        <Button type="button" onClick={add} variant="outline"
+          className="border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-white/60 hover:text-white rounded-lg h-9 px-3 font-bold text-xs">
+          <Plus className="w-3 h-3 mr-1" /> Add
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// ── Section card wrapper ──────────────────────────────────────────
+const Section = ({ icon: Icon, title, children, badge }: {
+  icon: React.ElementType; title: string; children: React.ReactNode; badge?: string;
+}) => (
+  <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
+    <CardHeader className="border-b border-white/[0.06] py-3 px-5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Icon className="w-3.5 h-3.5 text-accent" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/50">{title}</span>
+        </div>
+        {badge && (
+          <span className="text-[9px] font-black uppercase tracking-wider bg-accent/15 text-accent px-2 py-0.5 rounded-full border border-accent/20">
+            {badge}
+          </span>
+        )}
+      </div>
+    </CardHeader>
+    <CardContent className="p-5 space-y-4">{children}</CardContent>
+  </Card>
+);
+
+// ── Main form ─────────────────────────────────────────────────────
 const ProjectForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [newTech, setNewTech] = useState('');
   const isEditMode = !!id && id !== 'new';
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      techStack: [],
-      screenshots: [],
-      status: 'Completed',
-      featured: false,
+      techStack: [], technologies: [], screenshots: [], images: [],
+      challenges: [], learnings: [], features: [],
+      status: 'Completed', featured: false,
     },
   });
 
-  // ── Safe array watches ─────────────────────────────────────────
-  const techStack = watch('techStack') ?? [];
-  const screenshots = watch('screenshots') ?? [];
-  const titleValue = watch('title');
-  const slugValue = watch('slug');
+  const w = (field: keyof ProjectFormValues) => watch(field);
+  const techStack    = (w('techStack')    as string[]) ?? [];
+  const technologies = (w('technologies') as string[]) ?? [];
+  const screenshots  = (w('screenshots')  as string[]) ?? [];
+  const images       = (w('images')       as string[]) ?? [];
+  const challenges   = (w('challenges')   as string[]) ?? [];
+  const learnings    = (w('learnings')    as string[]) ?? [];
+  const features     = (w('features')     as string[]) ?? [];
+  const titleValue   = watch('title');
+  const slugValue    = watch('slug');
 
-  // Auto-slug on new projects
   useEffect(() => {
-    if (!isEditMode && titleValue && !slugValue) {
-      setValue('slug', toSlug(titleValue));
-    }
+    if (!isEditMode && titleValue && !slugValue) setValue('slug', toSlug(titleValue));
   }, [titleValue, isEditMode]);
 
   const loadProject = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const project = await ProjectService.getById(id!);
-      if (project) {
+      const p = await ProjectService.getById(id!);
+      if (p) {
         reset({
-          title: project.title,
-          slug: project.slug,
-          tagline: project.tagline,
-          heroImage: project.heroImage || '',
-          screenshots: project.screenshots ?? [],
-          overview: project.overview,
-          status: project.status || 'Completed',
-          techStack: project.techStack ?? [],       // ← safe fallback
-          githubUrl: project.githubUrl || '',
-          liveUrl: project.liveUrl || '',
-          featured: project.featured ?? false,
+          title:            p.title,
+          slug:             p.slug,
+          tagline:          p.tagline          || '',
+          date:             p.date             || '',
+          role:             p.role             || '',
+          type:             p.type             || '',
+          category:         p.category         || '',
+          stage:            p.stage            || '',
+          status:           p.status           || 'Completed',
+          colour:           p.colour           || '',
+          order_index:      p.order_index,
+          featured:         p.featured         ?? false,
+          description:      p.description      || '',
+          long_description: p.long_description || '',
+          overview:         p.overview         || '',
+          heroImage:        p.heroImage        || p.image || '',
+          image:            p.image            || '',
+          screenshots:      p.screenshots      ?? p.images ?? [],
+          images:           p.images           ?? [],
+          video:            p.video            || p.videoDemo || '',
+          techStack:        p.techStack        ?? [],
+          technologies:     p.technologies     ?? [],
+          liveUrl:          p.liveUrl          || p.live_preview || '',
+          live_preview:     p.live_preview     || '',
+          githubUrl:        p.githubUrl        || p.github || '',
+          github:           p.github           || '',
+          challenges:       (p.challenges as string[]) ?? [],
+          learnings:        p.learnings        ?? [],
+          features:         p.features         ?? [],
         });
       }
-    } catch {
-      toast.error('Failed to load project');
-    } finally {
-      setIsLoading(false);
-    }
+    } catch { toast.error('Failed to load project'); }
+    finally { setIsLoading(false); }
   }, [id, reset]);
 
-  useEffect(() => {
-    if (isEditMode) loadProject();
-  }, [isEditMode, loadProject]);
+  useEffect(() => { if (isEditMode) loadProject(); }, [isEditMode, loadProject]);
 
   const onSubmit = async (data: ProjectFormValues) => {
     try {
       setIsLoading(true);
+      // Keep legacy fields in sync so existing public pages still work
+      const payload = {
+        ...data,
+        image:        data.heroImage || data.image,
+        images:       data.screenshots?.length ? data.screenshots : data.images,
+        live_preview: data.liveUrl   || data.live_preview,
+        github:       data.githubUrl || data.github,
+      };
       if (isEditMode) {
-        await ProjectService.update(id!, data);
-        toast.success('Project updated');
+        await ProjectService.update(id!, payload);
+        toast.success('Project saved');
       } else {
-        await ProjectService.create(data);
+        await ProjectService.create(payload);
         toast.success('Project created');
       }
       navigate('/admin/projects');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Operation failed');
-    } finally {
-      setIsLoading(false);
-    }
+      toast.error(error instanceof Error ? error.message : 'Save failed');
+    } finally { setIsLoading(false); }
   };
 
   const onDelete = async () => {
@@ -151,34 +253,15 @@ const ProjectForm = () => {
       navigate('/admin/projects');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Delete failed');
-    } finally {
-      setIsLoading(false);
-      setDeleteDialogOpen(false);
-    }
-  };
-
-  const addTech = () => {
-    const t = newTech.trim();
-    if (!t) return;
-    if (techStack.includes(t)) { toast.error('Already in stack'); return; }
-    setValue('techStack', [...techStack, t]);
-    setNewTech('');
-  };
-
-  const removeTech = (index: number) => {
-    setValue('techStack', techStack.filter((_, i) => i !== index));
+    } finally { setIsLoading(false); setDeleteDialogOpen(false); }
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      {/* Page header */}
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24">
+      {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-xl hover:bg-white/10 w-9 h-9"
-          onClick={() => navigate('/admin/projects')}
-        >
+        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-white/10 w-9 h-9"
+          onClick={() => navigate('/admin/projects')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div>
@@ -188,22 +271,15 @@ const ProjectForm = () => {
           </h1>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            disabled={isLoading}
-            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.2)] h-10 px-6"
-          >
+          <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}
+            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl h-10 px-6 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
             <Save className="w-3.5 h-3.5 mr-2" />
             {isLoading ? 'Saving…' : 'Save Project'}
           </Button>
           {isEditMode && (
-            <Button
-              variant="ghost"
-              size="icon"
+            <Button variant="ghost" size="icon"
               className="text-red-500/60 hover:bg-red-500/10 hover:text-red-500 rounded-xl w-9 h-9"
-              onClick={() => setDeleteDialogOpen(true)}
-              disabled={isLoading}
-            >
+              onClick={() => setDeleteDialogOpen(true)} disabled={isLoading}>
               <Trash2 className="w-4 h-4" />
             </Button>
           )}
@@ -211,227 +287,245 @@ const ProjectForm = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ── Main column ── */}
+        {/* ── LEFT COLUMN ── */}
         <div className="lg:col-span-2 space-y-5">
 
           {/* Essentials */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center gap-2">
-                <Layout className="w-3.5 h-3.5 text-accent" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Project Essentials</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={LABEL_CLS}>Title</label>
-                  <Input {...register('title')} placeholder="e.g. Portfolio v3" className={FIELD_CLS} />
-                  {errors.title && <p className="text-xs text-red-400 mt-1">{errors.title.message}</p>}
-                </div>
-                <div>
-                  <label className={LABEL_CLS}>Slug (URL)</label>
-                  <Input {...register('slug')} placeholder="e.g. portfolio-v3" className={cn(FIELD_CLS, "font-mono text-sm")} />
-                  {errors.slug && <p className="text-xs text-red-400 mt-1">{errors.slug.message}</p>}
-                </div>
-              </div>
-
+          <Section icon={Layout} title="Project Essentials">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={LABEL_CLS}>Tagline</label>
-                <Input {...register('tagline')} placeholder="A short punchy description…" className={FIELD_CLS} />
-                {errors.tagline && <p className="text-xs text-red-400 mt-1">{errors.tagline.message}</p>}
-              </div>
-
-              <div>
-                <label className={LABEL_CLS}>Detailed Overview</label>
-                <Textarea
-                  {...register('overview')}
-                  placeholder="Describe the project goals, tech choices, and outcomes…"
-                  className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 rounded-lg min-h-[160px] resize-none"
-                />
-                {errors.overview && <p className="text-xs text-red-400 mt-1">{errors.overview.message}</p>}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tech Stack */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center gap-2">
-                <Layers className="w-3.5 h-3.5 text-accent" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Technical Stack</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5">
-              {/* Existing tags */}
-              <div className="flex flex-wrap gap-2 mb-4 min-h-[32px]">
-                {techStack.map((tech, index) => (
-                  <div
-                    key={`${tech}-${index}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent/10 border border-accent/20 text-accent text-xs font-bold animate-in zoom-in-95 duration-150"
-                  >
-                    {tech}
-                    <button
-                      type="button"
-                      onClick={() => removeTech(index)}
-                      className="text-accent/50 hover:text-red-400 transition-colors ml-0.5"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-                {techStack.length === 0 && (
-                  <p className="text-xs text-white/25 italic">No technologies added yet</p>
-                )}
-              </div>
-
-              {/* Add tech inline input */}
-              <div className="flex gap-2">
-                <Input
-                  value={newTech}
-                  onChange={(e) => setNewTech(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTech(); } }}
-                  placeholder="e.g. Next.js, TypeScript, Firebase…"
-                  className={cn(FIELD_CLS, "flex-1")}
-                />
-                <Button
-                  type="button"
-                  onClick={addTech}
-                  variant="outline"
-                  className="border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-white/60 hover:text-white rounded-xl h-10 px-4 font-bold text-xs"
-                >
-                  <Plus className="w-3.5 h-3.5 mr-1.5" /> Add
-                </Button>
-              </div>
-              {errors.techStack && <p className="text-xs text-red-400 mt-2">{errors.techStack.message}</p>}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* ── Sidebar ── */}
-        <div className="space-y-5">
-          {/* Hero image */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="w-3.5 h-3.5 text-accent" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Hero Image</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <ImageUpload
-                value={watch('heroImage')}
-                onChange={(url) => setValue('heroImage', url)}
-                label="Project Hero Image"
-              />
-              {errors.heroImage && <p className="text-xs text-red-400 mt-2">{errors.heroImage.message}</p>}
-            </CardContent>
-          </Card>
-
-          {/* Screenshots / Gallery */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Images className="w-3.5 h-3.5 text-accent" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Screenshots / Gallery</span>
-                </div>
-                {screenshots.length > 0 && (
-                  <span className="text-[9px] font-black uppercase tracking-wider bg-accent/15 text-accent px-2 py-0.5 rounded-full border border-accent/20">
-                    {screenshots.length}
-                  </span>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <MultiImageUpload
-                value={screenshots}
-                onChange={(urls) => setValue('screenshots', urls)}
-                maxImages={10}
-                folder="projects/screenshots"
-              />
-            </CardContent>
-          </Card>
-
-          {/* External links */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center gap-2">
-                <Globe className="w-3.5 h-3.5 text-accent" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">External Links</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div>
-                <label className={LABEL_CLS}>Live Demo URL</label>
-                <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
-                  <Input {...register('liveUrl')} placeholder="https://example.com" className={cn(FIELD_CLS, "pl-9")} />
-                </div>
-                {errors.liveUrl && <p className="text-xs text-red-400 mt-1">{errors.liveUrl.message}</p>}
+                <label className={LABEL_CLS}>Title</label>
+                <Input {...register('title')} placeholder="e.g. Portfolio v3" className={FIELD_CLS} />
+                {errors.title && <p className="text-xs text-red-400 mt-1">{errors.title.message}</p>}
               </div>
               <div>
-                <label className={LABEL_CLS}>GitHub Repository</label>
-                <div className="relative">
-                  <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
-                  <Input {...register('githubUrl')} placeholder="https://github.com/..." className={cn(FIELD_CLS, "pl-9")} />
-                </div>
-                {errors.githubUrl && <p className="text-xs text-red-400 mt-1">{errors.githubUrl.message}</p>}
+                <label className={LABEL_CLS}>Slug (URL)</label>
+                <Input {...register('slug')} placeholder="portfolio-v3" className={cn(FIELD_CLS, "font-mono text-sm")} />
+                {errors.slug && <p className="text-xs text-red-400 mt-1">{errors.slug.message}</p>}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Settings */}
-          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
-            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-accent" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Settings</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 space-y-4">
+            <div>
+              <label className={LABEL_CLS}>Tagline</label>
+              <Input {...register('tagline')} placeholder="Short punchy description…" className={FIELD_CLS} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={LABEL_CLS}>Status</label>
-                <select
-                  {...register('status')}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none"
-                >
-                  <option value="Completed">Completed</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Exploration">Exploration</option>
+                <label className={LABEL_CLS}>Date</label>
+                <Input {...register('date')} placeholder="e.g. 2025-06-01" className={FIELD_CLS} />
+              </div>
+              <div>
+                <label className={LABEL_CLS}>Role</label>
+                <Input {...register('role')} placeholder="e.g. Solo Developer" className={FIELD_CLS} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className={LABEL_CLS}>Type</label>
+                <select {...register('type')}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <option value="">Select…</option>
+                  <option>Web Application</option>
+                  <option>Mobile App</option>
+                  <option>API / Backend</option>
+                  <option>Open Source</option>
+                  <option>Design</option>
+                  <option>Other</option>
                 </select>
               </div>
-              <label className="flex items-center justify-between cursor-pointer group">
-                <span className="text-sm font-bold text-white/70 group-hover:text-white transition-colors">Featured Project</span>
-                <input
-                  type="checkbox"
-                  {...register('featured')}
-                  className="w-4 h-4 rounded accent-teal-400 bg-white/5 border-white/10"
-                />
-              </label>
-            </CardContent>
-          </Card>
+              <div>
+                <label className={LABEL_CLS}>Category</label>
+                <Input {...register('category')} placeholder="e.g. Portfolio" className={FIELD_CLS} />
+              </div>
+              <div>
+                <label className={LABEL_CLS}>Stage</label>
+                <select {...register('stage')}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <option value="">Select…</option>
+                  <option>Production</option>
+                  <option>Development</option>
+                  <option>Beta</option>
+                  <option>Archived</option>
+                </select>
+              </div>
+            </div>
+          </Section>
+
+          {/* Descriptions */}
+          <Section icon={BookOpen} title="Descriptions">
+            <div>
+              <label className={LABEL_CLS}>Short Description</label>
+              <Input {...register('description')} placeholder="One-liner shown on cards…" className={FIELD_CLS} />
+            </div>
+            <div>
+              <label className={LABEL_CLS}>Overview (Detailed)</label>
+              <Textarea {...register('overview')} placeholder="Full project overview — goals, outcomes, architecture…"
+                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 rounded-lg min-h-[120px] resize-none" />
+              {errors.overview && <p className="text-xs text-red-400 mt-1">{errors.overview.message}</p>}
+            </div>
+            <div>
+              <label className={LABEL_CLS}>Long Description</label>
+              <Textarea {...register('long_description')} placeholder="Extended write-up for the project detail page…"
+                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 rounded-lg min-h-[100px] resize-none" />
+            </div>
+          </Section>
+
+          {/* Tech */}
+          <Section icon={Layers} title="Technical Stack">
+            <TagListEditor label="Tech Stack Tags (chips on cards)"
+              values={techStack} placeholder="e.g. React, TypeScript…"
+              onChange={v => setValue('techStack', v)} />
+            {errors.techStack && <p className="text-xs text-red-400">{errors.techStack.message}</p>}
+
+            <div className="border-t border-white/5 pt-4">
+              <TagListEditor label="Technologies (full list on detail page)"
+                values={technologies} placeholder="e.g. Framer Motion, Firebase…"
+                onChange={v => setValue('technologies', v)} />
+            </div>
+          </Section>
+
+          {/* Challenges & Learnings */}
+          <Section icon={Lightbulb} title="Challenges & Learnings"
+            badge={`${challenges.length + learnings.length}`}>
+            <TagListEditor label="Challenges faced"
+              values={challenges} placeholder="e.g. Achieving 100/100 Lighthouse scores"
+              onChange={v => setValue('challenges', v)} />
+            <div className="border-t border-white/5 pt-4">
+              <TagListEditor label="Key Learnings"
+                values={learnings} placeholder="e.g. Performance is a feature, not an afterthought."
+                onChange={v => setValue('learnings', v)} />
+            </div>
+          </Section>
+
+          {/* Features */}
+          <Section icon={Star} title="Features" badge={features.length ? `${features.length}` : undefined}>
+            <TagListEditor label="Key Features"
+              values={features} placeholder="e.g. Dark mode, Offline support…"
+              onChange={v => setValue('features', v)} />
+          </Section>
+        </div>
+
+        {/* ── RIGHT SIDEBAR ── */}
+        <div className="space-y-5">
+
+          {/* Hero Image */}
+          <Section icon={ImageIcon} title="Hero Image">
+            <ImageUpload
+              value={watch('heroImage') || watch('image')}
+              onChange={url => { setValue('heroImage', url); setValue('image', url); }}
+            />
+          </Section>
+
+          {/* Gallery */}
+          <Section icon={Images} title="Screenshots / Gallery"
+            badge={screenshots.length ? `${screenshots.length}` : undefined}>
+            <MultiImageUpload
+              value={screenshots}
+              onChange={urls => { setValue('screenshots', urls); setValue('images', urls); }}
+              maxImages={10}
+              folder="projects/screenshots"
+            />
+          </Section>
+
+          {/* Video */}
+          <Section icon={Video} title="Video Demo">
+            <div>
+              <label className={LABEL_CLS}>YouTube / Video URL</label>
+              <div className="relative">
+                <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Input {...register('video')} placeholder="https://youtube.com/watch?v=…"
+                  className={cn(FIELD_CLS, "pl-9")} />
+              </div>
+            </div>
+          </Section>
+
+          {/* Links */}
+          <Section icon={Link2} title="External Links">
+            <div>
+              <label className={LABEL_CLS}>Live Demo URL</label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Input {...register('liveUrl')} placeholder="https://example.com"
+                  className={cn(FIELD_CLS, "pl-9")} />
+              </div>
+              {errors.liveUrl && <p className="text-xs text-red-400 mt-1">{errors.liveUrl.message}</p>}
+            </div>
+            <div>
+              <label className={LABEL_CLS}>Live Preview (legacy)</label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Input {...register('live_preview')} placeholder="https://…"
+                  className={cn(FIELD_CLS, "pl-9")} />
+              </div>
+            </div>
+            <div>
+              <label className={LABEL_CLS}>GitHub Repository</label>
+              <div className="relative">
+                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Input {...register('githubUrl')} placeholder="https://github.com/…"
+                  className={cn(FIELD_CLS, "pl-9")} />
+              </div>
+            </div>
+            <div>
+              <label className={LABEL_CLS}>GitHub (legacy)</label>
+              <div className="relative">
+                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Input {...register('github')} placeholder="https://github.com/…"
+                  className={cn(FIELD_CLS, "pl-9")} />
+              </div>
+            </div>
+          </Section>
+
+          {/* Settings */}
+          <Section icon={Sparkles} title="Settings">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className={LABEL_CLS}>Status</label>
+                <select {...register('status')}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <option>Completed</option>
+                  <option>In Progress</option>
+                  <option>Exploration</option>
+                </select>
+              </div>
+              <div>
+                <label className={LABEL_CLS}>Order Index</label>
+                <Input type="number" {...register('order_index', { valueAsNumber: true })}
+                  placeholder="1" className={FIELD_CLS} />
+              </div>
+            </div>
+            <div>
+              <label className={LABEL_CLS}>Card Gradient (Tailwind classes)</label>
+              <Input {...register('colour')} placeholder="from-indigo-900/40 to-blue-900/40"
+                className={cn(FIELD_CLS, "font-mono text-xs")} />
+            </div>
+            <label className="flex items-center justify-between cursor-pointer group pt-1">
+              <span className="text-sm font-bold text-white/70 group-hover:text-white transition-colors">Featured Project</span>
+              <input type="checkbox" {...register('featured')}
+                className="w-4 h-4 rounded accent-teal-400 bg-white/5 border-white/10" />
+            </label>
+          </Section>
         </div>
       </div>
 
       {/* Delete dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={(open) => !isLoading && setDeleteDialogOpen(open)}>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={o => !isLoading && setDeleteDialogOpen(o)}>
         <AlertDialogContent className="bg-[#111] border-white/10 text-white rounded-2xl shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-black">Delete Project?</AlertDialogTitle>
             <AlertDialogDescription className="text-white/50 text-sm">
-              This project will be permanently removed from your portfolio. This action cannot be undone.
+              This project will be permanently removed. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel disabled={isLoading} className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl font-bold">
+            <AlertDialogCancel disabled={isLoading}
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl font-bold">
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
-              disabled={isLoading}
-              onClick={onDelete}
-              className="bg-red-500 hover:bg-red-600 text-white rounded-xl font-black border-0 shadow-lg shadow-red-500/20"
-            >
+            <AlertDialogAction disabled={isLoading} onClick={onDelete}
+              className="bg-red-500 hover:bg-red-600 text-white rounded-xl font-black border-0 shadow-lg shadow-red-500/20">
               {isLoading ? 'Deleting…' : 'Delete Project'}
             </AlertDialogAction>
           </AlertDialogFooter>

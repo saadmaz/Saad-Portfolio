@@ -5,53 +5,49 @@ export interface Project {
   tagline: string;
   date?: string;
   status: string;
-  gradientStart?: string;
-  gradientEnd?: string;
-  techStack: string[];
+  stage?: string;
+  type?: string;
+  category?: string;
   role?: string;
   duration?: string;
-  githubUrl?: string;
-  liveUrl?: string;
-  pdfReport?: string;
-  heroImage: string;
-  screenshots?: string[];
-  videoDemo?: string;
-  overview: string;
-  problem?: string;
-  solution?: string;
-  impact?: string;
-  architecture?: {
-    description: string;
-    diagramUrl: string;
-  };
-  databaseSchema?: string;
-  apiDocs?: string;
-  challenges?: Array<{
-    wall: string;
-    fix: string;
-    lesson: string;
-  }>;
-  metrics?: {
-    users: number;
-    lighthouseScore: {
-      performance: number;
-      accessibility: number;
-      seo: number;
-    };
-    testCoverage: number;
-    cicd: string;
-  };
-  stackDeepDive?: {
-    frontend: string;
-    backend: string;
-    aiIntegration: string;
-  };
-  roadmap?: string[];
-  features?: string[];
   colour?: string;
   order_index?: number;
   featured?: boolean;
-  category?: string;
+
+  // Descriptions
+  description?: string;
+  long_description?: string;
+  overview: string;
+
+  // Media
+  heroImage: string;
+  image?: string;           // legacy alias for heroImage
+  images?: string[];        // legacy gallery
+  screenshots?: string[];
+  video?: string;           // YouTube / video URL
+  videoDemo?: string;
+
+  // Tech
+  techStack: string[];
+  technologies?: string[];
+
+  // Links
+  githubUrl?: string;
+  github?: string;          // legacy alias for githubUrl
+  liveUrl?: string;
+  live_preview?: string;    // legacy alias for liveUrl
+  pdfReport?: string;
+
+  // Content
+  challenges?: string[];
+  learnings?: string[];
+  features?: string[];
+  roadmap?: string[];
+  problem?: string;
+  solution?: string;
+  impact?: string;
+  gradientStart?: string;
+  gradientEnd?: string;
 }
 
 export interface Skill {

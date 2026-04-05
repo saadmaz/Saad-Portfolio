@@ -1,67 +1,77 @@
-/**
- * services/storage.ts
- * ─────────────────────────────────────────────────────────────
- * Firebase Storage helpers for file uploads.
- *
- * Replaces the old backend flow of:
- *   browser → POST /admin/upload (multer) → Firebase Admin SDK → Storage
- *
- * New flow (no server needed):
- *   browser → Firebase Storage SDK → Storage directly
- *
- * Security: Firebase Storage Rules (configured in Firebase Console)
- * should restrict uploads to authenticated users only:
- *
- *   rules_version = '2';
- *   service firebase.storage {
- *     match /b/{bucket}/o {
- *       match /uploads/{allPaths=**} {
- *         allow read: if true;
- *         allow write: if request.auth != null;
- *       }
- *     }
- *   }
- */
-
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+  type UploadTask,
+} from "firebase/storage";
 import { storage } from "@/lib/firebase";
 
 /**
- * Uploads a file to Firebase Storage and returns the public download URL.
- *
- * @param file     - The File object from an <input type="file"> element
- * @param folder   - Storage folder path (default: "uploads")
- * @returns        - The permanent public download URL
- *
- * @example
- *   const url = await uploadImage(file);
- *   // store `url` in your Firestore document as heroImage, etc.
+ * Uploads a file to Firebase Storage with real progress callbacks and a
+ * 60-second timeout.  Uses uploadBytesResumable (not uploadBytes) so that:
+ *   • progress is visible
+ *   • the upload can be cancelled on timeout
+ *   • errors are surfaced immediately rather than hanging forever
  */
-export const uploadImage = async (
+export const uploadImage = (
   file: File,
-  folder: string = "uploads"
+  folder: string = "uploads",
+  onProgress?: (pct: number) => void
 ): Promise<string> => {
-  // Build a unique filename using a timestamp to avoid collisions
-  const filename  = `${Date.now()}-${file.name}`;
-  const storageRef = ref(storage, `${folder}/${filename}`);
+  return new Promise((resolve, reject) => {
+    const filename  = `${Date.now()}-${file.name}`;
+    const storageRef = ref(storage, `${folder}/${filename}`);
 
-  // Upload the raw file bytes
-  const snapshot = await uploadBytes(storageRef, file, {
-    contentType: file.type,
+    const task: UploadTask = uploadBytesResumable(storageRef, file, {
+      contentType: file.type,
+    });
+
+    // Hard timeout — cancel the task and reject if it takes > 60 s
+    const timer = setTimeout(() => {
+      task.cancel();
+      reject(new Error("Upload timed out. Check Firebase Storage rules and your internet connection."));
+    }, 60_000);
+
+    task.on(
+      "state_changed",
+      (snapshot) => {
+        const pct = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        onProgress?.(pct);
+      },
+      (error) => {
+        clearTimeout(timer);
+        // Map Firebase Storage error codes to friendly messages
+        switch (error.code) {
+          case "storage/unauthorized":
+            reject(new Error("Permission denied. Make sure you are logged in and Firebase Storage rules allow writes."));
+            break;
+          case "storage/canceled":
+            reject(new Error("Upload was cancelled."));
+            break;
+          case "storage/unknown":
+            reject(new Error("Upload failed (unknown error). Check your Firebase Storage CORS configuration."));
+            break;
+          default:
+            reject(new Error(`Upload failed: ${error.message}`));
+        }
+      },
+      async () => {
+        clearTimeout(timer);
+        try {
+          const url = await getDownloadURL(task.snapshot.ref);
+          resolve(url);
+        } catch (err) {
+          reject(err);
+        }
+      }
+    );
   });
-
-  // Return the permanent public URL
-  return getDownloadURL(snapshot.ref);
 };
 
-/**
- * Deletes a file from Firebase Storage by its full URL.
- * Useful when replacing an image or deleting a record.
- *
- * @param url - The full download URL returned by uploadImage()
- */
 export const deleteImage = async (url: string): Promise<void> => {
-  // Firebase gives us a path-based ref from the full URL
   const fileRef = ref(storage, url);
   await deleteObject(fileRef);
 };
