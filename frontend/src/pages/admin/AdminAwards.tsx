@@ -91,53 +91,60 @@ const AdminAwards = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Awards & Recognition</h1>
-          <p className="text-muted-foreground">Manage your honors, awards, and certifications.</p>
+          <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">METADATA</p>
+          <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+            Awards & Recognition
+          </h1>
+          <p className="text-sm text-white/50 font-medium">
+            Manage your honors, awards, and certifications.
+          </p>
         </div>
-        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
-          <Plus className="w-4 h-4 mr-2" /> Add New Award
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-black h-11 px-6 rounded-lg flex-shrink-0">
+          <Plus className="w-4 h-4 mr-2" /> Add Award
         </Button>
       </div>
 
-      <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+      <div className="flex items-center gap-4 bg-white/[0.03] p-4 rounded-lg border border-white/10">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input 
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <input
             type="text"
             placeholder="Search awards..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-white"
+            className="w-full bg-white/[0.04] border border-white/10 rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-white placeholder:text-white/25 font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {isLoading && !isDialogOpen ? (
           [1, 2, 3].map(i => (
-            <div key={i} className="h-24 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-24 w-full bg-white/[0.02] border border-white/5 rounded-lg animate-pulse" />
           ))
         ) : filteredAwards.length > 0 ? (
           filteredAwards.map((award) => (
-            <Card key={award.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all group overflow-hidden">
+            <Card key={award.id} className="bg-white/[0.02] border-white/5 hover:border-accent/30 hover:bg-white/[0.04] transition-all group rounded-lg">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                    <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                       <AwardIcon className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-white">{award.title}</h3>
-                      <p className="text-sm text-muted-foreground">{award.issuer} • {award.date}</p>
+                      <h3 className="font-black text-white text-sm" style={{ fontFamily: 'DM Sans' }}>
+                        {award.title}
+                      </h3>
+                      <p className="text-xs text-white/40 font-medium">{award.issuer} • {award.date}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(award)} className="hover:bg-white/10">
-                      <Edit2 className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex items-center gap-1.5">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(award)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
+                      <Edit2 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(award.id)} className="hover:bg-red-500/10 text-red-400">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(award.id)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -146,9 +153,13 @@ const AdminAwards = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
-            <h3 className="text-lg font-medium text-white mb-1">No awards found</h3>
-            <p className="text-muted-foreground">Start adding your achievements to show them off!</p>
+          <div className="rounded-lg border border-white/5 bg-white/[0.02] p-12 text-center">
+            <h3 className="text-lg font-black text-white/70" style={{ fontFamily: 'DM Sans' }}>
+              No awards found
+            </h3>
+            <p className="text-sm text-white/40 mt-1 font-medium">
+              {searchQuery ? 'Try a different search.' : 'Add your achievements to get started.'}
+            </p>
           </div>
         )}
       </div>

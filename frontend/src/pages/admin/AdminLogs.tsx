@@ -64,70 +64,88 @@ const AdminLogs = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Activity Logs</h1>
-          <p className="text-muted-foreground">Monitor administrative actions and security events across the platform.</p>
+          <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">LOG HISTORY</p>
+          <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+            Activity Logs
+          </h1>
+          <p className="text-sm text-white/50 font-medium max-w-md">
+            Monitor administrative actions and security events across your portfolio platform.
+          </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search logs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/5 border-white/10 focus:border-accent/50 transition-all rounded-xl shadow-2xl shadow-black/20"
-          />
-        </div>
+      </div>
+
+      {/* Search Section */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <Input
+          placeholder="Search by admin email, action, or entity type..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-11 h-11 bg-white/[0.04] border border-white/10 focus:border-accent/50 transition-all rounded-xl text-white placeholder:text-white/25 font-medium"
+        />
       </div>
 
       <div className="grid gap-3">
         {isLoading ? (
           [1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="h-20 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-20 w-full bg-white/[0.02] border border-white/5 rounded-xl animate-pulse" />
           ))
         ) : filteredLogs.length > 0 ? (
           filteredLogs.map((log) => (
-            <Card key={log.id} className="bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all overflow-hidden group">
-              <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className={`p-2.5 rounded-xl border flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${getActionColor(log.action)}`}>
+            <Card key={log.id} className="bg-white/[0.02] border border-white/5 hover:border-accent/30 hover:bg-white/[0.04] transition-all overflow-hidden group rounded-xl">
+              <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-4 flex-1">
+                  {/* Icon */}
+                  <div className={`p-2.5 rounded-lg border flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${getActionColor(log.action)}`}>
                     <Shield className="w-5 h-5" />
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                      <span className="font-bold text-white truncate max-w-[200px]">{log.adminEmail}</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-widest ${getActionColor(log.action)}`}>
+
+                  <div className="flex-1 min-w-0">
+                    {/* Top row: Admin + Action Type + Entity */}
+                    <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
+                      <span className="font-semibold text-white text-sm truncate">{log.adminEmail}</span>
+                      <span className={`text-[9px] px-2.5 py-1 rounded-full border font-black uppercase tracking-wider ${getActionColor(log.action)}`}>
                         {log.action}
                       </span>
-                      <span className="text-xs text-accent font-semibold px-2 py-0.5 bg-accent/5 border border-accent/10 rounded-full">
+                      <span className="text-[9px] text-accent font-black px-2.5 py-1 bg-accent/10 border border-accent/20 rounded-full uppercase tracking-wider">
                         {log.entityType}
                       </span>
                     </div>
-                    <p className="text-sm text-white/50 line-clamp-1 group-hover:text-white/70 transition-colors">
+
+                    {/* Details text */}
+                    <p className="text-xs text-white/40 line-clamp-1 group-hover:text-white/50 transition-colors leading-relaxed">
                       {log.details || `Performed ${log.action?.toLowerCase() || 'action'} on ${log.entityType || 'entry'}.`}
                     </p>
                   </div>
                 </div>
-                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0">
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                    <Clock className="w-3.5 h-3.5" />
-                    {getTimestamp(log.timestamp)}
+
+                {/* Right side: Timestamp + ID */}
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0 text-right">
+                  <div className="flex items-center gap-1.5 text-[10px] text-white/40 font-medium uppercase tracking-wider">
+                    <Clock className="w-3 h-3 flex-shrink-0" />
+                    <span className="hidden sm:inline">{getTimestamp(log.timestamp)}</span>
+                    <span className="sm:hidden">{getTimestamp(log.timestamp).split(',')[0]}</span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground/40 font-mono bg-white/5 px-1.5 py-0.5 rounded">
-                    ID: {log.entityId ? log.entityId.slice(0, 8) : 'unknown'}
+                  <span className="text-[9px] text-white/30 font-mono bg-white/[0.03] px-2 py-1 rounded border border-white/5">
+                    {log.entityId ? log.entityId.slice(0, 8) : 'N/A'}
                   </span>
                 </div>
               </CardContent>
             </Card>
           ))
         ) : (
-          <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] p-20 text-center">
-            <div className="mx-auto w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mb-6 shadow-inner">
-              <History className="w-10 h-10 text-muted-foreground/50" />
+          <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-16 text-center">
+            <div className="mx-auto w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center mb-5 border border-white/5">
+              <History className="w-8 h-8 text-white/20" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">No logs found</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto">
-              {searchQuery ? `No results for "${searchQuery}". Try a different search term.` : "Administrative actions will appear here once you start managing your content."}
+            <h3 className="text-lg font-black text-white/80 mb-2" style={{ fontFamily: 'DM Sans' }}>
+              No logs found
+            </h3>
+            <p className="text-sm text-white/40 max-w-xs mx-auto">
+              {searchQuery ? `No results for "${searchQuery}". Try a different search.` : "Administrative actions will appear here."}
             </p>
           </div>
         )}
