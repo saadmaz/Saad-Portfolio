@@ -90,9 +90,9 @@ const AdminEvents = () => {
     }
   };
 
-  const filteredEvents = events.filter(e => 
-    e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    e.organizer.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredEvents = events.filter(e =>
+    (e.title?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (e.organizer?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

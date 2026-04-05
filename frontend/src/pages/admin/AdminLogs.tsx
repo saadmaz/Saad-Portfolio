@@ -20,11 +20,11 @@ const AdminLogs = () => {
   useEffect(() => {
     const query = searchQuery.toLowerCase();
     setFilteredLogs(
-      logs.filter(log => 
-        log.adminEmail.toLowerCase().includes(query) ||
-        log.action.toLowerCase().includes(query) ||
-        log.entityType.toLowerCase().includes(query) ||
-        (log.details && log.details.toLowerCase().includes(query))
+      logs.filter(log =>
+        (log.adminEmail?.toLowerCase().includes(query)) ||
+        (log.action?.toLowerCase().includes(query)) ||
+        (log.entityType?.toLowerCase().includes(query)) ||
+        (log.details?.toLowerCase().includes(query))
       )
     );
   }, [searchQuery, logs]);
@@ -104,7 +104,7 @@ const AdminLogs = () => {
                       </span>
                     </div>
                     <p className="text-sm text-white/50 line-clamp-1 group-hover:text-white/70 transition-colors">
-                      {log.details || `Performed ${log.action.toLowerCase()} on ${log.entityType} entry.`}
+                      {log.details || `Performed ${log.action?.toLowerCase() || 'action'} on ${log.entityType || 'entry'}.`}
                     </p>
                   </div>
                 </div>

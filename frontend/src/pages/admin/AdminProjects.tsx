@@ -68,8 +68,8 @@ const AdminProjects = () => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       result = result.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.tagline.toLowerCase().includes(q)
+        (p.title?.toLowerCase().includes(q)) ||
+        (p.tagline?.toLowerCase().includes(q))
       );
     }
 

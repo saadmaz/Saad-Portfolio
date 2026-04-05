@@ -84,9 +84,9 @@ const AdminAwards = () => {
     }
   };
 
-  const filteredAwards = awards.filter(a => 
-    a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.issuer.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAwards = awards.filter(a =>
+    (a.title?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (a.issuer?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

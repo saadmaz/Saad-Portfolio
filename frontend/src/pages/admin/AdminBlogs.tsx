@@ -73,8 +73,8 @@ const AdminBlogs = () => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       result = result.filter(b =>
-        b.title.toLowerCase().includes(q) ||
-        b.excerpt.toLowerCase().includes(q)
+        (b.title?.toLowerCase().includes(q)) ||
+        (b.excerpt?.toLowerCase().includes(q))
       );
     }
 

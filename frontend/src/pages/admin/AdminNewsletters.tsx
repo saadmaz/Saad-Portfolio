@@ -96,9 +96,9 @@ const AdminNewsletters = () => {
     }
   };
 
-  const filteredNewsletters = newsletters.filter(n => 
-    n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    n.type.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredNewsletters = newsletters.filter(n =>
+    (n.title?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (n.type?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
