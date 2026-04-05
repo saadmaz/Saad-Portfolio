@@ -3,6 +3,7 @@ import { CommonService } from '@/shared/services/common-service';
 import { ActivityLog } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
 import { History, Shield, Info, AlertCircle, Clock, Search, Filter } from 'lucide-react';
+import BackButton from '@/components/admin/BackButton';
 import { toast } from "sonner";
 import { format } from 'date-fns';
 import { Input } from "@/components/ui/input";
@@ -66,7 +67,9 @@ const AdminLogs = () => {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+        <div className="flex items-start gap-3">
+          <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
+          <div>
           <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">LOG HISTORY</p>
           <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
             Activity Logs
@@ -74,6 +77,7 @@ const AdminLogs = () => {
           <p className="text-sm text-white/50 font-medium max-w-md">
             Monitor administrative actions and security events across your portfolio platform.
           </p>
+          </div>
         </div>
       </div>
 

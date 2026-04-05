@@ -13,6 +13,7 @@ import {
   Save
 } from 'lucide-react';
 import { CommonService } from '@/shared/services/common-service';
+import BackButton from '@/components/admin/BackButton';
 import { SkillSet, Skill } from '@/types';
 import { toast } from "sonner";
 
@@ -90,9 +91,12 @@ const AdminSkills = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Skills & Tools</h1>
-          <p className="text-muted-foreground">Manage your technical expertise and group them by category.</p>
+        <div className="flex items-center gap-3">
+          <BackButton to="/admin/dashboard" className="flex-shrink-0" />
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Skills & Tools</h1>
+            <p className="text-muted-foreground">Manage your technical expertise and group them by category.</p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-3">
             <Button 

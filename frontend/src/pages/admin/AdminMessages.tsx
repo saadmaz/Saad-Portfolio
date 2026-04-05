@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  Mail, 
-  User, 
-  Clock, 
-  Trash2, 
-  CheckCircle, 
-  Circle, 
+import BackButton from '@/components/admin/BackButton';
+import {
+  Mail,
+  User,
+  Clock,
+  Trash2,
+  CheckCircle,
+  Circle,
   ExternalLink,
   Search,
   MessageSquare,
@@ -79,7 +80,9 @@ const AdminMessages = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+        <div className="flex items-start gap-3">
+          <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
+          <div>
           <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">INQUIRIES</p>
           <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
             Contact Messages
@@ -87,6 +90,7 @@ const AdminMessages = () => {
           <p className="text-sm text-white/50 font-medium">
             Manage inquiries and messages from your contact portal.
           </p>
+          </div>
         </div>
 
         <div className="relative group max-w-md w-full flex-shrink-0">

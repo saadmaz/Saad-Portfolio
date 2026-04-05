@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Globe, Edit2, Trash2 } from 'lucide-react';
 import { toast } from "sonner";
 import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
+import BackButton from '@/components/admin/BackButton';
 import * as z from 'zod';
 
 const languageSchema = z.object({
@@ -95,9 +96,12 @@ const AdminLanguages = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Languages</h1>
-          <p className="text-muted-foreground">Manage the languages you speak and your proficiency levels.</p>
+        <div className="flex items-center gap-3">
+          <BackButton to="/admin/dashboard" className="flex-shrink-0" />
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight mb-1">Languages</h1>
+            <p className="text-muted-foreground">Manage the languages you speak and your proficiency levels.</p>
+          </div>
         </div>
         <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
           <Plus className="w-4 h-4 mr-2" /> Add New Language

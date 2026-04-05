@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Search, Award as AwardIcon, Edit2, Trash2, ExternalLink } from 'lucide-react';
 import { toast } from "sonner";
 import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
+import BackButton from '@/components/admin/BackButton';
 import * as z from 'zod';
 
 const awardSchema = z.object({
@@ -94,14 +95,17 @@ const AdminAwards = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">METADATA</p>
-          <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
-            Awards & Recognition
-          </h1>
-          <p className="text-sm text-white/50 font-medium">
-            Manage your honors, awards, and certifications.
-          </p>
+        <div className="flex items-start gap-3">
+          <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">METADATA</p>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+              Awards & Recognition
+            </h1>
+            <p className="text-sm text-white/50 font-medium">
+              Manage your honors, awards, and certifications.
+            </p>
+          </div>
         </div>
         <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-black h-11 px-6 rounded-lg flex-shrink-0">
           <Plus className="w-4 h-4 mr-2" /> Add Award
