@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Language } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ const AdminLanguages = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState<Language | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchLanguages();
@@ -63,15 +65,15 @@ const AdminLanguages = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this language?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteLanguage(id);
+      await CommonService.deleteLanguage(deleteTarget.id);
       toast.success('Language deleted successfully');
       fetchLanguages();
-    } catch (error) {
-      toast.error('Failed to delete language');
-    }
+    } catch { toast.error('Failed to delete language'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -125,7 +127,7 @@ const AdminLanguages = () => {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(lang)} className="h-8 w-8 hover:bg-white/10">
                       <Edit2 className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id, lang.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -153,6 +155,7 @@ const AdminLanguages = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Language?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

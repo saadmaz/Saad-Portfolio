@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Education } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ const AdminEducation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEd, setCurrentEd] = useState<Education | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchEducation();
@@ -61,15 +63,15 @@ const AdminEducation = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this education entry?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteEducation(id);
+      await CommonService.deleteEducation(deleteTarget.id);
       toast.success('Education deleted successfully');
       fetchEducation();
-    } catch (error) {
-      toast.error('Failed to delete education');
-    }
+    } catch { toast.error('Failed to delete education'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -127,7 +129,7 @@ const AdminEducation = () => {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(edu)} className="hover:bg-white/10">
                       <Edit2 className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(edu.id)} className="hover:bg-red-500/10 text-red-400">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(edu.id, edu.degree)} className="hover:bg-red-500/10 text-red-400">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -143,6 +145,7 @@ const AdminEducation = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Education?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

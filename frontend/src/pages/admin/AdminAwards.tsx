@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Award } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const AdminAwards = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentAward, setCurrentAward] = useState<Award | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchAwards();
@@ -57,15 +59,15 @@ const AdminAwards = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this award?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteAward(id);
+      await CommonService.deleteAward(deleteTarget.id);
       toast.success('Award deleted successfully');
       fetchAwards();
-    } catch (error) {
-      toast.error('Failed to delete award');
-    }
+    } catch { toast.error('Failed to delete award'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -144,7 +146,7 @@ const AdminAwards = () => {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(award)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
                       <Edit2 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(award.id)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(award.id, award.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -164,6 +166,14 @@ const AdminAwards = () => {
         )}
       </div>
 
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Delete Award?"
+        description={`"${deleteTarget?.label}" will be permanently deleted.`}
+        confirmLabel="Delete Award"
+        onConfirm={handleConfirmDelete}
+      />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

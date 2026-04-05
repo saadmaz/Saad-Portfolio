@@ -289,7 +289,7 @@ const AdminLayout = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex">
+    <div className="admin-panel min-h-screen bg-[#050505] text-white flex">
       {/* ── Desktop Sidebar ── */}
       <aside className={cn(
         "hidden md:flex flex-col flex-shrink-0 bg-[#0a0a0a]/95 backdrop-blur-2xl border-r border-white/5 transition-all duration-300 ease-in-out relative",

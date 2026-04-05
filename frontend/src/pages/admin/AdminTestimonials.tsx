@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Testimonial } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const AdminTestimonials = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchTestimonials();
@@ -56,15 +58,15 @@ const AdminTestimonials = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteTestimonial(id);
+      await CommonService.deleteTestimonial(deleteTarget.id);
       toast.success('Testimonial deleted successfully');
       fetchTestimonials();
-    } catch (error) {
-      toast.error('Failed to delete testimonial');
-    }
+    } catch { toast.error('Failed to delete testimonial'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -125,7 +127,7 @@ const AdminTestimonials = () => {
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(test)} className="h-8 w-8 hover:bg-white/10">
                     <Edit2 className="w-4 h-4 text-muted-foreground" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id, test.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -140,6 +142,7 @@ const AdminTestimonials = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Testimonial?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

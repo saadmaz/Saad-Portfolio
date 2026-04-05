@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Newsletter } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ const AdminNewsletters = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentNewsletter, setCurrentNewsletter] = useState<Newsletter | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchNewsletters();
@@ -69,15 +71,15 @@ const AdminNewsletters = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this newsletter?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteNewsletter(id);
+      await CommonService.deleteNewsletter(deleteTarget.id);
       toast.success('Newsletter deleted');
       fetchNewsletters();
-    } catch (error) {
-      toast.error('Delete failed');
-    }
+    } catch { toast.error('Delete failed'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -165,7 +167,7 @@ const AdminNewsletters = () => {
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(newsletter)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
                     <Edit2 className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(newsletter.id)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(newsletter.id, newsletter.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -184,6 +186,7 @@ const AdminNewsletters = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Newsletter?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

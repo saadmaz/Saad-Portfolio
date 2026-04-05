@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
+
 import { CommonService } from '@/shared/services/common-service';
 import { Event } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,7 @@ const AdminEvents = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -63,15 +66,15 @@ const AdminEvents = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this event?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteEvent(id);
+      await CommonService.deleteEvent(deleteTarget.id);
       toast.success('Event deleted');
       fetchEvents();
-    } catch (error) {
-      toast.error('Delete failed');
-    }
+    } catch { toast.error('Delete failed'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -155,7 +158,7 @@ const AdminEvents = () => {
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
                     <Edit2 className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(event.id)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(event.id, event.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -174,6 +177,7 @@ const AdminEvents = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Event?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

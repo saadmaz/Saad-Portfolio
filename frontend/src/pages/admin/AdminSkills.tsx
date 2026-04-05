@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ const AdminSkills = () => {
   const [skillSets, setSkillSets] = useState<SkillSet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [deleteCatIndex, setDeleteCatIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchSkills();
@@ -51,9 +53,11 @@ const AdminSkills = () => {
     setSkillSets([...skillSets, { category: 'New Category', skills: [] }]);
   };
 
-  const removeCategory = (index: number) => {
-    if (!window.confirm('Remove this entire category?')) return;
-    setSkillSets(skillSets.filter((_, i) => i !== index));
+  const removeCategory = (index: number) => setDeleteCatIndex(index);
+  const handleConfirmRemoveCategory = () => {
+    if (deleteCatIndex === null) return;
+    setSkillSets(skillSets.filter((_, i) => i !== deleteCatIndex));
+    setDeleteCatIndex(null);
   };
 
   const addSkill = (catIndex: number) => {
@@ -196,6 +200,15 @@ const AdminSkills = () => {
           </Card>
         ))}
       </div>
+
+      <ConfirmDialog
+        open={deleteCatIndex !== null}
+        onOpenChange={(o) => !o && setDeleteCatIndex(null)}
+        title="Remove Category?"
+        description={deleteCatIndex !== null ? `"${skillSets[deleteCatIndex]?.category}" and all its skills will be permanently removed.` : ''}
+        confirmLabel="Remove"
+        onConfirm={handleConfirmRemoveCategory}
+      />
     </div>
   );
 };

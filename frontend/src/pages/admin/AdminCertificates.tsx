@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -24,6 +25,7 @@ import {
 const AdminCertificates = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string | number; label: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,15 +43,15 @@ const AdminCertificates = () => {
     }
   };
 
-  const handleDelete = async (id: string | number) => {
-    if (!window.confirm('Delete this certificate?')) return;
+  const handleDelete = (id: string | number, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteCertificate(id);
+      await CommonService.deleteCertificate(deleteTarget.id);
       toast.success('Certificate deleted');
       fetchCertificates();
-    } catch (error) {
-      toast.error('Delete failed');
-    }
+    } catch { toast.error('Delete failed'); }
+    finally { setDeleteTarget(null); }
   };
 
   return (
@@ -89,7 +91,7 @@ const AdminCertificates = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                                 className="hover:bg-red-500/20 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-1.5 font-semibold"
-                                onClick={() => handleDelete(cert.id)}
+                                onClick={() => handleDelete(cert.id, cert.title)}
                             >
                                 <Trash2 className="w-4 h-4 mr-2" /> Delete
                             </DropdownMenuItem>
@@ -136,6 +138,7 @@ const AdminCertificates = () => {
           </div>
         )}
       </div>
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Certificate?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { CommonService } from '@/shared/services/common-service';
 import { Hackathon } from '@/types';
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ const AdminHackathons = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentHackathon, setCurrentHackathon] = useState<Hackathon | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     fetchHackathons();
@@ -60,15 +62,15 @@ const AdminHackathons = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this hackathon?')) return;
+  const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteHackathon(id);
+      await CommonService.deleteHackathon(deleteTarget.id);
       toast.success('Hackathon deleted successfully');
       fetchHackathons();
-    } catch (error) {
-      toast.error('Failed to delete hackathon');
-    }
+    } catch { toast.error('Failed to delete hackathon'); }
+    finally { setDeleteTarget(null); }
   };
 
   const handleSubmit = async (data: any) => {
@@ -138,7 +140,7 @@ const AdminHackathons = () => {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(hack)} className="hover:bg-white/10">
                       <Edit2 className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(hack.id)} className="hover:bg-red-500/10 text-red-400">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(hack.id, hack.name)} className="hover:bg-red-500/10 text-red-400">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -154,6 +156,7 @@ const AdminHackathons = () => {
         )}
       </div>
 
+      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Hackathon?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

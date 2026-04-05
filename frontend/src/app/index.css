@@ -542,4 +542,32 @@
   html {
     transition: background-color 0.5s ease, color 0.5s ease;
   }
+
+  /* ADMIN PANEL: DM Sans as the base font for all admin routes */
+  .admin-panel,
+  .admin-panel * {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Admin TipTap editor content styling */
+  .admin-panel .ProseMirror h2 {
+    @apply text-xl font-black text-white mt-6 mb-2;
+  }
+  .admin-panel .ProseMirror h3 {
+    @apply text-lg font-bold text-white mt-5 mb-2;
+  }
+  .admin-panel .ProseMirror p {
+    @apply mb-3 text-white/80 leading-relaxed;
+  }
+  .admin-panel .ProseMirror ul,
+  .admin-panel .ProseMirror ol {
+    @apply mb-3 pl-5 text-white/80;
+  }
+  .admin-panel .ProseMirror hr {
+    @apply border-white/10 my-5;
+  }
+  .admin-panel .ProseMirror .is-editor-empty::before {
+    content: attr(data-placeholder);
+    @apply text-white/25 pointer-events-none float-left h-0;
+  }
 }

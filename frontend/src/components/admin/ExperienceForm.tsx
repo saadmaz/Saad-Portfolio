@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -42,6 +42,7 @@ const ExperienceForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [newTech, setNewTech] = useState('');
   const isEditMode = !!id && id !== 'new';
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ExperienceFormValues>({
@@ -74,8 +75,8 @@ const ExperienceForm = () => {
           location: item.location,
           workMode: item.workMode,
           description: item.description,
-          responsibilities: item.responsibilities,
-          technologies: item.technologies,
+          responsibilities: item.responsibilities ?? [''],
+          technologies: item.technologies ?? [],
         });
       }
     } catch (error) {
@@ -265,16 +266,38 @@ const ExperienceForm = () => {
                         <button onClick={() => setValue('technologies', technologies.filter((_, idx) => idx !== i))}><Trash2 className="w-2 h-2" /></button>
                     </span>
                   ))}
-                  <Button 
-                    variant="link" 
-                    className="text-accent text-xs p-0 h-auto"
-                    onClick={() => {
-                        const t = prompt('Tech name?');
-                        if(t) setValue('technologies', [...technologies, t]);
-                    }}
-                  >
-                    + Add Tech
-                  </Button>
+                  <div className="flex gap-1.5 w-full mt-1">
+                    <input
+                      value={newTech}
+                      onChange={(e) => setNewTech(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const t = newTech.trim();
+                          if (t && !technologies.includes(t)) {
+                            setValue('technologies', [...technologies, t]);
+                            setNewTech('');
+                          }
+                        }
+                      }}
+                      placeholder="e.g. React, Node.js…"
+                      className="flex-1 bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none min-w-0"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-white/50 hover:text-white rounded-lg h-8 px-2.5 text-xs font-bold flex-shrink-0"
+                      onClick={() => {
+                        const t = newTech.trim();
+                        if (t && !technologies.includes(t)) {
+                          setValue('technologies', [...technologies, t]);
+                          setNewTech('');
+                        }
+                      }}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
                </div>
             </CardContent>
           </Card>
