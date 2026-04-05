@@ -23,6 +23,7 @@ import {
   Plus,
   Trash2,
   Image as ImageIcon,
+  Images,
   Globe,
   Github,
   Layout,
@@ -33,6 +34,7 @@ import {
 import { ProjectService } from '@/services/project-service';
 import { toast } from "sonner";
 import ImageUpload from './ImageUpload';
+import MultiImageUpload from './MultiImageUpload';
 import { cn } from "@/shared/lib/utils";
 
 // ── Schema ────────────────────────────────────────────────────────
@@ -41,6 +43,7 @@ const projectSchema = z.object({
   slug: z.string().min(2, 'Slug is required'),
   tagline: z.string().min(5, 'Tagline is required'),
   heroImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  screenshots: z.array(z.string()).optional().default([]),
   overview: z.string().min(20, 'Overview must be at least 20 characters'),
   status: z.string().default('Completed'),
   techStack: z.array(z.string()).min(1, 'Add at least one technology'),
@@ -73,6 +76,7 @@ const ProjectForm = () => {
     resolver: zodResolver(projectSchema),
     defaultValues: {
       techStack: [],
+      screenshots: [],
       status: 'Completed',
       featured: false,
     },
@@ -80,6 +84,7 @@ const ProjectForm = () => {
 
   // ── Safe array watches ─────────────────────────────────────────
   const techStack = watch('techStack') ?? [];
+  const screenshots = watch('screenshots') ?? [];
   const titleValue = watch('title');
   const slugValue = watch('slug');
 
@@ -100,6 +105,7 @@ const ProjectForm = () => {
           slug: project.slug,
           tagline: project.tagline,
           heroImage: project.heroImage || '',
+          screenshots: project.screenshots ?? [],
           overview: project.overview,
           status: project.status || 'Completed',
           techStack: project.techStack ?? [],       // ← safe fallback
@@ -319,6 +325,31 @@ const ProjectForm = () => {
                 label="Project Hero Image"
               />
               {errors.heroImage && <p className="text-xs text-red-400 mt-2">{errors.heroImage.message}</p>}
+            </CardContent>
+          </Card>
+
+          {/* Screenshots / Gallery */}
+          <Card className="bg-white/[0.03] border-white/[0.07] overflow-hidden">
+            <CardHeader className="border-b border-white/[0.06] py-3 px-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Images className="w-3.5 h-3.5 text-accent" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Screenshots / Gallery</span>
+                </div>
+                {screenshots.length > 0 && (
+                  <span className="text-[9px] font-black uppercase tracking-wider bg-accent/15 text-accent px-2 py-0.5 rounded-full border border-accent/20">
+                    {screenshots.length}
+                  </span>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              <MultiImageUpload
+                value={screenshots}
+                onChange={(urls) => setValue('screenshots', urls)}
+                maxImages={10}
+                folder="projects/screenshots"
+              />
             </CardContent>
           </Card>
 
