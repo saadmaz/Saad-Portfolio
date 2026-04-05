@@ -1,38 +1,39 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper to check if user is admin (using Firebase Auth)
+
     function isAdmin() {
       return request.auth != null;
     }
 
-    // Public Collections: Read-only for all, Write for Admin
-    match /projects/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /blogs/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /experience/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /skills/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /certificates/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /awards/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /languages/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /hackathons/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /testimonials/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /volunteer/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /education/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /events/{docId} { allow read: if true; allow write: if isAdmin(); }
-    match /newsletters/{docId} { allow read: if true; allow write: if isAdmin(); }
+    // Public portfolio data — anyone reads, admin writes
+    match /projects/{id}      { allow read: if true; allow write: if isAdmin(); }
+    match /blogs/{id}         { allow read: if true; allow write: if isAdmin(); }
+    match /experience/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /skills/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /certificates/{id}  { allow read: if true; allow write: if isAdmin(); }
+    match /awards/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /newsletters/{id}   { allow read: if true; allow write: if isAdmin(); }
+    match /languages/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /hackathons/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /testimonials/{id}  { allow read: if true; allow write: if isAdmin(); }
+    match /education/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /volunteer/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /profile/{id}       { allow read: if true; allow write: if isAdmin(); }
 
-    // Contact Messages: Public can CREATE, only Admin can READ/UPDATE/DELETE
-    match /contact-messages/{docId} {
+    // Contact form — anyone can submit, only admin can read/delete
+    match /contact_messages/{id} {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
-    // Activity Logs: Admin only
-    match /activity-logs/{docId} {
-      allow read, write: if isAdmin();
-    }
-    
-    // Default: Deny all
+    // Admin-only
+    match /activity_logs/{id}  { allow read, write: if isAdmin(); }
+    match /activity-logs/{id}  { allow read, write: if isAdmin(); }
+
+    // Deny everything else
     match /{document=**} {
       allow read, write: if false;
     }
