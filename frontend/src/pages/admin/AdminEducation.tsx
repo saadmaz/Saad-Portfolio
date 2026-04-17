@@ -21,6 +21,8 @@ const educationSchema = z.object({
   description: z.string().optional(),
 });
 
+type EducationFormData = z.infer<typeof educationSchema>;
+
 const educationFields = [
   { name: 'degree', label: 'Degree / Certificate', type: 'text', placeholder: 'e.g. Bachelor of Science' },
   { name: 'fieldOfStudy', label: 'Field of Study', type: 'text', placeholder: 'e.g. Computer Science' },
@@ -75,7 +77,7 @@ const AdminEducation = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: EducationFormData) => {
     try {
       if (currentEd) {
         await CommonService.updateEducation(currentEd.id, data);

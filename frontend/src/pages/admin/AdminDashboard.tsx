@@ -63,7 +63,17 @@ const Sparkline = ({ data, color }: { data: { v: number }[]; color: string }) =>
 );
 
 // ── Stat card config ──────────────────────────────────────────────
-const makeStats = () => [
+interface StatCard {
+  key: string;
+  label: string;
+  value: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  color: string;
+  path: string;
+  alert?: boolean;
+}
+
+const makeStats = (): StatCard[] => [
   { key: 'projects',     label: 'Projects',       value: '-', icon: Code,       color: '#3b82f6', path: '/admin/projects' },
   { key: 'blogs',        label: 'Blog Posts',      value: '-', icon: BookOpen,   color: '#a855f7', path: '/admin/blogs' },
   { key: 'experience',   label: 'Experience',      value: '-', icon: Briefcase,  color: '#22d3ee', path: '/admin/experience' },
@@ -84,7 +94,7 @@ const getActionColor = (action: string) => {
 };
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState(makeStats());
+  const [stats, setStats] = useState<StatCard[]>(makeStats());
   const [recentLogs, setRecentLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -114,7 +124,7 @@ const AdminDashboard = () => {
           { key: 'awards',       label: 'Awards',          value: String(awards.length),       icon: Award,         color: '#f59e0b', path: '/admin/awards' },
           { key: 'testimonials', label: 'Testimonials',    value: String(testimonials.length), icon: MessageSquare, color: '#ec4899', path: '/admin/testimonials' },
           { key: 'messages',     label: 'Unread Messages', value: String(unread),              icon: Mail,          color: '#ef4444', path: '/admin/messages', alert: unread > 0 },
-        ] as typeof stats);
+        ]);
 
         setRecentLogs(logs.slice(0, 10));
       } catch (error) {
@@ -150,12 +160,12 @@ const AdminDashboard = () => {
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
         {stats.map((stat, i) => (
           <Link key={stat.key} to={stat.path}>
-            <Card className={`bg-white/[0.03] border-white/[0.07] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300 group relative overflow-hidden h-full cursor-pointer ${(stat as any).alert ? 'border-red-500/30 hover:border-red-500/50' : ''}`}>
+            <Card className={`bg-white/[0.03] border-white/[0.07] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300 group relative overflow-hidden h-full cursor-pointer ${stat.alert ? 'border-red-500/30 hover:border-red-500/50' : ''}`}>
               <CardHeader className="flex flex-row items-start justify-between pb-1 pt-4 px-4 space-y-0">
                 <div className="p-2 rounded-xl" style={{ backgroundColor: stat.color + '15' }}>
                   <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
                 </div>
-                {(stat as any).alert && (
+                {stat.alert && (
                   <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/20">
                     New
                   </span>

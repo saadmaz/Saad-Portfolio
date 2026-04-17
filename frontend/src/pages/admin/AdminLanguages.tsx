@@ -16,6 +16,8 @@ const languageSchema = z.object({
   percentage: z.number().min(0).max(100, 'Percentage must be between 0 and 100'),
 });
 
+type LanguageFormData = z.infer<typeof languageSchema>;
+
 const languageFields = [
   { name: 'name', label: 'Language Name', type: 'text', placeholder: 'e.g. English' },
   { 
@@ -77,7 +79,7 @@ const AdminLanguages = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: LanguageFormData) => {
     try {
       if (currentLanguage) {
         await CommonService.updateLanguage(currentLanguage.id, data);

@@ -19,6 +19,8 @@ const volunteerSchema = z.object({
   description: z.string().optional(),
 });
 
+type VolunteerFormData = z.infer<typeof volunteerSchema>;
+
 const volunteerFields = [
   { name: 'role', label: 'Role / Position', type: 'text', placeholder: 'e.g. Volunteer Teacher' },
   { name: 'organization', label: 'Organization', type: 'text', placeholder: 'e.g. Red Cross' },
@@ -71,7 +73,7 @@ const AdminVolunteer = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: VolunteerFormData) => {
     try {
       if (currentExp) {
         await CommonService.updateVolunteerExperience(currentExp.id, data);

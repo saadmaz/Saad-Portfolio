@@ -20,6 +20,8 @@ const hackathonSchema = z.object({
   link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 });
 
+type HackathonFormData = z.infer<typeof hackathonSchema>;
+
 const hackathonFields = [
   { name: 'name', label: 'Hackathon Name', type: 'text', placeholder: 'e.g. Hack The North' },
   { name: 'organizer', label: 'Organizer', type: 'text', placeholder: 'e.g. University of Waterloo' },
@@ -74,7 +76,7 @@ const AdminHackathons = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: HackathonFormData) => {
     try {
       if (currentHackathon) {
         await CommonService.updateHackathon(currentHackathon.id, data);

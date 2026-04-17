@@ -18,6 +18,8 @@ const testimonialSchema = z.object({
   avatar: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 });
 
+type TestimonialFormData = z.infer<typeof testimonialSchema>;
+
 const testimonialFields = [
   { name: 'name', label: 'Author Name', type: 'text', placeholder: 'e.g. John Doe' },
   { name: 'position', label: 'Position', type: 'text', placeholder: 'e.g. Senior Software Engineer' },
@@ -70,7 +72,7 @@ const AdminTestimonials = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: TestimonialFormData) => {
     try {
       if (currentTestimonial) {
         await CommonService.updateTestimonial(currentTestimonial.id, data);

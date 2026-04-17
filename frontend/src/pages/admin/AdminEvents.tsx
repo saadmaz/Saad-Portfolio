@@ -22,6 +22,8 @@ const eventSchema = z.object({
   image: z.string().optional(),
 });
 
+type EventFormData = z.infer<typeof eventSchema>;
+
 const eventFields = [
   { name: 'title', label: 'Event Title', type: 'text', placeholder: 'e.g. Google I/O 2024' },
   { name: 'organizer', label: 'Organizer', type: 'text', placeholder: 'e.g. Google' },
@@ -78,7 +80,7 @@ const AdminEvents = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: EventFormData) => {
     try {
       if (currentEvent) {
         await CommonService.updateEvent(currentEvent.id, data);

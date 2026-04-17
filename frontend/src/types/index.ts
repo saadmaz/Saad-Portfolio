@@ -188,6 +188,14 @@ export interface Education {
   description?: string;
 }
 
+export type FirestoreLikeTimestamp =
+  | { toDate: () => Date }
+  | Date
+  | string
+  | number
+  | null
+  | undefined;
+
 export interface ActivityLog {
   id: string;
   action: 'CREATE' | 'UPDATE' | 'DELETE';
@@ -196,7 +204,7 @@ export interface ActivityLog {
   adminId: string;
   adminEmail: string;
   details?: string;
-  timestamp: any; // Firestore Timestamp
+  timestamp: FirestoreLikeTimestamp;
 }
 
 export interface Message {
@@ -205,7 +213,7 @@ export interface Message {
   email: string;
   subject?: string;
   message: string;
-  created_at: any;
+  created_at: FirestoreLikeTimestamp;
   read: boolean;
 }
 

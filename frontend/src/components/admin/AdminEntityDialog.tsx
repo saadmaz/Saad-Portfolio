@@ -38,14 +38,16 @@ interface FieldConfig {
   required?: boolean;
 }
 
+type EntityFormValues = Record<string, unknown>;
+
 interface AdminEntityDialogProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   fields: readonly FieldConfig[];
-  schema: z.ZodObject<any>;
-  defaultValues?: any;
-  onSubmit: (data: any) => Promise<void>;
+  schema: z.ZodType<EntityFormValues>;
+  defaultValues?: EntityFormValues;
+  onSubmit: (data: EntityFormValues) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -59,7 +61,7 @@ const AdminEntityDialog = ({
   onSubmit,
   isLoading
 }: AdminEntityDialogProps) => {
-  const form = useForm({
+  const form = useForm<EntityFormValues>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues || {},
   });
@@ -71,7 +73,7 @@ const AdminEntityDialog = ({
     }
   }, [isOpen, defaultValues, form]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: EntityFormValues) => {
     await onSubmit(data);
     onClose();
   };

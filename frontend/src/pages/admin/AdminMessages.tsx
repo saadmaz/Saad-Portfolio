@@ -52,7 +52,7 @@ const AdminMessages = () => {
     msg.message.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatDate = (date: any) => {
+  const formatDate = (date: Message['created_at']) => {
     if (!date) return 'Unknown';
     try {
       // Handle Firestore Timestamp
@@ -62,6 +62,8 @@ const AdminMessages = () => {
       return 'Invalid Date';
     }
   };
+
+  const errorMessage = error instanceof Error ? error.message : 'Failed to fetch messages';
 
   if (isLoading) {
     return (
@@ -109,7 +111,7 @@ const AdminMessages = () => {
         <div className="flex flex-col items-center justify-center p-12 bg-red-500/5 rounded-lg border border-red-500/10 text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mb-4 opacity-50" />
           <h3 className="text-lg font-black mb-2" style={{ fontFamily: 'DM Sans' }}>Error Loading Messages</h3>
-          <p className="text-white/40 text-sm">{(error as any).message || 'Failed to fetch messages'}</p>
+          <p className="text-white/40 text-sm">{errorMessage}</p>
         </div>
       ) : filteredMessages.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-20 bg-white/[0.02] rounded-lg border border-dashed border-white/10 text-center">

@@ -36,8 +36,20 @@ import { cn } from "@/shared/lib/utils";
 import { auth } from '@/lib/firebase';
 import { CommonService } from '@/shared/services/common-service';
 
+interface NavItem {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  path: string;
+  badge?: boolean;
+}
+
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
 // ─── Nav structure ────────────────────────────────────────────────
-const navGroups = [
+const navGroups: NavGroup[] = [
   {
     label: 'Overview',
     items: [
@@ -175,7 +187,7 @@ const AdminLayout = () => {
               )}
               {group.items.map((item) => {
                 const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-                const hasBadge = (item as any).badge && unreadCount > 0;
+                const hasBadge = Boolean(item.badge) && unreadCount > 0;
 
                 const linkEl = (
                   <Link

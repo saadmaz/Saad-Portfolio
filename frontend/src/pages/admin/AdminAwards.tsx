@@ -18,6 +18,8 @@ const awardSchema = z.object({
   link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 });
 
+type AwardFormData = z.infer<typeof awardSchema>;
+
 const awardFields = [
   { name: 'title', label: 'Award Title', type: 'text', placeholder: 'e.g. Dean\'s List' },
   { name: 'issuer', label: 'Issuer / Organization', type: 'text', placeholder: 'e.g. University of Toronto' },
@@ -71,7 +73,7 @@ const AdminAwards = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: AwardFormData) => {
     try {
       if (currentAward) {
         await CommonService.updateAward(currentAward.id, data);

@@ -19,6 +19,8 @@ const newsletterSchema = z.object({
   image: z.string().optional(),
 });
 
+type NewsletterFormData = z.infer<typeof newsletterSchema>;
+
 const newsletterFields = [
   { name: 'title', label: 'Newsletter Title', type: 'text', placeholder: 'e.g. Founder Journey #1' },
   { name: 'date', label: 'Publication Date', type: 'text', placeholder: 'e.g. March 2024' },
@@ -83,7 +85,7 @@ const AdminNewsletters = () => {
     finally { setDeleteTarget(null); }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: NewsletterFormData) => {
     try {
       if (currentNewsletter) {
         await CommonService.updateNewsletter(currentNewsletter.id, data);

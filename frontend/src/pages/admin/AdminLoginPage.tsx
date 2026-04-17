@@ -9,6 +9,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Lock, Rocket, ShieldCheck } from 'lucide-react';
 import { toast } from "sonner";
 
+type AuthErrorLike = {
+  code?: string;
+  message?: string;
+};
+
 const AdminLoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,10 +36,11 @@ const AdminLoginPage = () => {
 
       toast.success('Authenticated successfully');
       navigate('/admin/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const authError = error as AuthErrorLike;
       console.error('Login error:', error);
-      toast.error(`Auth Error: ${error.code || 'unknown'}`, {
-        description: error.message || 'Check console for details',
+      toast.error(`Auth Error: ${authError.code || 'unknown'}`, {
+        description: authError.message || 'Check console for details',
         duration: 8000
       });
     } finally {

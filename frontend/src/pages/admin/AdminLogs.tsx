@@ -53,7 +53,7 @@ const AdminLogs = () => {
     }
   };
 
-  const getTimestamp = (timestamp: any) => {
+  const getTimestamp = (timestamp: ActivityLog['timestamp']) => {
     if (!timestamp) return 'Just now';
     try {
       const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
