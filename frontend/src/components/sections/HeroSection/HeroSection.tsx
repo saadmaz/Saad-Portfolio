@@ -120,10 +120,10 @@ export function HeroSection() {
                 Currently building Tank Sudda &amp; Stopwash
               </span>
               {/* Open to Work badge */}
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-xs md:text-sm font-semibold border border-emerald-500/25">
+              {/* <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-xs md:text-sm font-semibold border border-emerald-500/25">
                 <Briefcase className="w-3.5 h-3.5" />
                 Open to Opportunities
-              </span>
+              </span> */}
             </motion.div>
 
             {/* Heading: "Hi, I'm" fades, then name tracks in letter-by-letter */}
