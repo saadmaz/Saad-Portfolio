@@ -149,14 +149,13 @@ const EventDetailPage = () => {
   const event = firestoreEvent
     ? {
         ...firestoreEvent,
-        role: (firestoreEvent as any).role ?? firestoreEvent.type ?? '',
+        role: firestoreEvent.role ?? firestoreEvent.type ?? '',
         fullDescription: firestoreEvent.description,
-        // merge images[] and legacy image field
         gallery: firestoreEvent.images && firestoreEvent.images.length > 0
           ? firestoreEvent.images
           : firestoreEvent.image ? [firestoreEvent.image] : [],
-        highlights: (firestoreEvent as any).highlights ?? [],
-        attendees: (firestoreEvent as any).attendees,
+        highlights: firestoreEvent.highlights ?? [],
+        attendees: firestoreEvent.attendees,
       }
     : legacyEvent;
 

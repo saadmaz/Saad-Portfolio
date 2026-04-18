@@ -247,11 +247,14 @@ export interface Event {
   date: string;
   location: string;
   description: string;
+  role?: string;         // Your participation role: Speaker, Host, Organizer, etc.
+  attendees?: string;    // e.g. "500+", "2,000+"
+  highlights?: string[];
   image?: string;
   images?: string[];
   link?: string;
   tags?: string[];
-  type: string;
+  type: string;          // Event category: Conference, Workshop, Summit, etc.
 }
 
 export interface Newsletter {

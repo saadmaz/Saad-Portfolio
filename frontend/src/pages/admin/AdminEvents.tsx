@@ -10,23 +10,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-import { Plus, Search, Calendar, MapPin, Edit2, Trash2, Globe, Loader2, Images } from 'lucide-react';
+import { Plus, Search, Calendar, MapPin, Edit2, Trash2, Globe, Loader2, Images, X } from 'lucide-react';
 import { toast } from "sonner";
 import BackButton from '@/components/admin/BackButton';
 import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
+// ─── Schema ───────────────────────────────────────────────────────────────────
 const eventSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   organizer: z.string().min(1, 'Organizer is required'),
+  role: z.string().min(1, 'Your role is required'),
+  type: z.string().min(1, 'Event type is required'),
   date: z.string().min(1, 'Date is required'),
   location: z.string().min(1, 'Location is required'),
-  type: z.string().min(1, 'Type is required'),
+  attendees: z.string().optional(),
   description: z.string().min(1, 'Description is required'),
+  highlights: z.array(z.string()).optional(),
   link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   images: z.array(z.string()).min(1, 'At least one image is required'),
 });
 
 type EventFormData = z.infer<typeof eventSchema>;
+
+const ROLE_OPTIONS = ['Speaker', 'Host', 'Compere', 'Organizer', 'Panelist', 'Attendee'];
+const TYPE_OPTIONS = ['Conference', 'Summit', 'Workshop', 'Hackathon', 'Networking', 'Seminar', 'Webinar', 'Other'];
+
+// shared input class helper
+const inp = 'bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none w-full';
+const sel = 'bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-accent/40 outline-none w-full';
+const lbl = 'text-[10px] font-black uppercase tracking-widest text-white/40';
 
 // ─── Event Form Dialog ────────────────────────────────────────────────────────
 interface EventFormDialogProps {
@@ -47,16 +59,29 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
     formState: { errors, isSubmitting },
   } = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
-    defaultValues: { images: [], ...defaultValues },
+    defaultValues: { images: [], highlights: [], ...defaultValues },
   });
 
   const images = watch('images') ?? [];
+  const highlights = watch('highlights') ?? [];
+  const [newHighlight, setNewHighlight] = useState('');
 
   React.useEffect(() => {
-    if (isOpen) reset({ images: [], ...defaultValues });
+    if (isOpen) {
+      reset({ images: [], highlights: [], ...defaultValues });
+      setNewHighlight('');
+    }
   }, [isOpen, defaultValues, reset]);
 
-  const field = (name: string) => `bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none w-full ${name}`;
+  const addHighlight = () => {
+    const val = newHighlight.trim();
+    if (!val) return;
+    setValue('highlights', [...highlights, val]);
+    setNewHighlight('');
+  };
+
+  const removeHighlight = (i: number) =>
+    setValue('highlights', highlights.filter((_, idx) => idx !== i));
 
   const handleFormSubmit = async (data: EventFormData) => {
     await onSubmit(data);
@@ -65,15 +90,16 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[640px] bg-[#0A0A0B] border-white/10 text-white max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[680px] bg-[#0A0A0B] border-white/10 text-white max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-black" style={{ fontFamily: 'DM Sans' }}>{title}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5 py-2">
-          {/* Images — multi-upload, required */}
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 py-2">
+
+          {/* ── IMAGES ── */}
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
+            <label className={`${lbl} flex items-center gap-1.5`}>
               <Images className="w-3 h-3" /> Event Photos (16:9) <span className="text-red-400">*</span>
             </label>
             <MultiImageUpload
@@ -87,48 +113,110 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
             )}
           </div>
 
-          {/* Text fields grid */}
+          {/* ── TITLE ── */}
+          <div className="space-y-1">
+            <label className={lbl}>Event Title *</label>
+            <input {...register('title')} placeholder="e.g. Google I/O 2024" className={inp} />
+            {errors.title && <p className="text-[11px] text-red-400">{errors.title.message}</p>}
+          </div>
+
+          {/* ── ROLE + TYPE ── */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2 space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Event Title *</label>
-              <input {...register('title')} placeholder="e.g. Google I/O 2024" className={field('title')} />
-              {errors.title && <p className="text-[11px] text-red-400">{errors.title.message}</p>}
-            </div>
-
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Organizer *</label>
-              <input {...register('organizer')} placeholder="e.g. Google" className={field('organizer')} />
-              {errors.organizer && <p className="text-[11px] text-red-400">{errors.organizer.message}</p>}
+              <label className={lbl}>Your Role * <span className="text-white/20 normal-case font-normal">(how you participated)</span></label>
+              <select {...register('role')} className={sel}>
+                <option value="">Select role…</option>
+                {ROLE_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
+              </select>
+              {errors.role && <p className="text-[11px] text-red-400">{errors.role.message}</p>}
             </div>
-
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Type *</label>
-              <input {...register('type')} placeholder="e.g. Workshop, Conference" className={field('type')} />
+              <label className={lbl}>Event Type * <span className="text-white/20 normal-case font-normal">(category)</span></label>
+              <select {...register('type')} className={sel}>
+                <option value="">Select type…</option>
+                {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
               {errors.type && <p className="text-[11px] text-red-400">{errors.type.message}</p>}
             </div>
+          </div>
 
+          {/* ── ORGANIZER + ATTENDEES ── */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Date *</label>
-              <input {...register('date')} placeholder="e.g. May 14, 2024" className={field('date')} />
+              <label className={lbl}>Organizer *</label>
+              <input {...register('organizer')} placeholder="e.g. Google" className={inp} />
+              {errors.organizer && <p className="text-[11px] text-red-400">{errors.organizer.message}</p>}
+            </div>
+            <div className="space-y-1">
+              <label className={lbl}>Attendees <span className="text-white/20 normal-case font-normal">(optional)</span></label>
+              <input {...register('attendees')} placeholder='e.g. 500+, 2,000+' className={inp} />
+            </div>
+          </div>
+
+          {/* ── DATE + LOCATION ── */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className={lbl}>Date *</label>
+              <input {...register('date')} placeholder="e.g. May 14, 2024" className={inp} />
               {errors.date && <p className="text-[11px] text-red-400">{errors.date.message}</p>}
             </div>
-
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Location *</label>
-              <input {...register('location')} placeholder="e.g. Mountain View, CA" className={field('location')} />
+              <label className={lbl}>Location *</label>
+              <input {...register('location')} placeholder="e.g. Mountain View, CA or Online" className={inp} />
               {errors.location && <p className="text-[11px] text-red-400">{errors.location.message}</p>}
             </div>
           </div>
 
+          {/* ── DESCRIPTION ── */}
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Description *</label>
-            <textarea {...register('description')} rows={3} placeholder="Details about the event..." className={`${field('description')} resize-none`} />
+            <label className={lbl}>Description / About This Event *</label>
+            <textarea
+              {...register('description')}
+              rows={4}
+              placeholder="Full description shown on the event detail page…"
+              className={`${inp} resize-none`}
+            />
             {errors.description && <p className="text-[11px] text-red-400">{errors.description.message}</p>}
           </div>
 
+          {/* ── HIGHLIGHTS ── */}
+          <div className="space-y-2">
+            <label className={lbl}>Highlights <span className="text-white/20 normal-case font-normal">(bullet points on detail page)</span></label>
+            {highlights.length > 0 && (
+              <ul className="space-y-1.5">
+                {highlights.map((h, i) => (
+                  <li key={i} className="flex items-center gap-2 bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm text-white/80">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                    <span className="flex-1">{h}</span>
+                    <button type="button" onClick={() => removeHighlight(i)} className="text-white/30 hover:text-red-400 transition-colors">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="flex gap-2">
+              <input
+                value={newHighlight}
+                onChange={(e) => setNewHighlight(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addHighlight(); } }}
+                placeholder="e.g. 45-minute keynote presentation"
+                className={inp}
+              />
+              <button
+                type="button"
+                onClick={addHighlight}
+                className="shrink-0 h-[38px] px-3 rounded-lg bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* ── LINK ── */}
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Registration Link (Optional)</label>
-            <input {...register('link')} placeholder="https://..." className={field('link')} />
+            <label className={lbl}>Event Link <span className="text-white/20 normal-case font-normal">(optional)</span></label>
+            <input {...register('link')} placeholder="https://..." className={inp} />
             {errors.link && <p className="text-[11px] text-red-400">{errors.link.message}</p>}
           </div>
 
@@ -186,7 +274,6 @@ const AdminEvents = () => {
 
   const handleSubmit = async (data: EventFormData) => {
     try {
-      // Persist images[] and keep legacy image field in sync with first image
       const payload = { ...data, image: data.images[0] ?? '' };
       if (currentEvent) {
         await CommonService.updateEvent(currentEvent.id, payload);
@@ -202,19 +289,21 @@ const AdminEvents = () => {
     }
   };
 
-  // Build default values for the form — normalise legacy single-image events
   const getDefaultValues = (ev: Event | null): Partial<EventFormData> => {
-    if (!ev) return { images: [] };
+    if (!ev) return { images: [], highlights: [] };
     const imgs = ev.images && ev.images.length > 0
       ? ev.images
       : ev.image ? [ev.image] : [];
     return {
       title: ev.title,
       organizer: ev.organizer,
+      role: ev.role ?? '',
+      type: ev.type ?? '',
       date: ev.date,
       location: ev.location,
-      type: ev.type,
+      attendees: ev.attendees ?? '',
       description: ev.description,
+      highlights: ev.highlights ?? [],
       link: ev.link ?? '',
       images: imgs,
     };
@@ -225,7 +314,6 @@ const AdminEvents = () => {
     e.organizer?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Helper: pick first available image for thumbnail
   const thumb = (ev: Event) =>
     (ev.images && ev.images.length > 0) ? ev.images[0] : (ev.image ?? null);
 
@@ -279,11 +367,7 @@ const AdminEvents = () => {
                     {/* Thumbnail */}
                     {thumb(event) ? (
                       <div className="w-24 flex-shrink-0 overflow-hidden">
-                        <img
-                          src={thumb(event)!}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={thumb(event)!} alt={event.title} className="w-full h-full object-cover" />
                       </div>
                     ) : (
                       <div className="w-16 flex-shrink-0 flex items-center justify-center bg-accent/5">
@@ -293,10 +377,15 @@ const AdminEvents = () => {
 
                     <div className="flex-1 p-5 flex items-center gap-5 min-w-0">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="font-black text-white text-base group-hover:text-accent transition-colors truncate" style={{ fontFamily: 'DM Sans' }}>
                             {event.title}
                           </h3>
+                          {event.role && (
+                            <span className="shrink-0 text-[10px] font-bold text-accent bg-accent/10 border border-accent/20 px-2 py-0.5 rounded-full">
+                              {event.role}
+                            </span>
+                          )}
                           {imgCount > 0 && (
                             <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-white/30 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
                               <Images className="w-3 h-3" />{imgCount}
@@ -311,6 +400,9 @@ const AdminEvents = () => {
                           <span className="flex items-center gap-1.5">
                             <MapPin className="w-3.5 h-3.5 text-accent/60" /> {event.location}
                           </span>
+                          {event.attendees && (
+                            <span className="text-white/30">{event.attendees} attendees</span>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 ml-2 shrink-0">
