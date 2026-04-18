@@ -127,7 +127,7 @@ const AdminMessages = () => {
               className={`group relative bg-white/[0.02] border ${msg.read ? 'border-white/5' : 'border-accent/40 bg-accent/[0.03]'} rounded-lg p-6 transition-all duration-300 hover:border-accent/30 hover:bg-white/[0.04]`}
             >
               {!msg.read && (
-                <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(45,212,191,0.5)]" />
+                <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(196,168,106,0.45)]" />
               )}
 
               <div className="flex flex-col md:flex-row gap-6">

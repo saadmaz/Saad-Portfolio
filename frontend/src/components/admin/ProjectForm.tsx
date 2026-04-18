@@ -272,7 +272,7 @@ const ProjectForm = () => {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}
-            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl h-10 px-6 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
+            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl h-10 px-6 shadow-[0_0_20px_rgba(196,168,106,0.28)]">
             <Save className="w-3.5 h-3.5 mr-2" />
             {isLoading ? 'Saving…' : 'Save Project'}
           </Button>
@@ -325,7 +325,7 @@ const ProjectForm = () => {
               <div>
                 <label className={LABEL_CLS}>Type</label>
                 <select {...register('type')}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
                   <option value="">Select…</option>
                   <option>Web Application</option>
                   <option>Mobile App</option>
@@ -342,7 +342,7 @@ const ProjectForm = () => {
               <div>
                 <label className={LABEL_CLS}>Stage</label>
                 <select {...register('stage')}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
                   <option value="">Select…</option>
                   <option>Production</option>
                   <option>Development</option>
@@ -484,7 +484,7 @@ const ProjectForm = () => {
               <div>
                 <label className={LABEL_CLS}>Status</label>
                 <select {...register('status')}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
                   <option>Completed</option>
                   <option>In Progress</option>
                   <option>Exploration</option>

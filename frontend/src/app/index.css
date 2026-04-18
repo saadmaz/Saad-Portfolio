@@ -543,36 +543,90 @@
     transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* ─────────────────────────────────────────────────────────────────
-     ADMIN PANEL — EDITORIAL DEEP NAVY THEME
-     Typography: Playfair Display (headings) + DM Sans (body/UI)
-     Palette: Deep navy backgrounds · Warm ivory text · Editorial gold
-  ───────────────────────────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════════
+     ADMIN PANEL — EDITORIAL DEEP NAVY DESIGN SYSTEM
+     ───────────────────────────────────────────────────────────────────
+     Overriding ALL shadcn/Tailwind CSS variables inside .admin-panel
+     so every component (Card, Button, Input, Badge, Dropdown…) inherits
+     the deep-navy + editorial-gold palette without touching each page.
 
-  /* Admin-scoped CSS custom properties */
+     Typography:  Playfair Display (headings) · DM Sans (body / UI)
+     Palette:     Deep navy bg · Warm ivory text · #C4A86A editorial gold
+  ═══════════════════════════════════════════════════════════════════ */
+
   .admin-panel {
-    --admin-bg:             #080C18;
-    --admin-sidebar:        #0C1121;
-    --admin-surface:        #101726;
-    --admin-surface-hover:  #151F2E;
-    --admin-border:         rgba(255, 255, 255, 0.055);
-    --admin-border-strong:  rgba(255, 255, 255, 0.105);
-    --admin-ivory:          #EDE9E3;
-    --admin-ivory-60:       rgba(237, 233, 227, 0.60);
-    --admin-ivory-40:       rgba(237, 233, 227, 0.40);
-    --admin-ivory-25:       rgba(237, 233, 227, 0.25);
-    --admin-gold:           #C4A86A;
-    --admin-gold-bg:        rgba(196, 168, 106, 0.08);
-    --admin-gold-border:    rgba(196, 168, 106, 0.20);
+    /* ── Backgrounds ──────────────────────────────────────────── */
+    --background:               228 52%  6%;   /* #070B17 main bg          */
+    --foreground:                36 22% 91%;   /* #EDE9E3 warm ivory        */
+
+    --card:                     222 45% 12%;   /* #111A2B surface           */
+    --card-foreground:           36 22% 91%;
+
+    --popover:                  222 45% 12%;
+    --popover-foreground:        36 22% 91%;
+
+    /* ── Text roles ───────────────────────────────────────────── */
+    --primary:                   36 22% 91%;   /* ivory = primary text      */
+    --primary-foreground:       228 52%  6%;
+
+    --secondary:                220 40% 16%;   /* raised surface            */
+    --secondary-foreground:      36 22% 91%;
+
+    --muted:                    220 40% 16%;
+    --muted-foreground:          36  8% 54%;   /* warm muted gray           */
+
+    /* ── Editorial Gold — replaces every teal/accent reference ── */
+    --accent:                    38 43% 59%;   /* #C4A86A                   */
+    --accent-foreground:         30 20% 10%;   /* dark text on gold bg      */
+    --accent-glow:               38 43% 59%;
+    --accent-bright:             38 52% 68%;
+
+    /* ── Borders / inputs / focus ring ───────────────────────── */
+    --border:                   222 32% 17%;
+    --input:                    222 32% 17%;
+    --ring:                      38 43% 59%;   /* gold focus ring           */
+    --radius:                   0.5rem;
+
+    /* ── Destructive (unchanged) ─────────────────────────────── */
+    --destructive:                0 62% 50%;
+    --destructive-foreground:    36 22% 91%;
+
+    /* ── Sidebar tokens ──────────────────────────────────────── */
+    --sidebar-background:       225 48%  9%;
+    --sidebar-foreground:        36 22% 91%;
+    --sidebar-primary:           38 43% 59%;
+    --sidebar-primary-foreground:30 20% 10%;
+    --sidebar-accent:           220 40% 16%;
+    --sidebar-accent-foreground: 36 22% 91%;
+    --sidebar-border:           222 32% 14%;
+    --sidebar-ring:              38 43% 59%;
+
+    /* ── Shadows with gold glow ──────────────────────────────── */
+    --shadow-sm:          0 1px 3px rgba(0,0,0,0.35);
+    --shadow-md:          0 4px 10px rgba(0,0,0,0.40);
+    --shadow-lg:          0 10px 24px rgba(0,0,0,0.45);
+    --shadow-xl:          0 20px 40px rgba(0,0,0,0.50);
+    --shadow-card:        0 0 0 1px rgba(255,255,255,0.055), 0 2px 8px rgba(0,0,0,0.30);
+    --shadow-card-hover:  0 0 0 1px rgba(196,168,106,0.28), 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-glow:        0 0 22px rgba(196,168,106,0.35), 0 0 44px rgba(196,168,106,0.12);
+
+    /* ── Gold gradients ──────────────────────────────────────── */
+    --gradient-accent:       linear-gradient(135deg, hsl(38 43% 59%) 0%, hsl(30 40% 46%) 100%);
+    --gradient-accent-hover: linear-gradient(135deg, hsl(38 50% 67%) 0%, hsl(30 44% 52%) 100%);
+    --gradient-hero:         linear-gradient(135deg, hsl(228 52% 6%) 0%, hsl(222 45% 8%) 50%, hsl(220 40% 7%) 100%);
+    --gradient-card:         linear-gradient(180deg, hsl(222 45% 12%) 0%, hsl(222 45% 14%) 100%);
+
+    background-color: hsl(var(--background));
+    color:            hsl(var(--foreground));
   }
 
-  /* DM Sans for all admin UI elements */
+  /* ── Font stack ────────────────────────────────────────────── */
   .admin-panel,
   .admin-panel * {
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
-  /* Playfair Display for admin headings and editorial labels */
+  /* Playfair Display for every heading + .admin-editorial helper  */
   .admin-panel h1,
   .admin-panel h2,
   .admin-panel h3,
@@ -581,35 +635,70 @@
   .admin-panel h6,
   .admin-panel .admin-editorial {
     font-family: 'Playfair Display', Georgia, serif !important;
+    font-style:  italic !important;
+    font-weight: 600    !important;
+    letter-spacing: -0.01em;
   }
 
-  /* Admin TipTap editor content styling */
-  .admin-panel .ProseMirror h2 {
-    font-family: 'Playfair Display', Georgia, serif !important;
-    @apply text-xl font-semibold mt-6 mb-2;
-    color: var(--admin-ivory);
+  /* ── text-white → warm ivory (stops the cold-white look) ───── */
+  .admin-panel .text-white          { color: hsl(36 22% 91%)           !important; }
+  .admin-panel .text-white\/90      { color: rgba(237,233,227,0.90)    !important; }
+  .admin-panel .text-white\/80      { color: rgba(237,233,227,0.80)    !important; }
+  .admin-panel .text-white\/70      { color: rgba(237,233,227,0.70)    !important; }
+  .admin-panel .text-white\/60      { color: rgba(237,233,227,0.60)    !important; }
+  .admin-panel .text-white\/50      { color: rgba(237,233,227,0.50)    !important; }
+  .admin-panel .text-white\/40      { color: rgba(237,233,227,0.40)    !important; }
+  .admin-panel .text-white\/30      { color: rgba(237,233,227,0.30)    !important; }
+  .admin-panel .text-white\/25      { color: rgba(237,233,227,0.25)    !important; }
+  .admin-panel .text-white\/20      { color: rgba(237,233,227,0.20)    !important; }
+  .admin-panel .text-white\/15      { color: rgba(237,233,227,0.15)    !important; }
+  .admin-panel .text-white\/10      { color: rgba(237,233,227,0.10)    !important; }
+
+  /* ── bg-white/* → card surface (stops transparent-glass floats) */
+  .admin-panel .bg-white\/\[0\.03\],
+  .admin-panel .bg-white\/\[0\.02\] { background-color: hsl(222 45% 12%) !important; }
+  .admin-panel .bg-white\/\[0\.04\],
+  .admin-panel .bg-white\/\[0\.05\],
+  .admin-panel .bg-white\/\[0\.06\] { background-color: hsl(220 40% 16%) !important; }
+
+  /* ── Hardcoded teal shadow → gold glow on accent buttons ────── */
+  .admin-panel .shadow-\[0_0_20px_rgba\(45\,212\,191\,0\.2\)\] {
+    box-shadow: 0 0 20px rgba(196,168,106,0.28) !important;
   }
+
+  /* ── Dropdown / Popover dark bg fix ─────────────────────────── */
+  .admin-panel .bg-\[\#0a0a0a\] { background-color: hsl(222 45% 12%) !important; }
+  .admin-panel .bg-\[\#1a1a1a\] { background-color: hsl(222 45% 12%) !important; }
+
+  /* ── Scrollbar ───────────────────────────────────────────────── */
+  .admin-panel ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  .admin-panel ::-webkit-scrollbar-track { background: transparent; }
+  .admin-panel ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.09);
+    border-radius: 3px;
+  }
+  .admin-panel ::-webkit-scrollbar-thumb:hover {
+    background: rgba(196,168,106,0.30);
+  }
+
+  /* ── TipTap rich-text editor ────────────────────────────────── */
+  .admin-panel .ProseMirror h2,
   .admin-panel .ProseMirror h3 {
     font-family: 'Playfair Display', Georgia, serif !important;
-    @apply text-lg font-semibold mt-5 mb-2;
-    color: var(--admin-ivory);
+    font-style:  italic !important;
+    color: hsl(36 22% 91%);
   }
-  .admin-panel .ProseMirror p {
-    @apply mb-3 leading-relaxed;
-    color: var(--admin-ivory-60);
-  }
+  .admin-panel .ProseMirror h2 { @apply text-xl font-semibold mt-6 mb-2; }
+  .admin-panel .ProseMirror h3 { @apply text-lg  font-semibold mt-5 mb-2; }
+  .admin-panel .ProseMirror p,
   .admin-panel .ProseMirror ul,
-  .admin-panel .ProseMirror ol {
-    @apply mb-3 pl-5;
-    color: var(--admin-ivory-60);
-  }
-  .admin-panel .ProseMirror hr {
-    border-color: var(--admin-border);
-    @apply my-5;
-  }
+  .admin-panel .ProseMirror ol  { @apply mb-3 leading-relaxed; color: rgba(237,233,227,0.60); }
+  .admin-panel .ProseMirror ul,
+  .admin-panel .ProseMirror ol  { @apply pl-5; }
+  .admin-panel .ProseMirror hr  { border-color: rgba(255,255,255,0.06); @apply my-5; }
   .admin-panel .ProseMirror .is-editor-empty::before {
     content: attr(data-placeholder);
-    color: var(--admin-ivory-25);
+    color: rgba(237,233,227,0.22);
     @apply pointer-events-none float-left h-0;
   }
 }

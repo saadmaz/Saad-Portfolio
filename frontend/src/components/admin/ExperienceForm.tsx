@@ -242,7 +242,7 @@ const ExperienceForm = () => {
                </div>
                <div className="space-y-2">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground">Work Mode</label>
-                  <select {...register('workMode')} className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-sm bg-[#0a0a0a]">
+                  <select {...register('workMode')} className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-sm">
                     <option value="Remote">Remote</option>
                     <option value="In-Office">In-Office</option>
                     <option value="Hybrid">Hybrid</option>

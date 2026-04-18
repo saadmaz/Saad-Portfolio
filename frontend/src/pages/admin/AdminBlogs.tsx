@@ -149,7 +149,7 @@ const AdminBlogs = () => {
         </div>
         <Button
           onClick={() => navigate('/admin/blogs/new')}
-          className="bg-accent hover:bg-accent/90 text-black font-black shadow-[0_0_20px_rgba(45,212,191,0.2)] rounded-lg transition-all hover:scale-[1.02] active:scale-95 h-11 px-6 flex-shrink-0"
+          className="bg-accent hover:bg-accent/90 text-black font-semibold shadow-[0_0_20px_rgba(196,168,106,0.28)] rounded-lg transition-all hover:scale-[1.02] active:scale-95 h-11 px-6 flex-shrink-0"
         >
           <Plus className="w-4 h-4 mr-2" /> New Post
         </Button>
@@ -193,7 +193,7 @@ const AdminBlogs = () => {
               {sortLabels[sortKey]} <ChevronDown className="w-3.5 h-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-[#0a0a0a] border-white/10 text-white rounded-lg shadow-2xl p-1 min-w-[140px]">
+          <DropdownMenuContent align="end" className="border-white/10 text-white rounded-lg shadow-2xl p-1 min-w-[140px]">
             {(Object.keys(sortLabels) as SortKey[]).map(k => (
               <DropdownMenuItem
                 key={k}
@@ -294,7 +294,7 @@ const AdminBlogs = () => {
                           <MoreVertical className="w-4 h-4 text-white/30" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-[#0a0a0a] border-white/10 text-white rounded-lg shadow-2xl p-1">
+                      <DropdownMenuContent align="end" className="border-white/10 text-white rounded-lg shadow-2xl p-1">
                         <DropdownMenuItem
                           className="hover:bg-accent/10 hover:text-accent cursor-pointer rounded-md m-1 py-2 px-3 text-xs font-bold"
                           onClick={() => navigate(`/admin/blogs/${post.id}`)}
@@ -338,7 +338,7 @@ const AdminBlogs = () => {
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => !isDeleting && setDeleteDialog(d => ({ ...d, open }))}>
-        <AlertDialogContent className="bg-[#0a0a0a] border-white/10 text-white rounded-lg shadow-2xl">
+        <AlertDialogContent className="border-white/10 text-white rounded-lg shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-black" style={{ fontFamily: 'DM Sans' }}>
               Delete Post?
