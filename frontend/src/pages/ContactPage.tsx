@@ -122,7 +122,7 @@ const ContactPage = () => {
                   {[
                     { href: "https://github.com/saadmaz/",         Icon: Github,   label: "GitHub" },
                     { href: "https://linkedin.com/in/saadmaz/",    Icon: Linkedin, label: "LinkedIn" },
-                    { href: "https://instagram.com/saadmazhar_"    Icon: Instagram, label: "Instagram"},
+                    { href: "https://instagram.com/saadmazhar_",   Icon: Instagram, label: "Instagram"},
                     { href: "https://facebook.com/saadmazhar",     Icon: Facebook, label: "Facebook"},
                     { href: "https://x.com/SaadMazhar_",           Icon: X,        label: "X (Twitter)" },
                   ].map(({ href, Icon, label }) => (
