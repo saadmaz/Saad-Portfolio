@@ -89,8 +89,8 @@ const navGroups: NavGroup[] = [
 
 const SIDEBAR_KEY = 'admin_sidebar_collapsed';
 
-/* Editorial gold accent — used throughout admin panel */
-const GOLD = '#C4A86A';
+/* Emerald accent — used throughout admin panel */
+const GOLD = '#10b981';
 
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(() => {
@@ -149,7 +149,7 @@ const AdminLayout = () => {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(196,168,106,0.10)', border: '1px solid rgba(196,168,106,0.22)' }}
+              style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.22)' }}
             >
               <ShieldCheck className="w-4 h-4" style={{ color: GOLD }} />
             </div>
@@ -164,7 +164,7 @@ const AdminLayout = () => {
         {collapsed && (
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(196,168,106,0.10)', border: '1px solid rgba(196,168,106,0.22)' }}
+            style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.22)' }}
           >
             <ShieldCheck className="w-4 h-4" style={{ color: GOLD }} />
           </div>
@@ -214,12 +214,12 @@ const AdminLayout = () => {
                       "flex items-center gap-3 rounded-lg transition-all duration-200 group relative mb-0.5",
                       collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2.5",
                       isActive
-                        ? "text-[#C4A86A]"
+                        ? "text-[#10b981]"
                         : "hover:text-[rgba(237,233,227,0.75)]"
                     )}
                     style={{
                       background: isActive
-                        ? 'rgba(196,168,106,0.08)'
+                        ? 'rgba(16,185,129,0.08)'
                         : undefined,
                       color: isActive ? GOLD : 'rgba(237,233,227,0.42)',
                     }}
@@ -261,7 +261,7 @@ const AdminLayout = () => {
                     {!collapsed && isActive && !hasBadge && (
                       <ChevronRight
                         className="w-3 h-3 ml-auto flex-shrink-0"
-                        style={{ color: 'rgba(196,168,106,0.35)' }}
+                        style={{ color: 'rgba(16,185,129,0.35)' }}
                       />
                     )}
                   </Link>
@@ -409,7 +409,7 @@ const AdminLayout = () => {
             className="hidden md:flex items-center gap-2 text-[11px] font-medium"
             style={{ color: 'rgba(237,233,227,0.28)' }}
           >
-            <ShieldCheck className="w-3 h-3" style={{ color: 'rgba(196,168,106,0.65)' }} />
+            <ShieldCheck className="w-3 h-3" style={{ color: 'rgba(16,185,129,0.65)' }} />
             <span>Admin Panel</span>
             <span className="mx-0.5" style={{ color: 'rgba(237,233,227,0.15)' }}>·</span>
             <span style={{ color: 'rgba(237,233,227,0.50)' }}>{currentPageLabel}</span>
@@ -455,14 +455,14 @@ const AdminLayout = () => {
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer relative transition-all duration-200"
               style={{
-                background: 'rgba(196,168,106,0.08)',
-                border: '1px solid rgba(196,168,106,0.20)',
+                background: 'rgba(16,185,129,0.08)',
+                border: '1px solid rgba(16,185,129,0.20)',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(196,168,106,0.38)';
+                (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(16,185,129,0.38)';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(196,168,106,0.20)';
+                (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(16,185,129,0.20)';
               }}
             >
               <span className="text-[11px] font-semibold" style={{ color: GOLD }}>SM</span>

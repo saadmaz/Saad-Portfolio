@@ -124,6 +124,26 @@ export interface BlogPost {
   tags?: string[];
   published: boolean;
   is_latest?: boolean;
+
+  /* SEO */
+  metaDescription?: string;
+  keywords?: string;          // comma-separated
+
+  /* Publishing */
+  scheduledDate?: string;     // ISO string; empty = not scheduled
+  publishedAt?: string;
+  lastUpdatedAt?: string;
+
+  /* Content extras */
+  tableOfContents?: boolean;
+  socialShareEnabled?: boolean;
+
+  /* CTA */
+  ctaText?: string;
+  ctaUrl?: string;
+
+  /* Related */
+  relatedPostSlugs?: string[];
 }
 
 export interface Award {

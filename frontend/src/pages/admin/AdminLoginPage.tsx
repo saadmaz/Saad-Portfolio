@@ -40,7 +40,7 @@ const AdminLoginPage = () => {
       {/* Ambient glows */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse, rgba(196,168,106,0.07) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(ellipse, rgba(16,185,129,0.07) 0%, transparent 70%)' }}
       />
       <div
         className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none"
@@ -64,12 +64,12 @@ const AdminLoginPage = () => {
           <div
             className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5"
             style={{
-              background: 'rgba(196,168,106,0.09)',
-              border: '1px solid rgba(196,168,106,0.22)',
-              boxShadow: '0 0 30px rgba(196,168,106,0.10)',
+              background: 'rgba(16,185,129,0.09)',
+              border: '1px solid rgba(16,185,129,0.22)',
+              boxShadow: '0 0 30px rgba(16,185,129,0.10)',
             }}
           >
-            <ShieldCheck className="w-6 h-6" style={{ color: '#C4A86A' }} />
+            <ShieldCheck className="w-6 h-6" style={{ color: '#10b981' }} />
           </div>
           <h1
             className="admin-editorial text-[28px] mb-2"
@@ -109,7 +109,7 @@ const AdminLoginPage = () => {
                   border: '1px solid rgba(255,255,255,0.08)',
                   color: 'rgba(237,233,227,0.88)',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(196,168,106,0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(196,168,106,0.08)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(16,185,129,0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.08)'; }}
                 onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.boxShadow = 'none'; }}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -140,7 +140,7 @@ const AdminLoginPage = () => {
                     border: '1px solid rgba(255,255,255,0.08)',
                     color: 'rgba(237,233,227,0.88)',
                   }}
-                  onFocus={e => { e.currentTarget.style.borderColor = 'rgba(196,168,106,0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(196,168,106,0.08)'; }}
+                  onFocus={e => { e.currentTarget.style.borderColor = 'rgba(16,185,129,0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.08)'; }}
                   onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.boxShadow = 'none'; }}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -155,12 +155,12 @@ const AdminLoginPage = () => {
               disabled={isLoading}
               className="w-full py-3.5 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
-                background: '#C4A86A',
-                color: '#1C1308',
-                boxShadow: '0 0 24px rgba(196,168,106,0.30), 0 4px 12px rgba(0,0,0,0.30)',
+                background: '#10b981',
+                color: '#fff',
+                boxShadow: '0 0 24px rgba(16,185,129,0.30), 0 4px 12px rgba(0,0,0,0.30)',
               }}
-              onMouseEnter={e => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#D4BA80'; }}
-              onMouseLeave={e => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#C4A86A'; }}
+              onMouseEnter={e => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#34d399'; }}
+              onMouseLeave={e => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#10b981'; }}
             >
               {isLoading ? (
                 <>

@@ -575,11 +575,11 @@
     --muted:                    220 40% 16%;
     --muted-foreground:          36  8% 54%;   /* warm muted gray           */
 
-    /* ── Editorial Gold — replaces every teal/accent reference ── */
-    --accent:                    38 43% 59%;   /* #C4A86A                   */
-    --accent-foreground:         30 20% 10%;   /* dark text on gold bg      */
-    --accent-glow:               38 43% 59%;
-    --accent-bright:             38 52% 68%;
+    /* ── Emerald accent — replaces every teal/gold reference ───── */
+    --accent:                   160 84% 39%;   /* #10b981 emerald-500        */
+    --accent-foreground:          0  0% 100%;  /* white text on emerald      */
+    --accent-glow:               160 84% 39%;
+    --accent-bright:             152 63% 52%;  /* emerald-400 for highlights */
 
     /* ── Borders / inputs / focus ring ───────────────────────── */
     --border:                   222 32% 17%;
@@ -594,12 +594,12 @@
     /* ── Sidebar tokens ──────────────────────────────────────── */
     --sidebar-background:       225 48%  9%;
     --sidebar-foreground:        36 22% 91%;
-    --sidebar-primary:           38 43% 59%;
-    --sidebar-primary-foreground:30 20% 10%;
+    --sidebar-primary:          160 84% 39%;
+    --sidebar-primary-foreground: 0  0% 100%;
     --sidebar-accent:           220 40% 16%;
     --sidebar-accent-foreground: 36 22% 91%;
     --sidebar-border:           222 32% 14%;
-    --sidebar-ring:              38 43% 59%;
+    --sidebar-ring:             160 84% 39%;
 
     /* ── Shadows with gold glow ──────────────────────────────── */
     --shadow-sm:          0 1px 3px rgba(0,0,0,0.35);
@@ -607,12 +607,12 @@
     --shadow-lg:          0 10px 24px rgba(0,0,0,0.45);
     --shadow-xl:          0 20px 40px rgba(0,0,0,0.50);
     --shadow-card:        0 0 0 1px rgba(255,255,255,0.055), 0 2px 8px rgba(0,0,0,0.30);
-    --shadow-card-hover:  0 0 0 1px rgba(196,168,106,0.28), 0 8px 24px rgba(0,0,0,0.35);
-    --shadow-glow:        0 0 22px rgba(196,168,106,0.35), 0 0 44px rgba(196,168,106,0.12);
+    --shadow-card-hover:  0 0 0 1px rgba(16,185,129,0.28), 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-glow:        0 0 22px rgba(16,185,129,0.32), 0 0 44px rgba(16,185,129,0.10);
 
-    /* ── Gold gradients ──────────────────────────────────────── */
-    --gradient-accent:       linear-gradient(135deg, hsl(38 43% 59%) 0%, hsl(30 40% 46%) 100%);
-    --gradient-accent-hover: linear-gradient(135deg, hsl(38 50% 67%) 0%, hsl(30 44% 52%) 100%);
+    /* ── Emerald gradients ────────────────────────────────────── */
+    --gradient-accent:       linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(161 72% 28%) 100%);
+    --gradient-accent-hover: linear-gradient(135deg, hsl(152 63% 52%) 0%, hsl(160 84% 39%) 100%);
     --gradient-hero:         linear-gradient(135deg, hsl(228 52% 6%) 0%, hsl(222 45% 8%) 50%, hsl(220 40% 7%) 100%);
     --gradient-card:         linear-gradient(180deg, hsl(222 45% 12%) 0%, hsl(222 45% 14%) 100%);
 
@@ -626,7 +626,7 @@
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
-  /* Playfair Display for every heading + .admin-editorial helper  */
+  /* DM Sans bold for all admin headings — professional, no italic */
   .admin-panel h1,
   .admin-panel h2,
   .admin-panel h3,
@@ -634,10 +634,10 @@
   .admin-panel h5,
   .admin-panel h6,
   .admin-panel .admin-editorial {
-    font-family: 'Playfair Display', Georgia, serif !important;
-    font-style:  italic !important;
-    font-weight: 600    !important;
-    letter-spacing: -0.01em;
+    font-family:    'DM Sans', system-ui, sans-serif !important;
+    font-style:     normal   !important;
+    font-weight:    700      !important;
+    letter-spacing: -0.02em;
   }
 
   /* ── text-white → warm ivory (stops the cold-white look) ───── */
@@ -663,7 +663,7 @@
 
   /* ── Hardcoded teal shadow → gold glow on accent buttons ────── */
   .admin-panel .shadow-\[0_0_20px_rgba\(45\,212\,191\,0\.2\)\] {
-    box-shadow: 0 0 20px rgba(196,168,106,0.28) !important;
+    box-shadow: 0 0 20px rgba(16,185,129,0.25) !important;
   }
 
   /* ── Dropdown / Popover dark bg fix ─────────────────────────── */
@@ -678,7 +678,7 @@
     border-radius: 3px;
   }
   .admin-panel ::-webkit-scrollbar-thumb:hover {
-    background: rgba(196,168,106,0.30);
+    background: rgba(16,185,129,0.30);
   }
 
   /* ── TipTap rich-text editor ────────────────────────────────── */

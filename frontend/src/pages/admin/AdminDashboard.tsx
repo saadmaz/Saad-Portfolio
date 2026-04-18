@@ -35,9 +35,9 @@ const IVORY_85    = 'rgba(237,233,227,0.85)';
 const IVORY_55    = 'rgba(237,233,227,0.55)';
 const IVORY_35    = 'rgba(237,233,227,0.35)';
 const IVORY_22    = 'rgba(237,233,227,0.22)';
-const GOLD        = '#C4A86A';
-const GOLD_BG     = 'rgba(196,168,106,0.09)';
-const GOLD_BORDER = 'rgba(196,168,106,0.22)';
+const EMERALD        = '#10b981';
+const EMERALD_BG     = 'rgba(16,185,129,0.09)';
+const EMERALD_BORDER = 'rgba(16,185,129,0.22)';
 const SURFACE     = '#101726';
 const SURFACE_H   = '#151F2E';
 const BORDER      = 'rgba(255,255,255,0.055)';
@@ -87,7 +87,7 @@ const makeStats = (): StatCard[] => [
   { key: 'projects',     label: 'Projects',        value: '-', icon: Code,            color: '#6B8ED6', path: '/admin/projects' },
   { key: 'blogs',        label: 'Blog Posts',       value: '-', icon: BookOpen,        color: '#9B7FD4', path: '/admin/blogs' },
   { key: 'experience',   label: 'Experience',       value: '-', icon: Briefcase,       color: '#5BAAB0', path: '/admin/experience' },
-  { key: 'skills',       label: 'Skill Sets',       value: '-', icon: Zap,             color: '#C4A86A', path: '/admin/skills' },
+  { key: 'skills',       label: 'Skill Sets',       value: '-', icon: Zap,             color: '#10b981', path: '/admin/skills' },
   { key: 'certificates', label: 'Certificates',     value: '-', icon: FileCheck,       color: '#6DB88A', path: '/admin/certificates' },
   { key: 'awards',       label: 'Awards',           value: '-', icon: Award,           color: '#D4956A', path: '/admin/awards' },
   { key: 'testimonials', label: 'Testimonials',     value: '-', icon: MessageSquare,   color: '#C47A9B', path: '/admin/testimonials' },
@@ -99,7 +99,7 @@ const getActionStyle = (action: string) => {
     case 'CREATE': return { text: '#6DB88A', border: '#6DB88A', bg: 'rgba(109,184,138,0.08)' };
     case 'UPDATE': return { text: '#6B8ED6', border: '#6B8ED6', bg: 'rgba(107,142,214,0.08)' };
     case 'DELETE': return { text: '#D06B6B', border: '#D06B6B', bg: 'rgba(208,107,107,0.08)' };
-    default:       return { text: '#C4A86A', border: '#C4A86A', bg: 'rgba(196,168,106,0.08)' };
+    default:       return { text: '#10b981', border: '#10b981', bg: 'rgba(16,185,129,0.08)' };
   }
 };
 
@@ -147,7 +147,7 @@ const AdminDashboard = () => {
           { key: 'projects',     label: 'Projects',        value: String(projects.length),     icon: Code,          color: '#6B8ED6', path: '/admin/projects' },
           { key: 'blogs',        label: 'Blog Posts',       value: String(blogs.length),        icon: BookOpen,      color: '#9B7FD4', path: '/admin/blogs' },
           { key: 'experience',   label: 'Experience',       value: String(experience.length),   icon: Briefcase,     color: '#5BAAB0', path: '/admin/experience' },
-          { key: 'skills',       label: 'Skill Sets',       value: String(skills.length),       icon: Zap,           color: '#C4A86A', path: '/admin/skills' },
+          { key: 'skills',       label: 'Skill Sets',       value: String(skills.length),       icon: Zap,           color: '#10b981', path: '/admin/skills' },
           { key: 'certificates', label: 'Certificates',     value: String(certificates.length), icon: FileCheck,     color: '#6DB88A', path: '/admin/certificates' },
           { key: 'awards',       label: 'Awards',           value: String(awards.length),       icon: Award,         color: '#D4956A', path: '/admin/awards' },
           { key: 'testimonials', label: 'Testimonials',     value: String(testimonials.length), icon: MessageSquare, color: '#C47A9B', path: '/admin/testimonials' },
@@ -283,7 +283,7 @@ const AdminDashboard = () => {
             style={{ borderBottom: `1px solid ${BORDER}` }}
           >
             <div className="flex items-center gap-2.5">
-              <History className="w-4 h-4" style={{ color: GOLD }} />
+              <History className="w-4 h-4" style={{ color: EMERALD }} />
               <span
                 className="admin-editorial text-[13px] font-semibold italic"
                 style={{ color: IVORY_55 }}
@@ -295,7 +295,7 @@ const AdminDashboard = () => {
               to="/admin/logs"
               className="text-[10px] font-medium flex items-center gap-1 uppercase tracking-wider transition-colors duration-200"
               style={{ color: IVORY_22 }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = GOLD}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = EMERALD}
               onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = IVORY_22}
             >
               View All <ExternalLink className="w-3 h-3" />
@@ -381,10 +381,10 @@ const AdminDashboard = () => {
         <div className="lg:col-span-4 space-y-4">
 
           {/* Quick Actions */}
-          <SurfaceCard style={{ border: `1px solid ${GOLD_BORDER}` }}>
+          <SurfaceCard style={{ border: `1px solid ${EMERALD_BORDER}` }}>
             <div className="pt-5 pb-2 px-5">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4" style={{ color: GOLD }} />
+                <Zap className="w-4 h-4" style={{ color: EMERALD }} />
                 <span
                   className="admin-editorial text-[14px] font-semibold italic"
                   style={{ color: IVORY_85 }}
@@ -409,9 +409,9 @@ const AdminDashboard = () => {
                       color: IVORY_55,
                     }}
                     onMouseEnter={e => {
-                      (e.currentTarget as HTMLButtonElement).style.background = GOLD_BG;
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = GOLD_BORDER;
-                      (e.currentTarget as HTMLButtonElement).style.color = GOLD;
+                      (e.currentTarget as HTMLButtonElement).style.background = EMERALD_BG;
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = EMERALD_BORDER;
+                      (e.currentTarget as HTMLButtonElement).style.color = EMERALD;
                     }}
                     onMouseLeave={e => {
                       (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.035)';
