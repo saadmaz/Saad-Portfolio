@@ -20,6 +20,8 @@ const PERSON_SCHEMA = {
   sameAs: [
     "https://linkedin.com/in/saadmaz/",
     "https://github.com/saadmaz/",
+    "https://instagram.com/saaadmaz/",
+    "https://facebook.com/saadmazhar",
     "https://x.com/SaadMazhar_",
   ],
   jobTitle: "Startup Founder & Full-Stack Developer",

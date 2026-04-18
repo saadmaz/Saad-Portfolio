@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe, Instagram, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -122,6 +122,8 @@ const ContactPage = () => {
                   {[
                     { href: "https://github.com/saadmaz/",         Icon: Github,   label: "GitHub" },
                     { href: "https://linkedin.com/in/saadmaz/",    Icon: Linkedin, label: "LinkedIn" },
+                    { href: "https://instagram.com/saadmazhar_"    Icon: Instagram, label: "Instagram"},
+                    { href: "https://facebook.com/saadmazhar",     Icon: Facebook, label: "Facebook"},
                     { href: "https://x.com/SaadMazhar_",           Icon: X,        label: "X (Twitter)" },
                   ].map(({ href, Icon, label }) => (
                     <a
