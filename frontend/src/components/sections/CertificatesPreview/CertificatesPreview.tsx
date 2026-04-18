@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Award, ExternalLink, Calendar, Tag, Layers } from "lucide-react";
+import { ArrowRight, Award, ExternalLink, Tag, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Carousel,
@@ -14,17 +14,15 @@ import { Certificate } from "@/types";
 export function CertificatesPreview() {
   const { data: certificates, isLoading } = useCertificates();
 
-  const formatDate = (dateStr: string | null) => {
+  const getYear = (dateStr: string | null) => {
     if (!dateStr) return "";
     try {
-      const d = new Date(dateStr);
-      return d.toLocaleString(undefined, { month: "short", year: "numeric" });
-    } catch (e) {
+      return new Date(dateStr).getFullYear().toString();
+    } catch {
       return dateStr.split("-")[0] || dateStr;
     }
   };
 
-  // Sort by most recent issue date first
   const sortedCertificates = [...(certificates || [])].sort((a, b) => {
     const da = a.issue_date ? new Date(a.issue_date) : new Date(0);
     const db = b.issue_date ? new Date(b.issue_date) : new Date(0);
@@ -45,7 +43,7 @@ export function CertificatesPreview() {
     <section className="py-16 bg-secondary/30">
       <div className="section-container">
 
-        {/* --- SECTION HEADER --- */}
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -64,9 +62,11 @@ export function CertificatesPreview() {
                 development, and data engineering.
               </p>
             </div>
-
-            <div className="mt-4 md:mt-0">
-              <Link to="/certifications" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground rounded-full font-semibold shadow-sm hover:opacity-95 transition">
+            <div className="mt-4 md:mt-0 shrink-0">
+              <Link
+                to="/certifications"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-accent-foreground rounded-full font-semibold shadow-sm hover:opacity-95 transition"
+              >
                 See All Certificates
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -74,7 +74,7 @@ export function CertificatesPreview() {
           </div>
         </motion.div>
 
-        {/* --- CERTIFICATES CAROUSEL --- */}
+        {/* Carousel */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -82,62 +82,80 @@ export function CertificatesPreview() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="relative"
         >
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
             <CarouselContent className="-ml-4">
-              {sortedCertificates.map((cert, index) => (
-                <CarouselItem key={cert.id || index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5">
+
+              {sortedCertificates.map((cert: Certificate, index: number) => (
+                <CarouselItem
+                  key={cert.id || index}
+                  className="pl-4 basis-full sm:basis-1/2 xl:basis-1/3"
+                >
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className="h-full"
+                    transition={{ duration: 0.35, delay: index * 0.04 }}
+                    whileHover={{ y: -3, transition: { duration: 0.18 } }}
                   >
-                    <Link to={`/certifications/${cert.id}`} className="block h-full">
-                      <div className={`h-full bg-card rounded-xl border border-border p-5 relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:border-accent/30 flex flex-col`}>
+                    <Link to={`/certifications/${cert.id}`} className="block">
+                      <div className="group bg-card border border-border rounded-xl overflow-hidden hover:border-accent/40 hover:shadow-lg transition-all duration-300 relative">
 
-                        <div className={`absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                        {/* Subtle hover gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                        <div className="relative z-10 flex-1 flex flex-col">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center border border-border group-hover:border-accent/30 group-hover:shadow-[0_0_12px_hsl(174_72%_44%_/_0.25)] transition-all duration-300 overflow-hidden">
+                        <div className="relative z-10 flex items-stretch gap-0">
+
+                          {/* Left — logo column */}
+                          <div className="flex items-center justify-center w-24 shrink-0 bg-secondary/30 border-r border-border/60 group-hover:border-accent/20 transition-colors duration-300">
+                            <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center border border-border group-hover:border-accent/30 group-hover:shadow-[0_0_14px_hsl(174_72%_44%_/_0.2)] transition-all duration-300 overflow-hidden">
                               {cert.issuer_logo ? (
-                                <img src={cert.issuer_logo} alt={cert.issuer} className="w-10 h-10 object-contain" />
+                                <img
+                                  src={cert.issuer_logo}
+                                  alt={cert.issuer}
+                                  className="w-9 h-9 object-contain"
+                                />
                               ) : (
                                 <Award className="w-5 h-5 text-accent" />
                               )}
                             </div>
-                            <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(cert.issue_date)}
-                            </span>
                           </div>
 
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
-                              {cert.title}
-                            </h4>
-                            <p className="text-sm text-muted-foreground mb-3">{cert.issuer}</p>
-                          </div>
+                          {/* Right — content */}
+                          <div className="flex-1 px-5 py-4 min-w-0">
 
-                          <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap gap-2">
-                            <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
-                              <Layers className="w-3 h-3" />
-                              {cert.category}
+                            {/* Title + year */}
+                            <div className="flex items-start justify-between gap-3 mb-1">
+                              <h4 className="font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-accent transition-colors duration-200">
+                                {cert.title}
+                              </h4>
+                              <span className="shrink-0 text-xs font-medium text-muted-foreground mt-0.5">
+                                {getYear(cert.issue_date)}
+                              </span>
                             </div>
-                            {cert.tags && cert.tags[0] && (
-                              <div className="flex items-center text-xs text-muted-foreground gap-1 bg-secondary/30 px-2 py-1 rounded-md">
-                                <Tag className="w-3 h-3" />
-                                {cert.tags[0]}
-                              </div>
-                            )}
+
+                            {/* Organisation */}
+                            <p className="text-sm text-muted-foreground mb-3 truncate">
+                              {cert.issuer}
+                            </p>
+
+                            {/* Tags */}
+                            <div className="flex flex-wrap gap-1.5">
+                              {cert.category && (
+                                <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-tight text-muted-foreground bg-secondary/60 border border-border/60 px-2 py-0.5 rounded-md">
+                                  <Layers className="w-2.5 h-2.5" />
+                                  {cert.category}
+                                </span>
+                              )}
+                              {cert.tags?.slice(0, 2).map((tag: string, i: number) => (
+                                <span
+                                  key={i}
+                                  className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-tight text-accent/80 bg-accent/10 border border-accent/20 px-2 py-0.5 rounded-md"
+                                >
+                                  <Tag className="w-2.5 h-2.5" />
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -146,17 +164,22 @@ export function CertificatesPreview() {
                 </CarouselItem>
               ))}
 
-              <CarouselItem className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+              {/* See all card */}
+              <CarouselItem className="pl-4 basis-full sm:basis-1/2 xl:basis-1/3">
                 <Link to="/certifications" className="block h-full">
-                  <div className="h-full bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/30 p-5 flex flex-col items-center justify-center gap-3 hover:bg-accent/15 transition-all duration-300 min-h-[180px] group">
-                    <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
-                      <ExternalLink className="w-5 h-5 text-accent" />
+                  <div className="group bg-accent/5 border border-accent/25 rounded-xl hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 flex items-center justify-center gap-4 px-6 py-8">
+                    <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors shrink-0">
+                      <ExternalLink className="w-4 h-4 text-accent" />
                     </div>
-                    <span className="font-medium text-accent text-center">See All Certificates</span>
-                    <ArrowRight className="w-4 h-4 text-accent group-hover:translate-x-1 transition-transform" />
+                    <div>
+                      <p className="font-semibold text-accent">See All Certificates</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">View full credentials list</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-accent ml-auto group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </Link>
               </CarouselItem>
+
             </CarouselContent>
 
             <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-secondary" />
