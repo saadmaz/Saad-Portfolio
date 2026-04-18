@@ -28,11 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2 } from 'lucide-react';
+import ImageUpload from './ImageUpload';
+import LogoUpload from './LogoUpload';
 
 interface FieldConfig {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'textarea' | 'select' | 'date';
+  type: 'text' | 'number' | 'textarea' | 'select' | 'date' | 'image' | 'logo';
   placeholder?: string;
   options?: { label: string; value: string }[];
   required?: boolean;
@@ -96,14 +98,14 @@ const AdminEntityDialog = ({
                     <FormLabel className="text-white/80">{field.label}</FormLabel>
                     <FormControl>
                       {field.type === 'textarea' ? (
-                        <Textarea 
-                          {...formField} 
+                        <Textarea
+                          {...formField}
                           placeholder={field.placeholder}
                           className="bg-white/5 border-white/10 focus:border-accent/50 min-h-[100px]"
                         />
                       ) : field.type === 'select' ? (
-                        <Select 
-                          onValueChange={formField.onChange} 
+                        <Select
+                          onValueChange={formField.onChange}
                           defaultValue={formField.value}
                         >
                           <SelectTrigger className="bg-white/5 border-white/10 focus:border-accent/50">
@@ -117,9 +119,20 @@ const AdminEntityDialog = ({
                             ))}
                           </SelectContent>
                         </Select>
+                      ) : field.type === 'image' ? (
+                        <ImageUpload
+                          value={formField.value as string}
+                          onChange={formField.onChange}
+                        />
+                      ) : field.type === 'logo' ? (
+                        <LogoUpload
+                          value={formField.value as string}
+                          onChange={formField.onChange}
+                          required={field.required}
+                        />
                       ) : (
-                        <Input 
-                          {...formField} 
+                        <Input
+                          {...formField}
                           type={field.type}
                           placeholder={field.placeholder}
                           className="bg-white/5 border-white/10 focus:border-accent/50"

@@ -172,6 +172,7 @@ export interface Hackathon {
   projectTitle?: string;
   achievement?: string;
   description: string;
+  image?: string;
   link?: string;
 }
 
@@ -193,6 +194,7 @@ export interface VolunteerExperience {
   endDate?: string;
   isCurrent: boolean;
   description: string;
+  image?: string;
   link?: string;
 }
 
@@ -206,6 +208,7 @@ export interface Education {
   isCurrent: boolean;
   grade?: string;
   description?: string;
+  logo?: string;
 }
 
 export type FirestoreLikeTimestamp =
@@ -245,6 +248,7 @@ export interface Event {
   location: string;
   description: string;
   image?: string;
+  images?: string[];
   link?: string;
   tags?: string[];
   type: string;

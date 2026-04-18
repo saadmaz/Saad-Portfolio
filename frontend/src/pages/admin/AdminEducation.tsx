@@ -4,10 +4,11 @@ import { CommonService } from '@/shared/services/common-service';
 import { Education } from '@/types';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, GraduationCap, Edit2, Trash2, Calendar, MapPin } from 'lucide-react';
+import { Plus, GraduationCap, Edit2, Trash2, Calendar } from 'lucide-react';
 import { toast } from "sonner";
 import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
 import BackButton from '@/components/admin/BackButton';
+import { LightboxModal } from '@/components/ui/LightboxModal';
 import * as z from 'zod';
 
 const educationSchema = z.object({
@@ -19,19 +20,21 @@ const educationSchema = z.object({
   isCurrent: z.boolean().optional(),
   grade: z.string().optional(),
   description: z.string().optional(),
+  logo: z.string().min(1, 'Institution logo is required'),
 });
 
 type EducationFormData = z.infer<typeof educationSchema>;
 
 const educationFields = [
-  { name: 'degree', label: 'Degree / Certificate', type: 'text', placeholder: 'e.g. Bachelor of Science' },
-  { name: 'fieldOfStudy', label: 'Field of Study', type: 'text', placeholder: 'e.g. Computer Science' },
-  { name: 'institution', label: 'Institution / School', type: 'text', placeholder: 'e.g. University of Toronto' },
-  { name: 'startDate', label: 'Start Date', type: 'text', placeholder: 'e.g. Sept 2020' },
-  { name: 'endDate', label: 'End Date (Optional)', type: 'text', placeholder: 'e.g. May 2024' },
-  { name: 'grade', label: 'Grade / GPA (Optional)', type: 'text', placeholder: 'e.g. 3.9/4.0' },
-  { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Key achievements, clubs, etc.' },
-] as const;
+  { name: 'logo', label: 'Institution Logo', type: 'logo' as const, required: true },
+  { name: 'degree', label: 'Degree / Certificate', type: 'text' as const, placeholder: 'e.g. Bachelor of Science' },
+  { name: 'fieldOfStudy', label: 'Field of Study', type: 'text' as const, placeholder: 'e.g. Computer Science' },
+  { name: 'institution', label: 'Institution / School', type: 'text' as const, placeholder: 'e.g. University of Toronto' },
+  { name: 'startDate', label: 'Start Date', type: 'text' as const, placeholder: 'e.g. Sept 2020' },
+  { name: 'endDate', label: 'End Date (Optional)', type: 'text' as const, placeholder: 'e.g. May 2024' },
+  { name: 'grade', label: 'Grade / GPA (Optional)', type: 'text' as const, placeholder: 'e.g. 3.9/4.0' },
+  { name: 'description', label: 'Description', type: 'textarea' as const, placeholder: 'Key achievements, clubs, etc.' },
+];
 
 const AdminEducation = () => {
   const [education, setEducation] = useState<Education[]>([]);
@@ -39,34 +42,26 @@ const AdminEducation = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEd, setCurrentEd] = useState<Education | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchEducation();
-  }, []);
+  useEffect(() => { fetchEducation(); }, []);
 
   const fetchEducation = async () => {
     setIsLoading(true);
     try {
       const data = await CommonService.getEducation();
       setEducation(data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load education history');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAdd = () => {
-    setCurrentEd(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleEdit = (ed: Education) => {
-    setCurrentEd(ed);
-    setIsDialogOpen(true);
-  };
-
+  const handleAdd = () => { setCurrentEd(null); setIsDialogOpen(true); };
+  const handleEdit = (ed: Education) => { setCurrentEd(ed); setIsDialogOpen(true); };
   const handleDelete = (id: string, label: string) => setDeleteTarget({ id, label });
+
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     try {
@@ -119,15 +114,31 @@ const AdminEducation = () => {
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-500 flex-shrink-0">
-                      <GraduationCap className="w-6 h-6" />
-                    </div>
+                    {/* Logo — clickable lightbox */}
+                    <button
+                      type="button"
+                      onClick={() => edu.logo && setLightbox(edu.logo)}
+                      className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0 hover:border-accent/40 transition-all focus:outline-none"
+                      title={edu.logo ? 'View logo' : undefined}
+                    >
+                      {edu.logo ? (
+                        <img src={edu.logo} alt={`${edu.institution} logo`} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <GraduationCap className="w-6 h-6 text-purple-500" />
+                      )}
+                    </button>
                     <div>
                       <h3 className="font-bold text-white text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
                       <p className="text-accent font-medium">{edu.institution}</p>
                       <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {edu.startDate} - {edu.isCurrent ? 'Present' : edu.endDate}</span>
-                        {edu.grade && <span className="text-white/80 font-mono bg-white/5 px-2 py-0.5 rounded border border-white/5">Grade: {edu.grade}</span>}
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" /> {edu.startDate} - {edu.isCurrent ? 'Present' : edu.endDate}
+                        </span>
+                        {edu.grade && (
+                          <span className="text-white/80 font-mono bg-white/5 px-2 py-0.5 rounded border border-white/5">
+                            Grade: {edu.grade}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -151,7 +162,22 @@ const AdminEducation = () => {
         )}
       </div>
 
-      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Education?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
+      <LightboxModal
+        images={lightbox ? [lightbox] : []}
+        currentIndex={0}
+        isOpen={!!lightbox}
+        onClose={() => setLightbox(null)}
+      />
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Delete Education?"
+        description={`"${deleteTarget?.label}" will be permanently deleted.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+      />
+
       <AdminEntityDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

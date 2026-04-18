@@ -3,17 +3,19 @@
 // highlighting personal achievements, education, and hobbies.
 
 // --- Dependencies ---
-import { motion } from "framer-motion"; // Handles entry animations (fade-in, slide) and hover interactions
-import { Layout } from "@/components/layout/Layout"; // Standard page wrapper providing consistent Navbar and Footer
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal } from "lucide-react"; // Lightweight SVG icons for visual hierarchy
+import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal } from "lucide-react";
 
 // --- UI Components & Data ---
-import { Badge } from "@/components/ui/badge"; // Shadcn/ui Badge for rendering compact tags/labels
-import { educationList } from "@/data/education"; // Source of truth for academic history data
-import { languages, volunteer, sports, awards } from "@/data/personal/about"; // Localized personal data for sub-sections
-import { EducationDialog } from "@/components/education/EducationDialog"; // Trigger-based modal to display granular details about an education item
-import { useHackathons } from "@/shared/hooks/useCommon"; // Firestore-backed hackathons hook
+import { Badge } from "@/components/ui/badge";
+import { educationList } from "@/data/education";
+import { languages, volunteer, sports, awards } from "@/data/personal/about";
+import { EducationDialog } from "@/components/education/EducationDialog";
+import { useHackathons, useVolunteer } from "@/shared/hooks/useCommon";
+import { LightboxModal } from "@/components/ui/LightboxModal";
 
 /**
  * STAR RATING COMPONENT
@@ -36,6 +38,14 @@ const StarRating = ({ filled }: { filled: number }) => (
 
 const AboutPage = () => {
   const { data: hackathons = [], isLoading: hackLoading } = useHackathons();
+  const { data: volunteerData = [] } = useVolunteer();
+  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const openLightbox = (images: string[], index = 0) => {
+    setLightboxImages(images);
+    setLightboxIndex(index);
+  };
 
   return (
     <Layout>
@@ -82,14 +92,22 @@ const AboutPage = () => {
                       className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
                     >
                       <div className="flex flex-col md:flex-row gap-6 items-start">
-                        {/* Institution Logo: Wrapped in a fixed-size container with object-cover for image consistency */}
-                        <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border">
+                        {/* Institution Logo — clickable lightbox */}
+                        <button
+                          type="button"
+                          className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent/50 transition-colors focus:outline-none"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (edu.institutionLogo) openLightbox([edu.institutionLogo]);
+                          }}
+                          title="View logo"
+                        >
                           <img
                             src={edu.institutionLogo}
                             alt={`${edu.institution} logo`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain p-1"
                           />
-                        </div>
+                        </button>
 
                         {/* Education Details: Main content area within the card */}
                         <div className="flex-1 space-y-2">
@@ -186,15 +204,37 @@ const AboutPage = () => {
               </div>
               <h2 className="font-display text-2xl font-bold text-foreground">Volunteer Work</h2>
             </div>
-            {/* Multi-column layout for diverse volunteering experiences */}
             <div className="grid md:grid-cols-2 gap-6">
-              {volunteer.map((vol) => (
-                <div key={vol.org} className="bg-card rounded-xl border border-border p-6 shadow-sm">
-                  <h4 className="font-semibold text-foreground mb-1">{vol.org}</h4>
-                  <p className="text-sm text-accent mb-3">{vol.role} • {vol.period}</p>
-                  <p className="text-sm text-muted-foreground">{vol.description}</p>
-                </div>
-              ))}
+              {/* Prefer Firestore data; fall back to static data */}
+              {(volunteerData.length > 0 ? volunteerData : volunteer).map((vol: any) => {
+                const org = vol.organization ?? vol.org;
+                const role = vol.role;
+                const period = vol.period ?? `${vol.startDate}${vol.isCurrent ? ' – Present' : vol.endDate ? ` – ${vol.endDate}` : ''}`;
+                const desc = vol.description;
+                const img = vol.image as string | undefined;
+                return (
+                  <div key={vol.id ?? org} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/30 transition-colors">
+                    {img && (
+                      <button
+                        type="button"
+                        className="block w-full h-40 overflow-hidden focus:outline-none"
+                        onClick={() => openLightbox([img])}
+                      >
+                        <img
+                          src={img}
+                          alt={org}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-zoom-in"
+                        />
+                      </button>
+                    )}
+                    <div className="p-6">
+                      <h4 className="font-semibold text-foreground mb-1">{org}</h4>
+                      <p className="text-sm text-accent mb-3">{role} • {period}</p>
+                      {desc && <p className="text-sm text-muted-foreground">{desc}</p>}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -247,48 +287,67 @@ const AboutPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06, duration: 0.4 }}
-                    className="bg-card rounded-xl border border-border p-5 hover:border-accent/40 hover:shadow-sm transition-all duration-300 group relative overflow-hidden"
+                    className="bg-card rounded-xl border border-border hover:border-accent/40 hover:shadow-sm transition-all duration-300 group relative overflow-hidden"
                   >
                     {/* Shimmer on hover */}
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/4 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/4 to-transparent pointer-events-none z-10" />
 
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div>
-                        <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                          {hack.name}
-                        </h4>
-                        <p className="text-xs text-muted-foreground mt-0.5">{hack.organizer} · {hack.date}</p>
-                      </div>
-                      {hack.achievement && (
-                        <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold border border-amber-500/20">
-                          <Medal className="w-3 h-3" />
-                          {hack.achievement}
-                        </span>
-                      )}
-                    </div>
-
-                    {hack.projectTitle && (
-                      <p className="text-sm text-accent font-medium mb-2">
-                        Project: {hack.projectTitle}
-                      </p>
+                    {/* Cover image — clickable lightbox */}
+                    {hack.image && (
+                      <button
+                        type="button"
+                        className="block w-full h-40 overflow-hidden focus:outline-none"
+                        onClick={() => openLightbox([hack.image!])}
+                      >
+                        <img
+                          src={hack.image}
+                          alt={hack.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-zoom-in"
+                        />
+                      </button>
                     )}
 
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                      {hack.description}
-                    </p>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div>
+                          <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
+                            {hack.name}
+                          </h4>
+                          <p className="text-xs text-muted-foreground mt-0.5">{hack.organizer} · {hack.date}</p>
+                        </div>
+                        {hack.achievement && (
+                          <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold border border-amber-500/20">
+                            <Medal className="w-3 h-3" />
+                            {hack.achievement}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-[10px]">{hack.role}</Badge>
-                      {hack.link && (
-                        <a
-                          href={hack.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors"
-                        >
-                          View <ExternalLink className="w-3 h-3" />
-                        </a>
+                      {hack.projectTitle && (
+                        <p className="text-sm text-accent font-medium mb-2">
+                          Project: {hack.projectTitle}
+                        </p>
                       )}
+
+                      {hack.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                          {hack.description}
+                        </p>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <Badge variant="secondary" className="text-[10px]">{hack.role}</Badge>
+                        {hack.link && (
+                          <a
+                            href={hack.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors"
+                          >
+                            View <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -298,6 +357,14 @@ const AboutPage = () => {
 
         </div>
       </section>
+
+      <LightboxModal
+        images={lightboxImages}
+        currentIndex={lightboxIndex}
+        isOpen={lightboxImages.length > 0}
+        onClose={() => setLightboxImages([])}
+        onNavigate={setLightboxIndex}
+      />
     </Layout>
   );
 };

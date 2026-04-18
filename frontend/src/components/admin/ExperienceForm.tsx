@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  ArrowLeft, 
-  Save, 
-  Trash2, 
+import {
+  ArrowLeft,
+  Save,
+  Trash2,
   Briefcase,
   MapPin,
   Calendar,
@@ -18,6 +18,7 @@ import {
   Sparkles,
   Plus
 } from 'lucide-react';
+import LogoUpload from './LogoUpload';
 import { CommonService } from '@/shared/services/common-service';
 import { Experience } from '@/types';
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ const experienceSchema = z.object({
   description: z.string().min(10, 'Description is too short'),
   responsibilities: z.array(z.string()).min(1, 'Add at least one responsibility'),
   technologies: z.array(z.string()).min(1, 'Add at least one technology'),
+  companyLogo: z.string().optional(),
 });
 
 type ExperienceFormValues = z.infer<typeof experienceSchema>;
@@ -52,9 +54,12 @@ const ExperienceForm = () => {
       workMode: 'Remote',
       isCurrent: false,
       responsibilities: [''],
-      technologies: []
+      technologies: [],
+      companyLogo: '',
     }
   });
+
+  const companyLogo = watch('companyLogo');
 
   const responsibilities = watch('responsibilities') || [];
   const technologies = watch('technologies') || [];
@@ -77,6 +82,7 @@ const ExperienceForm = () => {
           description: item.description,
           responsibilities: item.responsibilities ?? [''],
           technologies: item.technologies ?? [],
+          companyLogo: item.companyLogo ?? '',
         });
       }
     } catch (error) {
@@ -228,6 +234,24 @@ const ExperienceForm = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Company Logo */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-accent" />
+                Company Logo <span className="text-red-400 text-xs font-normal">(required)</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <LogoUpload
+                value={companyLogo ?? ''}
+                onChange={(url) => setValue('companyLogo', url)}
+                required
+                label="Company Logo"
+              />
+            </CardContent>
+          </Card>
+
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">

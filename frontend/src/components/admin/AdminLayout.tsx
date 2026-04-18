@@ -157,7 +157,7 @@ const AdminLayout = () => {
               className="admin-editorial text-[15px] font-semibold italic tracking-wide"
               style={{ color: 'rgba(237,233,227,0.88)' }}
             >
-              Saad.Dev
+              Admin Portal
             </span>
           </div>
         )}

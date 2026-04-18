@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { 
-  Mic2, 
-  Users, 
-  Calendar, 
-  MapPin, 
+import {
+  Mic2,
+  Users,
+  Calendar,
+  MapPin,
   ArrowLeft,
   ExternalLink,
   Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { useEvents } from "@/shared/hooks/useCommon";
+import { ImageCarousel } from "@/components/ui/ImageCarousel";
 
 // Event data - in real app, this would come from an API or CMS
 const eventsData: Record<string, {
@@ -136,7 +139,26 @@ const roleColors: Record<string, string> = {
 
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const event = id ? eventsData[id] : null;
+  const { data: firestoreEvents = [] } = useEvents();
+
+  // Prefer Firestore event (matched by id), fall back to hardcoded data
+  const firestoreEvent = firestoreEvents.find((e) => e.id === id);
+  const legacyEvent = id ? eventsData[id] : null;
+
+  // Normalise to a common shape for rendering
+  const event = firestoreEvent
+    ? {
+        ...firestoreEvent,
+        role: (firestoreEvent as any).role ?? firestoreEvent.type ?? '',
+        fullDescription: firestoreEvent.description,
+        // merge images[] and legacy image field
+        gallery: firestoreEvent.images && firestoreEvent.images.length > 0
+          ? firestoreEvent.images
+          : firestoreEvent.image ? [firestoreEvent.image] : [],
+        highlights: (firestoreEvent as any).highlights ?? [],
+        attendees: (firestoreEvent as any).attendees,
+      }
+    : legacyEvent;
 
   if (!event) {
     return (
@@ -166,11 +188,13 @@ const EventDetailPage = () => {
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={event.image}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
+          {(event.image || (event.gallery && event.gallery[0])) && (
+            <img
+              src={event.image ?? event.gallery![0]}
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
         
@@ -261,40 +285,44 @@ const EventDetailPage = () => {
               </motion.div>
 
               {/* Photo Gallery */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <div className="flex items-center gap-2 mb-6">
-                  <ImageIcon className="w-5 h-5 text-accent" />
-                  <h3 className="font-display text-xl font-semibold text-foreground">
-                    Event Gallery
-                  </h3>
-                  <span className="text-sm text-muted-foreground">
-                    ({event.gallery.length} photos)
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {(event.gallery || []).slice(0, 10).map((img, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.1 * index }}
-                      className="relative aspect-square overflow-hidden rounded-lg group cursor-pointer"
-                    >
-                      <img
-                        src={img}
-                        alt={`${event.title} - Photo ${index + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300" />
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+              {event.gallery && event.gallery.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <ImageIcon className="w-5 h-5 text-accent" />
+                    <h3 className="font-display text-xl font-semibold text-foreground">
+                      Event Gallery
+                    </h3>
+                    <span className="text-sm text-muted-foreground">
+                      ({event.gallery.length} photo{event.gallery.length !== 1 ? 's' : ''})
+                    </span>
+                  </div>
+
+                  {/* Swipeable carousel with lightbox */}
+                  <ImageCarousel
+                    images={event.gallery}
+                    alt={event.title}
+                    className="rounded-2xl overflow-hidden"
+                  />
+
+                  {/* Scrollable thumbnail strip for multiple images */}
+                  {event.gallery.length > 1 && (
+                    <div className="flex gap-2 mt-3 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-white/10">
+                      {event.gallery.map((img, i) => (
+                        <img
+                          key={i}
+                          src={img}
+                          alt={`${event.title} thumbnail ${i + 1}`}
+                          className="h-16 w-24 flex-shrink-0 object-cover rounded-lg border border-border opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
             </div>
 
             {/* Sidebar */}

@@ -8,6 +8,24 @@ export const useHackathons = () =>
     queryFn:  () => CommonService.getHackathons(),
   });
 
+export const useEducation = () =>
+  useQuery({
+    queryKey: ['education'],
+    queryFn:  () => CommonService.getEducation(),
+  });
+
+export const useVolunteer = () =>
+  useQuery({
+    queryKey: ['volunteer'],
+    queryFn:  () => CommonService.getVolunteerExperience(),
+  });
+
+export const useEvents = () =>
+  useQuery({
+    queryKey: ['events'],
+    queryFn:  () => CommonService.getEvents(),
+  });
+
 export const useExperience = () =>
   useQuery({
     queryKey: queryKeys.experience.all,
