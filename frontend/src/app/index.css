@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -543,31 +543,73 @@
     transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* ADMIN PANEL: DM Sans as the base font for all admin routes */
+  /* ─────────────────────────────────────────────────────────────────
+     ADMIN PANEL — EDITORIAL DEEP NAVY THEME
+     Typography: Playfair Display (headings) + DM Sans (body/UI)
+     Palette: Deep navy backgrounds · Warm ivory text · Editorial gold
+  ───────────────────────────────────────────────────────────────── */
+
+  /* Admin-scoped CSS custom properties */
+  .admin-panel {
+    --admin-bg:             #080C18;
+    --admin-sidebar:        #0C1121;
+    --admin-surface:        #101726;
+    --admin-surface-hover:  #151F2E;
+    --admin-border:         rgba(255, 255, 255, 0.055);
+    --admin-border-strong:  rgba(255, 255, 255, 0.105);
+    --admin-ivory:          #EDE9E3;
+    --admin-ivory-60:       rgba(237, 233, 227, 0.60);
+    --admin-ivory-40:       rgba(237, 233, 227, 0.40);
+    --admin-ivory-25:       rgba(237, 233, 227, 0.25);
+    --admin-gold:           #C4A86A;
+    --admin-gold-bg:        rgba(196, 168, 106, 0.08);
+    --admin-gold-border:    rgba(196, 168, 106, 0.20);
+  }
+
+  /* DM Sans for all admin UI elements */
   .admin-panel,
   .admin-panel * {
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
+  /* Playfair Display for admin headings and editorial labels */
+  .admin-panel h1,
+  .admin-panel h2,
+  .admin-panel h3,
+  .admin-panel h4,
+  .admin-panel h5,
+  .admin-panel h6,
+  .admin-panel .admin-editorial {
+    font-family: 'Playfair Display', Georgia, serif !important;
+  }
+
   /* Admin TipTap editor content styling */
   .admin-panel .ProseMirror h2 {
-    @apply text-xl font-black text-white mt-6 mb-2;
+    font-family: 'Playfair Display', Georgia, serif !important;
+    @apply text-xl font-semibold mt-6 mb-2;
+    color: var(--admin-ivory);
   }
   .admin-panel .ProseMirror h3 {
-    @apply text-lg font-bold text-white mt-5 mb-2;
+    font-family: 'Playfair Display', Georgia, serif !important;
+    @apply text-lg font-semibold mt-5 mb-2;
+    color: var(--admin-ivory);
   }
   .admin-panel .ProseMirror p {
-    @apply mb-3 text-white/80 leading-relaxed;
+    @apply mb-3 leading-relaxed;
+    color: var(--admin-ivory-60);
   }
   .admin-panel .ProseMirror ul,
   .admin-panel .ProseMirror ol {
-    @apply mb-3 pl-5 text-white/80;
+    @apply mb-3 pl-5;
+    color: var(--admin-ivory-60);
   }
   .admin-panel .ProseMirror hr {
-    @apply border-white/10 my-5;
+    border-color: var(--admin-border);
+    @apply my-5;
   }
   .admin-panel .ProseMirror .is-editor-empty::before {
     content: attr(data-placeholder);
-    @apply text-white/25 pointer-events-none float-left h-0;
+    color: var(--admin-ivory-25);
+    @apply pointer-events-none float-left h-0;
   }
 }
