@@ -303,15 +303,22 @@ export class CommonService {
     subject?: string;
     message: string;
   }): Promise<void> {
-    const res = await fetch("/api/contact", {
+    // Save directly to Firestore so messages are always captured
+    await addDoc(collection(db, COLLECTIONS.messages), {
+      name:       data.name.trim(),
+      email:      data.email.trim(),
+      subject:    data.subject?.trim() ?? "",
+      message:    data.message.trim(),
+      created_at: serverTimestamp(),
+      read:       false,
+    });
+
+    // Fire-and-forget to /api/contact for email notification
+    fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({}));
-      throw new Error(json?.error ?? "Failed to send message");
-    }
+    }).catch(() => {/* email notification optional */});
   }
 
   // ── Admin Messages (contact submissions) ────────────────────────
