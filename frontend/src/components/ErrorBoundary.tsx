@@ -18,12 +18,16 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI.
     return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    // Auto-reload when a lazy-loaded chunk fails (stale deployment cache)
+    if (error.message?.includes("Failed to fetch dynamically imported module") ||
+        error.message?.includes("Importing a module script failed")) {
+      window.location.reload();
+    }
   }
 
   public render() {
