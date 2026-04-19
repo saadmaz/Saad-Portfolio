@@ -1,12 +1,13 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
     {
-      "source": "/((?!sitemap\\.xml|robots\\.txt|favicon\\.ico|logo\\.png|profile-photo\\.png|Certificates/.*|Logo/.*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
