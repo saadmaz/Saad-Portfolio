@@ -11,7 +11,7 @@ import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, Exter
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge";
-import { educationList } from "@/data/education";
+import { educationList } from "@/data/personal/education";
 import { languages, volunteer, sports, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
 import { useHackathons, useVolunteer } from "@/shared/hooks/useCommon";
