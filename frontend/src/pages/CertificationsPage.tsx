@@ -5,7 +5,7 @@ import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X } from
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { dataManager, Certificate } from "@/shared/lib/dataManager";
+import { dataManager } from "@/shared/lib/dataManager";
 
 interface Certificate {
   id: string;
@@ -142,8 +142,8 @@ const CertificationsPage = () => {
                 </div>
               </div>
 
-              {/* Cards grid — 3-col, 16px gap, fixed height */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
+              {/* Cards grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <AnimatePresence mode="popLayout">
                   {displayedCertificates.map((cert, index) => (
                     <motion.div
@@ -153,50 +153,35 @@ const CertificationsPage = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.97 }}
                       transition={{ duration: 0.25, delay: index * 0.04 }}
-                      style={{ height: 220 }}
+                      className="h-[250px]"
                     >
                       <Link to={`/certifications/${cert.id}`} className="group block h-full">
-                        {/* Card: fixed 220px, all content clips inside */}
-                        <div
-                          className="relative h-full bg-card overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-px"
-                          style={{
-                            borderRadius: 12,
-                            border: "1px solid hsl(var(--border))",
-                            borderLeft: "3px solid #0a66c2",
-                          }}
-                        >
-                          {/* Inner body: 16px padding, flex col, gap-2 between rows */}
-                          <div
-                            className="flex flex-col h-full overflow-hidden"
-                            style={{ padding: 16 }}
-                          >
-                            {/* ── HEADER: logo · title stack · org+badge ── */}
-                            <div className="flex items-center gap-2.5" style={{ marginBottom: 8 }}>
-                              {/* Logo 40×40 */}
-                              <div
-                                className="shrink-0 rounded-lg bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden"
-                                style={{ width: 40, height: 40 }}
-                              >
-                                {cert.issuer_logo ? (
-                                  <img
-                                    src={cert.issuer_logo}
-                                    alt={cert.issuer}
-                                    style={{ width: 26, height: 26, objectFit: "contain" }}
-                                  />
-                                ) : (
-                                  <Award className="w-5 h-5 text-accent" />
-                                )}
+                        <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-px">
+
+                          {/* Emerald left accent — hover only */}
+                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10" />
+
+                          {/* Body */}
+                          <div className="flex flex-col h-full overflow-hidden p-5">
+
+                            {/* Header: logo + title + org + badge */}
+                            <div className="flex items-start gap-3 mb-3">
+                              {/* Logo 48×48 */}
+                              <div className="shrink-0 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden" style={{ width: 48, height: 48 }}>
+                                {cert.issuer_logo
+                                  ? <img src={cert.issuer_logo} alt={cert.issuer} className="object-contain" style={{ width: 32, height: 32 }} />
+                                  : <Award className="w-6 h-6 text-accent" />
+                                }
                               </div>
 
-                              {/* Title + org — vertical stack */}
+                              {/* Title + org stack */}
                               <div className="flex-1 min-w-0">
                                 <h3
-                                  className="text-foreground group-hover:text-accent transition-colors duration-150"
+                                  className="text-foreground font-semibold group-hover:text-accent transition-colors duration-150"
                                   style={{
-                                    fontSize: 13,
-                                    fontWeight: 600,
+                                    fontSize: 15,
                                     lineHeight: 1.35,
-                                    marginBottom: 2,
+                                    marginBottom: 4,
                                     display: "-webkit-box",
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: "vertical",
@@ -205,23 +190,16 @@ const CertificationsPage = () => {
                                 >
                                   {cert.title}
                                 </h3>
-                                {/* Org + badge — single row */}
-                                <div className="flex items-center gap-1.5 overflow-hidden">
-                                  <span
-                                    className="text-muted-foreground truncate shrink"
-                                    style={{ fontSize: 11, lineHeight: 1 }}
-                                  >
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="text-muted-foreground truncate" style={{ fontSize: 11 }}>
                                     {cert.issuer}
                                   </span>
                                   {cert.is_verifiable && (
                                     <span
                                       className="shrink-0 flex items-center gap-1 text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full whitespace-nowrap"
-                                      style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px" }}
+                                      style={{ fontSize: 10, fontWeight: 600, padding: "2px 7px", lineHeight: 1.4 }}
                                     >
-                                      <span
-                                        className="rounded-full bg-emerald-500"
-                                        style={{ width: 5, height: 5, display: "inline-block" }}
-                                      />
+                                      <span className="rounded-full bg-emerald-500 inline-block" style={{ width: 5, height: 5 }} />
                                       Verified
                                     </span>
                                   )}
@@ -229,13 +207,12 @@ const CertificationsPage = () => {
                               </div>
                             </div>
 
-                            {/* ── DESCRIPTION ── */}
+                            {/* Description — 2 lines */}
                             <p
                               className="text-muted-foreground"
                               style={{
                                 fontSize: 11,
-                                lineHeight: 1.5,
-                                marginBottom: 8,
+                                lineHeight: 1.55,
                                 display: "-webkit-box",
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: "vertical",
@@ -245,57 +222,49 @@ const CertificationsPage = () => {
                               {cert.description}
                             </p>
 
-                            {/* ── TAGS — single row, clips overflow ── */}
-                            <div
-                              className="flex overflow-hidden"
-                              style={{ gap: 6, flexWrap: "nowrap", maxHeight: 22 }}
-                            >
-                              {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
-                                <span
-                                  key={idx}
-                                  className="shrink-0 text-muted-foreground whitespace-nowrap"
-                                  style={{
-                                    fontSize: 10,
-                                    fontWeight: 500,
-                                    padding: "2px 8px",
-                                    borderRadius: 20,
-                                    border: "0.5px solid hsl(var(--border))",
-                                    lineHeight: "16px",
-                                  }}
-                                >
-                                  {item}
-                                </span>
-                              ))}
-                            </div>
-
-                            {/* ── FOOTER — pinned to bottom ── */}
-                            <div
-                              className="flex items-center justify-between"
-                              style={{
-                                marginTop: "auto",
-                                paddingTop: 8,
-                                borderTop: "0.5px solid hsl(var(--border))",
-                              }}
-                            >
-                              <div className="flex items-center gap-1.5 text-muted-foreground" style={{ fontSize: 11 }}>
-                                <Calendar style={{ width: 12, height: 12 }} />
-                                <span>{formatDate(cert.issue_date)}</span>
+                            {/* Tags + Footer — pushed to bottom together */}
+                            <div className="mt-auto">
+                              {/* Tags row — single line, clips overflow */}
+                              <div className="flex overflow-hidden mb-3" style={{ gap: 6, flexWrap: "nowrap", maxHeight: 22 }}>
+                                {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
+                                  <span
+                                    key={idx}
+                                    className="shrink-0 text-muted-foreground whitespace-nowrap"
+                                    style={{
+                                      fontSize: 10,
+                                      fontWeight: 500,
+                                      padding: "2px 8px",
+                                      borderRadius: 20,
+                                      border: "0.5px solid hsl(var(--border))",
+                                      lineHeight: "16px",
+                                    }}
+                                  >
+                                    {item}
+                                  </span>
+                                ))}
                               </div>
 
-                              {cert.credential_url && (
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    window.open(cert.credential_url, "_blank");
-                                  }}
-                                  className="flex items-center gap-1 bg-foreground text-background hover:bg-foreground/85 transition-all active:scale-95 rounded-lg"
-                                  style={{ fontSize: 11, fontWeight: 600, padding: "4px 12px" }}
-                                >
-                                  Verify <ExternalLink style={{ width: 11, height: 11 }} />
-                                </button>
-                              )}
+                              {/* Footer */}
+                              <div
+                                className="flex items-center justify-between"
+                                style={{ paddingTop: 10, borderTop: "0.5px solid hsl(var(--border))" }}
+                              >
+                                <div className="flex items-center gap-1.5 text-muted-foreground" style={{ fontSize: 11 }}>
+                                  <Calendar style={{ width: 12, height: 12 }} />
+                                  <span>{formatDate(cert.issue_date)}</span>
+                                </div>
+                                {cert.credential_url && (
+                                  <button
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(cert.credential_url, "_blank"); }}
+                                    className="flex items-center gap-1 bg-foreground text-background hover:bg-foreground/85 transition-all active:scale-95 rounded-lg"
+                                    style={{ fontSize: 11, fontWeight: 600, padding: "4px 12px" }}
+                                  >
+                                    Verify <ExternalLink style={{ width: 11, height: 11 }} />
+                                  </button>
+                                )}
+                              </div>
                             </div>
+
                           </div>
                         </div>
                       </Link>
