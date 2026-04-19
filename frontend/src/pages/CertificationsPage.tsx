@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,6 +82,11 @@ const CertificationsPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Certifications | Saad Mazhar's Professional Credentials"
+        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA."
+        url="https://saadmaz.com/certifications"
+      />
       <section className="section-padding">
         <div className="section-container" style={{ boxSizing: "border-box", overflowX: "hidden" }}>
 

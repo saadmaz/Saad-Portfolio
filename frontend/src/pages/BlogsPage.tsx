@@ -88,8 +88,8 @@ const BlogsPage: React.FC = () => {
   return (
     <div className="blogs-page">
       <SEO
-        title="Blog"
-        description="Thoughts, tutorials, and insights from Saad Mazhar - covering startups, full-stack development, AI, and the Sri Lanka tech scene."
+        title="Blog | Startups, AI & Developer Insights by Saad Mazhar"
+        description="Thoughts, tutorials, and real-world insights from Saad Mazhar — covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem."
         url="https://saadmaz.com/blog"
       />
       <div className="blogs-page-container">

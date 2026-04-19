@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import skillsData from "@/data/skills.json";
 
 interface Skill {
@@ -32,6 +33,11 @@ const SkillsOnlyPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Skills | Saad Mazhar's Technical Stack & Expertise"
+        description="Explore the full technical skill set of Saad Mazhar — proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka."
+        url="https://saadmaz.com/skills"
+      />
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}

@@ -35,8 +35,8 @@ const ContactPage = () => {
   return (
     <Layout>
       <SEO
-        title="Contact"
-        description="Get in touch with Saad Mazhar. Available for projects, collaborations, speaking engagements, and consulting. Based in Colombo, Sri Lanka."
+        title="Contact Saad Mazhar | Hire a Freelance Developer in Sri Lanka"
+        description="Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting — based in Colombo, Sri Lanka."
         url="https://saadmaz.com/contact"
       />
       <section className="section-padding">

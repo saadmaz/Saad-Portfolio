@@ -75,16 +75,31 @@ const ProjectDetailPage = () => {
     "@type": "SoftwareApplication",
     name: project.title,
     description: project.tagline || project.overview,
-    url: project.liveUrl,
+    url: project.liveUrl || `https://saadmaz.com/projects/${project.slug}`,
     image: project.heroImage,
-    author: { "@type": "Person", name: "Saad Mazhar" },
+    applicationCategory: project.category || "WebApplication",
+    operatingSystem: "Web",
+    author: {
+      "@type": "Person",
+      name: "Saad Mazhar",
+      url: "https://saadmaz.com",
+      address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
+    },
+    keywords: project.technologies?.join(", "),
+    dateCreated: project.startDate,
   };
 
   return (
     <Layout>
       <SEO
-        title={project.title}
-        description={project.tagline || project.overview || `${project.title} - a project by Saad Mazhar`}
+        title={`${project.title} | Project by Saad Mazhar`}
+        description={
+          project.tagline
+            ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} A project by Saad Mazhar, full-stack developer based in Sri Lanka.`
+            : project.overview
+            ? `${project.overview} Built by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
+            : `${project.title} — a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
+        }
         image={project.heroImage}
         url={`https://saadmaz.com/projects/${project.slug}`}
         structuredData={projectSchema}

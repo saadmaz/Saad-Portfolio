@@ -33,6 +33,8 @@ const Index = () => {
   return (
     <Layout>
       <SEO
+        title="Saad Mazhar | Startup Founder, Tech Speaker & Full-Stack Developer in Sri Lanka"
+        description="Portfolio of Saad Mazhar — startup founder, tech speaker, and full-stack developer based in Colombo, Sri Lanka. Building AI-powered products, web apps, and mobile solutions that create real-world impact."
         url="https://saadmaz.com"
         structuredData={PERSON_SCHEMA}
       />

@@ -34,13 +34,26 @@ export default function BlogDetailPage() {
 
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: title,
     description: excerpt,
     image: coverImage,
-    author: { "@type": "Person", name: author },
+    author: {
+      "@type": "Person",
+      name: author,
+      url: "https://saadmaz.com",
+      address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Saad Mazhar",
+      url: "https://saadmaz.com",
+    },
     datePublished: publishedDate,
     url: `https://saadmaz.com/blog/${slug}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://saadmaz.com/blog/${slug}` },
+    keywords: tags?.join(", "),
+    inLanguage: "en",
   };
 
   return (

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 
 import { dataManager, WorkExperience } from "@/shared/lib/dataManager";
@@ -9,6 +10,11 @@ const experiences: WorkExperience[] = dataManager.getWorkExperience();
 const ExperiencePage = () => {
   return (
     <Layout>
+      <SEO
+        title="Work Experience | Saad Mazhar's Professional Journey in Sri Lanka"
+        description="A timeline of Saad Mazhar's professional experience — from internships to founding startups in Sri Lanka. Full-stack development, AI, product management and leadership roles."
+        url="https://saadmaz.com/experience"
+      />
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}

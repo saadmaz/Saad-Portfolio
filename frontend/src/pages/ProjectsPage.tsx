@@ -34,8 +34,8 @@ const ProjectsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Projects"
-        description="Browse all projects built by Saad Mazhar - web apps, mobile solutions, AI integrations and startup products."
+        title="Projects | AI, Web & Mobile Apps by Saad Mazhar"
+        description="Explore projects built by Saad Mazhar — full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka."
         url="https://saadmaz.com/projects"
       />
       <section className="section-padding">
