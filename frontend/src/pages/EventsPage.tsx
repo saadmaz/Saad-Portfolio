@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { 
   Mic2, 
@@ -128,7 +128,7 @@ const EventsPage = () => {
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -142,10 +142,10 @@ const EventsPage = () => {
               From hosting tech conferences to speaking at industry events,
               building community, sharing knowledge, and connecting with brilliant minds.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Filters */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -165,13 +165,13 @@ const EventsPage = () => {
                 {filter.label}
               </button>
             ))}
-          </motion.div>
+          </m.div>
 
           {/* Events Grid */}
           <div className="space-y-8">
             <AnimatePresence mode="popLayout">
               {filteredEvents.map((event, index) => (
-                <motion.div
+                <m.div
                   key={event.id}
                   layout
                   initial={{ opacity: 0, y: 30 }}
@@ -249,7 +249,7 @@ const EventsPage = () => {
                             
                             <AnimatePresence>
                               {expandedEvent === event.id && (
-                                <motion.div
+                                <m.div
                                   initial={{ height: 0, opacity: 0 }}
                                   animate={{ height: "auto", opacity: 1 }}
                                   exit={{ height: 0, opacity: 0 }}
@@ -266,7 +266,7 @@ const EventsPage = () => {
                                       />
                                     ))}
                                   </div>
-                                </motion.div>
+                                </m.div>
                               )}
                             </AnimatePresence>
                           </div>
@@ -274,7 +274,7 @@ const EventsPage = () => {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </AnimatePresence>
           </div>

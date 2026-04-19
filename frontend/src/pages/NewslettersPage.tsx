@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { TrendingUp, Rocket, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -108,13 +108,13 @@ const NewslettersPage = () => {
         <div className="section-container">
           
           {/* HEADER SECTION */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
             <span className="section-title">Knowledge Hub</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">Newsletters</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
               I curate high-signal insights for the Sri Lankan ecosystem. Stay ahead with financial mechanics and raw founder journeys.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* NEWSLETTER CARDS GRID */}
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -122,7 +122,7 @@ const NewslettersPage = () => {
               const latestIssue = getLatestFromSource(config.id);
 
               return (
-                <motion.div
+                <m.div
                   key={config.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -190,13 +190,13 @@ const NewslettersPage = () => {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               );
             })}
           </div>
 
           {/* BOTTOM ARCHIVE SECTION: Individualized buttons for both newsletters */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -215,7 +215,7 @@ const NewslettersPage = () => {
                 </Button>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </section>

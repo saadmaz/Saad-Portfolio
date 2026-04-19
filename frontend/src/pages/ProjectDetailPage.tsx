@@ -4,7 +4,7 @@ import { useProject } from "@/shared/hooks/useProjects";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { 
   ExternalLink, Github, ChevronLeft, PlayCircle, 
   FileText, CheckCircle2, Zap, Trophy, Target, AlertCircle,
@@ -117,7 +117,7 @@ const ProjectDetailPage = () => {
             <span className="text-foreground font-semibold truncate max-w-[200px]">{project.title}</span>
           </nav>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -507,7 +507,7 @@ const ProjectDetailPage = () => {
 
               </aside>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -517,7 +517,7 @@ const ProjectDetailPage = () => {
       {/* AnimatePresence allows framer-motion to animate elements as they are removed from the DOM */}
       <AnimatePresence>
         {selectedImage && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -533,7 +533,7 @@ const ProjectDetailPage = () => {
             </button>
             
             {/* The Enlarged Image */}
-            <motion.img
+            <m.img
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -543,7 +543,7 @@ const ProjectDetailPage = () => {
               className="max-w-full max-h-full object-contain rounded-xl shadow-2xl cursor-default"
               onClick={(e) => e.stopPropagation()} // Prevents closing if the user clicks the image itself
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </Layout>

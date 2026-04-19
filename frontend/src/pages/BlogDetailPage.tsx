@@ -1,6 +1,6 @@
 import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useBlogPost } from "../shared/hooks/useBlog";
 import { ArrowLeft, Calendar, User, Edit, ChevronRight } from "lucide-react";
 import { Layout } from "../components/layout/Layout";
@@ -69,7 +69,7 @@ export default function BlogDetailPage() {
       <article className="blog-detail-page">
         <div className="blog-detail-container">
           {/* Breadcrumb */}
-          <motion.nav
+          <m.nav
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             aria-label="Breadcrumb"
@@ -80,11 +80,11 @@ export default function BlogDetailPage() {
             <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
             <ChevronRight className="w-3 h-3 opacity-40" />
             <span className="text-foreground font-semibold truncate max-w-[220px]">{title}</span>
-          </motion.nav>
+          </m.nav>
 
           {/* Cover Image */}
           {coverImage && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -95,11 +95,11 @@ export default function BlogDetailPage() {
                 alt={title}
                 className="blog-cover-image"
               />
-            </motion.div>
+            </m.div>
           )}
 
           {/* Blog Header */}
-          <motion.header
+          <m.header
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -136,10 +136,10 @@ export default function BlogDetailPage() {
                 ))}
               </div>
             )}
-          </motion.header>
+          </m.header>
 
           {/* Content */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -148,7 +148,7 @@ export default function BlogDetailPage() {
             <div className="blog-content">
               {content}
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </article>
 

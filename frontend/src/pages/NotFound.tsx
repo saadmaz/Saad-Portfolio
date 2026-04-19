@@ -10,7 +10,7 @@
 
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Home, Briefcase, Mail, BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -43,7 +43,7 @@ const NotFound = () => {
         <div className="relative z-10 text-center max-w-lg w-full">
 
           {/* Giant 404 */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -64,20 +64,20 @@ const NotFound = () => {
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-48 h-24 bg-accent/20 blur-3xl rounded-full" />
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Heading */}
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.4 }}
             className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3"
           >
             Lost in the void
-          </motion.h1>
+          </m.h1>
 
           {/* Subtext */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.4 }}
@@ -88,18 +88,18 @@ const NotFound = () => {
               {location.pathname}
             </code>{" "}
             doesn't exist.
-          </motion.p>
-          <motion.p
+          </m.p>
+          <m.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.4 }}
             className="text-sm text-muted-foreground mb-10"
           >
             It may have been moved, deleted, or never existed in the first place.
-          </motion.p>
+          </m.p>
 
           {/* Primary CTA */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38, duration: 0.4 }}
@@ -111,10 +111,10 @@ const NotFound = () => {
                 Back to Home
               </Link>
             </Button>
-          </motion.div>
+          </m.div>
 
           {/* Quick nav grid */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.48, duration: 0.4 }}
@@ -136,7 +136,7 @@ const NotFound = () => {
                 </Link>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@
 
 // --- Dependencies ---
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal } from "lucide-react";
@@ -60,13 +60,13 @@ const AboutPage = () => {
         <div className="section-container">
           
           {/* --- PAGE HEADER --- */}
-          {/* motion.div: Uses initial/animate props to create a "rising fade" entry effect when the user lands on the page */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+          {/* m.div: Uses initial/animate props to create a "rising fade" entry effect when the user lands on the page */}
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <span className="section-title">About Me</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
               Beyond the Code
             </h1>
-          </motion.div>
+          </m.div>
 
           {/* --- EDUCATION SECTION --- */}
           <div className="mb-16" id="education">
@@ -87,8 +87,8 @@ const AboutPage = () => {
                 .sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())
                 .map((edu, index) => (
                   <EducationDialog key={index} education={edu}>
-                    {/* motion.div: adds a micro-interaction (scale 1.01) on hover to indicate the card is clickable */}
-                    <motion.div
+                    {/* m.div: adds a micro-interaction (scale 1.01) on hover to indicate the card is clickable */}
+                    <m.div
                       whileHover={{ scale: 1.01 }}
                       className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
                     >
@@ -143,7 +143,7 @@ const AboutPage = () => {
                           <p className="text-sm text-muted-foreground pt-2 italic">Click to view details</p>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   </EducationDialog>
                 ))}
             </div>
@@ -265,7 +265,7 @@ const AboutPage = () => {
 
           {/* --- HACKATHONS SECTION --- */}
           {!hackLoading && hackathons.length > 0 && (
-            <motion.div
+            <m.div
               id="hackathons"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -284,7 +284,7 @@ const AboutPage = () => {
 
               <div className="grid md:grid-cols-2 gap-5">
                 {hackathons.map((hack, i) => (
-                  <motion.div
+                  <m.div
                     key={hack.id}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -352,10 +352,10 @@ const AboutPage = () => {
                         )}
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           )}
 
         </div>

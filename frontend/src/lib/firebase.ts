@@ -21,7 +21,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
 
 // ─── Firebase project config ────────────────────────────────────
 // These are PUBLIC identifiers - safe to ship in the browser bundle.
@@ -40,8 +39,7 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 // ─── Service exports ─────────────────────────────────────────────
-export const auth    = getAuth(app);       // Firebase Auth
-export const db      = getFirestore(app);  // Firestore database
-export const storage = getStorage(app);    // Cloud Storage for uploads
+export const auth = getAuth(app);      // Firebase Auth
+export const db   = getFirestore(app); // Firestore database
 
 export default app;

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { useState } from "react";
@@ -41,7 +41,7 @@ const ProjectsPage = () => {
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -55,10 +55,10 @@ const ProjectsPage = () => {
               A collection of projects ranging from web applications to CLI tools.
               Each one represents a problem I wanted to solve or a technology I wanted to explore.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Filters */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -76,12 +76,12 @@ const ProjectsPage = () => {
                 {category}
               </button>
             ))}
-          </motion.div>
+          </m.div>
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
             {filteredProjects.map((project, index) => (
-              <motion.div
+              <m.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -89,7 +89,7 @@ const ProjectsPage = () => {
                 className="group"
               >
                 <ProjectCard project={project} />
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

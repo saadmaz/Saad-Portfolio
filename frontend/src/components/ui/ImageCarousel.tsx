@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { LightboxModal } from './LightboxModal';
 
 interface ImageCarouselProps {
@@ -56,7 +56,7 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
           onClick={() => setLightboxOpen(true)}
         >
           <AnimatePresence initial={false} custom={direction}>
-            <motion.img
+            <m.img
               key={current}
               custom={direction}
               variants={variants}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import skillsData from "@/data/skills.json";
@@ -41,7 +41,7 @@ const SkillsOnlyPage = () => {
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -55,7 +55,7 @@ const SkillsOnlyPage = () => {
               A comprehensive overview of my expertise across multiple domains.
               I'm continuously learning and expanding my capabilities.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Loading State */}
           {loading && (
@@ -70,7 +70,7 @@ const SkillsOnlyPage = () => {
           {!loading && skillCategories.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {skillCategories.map((category, index) => (
-                <motion.div
+                <m.div
                   key={category.category}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ const SkillsOnlyPage = () => {
                       ))}
                     </ul>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           )}

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useCallback } from 'react';
 
@@ -37,7 +37,7 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -63,7 +63,7 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
           )}
 
           {/* Image */}
-          <motion.img
+          <m.img
             key={images[currentIndex]}
             initial={{ scale: 0.92, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -97,7 +97,7 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
               ))}
             </div>
           )}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { m, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 // ─── Letter-by-letter span builder ───────────────────────────────────────────
 function AnimatedName({ name }: { name: string }) {
   return (
-    <motion.span
+    <m.span
       initial="hidden"
       animate="visible"
       variants={{
@@ -19,7 +19,7 @@ function AnimatedName({ name }: { name: string }) {
       className="relative inline-block"
     >
       {name.split("").map((char, i) => (
-        <motion.span
+        <m.span
           key={i}
           variants={{
             hidden: { opacity: 0, letterSpacing: "-0.08em", y: 8 },
@@ -34,16 +34,16 @@ function AnimatedName({ name }: { name: string }) {
           style={{ whiteSpace: char === " " ? "pre" : "normal" }}
         >
           {char}
-        </motion.span>
+        </m.span>
       ))}
       {/* Teal underline accent */}
-      <motion.span
+      <m.span
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ delay: 0.9, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-2 bg-accent/25 origin-left -z-0"
       />
-    </motion.span>
+    </m.span>
   );
 }
 
@@ -108,7 +108,7 @@ export function HeroSection() {
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
 
             {/* Status badges row */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -124,34 +124,34 @@ export function HeroSection() {
                 <Briefcase className="w-3.5 h-3.5" />
                 Open to Opportunities
               </span> */}
-            </motion.div>
+            </m.div>
 
             {/* Heading: "Hi, I'm" fades, then name tracks in letter-by-letter */}
             <div className="space-y-4">
               <h1 className="font-display whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
-                <motion.span
+                <m.span
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                   className="inline-block mr-2"
                 >
                   Hi, I'm
-                </motion.span>{" "}
+                </m.span>{" "}
                 <AnimatedName name="Saad Mazhar" />
               </h1>
 
-              <motion.p
+              <m.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.7 }}
                 className="whitespace-nowrap text-base sm:text-lg md:text-2xl text-muted-foreground font-light"
               >
                 • Startup Founder • Tech Speaker • Compere
-              </motion.p>
+              </m.p>
             </div>
 
             {/* Body copy */}
-            <motion.p
+            <m.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.85 }}
@@ -159,10 +159,10 @@ export function HeroSection() {
             >
               I build solutions that solve real problems. Passionate about the intersection
               of technology, design, and business. Always learning, always shipping.
-            </motion.p>
+            </m.p>
 
             {/* CTA Buttons */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.0 }}
@@ -198,10 +198,10 @@ export function HeroSection() {
                   <span>Resume</span>
                 </a>
               </Button>
-            </motion.div>
+            </m.div>
 
             {/* Social Icons with custom bounce effect */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.15 }}
@@ -210,7 +210,7 @@ export function HeroSection() {
               <span className="text-sm text-muted-foreground">Connect with me:</span>
               <div className="flex flex-wrap justify-center gap-2">
                 {socials.map((social, i) => (
-                  <motion.a
+                  <m.a
                     key={i}
                     href={social.href}
                     target="_blank"
@@ -225,14 +225,14 @@ export function HeroSection() {
                     whileTap={{ scale: 0.92 }}
                   >
                     <social.icon className="w-5 h-5" />
-                  </motion.a>
+                  </m.a>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* ── RIGHT COLUMN: Photo ─────────────────────────────────────────── */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.3 }}
@@ -249,12 +249,12 @@ export function HeroSection() {
               <div className="absolute -top-8 -left-8 w-48 h-48 md:w-72 md:h-72 bg-accent/15 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-64 md:h-64 bg-accent/10 rounded-full blur-2xl" />
 
-              <motion.div style={{ rotateX, rotateY }} className="relative">
+              <m.div style={{ rotateX, rotateY }} className="relative">
                 {/* Main photo card */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border border-accent/20 group"
                   style={{ boxShadow: "0 0 0 1px hsl(174 72% 44% / 0.15), 0 20px 40px -10px hsl(196 60% 4% / 0.4)" }}
                 >
-                  <motion.img
+                  <m.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -264,7 +264,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Stats card (bottom-left) */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
@@ -282,10 +282,10 @@ export function HeroSection() {
                       <p className="text-[10px] md:text-xs text-muted-foreground">Projects</p>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
 
                 {/* Innovation card (top-right) */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.8 }}
@@ -303,10 +303,10 @@ export function HeroSection() {
                       <p className="text-[8px] md:text-[10px] text-muted-foreground truncate">TankSudda &amp; Stopwash</p>
                     </div>
                   </div>
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

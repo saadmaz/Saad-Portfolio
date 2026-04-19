@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Calendar, Building, MapPin, ExternalLink } from "lucide-react";
@@ -18,7 +18,7 @@ const ExperiencePage = () => {
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -32,7 +32,7 @@ const ExperiencePage = () => {
               A timeline of my professional experience, from internships to founding startups. 
               Each role has shaped my approach to building products.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Experience Timeline */}
           <div className="relative">
@@ -40,7 +40,7 @@ const ExperiencePage = () => {
             <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-border hidden md:block" />
 
             {experiences.map((exp, index) => (
-              <motion.div
+              <m.div
                 key={exp.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -140,7 +140,7 @@ const ExperiencePage = () => {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

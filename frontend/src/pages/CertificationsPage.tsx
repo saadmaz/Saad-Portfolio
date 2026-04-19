@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X } from "lucide-react";
@@ -91,7 +91,7 @@ const CertificationsPage = () => {
         <div className="section-container" style={{ boxSizing: "border-box", overflowX: "hidden" }}>
 
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -104,7 +104,7 @@ const CertificationsPage = () => {
             <p className="text-muted-foreground max-w-2xl">
               {certificates.length}+ professional certifications earned through continuous learning and industry validation.
             </p>
-          </motion.div>
+          </m.div>
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
@@ -152,7 +152,7 @@ const CertificationsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <AnimatePresence mode="popLayout">
                   {displayedCertificates.map((cert, index) => (
-                    <motion.div
+                    <m.div
                       key={cert.id}
                       layout
                       initial={{ opacity: 0, scale: 0.97 }}
@@ -274,7 +274,7 @@ const CertificationsPage = () => {
                           </div>
                         </div>
                       </Link>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </AnimatePresence>
               </div>

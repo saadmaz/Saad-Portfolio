@@ -1,11 +1,14 @@
 import {
+  getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
   type UploadTask,
 } from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import app from "@/lib/firebase";
+
+const storage = getStorage(app);
 
 /**
  * Uploads a file to Firebase Storage with real progress callbacks and a

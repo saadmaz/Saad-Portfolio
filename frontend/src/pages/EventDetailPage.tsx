@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import {
   Mic2,
@@ -198,7 +198,7 @@ const EventDetailPage = () => {
         </div>
         
         <div className="absolute bottom-0 left-0 right-0 section-container pb-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -241,7 +241,7 @@ const EventDetailPage = () => {
                 </span>
               )}
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -251,7 +251,7 @@ const EventDetailPage = () => {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -262,10 +262,10 @@ const EventDetailPage = () => {
                 <p className="text-muted-foreground leading-relaxed">
                   {event.fullDescription}
                 </p>
-              </motion.div>
+              </m.div>
 
               {/* Highlights */}
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
@@ -281,11 +281,11 @@ const EventDetailPage = () => {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </m.div>
 
               {/* Photo Gallery */}
               {event.gallery && event.gallery.length > 0 && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
@@ -320,12 +320,12 @@ const EventDetailPage = () => {
                       ))}
                     </div>
                   )}
-                </motion.div>
+                </m.div>
               )}
             </div>
 
             {/* Sidebar */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -367,7 +367,7 @@ const EventDetailPage = () => {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>

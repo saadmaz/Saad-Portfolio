@@ -5,20 +5,33 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // FIX: Changed from "./" to "/" to support deep linking/sub-routes
-  base: "/", 
+  base: "/",
   server: {
     host: "::",
     port: 8080,
-    // No proxy needed - all data fetching goes directly to Firebase SDK.
-    // The only HTTP call (/api/contact) is handled by the Vercel serverless
-    // function in frontend/api/contact.ts. During local dev, run
-    // `vercel dev` from the frontend/ folder to emulate the function locally.
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("firebase/storage")) return "vendor-firebase-storage";
+            if (id.includes("firebase"))         return "vendor-firebase";
+            if (id.includes("framer-motion"))    return "vendor-motion";
+            if (id.includes("@tanstack"))         return "vendor-query";
+            if (id.includes("@radix-ui"))         return "vendor-radix";
+            if (id.includes("@tiptap") || id.includes("prosemirror")) return "vendor-editor";
+            if (id.includes("react-router"))      return "vendor-router";
+            if (id.includes("react-dom") || id.includes("/react/")) return "vendor-react";
+          }
+        },
+      },
     },
   },
 }));

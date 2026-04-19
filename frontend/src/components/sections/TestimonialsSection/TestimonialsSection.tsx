@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Quote, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -78,7 +78,7 @@ export function TestimonialsSection() {
   return (
     <section className="section-padding">
       <div className="section-container">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -92,7 +92,7 @@ export function TestimonialsSection() {
           <p className="text-muted-foreground max-w-xl mx-auto">
             Feedback from colleagues, mentors, and collaborators I've had the pleasure of working with.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="flex justify-end gap-2 mb-6">
           <Button
@@ -119,7 +119,7 @@ export function TestimonialsSection() {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {testimonials.map((testimonial, index) => (
-            <motion.div
+            <m.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -153,7 +153,7 @@ export function TestimonialsSection() {
                   </a>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 

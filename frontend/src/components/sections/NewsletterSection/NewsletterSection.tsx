@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Send, ArrowRight, TrendingUp, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export function NewsletterSection() {
   return (
     <section className="py-16 bg-secondary/30">
       <div className="section-container"> 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -45,18 +45,18 @@ export function NewsletterSection() {
             I share insights on the Sri Lankan stock market and entrepreneurship 
             through two dedicated newsletters. Join thousands of curious minds.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
           {newsletters.map((newsletter, index) => (
-            <motion.div
+            <m.div
               key={newsletter.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
-              <motion.div
+              <m.div
                 className="bg-card rounded-xl border border-border card-hover overflow-hidden h-full flex flex-col transition-all duration-300"
                 whileHover={{ scale: 1.02, y: -4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -97,12 +97,12 @@ export function NewsletterSection() {
                     <Link to={newsletter.link}><Send className="w-4 h-4" />Subscribe Now</Link>
                   </Button>
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           ))}
         </div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -115,7 +115,7 @@ export function NewsletterSection() {
           <Button asChild variant="outline" className="btn-outline gap-2">
             <Link to="/blog">Read the Blog<ArrowRight className="w-4 h-4" /></Link>
           </Button>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export function FeaturedProjects() {
       <div className="section-container">
         
         {/* --- SECTION HEADER --- */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -57,10 +57,10 @@ export function FeaturedProjects() {
             A selection of my most impactful work. Each project represents a unique challenge 
             solved with thoughtful design and robust engineering.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* --- PROJECTS GRID --- */}
-        <motion.div
+        <m.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -68,7 +68,7 @@ export function FeaturedProjects() {
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-center"
         >
           {featuredProjects?.map((project) => (
-            <motion.div
+            <m.div
               key={project.id}
               variants={itemVariants}
               whileHover={{
@@ -80,12 +80,12 @@ export function FeaturedProjects() {
               className="group"
             >
               <ProjectCard project={project} />
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
 
         {/* --- VIEW ALL BUTTON --- */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -95,7 +95,7 @@ export function FeaturedProjects() {
           <Button asChild variant="outline" className="btn-outline gap-2">
             <Link to="/projects">View All Projects<ArrowUpRight className="w-4 h-4" /></Link>
           </Button>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

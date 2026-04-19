@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Menu, ChevronDown, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, 
   X, Moon, Sun } from "lucide-react"; 
 import {
@@ -125,9 +125,9 @@ export function Header() {
 
             <div className="hidden lg:flex items-center gap-3">
               <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all duration-300 hover:scale-110" aria-label="Toggle theme">
-                <motion.div initial={false} animate={{ rotate: theme === "dark" ? 180 : 0 }} transition={{ duration: 0.3 }}>
+                <m.div initial={false} animate={{ rotate: theme === "dark" ? 180 : 0 }} transition={{ duration: 0.3 }}>
                   {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </motion.div>
+                </m.div>
               </button>
               
               <Button asChild variant="ghost" size="sm" className="btn-accent gap-2 h-auto">
@@ -154,9 +154,9 @@ export function Header() {
 
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-[45] lg:hidden">
+          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-[45] lg:hidden">
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
-            <motion.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]">
+            <m.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]">
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -177,8 +177,8 @@ export function Header() {
                   <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><X className="w-6 h-6" /></a>
                 </div>
               </div>
-            </motion.nav>
-          </motion.div>
+            </m.nav>
+          </m.div>
         )}
       </AnimatePresence>
     </>
@@ -201,13 +201,13 @@ function MobileNavSection({ title, href, items }: { title: string; href?: string
       </button>
       <AnimatePresence>
         {isOpen && items && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+          <m.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
             <div className="pt-3 pl-4 space-y-4 border-l-2 border-accent/20 ml-1">
               {items.map((item) => (
                 <Link key={item.href} to={item.href} className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors py-1 z-[55]">{item.title}</Link>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { ArrowRight, Award, ExternalLink, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCertificates } from "@/shared/hooks/useCommon";
@@ -36,7 +36,7 @@ export function CertificatesPreview() {
       <div className="section-container">
 
         {/* ── Header ────────────────────────────────────────────── */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="mb-8"
@@ -76,11 +76,11 @@ export function CertificatesPreview() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Cards ─────────────────────────────────────────────── */}
         <AnimatePresence mode="wait">
-          <motion.div
+          <m.div
             key={page}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -208,7 +208,7 @@ export function CertificatesPreview() {
             {Array.from({ length: PER_PAGE - visible.length }).map((_, i) => (
               <div key={`pad-${i}`} style={{ height: 220 }} />
             ))}
-          </motion.div>
+          </m.div>
         </AnimatePresence>
 
         {/* ── Dot indicators (max 7 visible) ──────────────────── */}

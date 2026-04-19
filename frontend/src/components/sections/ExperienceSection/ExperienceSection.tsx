@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowUpRight, Calendar, Building, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useExperience } from "@/shared/hooks/useCommon";
@@ -20,7 +20,7 @@ export function ExperienceSection() {
     <section className="section-padding">
       <div className="section-container">
         {/* Section Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -37,12 +37,12 @@ export function ExperienceSection() {
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Experience Cards */}
         <div className="space-y-6">
           {experiences?.map((exp, index) => (
-            <motion.div
+            <m.div
               key={exp.id}
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -137,7 +137,7 @@ export function ExperienceSection() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

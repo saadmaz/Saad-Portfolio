@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -26,7 +26,7 @@ export function ContactSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           {/* ── LEFT: Info Column ──────────────────────────────────── */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -71,7 +71,7 @@ export function ContactSection() {
             </div>
 
             {/* Social Icons - Staggered entrance with spring bounce */}
-            <motion.div
+            <m.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -82,7 +82,7 @@ export function ContactSection() {
               className="flex items-center gap-3"
             >
               {socialLinks.map((social, index) => (
-                <motion.a
+                <m.a
                   key={index}
                   href={social.href}
                   target="_blank"
@@ -105,13 +105,13 @@ export function ContactSection() {
                   className="p-2.5 rounded-lg bg-white/8 border border-white/10 text-white/70 hover:text-teal-400 hover:bg-white/15 hover:border-teal-400/40 transition-colors duration-200"
                 >
                   <social.Icon className="w-5 h-5" />
-                </motion.a>
+                </m.a>
               ))}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* ── RIGHT: CTA Cards ──────────────────────────────────── */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -121,7 +121,7 @@ export function ContactSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* Send a Message - Glass card */}
-              <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+              <m.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                 <Link
                   to="/contact"
                   className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-teal-400/40 transition-all duration-300 group h-full"
@@ -140,10 +140,10 @@ export function ContactSection() {
                     <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </Link>
-              </motion.div>
+              </m.div>
 
               {/* Schedule a Call - Glass card */}
-              <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+              <m.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                 <a
                   href="https://cal.com/saad-mazhar"
                   target="_blank"
@@ -164,10 +164,10 @@ export function ContactSection() {
                     <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </a>
-              </motion.div>
+              </m.div>
 
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

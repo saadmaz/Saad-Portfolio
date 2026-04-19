@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe, Instagram, Facebook } from "lucide-react";
@@ -42,7 +42,7 @@ const ContactPage = () => {
       <section className="section-padding">
         <div className="section-container">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -56,11 +56,11 @@ const ContactPage = () => {
               Have a project in mind, want to collaborate, or just want to say hello? 
               I'd love to hear from you. Fill out the form or reach out directly.
             </p>
-          </motion.div>
+          </m.div>
 
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
             {/* Contact Info */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -171,10 +171,10 @@ const ContactPage = () => {
                   loading="lazy"
                 />
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Contact Form */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -239,7 +239,7 @@ const ContactPage = () => {
                   </Button>
                 </form>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>

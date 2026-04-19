@@ -13,7 +13,7 @@
  */
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,7 @@ export function SkillsSection() {
       <div className="section-container">
 
         {/* ── Section header ─────────────────────────────────────── */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -88,10 +88,10 @@ export function SkillsSection() {
               </Link>
             </Button>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Category tabs ──────────────────────────────────────── */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -114,7 +114,7 @@ export function SkillsSection() {
               >
                 {cat.category}
                 {activeTab === i && (
-                  <motion.span
+                  <m.span
                     layoutId="tab-pill"
                     className="absolute inset-0 rounded-xl bg-accent -z-10"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
@@ -123,11 +123,11 @@ export function SkillsSection() {
               </button>
             ))}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Skills grid for active category ────────────────────── */}
         <AnimatePresence mode="wait">
-          <motion.div
+          <m.div
             key={activeTab}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -145,7 +145,7 @@ export function SkillsSection() {
                 const pct    = levelToPercent[skill.level] || 75;
 
                 return (
-                  <motion.div
+                  <m.div
                     key={skill.name}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -171,22 +171,22 @@ export function SkillsSection() {
 
                     {/* Proficiency bar */}
                     <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                      <motion.div
+                      <m.div
                         className={`h-full rounded-full ${colors.bar}`}
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ delay: i * 0.04 + 0.15, duration: 0.6, ease: "easeOut" }}
                       />
                     </div>
-                  </motion.div>
+                  </m.div>
                 );
               })}
             </div>
-          </motion.div>
+          </m.div>
         </AnimatePresence>
 
         {/* ── Legend ─────────────────────────────────────────────── */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -199,7 +199,7 @@ export function SkillsSection() {
               <span className="text-xs text-muted-foreground">{level}</span>
             </div>
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );
