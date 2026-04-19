@@ -1,11 +1,16 @@
 /**
  * prerender.mjs
- * Generates static HTML snapshots for key routes using modern Puppeteer.
- * Run after `vite build` — saves each route as dist/[route]/index.html
- * so Google sees real HTML on first crawl instead of a blank SPA shell.
+ * Generates per-route HTML files so Googlebot sees the correct
+ * <title>, <meta description>, and <link rel="canonical"> on first crawl.
+ *
+ * Strategy:
+ *   1. Try full Puppeteer rendering (real React content, needs Chrome).
+ *   2. If Chrome is unavailable, fall back to meta-only injection —
+ *      copies index.html to each route directory with correct head tags.
+ *      Google will still render the JS content; this just ensures the
+ *      crawl-time meta is right and canonicals point at the correct URL.
  */
 
-import puppeteer from 'puppeteer';
 import { createServer } from 'http';
 import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'fs';
 import { join, extname } from 'path';
@@ -15,6 +20,8 @@ import { dirname } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, '..', 'dist');
 const PORT = 5174;
+const BASE_URL = 'https://saadmaz.com';
+const SITE_NAME = 'Saad Mazhar';
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -37,10 +44,6 @@ const MIME_TYPES = {
   '.xml':  'application/xml',
 };
 
-// Routes and their authoritative meta tags.
-// These are injected directly into the prerendered HTML so Google
-// always gets the correct <title> and <meta description> on first crawl,
-// regardless of react-helmet-async timing.
 const ROUTES = [
   {
     path: '/',
@@ -82,32 +85,96 @@ const ROUTES = [
     title: "Certifications | Saad Mazhar's Professional Credentials",
     description: "Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA.",
   },
+  {
+    path: '/events',
+    title: "Events | Saad Mazhar's Speaking & Community Engagements",
+    description: "Talks, workshops, and community events featuring Saad Mazhar — tech speaker and startup founder based in Colombo, Sri Lanka.",
+  },
+  {
+    path: '/newsletters',
+    title: "Newsletter | Insights by Saad Mazhar",
+    description: "Subscribe to Saad Mazhar's newsletter for insights on AI, startups, and full-stack development from Colombo, Sri Lanka.",
+  },
 ];
+
+// ── Meta injection ──────────────────────────────────────────────────────────
+
+function escape(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+/**
+ * Injects correct title, description, canonical, and OG tags into an HTML
+ * string. Works on both the raw index.html shell and Puppeteer-rendered HTML.
+ */
+function injectMeta(html, { path: routePath, title, description }) {
+  const canonicalUrl = routePath === '/' ? BASE_URL : `${BASE_URL}${routePath}`;
+  const fullTitle = `${title} - ${SITE_NAME}`;
+  const et = escape(fullTitle);
+  const ed = escape(description);
+  const eu = escape(canonicalUrl);
+
+  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${et}</title>`);
+
+  // canonical — update existing or insert before </head>
+  if (/<link\s[^>]*rel=["']canonical["'][^>]*>/i.test(html)) {
+    html = html.replace(
+      /<link\s[^>]*rel=["']canonical["'][^>]*>/i,
+      `<link rel="canonical" href="${eu}" />`,
+    );
+  } else {
+    html = html.replace('</head>', `  <link rel="canonical" href="${eu}" />\n</head>`);
+  }
+
+  html = html.replace(/(<meta\s+name="description"\s+content=")[^"]*(")/i,    `$1${ed}$2`);
+  html = html.replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i,   `$1${et}$2`);
+  html = html.replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, `$1${ed}$2`);
+  html = html.replace(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i,     `$1${eu}$2`);
+  html = html.replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i,  `$1${et}$2`);
+  html = html.replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, `$1${ed}$2`);
+
+  return html;
+}
+
+function writeRoute(routePath, html) {
+  const routeDir = routePath === '/' ? DIST_DIR : join(DIST_DIR, routePath);
+  mkdirSync(routeDir, { recursive: true });
+  writeFileSync(join(routeDir, 'index.html'), html, 'utf-8');
+}
+
+// ── Meta-only fallback (no browser required) ────────────────────────────────
+
+function metaOnlyPrerender() {
+  console.log('\n📄  Running meta-only prerender (no browser available).');
+  const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
+  let ok = 0;
+  for (const route of ROUTES) {
+    const html = injectMeta(shell, route);
+    writeRoute(route.path, html);
+    console.log(`  ✅  ${route.path}`);
+    ok++;
+  }
+  console.log(`\n🎉  Meta prerender done — ${ok} routes written.\n`);
+}
+
+// ── Full Puppeteer prerender ─────────────────────────────────────────────────
 
 function createStaticServer() {
   return createServer((req, res) => {
     const urlPath = decodeURIComponent(req.url.split('?')[0]);
     let filePath = join(DIST_DIR, urlPath);
-
-    // If no file extension, try to serve index.html (SPA fallback)
-    if (!extname(filePath)) {
-      filePath = join(DIST_DIR, 'index.html');
-    }
+    if (!extname(filePath)) filePath = join(DIST_DIR, 'index.html');
 
     if (existsSync(filePath)) {
       try {
         const content = readFileSync(filePath);
         const ext = extname(filePath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-        res.writeHead(200, { 'Content-Type': contentType });
+        res.writeHead(200, { 'Content-Type': MIME_TYPES[ext] || 'application/octet-stream' });
         res.end(content);
         return;
-      } catch {
-        // fall through to 500
-      }
+      } catch { /* fall through */ }
     }
 
-    // Fallback: serve index.html for unknown paths (SPA behaviour)
     try {
       const indexHtml = readFileSync(join(DIST_DIR, 'index.html'));
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -119,15 +186,9 @@ function createStaticServer() {
   });
 }
 
-async function prerender() {
-  const server = createStaticServer();
-  await new Promise((resolve, reject) => {
-    server.listen(PORT, resolve);
-    server.on('error', reject);
-  });
-  console.log(`\n📡  Local server running at http://localhost:${PORT}`);
+async function puppeteerPrerender() {
+  const { default: puppeteer } = await import('puppeteer');
 
-  // Prefer system Chrome; fall back to puppeteer's bundled Chromium on CI (Linux)
   const systemChrome =
     process.platform === 'win32'
       ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
@@ -135,8 +196,7 @@ async function prerender() {
       ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
       : '/usr/bin/google-chrome';
 
-  const { existsSync: _exists } = await import('fs');
-  const executablePath = _exists(systemChrome) ? systemChrome : undefined;
+  const executablePath = existsSync(systemChrome) ? systemChrome : undefined;
 
   let browser;
   try {
@@ -145,31 +205,32 @@ async function prerender() {
       executablePath,
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     });
-  } catch (launchErr) {
-    console.warn('\n⚠️  Puppeteer could not launch a browser — skipping prerender.');
-    console.warn(`   Reason: ${launchErr.message}`);
-    server.close();
-    return;
+  } catch (err) {
+    console.warn(`\n⚠️  Puppeteer launch failed (${err.message}) — falling back to meta-only prerender.`);
+    return false;
   }
+
+  const server = createStaticServer();
+  await new Promise((resolve, reject) => {
+    server.listen(PORT, resolve);
+    server.on('error', reject);
+  });
+  console.log(`\n📡  Local server running at http://localhost:${PORT}`);
 
   let success = 0;
   let failed = 0;
 
   for (const route of ROUTES) {
-    const { path: routePath, title, description } = route;
     const page = await browser.newPage();
-
-    // Suppress console noise from the page
     page.on('console', () => {});
     page.on('pageerror', () => {});
 
     try {
-      await page.goto(`http://localhost:${PORT}${routePath}`, {
+      await page.goto(`http://localhost:${PORT}${route.path}`, {
         waitUntil: 'networkidle2',
         timeout: 30_000,
       });
 
-      // Wait for React + Suspense to finish rendering (root has real content)
       await page
         .waitForFunction(
           () => {
@@ -180,33 +241,14 @@ async function prerender() {
         )
         .catch(() => {});
 
-      // Extra buffer for Firebase fetches and lazy chunk execution
       await new Promise(r => setTimeout(r, 2000));
 
-      let html = await page.content();
-
-      // Authoritative meta injection — override whatever helmet produced
-      // to guarantee Google sees the correct title/description on first crawl.
-      const SITE_NAME = 'Saad Mazhar';
-      const fullTitle = `${title} - ${SITE_NAME}`;
-      const escapedTitle = fullTitle.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-      const escapedDesc = description.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-
-      html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${escapedTitle}</title>`);
-      html = html.replace(/(<meta\s+name="description"\s+content=")[^"]*(")/i, `$1${escapedDesc}$2`);
-      html = html.replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i, `$1${escapedTitle}$2`);
-      html = html.replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, `$1${escapedDesc}$2`);
-      html = html.replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i, `$1${escapedTitle}$2`);
-      html = html.replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, `$1${escapedDesc}$2`);
-
-      const routeDir = routePath === '/' ? DIST_DIR : join(DIST_DIR, routePath);
-      mkdirSync(routeDir, { recursive: true });
-      writeFileSync(join(routeDir, 'index.html'), html, 'utf-8');
-
-      console.log(`  ✅  ${routePath}`);
+      const html = injectMeta(await page.content(), route);
+      writeRoute(route.path, html);
+      console.log(`  ✅  ${route.path}`);
       success++;
     } catch (err) {
-      console.error(`  ❌  ${routePath} — ${err.message}`);
+      console.error(`  ❌  ${route.path} — ${err.message}`);
       failed++;
     } finally {
       await page.close();
@@ -215,16 +257,28 @@ async function prerender() {
 
   await browser.close();
   server.close();
-
-  console.log(`\n🎉  Prerendering done — ${success} succeeded, ${failed} failed.\n`);
+  console.log(`\n🎉  Puppeteer prerender done — ${success} succeeded, ${failed} failed.\n`);
 
   if (failed === ROUTES.length) {
-    // All routes failed — treat as a hard error so CI notices
-    process.exit(1);
+    return false;
+  }
+  return true;
+}
+
+// ── Entry point ──────────────────────────────────────────────────────────────
+
+async function prerender() {
+  const puppeteerOk = await puppeteerPrerender().catch(() => false);
+  if (!puppeteerOk) {
+    metaOnlyPrerender();
   }
 }
 
 prerender().catch(err => {
-  console.warn('\n⚠️  Prerender script encountered an error (non-fatal):', err.message);
-  process.exit(0);
+  console.warn('\n⚠️  Prerender encountered an unexpected error:', err.message);
+  try {
+    metaOnlyPrerender();
+  } catch (fallbackErr) {
+    console.error('Meta-only fallback also failed:', fallbackErr.message);
+  }
 });
