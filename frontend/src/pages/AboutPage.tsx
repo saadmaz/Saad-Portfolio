@@ -15,6 +15,7 @@ import { educationList } from "@/data/education";
 import { languages, volunteer, sports, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
 import { useHackathons, useVolunteer } from "@/shared/hooks/useCommon";
+import type { VolunteerExperience } from "@/types";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 
 /**
@@ -206,14 +207,16 @@ const AboutPage = () => {
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               {/* Prefer Firestore data; fall back to static data */}
-              {(volunteerData.length > 0 ? volunteerData : volunteer).map((vol: any) => {
-                const org = vol.organization ?? vol.org;
-                const role = vol.role;
-                const period = vol.period ?? `${vol.startDate}${vol.isCurrent ? ' – Present' : vol.endDate ? ` – ${vol.endDate}` : ''}`;
-                const desc = vol.description;
-                const img = vol.image as string | undefined;
+              {(volunteerData.length > 0 ? volunteerData : volunteer as unknown as VolunteerExperience[]).map((vol) => {
+                type V = VolunteerExperience & { org?: string; period?: string };
+                const v = vol as V;
+                const org = v.organization ?? v.org;
+                const role = v.role;
+                const period = v.period ?? `${v.startDate}${v.isCurrent ? ' – Present' : v.endDate ? ` – ${v.endDate}` : ''}`;
+                const desc = v.description;
+                const img = v.image;
                 return (
-                  <div key={vol.id ?? org} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/30 transition-colors">
+                  <div key={v.id ?? org} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/30 transition-colors">
                     {img && (
                       <button
                         type="button"

@@ -138,11 +138,19 @@ async function prerender() {
   const { existsSync: _exists } = await import('fs');
   const executablePath = _exists(systemChrome) ? systemChrome : undefined;
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-  });
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    });
+  } catch (launchErr) {
+    console.warn('\n⚠️  Puppeteer could not launch a browser — skipping prerender.');
+    console.warn(`   Reason: ${launchErr.message}`);
+    server.close();
+    return;
+  }
 
   let success = 0;
   let failed = 0;
@@ -217,6 +225,6 @@ async function prerender() {
 }
 
 prerender().catch(err => {
-  console.error('\n🔥  Prerender script crashed:', err);
-  process.exit(1);
+  console.warn('\n⚠️  Prerender script encountered an error (non-fatal):', err.message);
+  process.exit(0);
 });
