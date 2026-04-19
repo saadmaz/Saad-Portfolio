@@ -156,99 +156,81 @@ const CertificationsPage = () => {
                       className="h-[280px]"
                     >
                       <Link to={`/certifications/${cert.id}`} className="group block h-full">
-                        <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl hover:border-accent/40 hover:-translate-y-0.5">
+                        <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:border-accent/35 hover:-translate-y-px">
 
-                          {/* Left accent stripe */}
-                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent rounded-l-xl z-10" />
-
-                          {/* Hover tint */}
-                          <div className="absolute inset-0 bg-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                          {/* Watermark logo */}
-                          {cert.issuer_logo && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-[0.045] pointer-events-none select-none">
-                              <img
-                                src={cert.issuer_logo}
-                                alt=""
-                                aria-hidden="true"
-                                className="w-28 h-28 object-contain"
-                              />
-                            </div>
-                          )}
+                          {/* Left accent stripe — hover only */}
+                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent rounded-l-xl z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                           {/* Card body */}
-                          <div className="relative z-10 flex flex-col h-full pl-5 pr-4 pt-4 pb-4">
+                          <div className="relative z-10 flex flex-col h-full px-4 pt-4 pb-3.5">
 
-                            {/* Top: logo + title */}
-                            <div className="flex items-start gap-3 mb-2.5">
-                              <div className="w-9 h-9 shrink-0 rounded-lg bg-background border border-border flex items-center justify-center overflow-hidden shadow-sm group-hover:border-accent/30 transition-colors">
+                            {/* Header: logo + title + org + badge */}
+                            <div className="flex items-start gap-3 mb-3">
+                              {/* Logo */}
+                              <div className="w-11 h-11 shrink-0 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden">
                                 {cert.issuer_logo ? (
-                                  <img
-                                    src={cert.issuer_logo}
-                                    alt={cert.issuer}
-                                    className="w-6 h-6 object-contain"
-                                  />
+                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-7 h-7 object-contain" />
                                 ) : (
-                                  <Award className="w-4 h-4 text-accent" />
+                                  <Award className="w-5 h-5 text-accent" />
                                 )}
                               </div>
-                              <h3
-                                className="text-sm font-bold text-foreground leading-snug group-hover:text-accent transition-colors duration-200"
-                                style={{
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                {cert.title}
-                              </h3>
-                            </div>
 
-                            {/* Org + verifiable inline */}
-                            <div className="flex items-center gap-2 mb-2.5 pl-12">
-                              <span className="text-xs text-muted-foreground font-medium truncate">
-                                {cert.issuer}
-                              </span>
-                              {cert.is_verifiable && (
-                                <span className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-emerald-500 shrink-0">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                  Verified
-                                </span>
-                              )}
+                              {/* Title + org row */}
+                              <div className="flex-1 min-w-0">
+                                <h3
+                                  className="text-[13.5px] font-bold text-foreground leading-[1.35] mb-1 group-hover:text-accent transition-colors duration-200"
+                                  style={{
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  {cert.title}
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[11px] text-muted-foreground truncate">{cert.issuer}</span>
+                                  {cert.is_verifiable && (
+                                    <span className="flex items-center gap-1 shrink-0 text-[9px] font-bold uppercase tracking-wide text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.5 rounded-full">
+                                      <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                                      Verified
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </div>
 
                             {/* Divider */}
-                            <div className="border-t border-border/40 mb-2.5" />
+                            <div className="border-t border-border/50 mb-2.5" />
 
-                            {/* Description — 2 line clamp with fade */}
-                            <div className="relative mb-2.5 overflow-hidden" style={{ maxHeight: "2.6rem" }}>
-                              <p className="text-[11px] text-muted-foreground leading-[1.45] line-clamp-2">
+                            {/* Description */}
+                            <div className="relative overflow-hidden mb-2.5" style={{ maxHeight: "2.5rem" }}>
+                              <p className="text-[11.5px] text-muted-foreground leading-[1.5] line-clamp-2">
                                 {cert.description}
                               </p>
-                              <div className="absolute bottom-0 inset-x-0 h-3 bg-gradient-to-t from-card to-transparent" />
+                              <div className="absolute bottom-0 inset-x-0 h-4 bg-gradient-to-t from-card to-transparent" />
                             </div>
 
-                            {/* Divider */}
-                            <div className="border-t border-border/40 mb-2.5" />
-
-                            {/* Tags — single row, no wrap */}
-                            <div className="flex gap-1.5 overflow-hidden flex-nowrap mb-2.5" style={{ maxHeight: "1.5rem" }}>
+                            {/* Tags — single row, no wrap, overflow clipped */}
+                            <div className="flex gap-1.5 overflow-hidden flex-nowrap" style={{ maxHeight: "1.625rem" }}>
                               {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
                                 <span
                                   key={idx}
-                                  className="shrink-0 text-[9px] font-semibold uppercase tracking-tight bg-accent/10 text-accent border border-accent/20 px-2 py-0.5 rounded-full whitespace-nowrap"
+                                  className="shrink-0 text-[10px] font-medium text-muted-foreground bg-secondary/70 border border-border/60 px-2.5 py-0.5 rounded-full whitespace-nowrap"
                                 >
                                   {item}
                                 </span>
                               ))}
                             </div>
 
-                            {/* Divider */}
-                            <div className="border-t border-border/40 mt-auto" />
+                            {/* Spacer */}
+                            <div className="flex-1" />
+
+                            {/* Footer divider */}
+                            <div className="border-t border-border/50 mb-2.5" />
 
                             {/* Footer */}
-                            <div className="flex items-center justify-between pt-2.5">
+                            <div className="flex items-center justify-between">
                               <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                                 <Calendar className="w-3 h-3 shrink-0" />
                                 <span>{formatDate(cert.issue_date)}</span>
@@ -261,7 +243,7 @@ const CertificationsPage = () => {
                                     e.stopPropagation();
                                     window.open(cert.credential_url, "_blank");
                                   }}
-                                  className="flex items-center gap-1 bg-accent text-accent-foreground hover:bg-accent/90 text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active:scale-95 shadow-sm shadow-accent/20"
+                                  className="flex items-center gap-1.5 bg-foreground text-background hover:bg-foreground/90 text-[11px] font-semibold px-3.5 py-1.5 rounded-lg transition-all active:scale-95"
                                 >
                                   Verify <ExternalLink className="w-3 h-3" />
                                 </button>
