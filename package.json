@@ -4,7 +4,11 @@
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
-    "lint": "npm --prefix frontend run lint"
+    "lint": "npm --prefix frontend run lint",
+    "import:certificates": "node scripts/import-certificates.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
   },
   "engines": {
     "node": ">=20.0.0"
