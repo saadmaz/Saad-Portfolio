@@ -84,7 +84,7 @@ const ProjectDetailPage = () => {
     <Layout>
       <SEO
         title={project.title}
-        description={project.tagline || project.overview || `${project.title} — a project by Saad Mazhar`}
+        description={project.tagline || project.overview || `${project.title} - a project by Saad Mazhar`}
         image={project.heroImage}
         url={`https://saadmaz.com/projects/${project.slug}`}
         structuredData={projectSchema}

@@ -51,7 +51,7 @@ export const content = (
     <p>
       If you're making a video about the latest <em>Stranger Things</em> episode, don't just guess what 
       people want. Go to the r/StrangerThings megathread, pull the JSON, and let the LLM find the 
-      theories that already have the most traction. This is how "faceless" channels print money—they 
+      theories that already have the most traction. This is how "faceless" channels print money-they 
       build content on foundations of proven demand.
     </p>
 

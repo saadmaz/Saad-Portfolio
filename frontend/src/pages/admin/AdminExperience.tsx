@@ -86,7 +86,7 @@ const AdminExperience = () => {
                   </div>
                   <p className="text-white/60 font-semibold mb-2">{exp.company}</p>
                   <div className="flex flex-wrap items-center gap-4 text-xs text-white/40 font-medium">
-                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-accent" /> {exp.startDate} — {exp.isCurrent ? 'Present' : exp.endDate}</span>
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-accent" /> {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</span>
                     <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-accent" /> {exp.location}</span>
                   </div>
                 </div>

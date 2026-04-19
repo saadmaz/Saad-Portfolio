@@ -65,7 +65,7 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
               exit="exit"
               transition={{ duration: 0.35, ease: 'easeInOut' }}
               src={images[current]}
-              alt={alt ? `${alt} — ${current + 1}` : `Image ${current + 1}`}
+              alt={alt ? `${alt} - ${current + 1}` : `Image ${current + 1}`}
               className="absolute inset-0 w-full h-full object-cover"
             />
           </AnimatePresence>

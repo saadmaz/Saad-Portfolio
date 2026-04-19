@@ -24,7 +24,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // ─── Firebase project config ────────────────────────────────────
-// These are PUBLIC identifiers — safe to ship in the browser bundle.
+// These are PUBLIC identifiers - safe to ship in the browser bundle.
 // Security is enforced by Firestore Security Rules, not by hiding these keys.
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,

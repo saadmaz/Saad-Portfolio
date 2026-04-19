@@ -1,7 +1,7 @@
 /**
  * api/contact.ts
  * ─────────────────────────────────────────────────────────────
- * Vercel serverless function — the ONLY server-side code in the project.
+ * Vercel serverless function - the ONLY server-side code in the project.
  *
  * Why this needs to be a server function (not browser code):
  *   • The SendGrid API key must never be shipped in the browser bundle.
@@ -35,7 +35,7 @@ if (!getApps().length) {
     credential: cert({
       projectId:   process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      // Vercel stores multi-line secrets with escaped \n — unescape them
+      // Vercel stores multi-line secrets with escaped \n - unescape them
       privateKey:  process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
     }),
   });
@@ -80,15 +80,15 @@ export default async function handler(
       read:       false,
     });
   } catch (dbErr) {
-    // Log but don't fail the request — still try to send the email
+    // Log but don't fail the request - still try to send the email
     console.error("[contact] Firestore write failed:", dbErr);
   }
 
   // ── 3. Send email via SendGrid ───────────────────────────────────
   const apiKey = process.env.SENDGRID_API_KEY ?? "";
   if (!apiKey.startsWith("SG.")) {
-    // Email is misconfigured — still return 200 since the message was saved
-    console.warn("[contact] SENDGRID_API_KEY not set or invalid — email skipped");
+    // Email is misconfigured - still return 200 since the message was saved
+    console.warn("[contact] SENDGRID_API_KEY not set or invalid - email skipped");
     return res.status(200).json({ success: true, message: "Message saved (email skipped)" });
   }
 
@@ -122,7 +122,7 @@ export default async function handler(
       html:     htmlBody,
     });
   } catch (emailErr) {
-    // Email failed — the message is already in Firestore so we don't surface
+    // Email failed - the message is already in Firestore so we don't surface
     // this error to the user (they don't need to know about SendGrid internals)
     console.error("[contact] SendGrid send failed:", emailErr);
   }

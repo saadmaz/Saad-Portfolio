@@ -8,8 +8,8 @@
  *
  * Security is enforced by Firestore Security Rules:
  *   match /projects/{id} {
- *     allow read: if true;                   // public — anyone can view projects
- *     allow write: if request.auth != null;  // admin only — must be signed in
+ *     allow read: if true;                   // public - anyone can view projects
+ *     allow write: if request.auth != null;  // admin only - must be signed in
  *   }
  *
  * The public class API is kept identical so every admin page
@@ -117,7 +117,7 @@ export class ProjectService {
 
   /**
    * Merge-update an existing project.
-   * Only the fields passed in are changed — other fields are preserved.
+   * Only the fields passed in are changed - other fields are preserved.
    */
   static async update(id: string | number, project: Partial<Project>): Promise<Project> {
     await updateDoc(doc(db, COL, String(id)), {

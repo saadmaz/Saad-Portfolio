@@ -1,6 +1,6 @@
-# Saad Mazhar — Portfolio
+# Saad Mazhar - Portfolio
 
-A modern, full-featured personal portfolio built with **React + Vite** and **Firebase** — deployed on **Vercel** with zero backend server required.
+A modern, full-featured personal portfolio built with **React + Vite** and **Firebase** - deployed on **Vercel** with zero backend server required.
 
 Live: [saadmaz.com](https://saadmaz.com)
 
@@ -31,7 +31,7 @@ The only server-side code is one Vercel serverless function that hides the SendG
 Portfolio/
 ├── frontend/
 │   ├── api/
-│   │   └── contact.ts          # Vercel serverless function — Firestore write + SendGrid email
+│   │   └── contact.ts          # Vercel serverless function - Firestore write + SendGrid email
 │   ├── public/
 │   │   ├── robots.txt
 │   │   └── sitemap.xml
@@ -50,7 +50,7 @@ Portfolio/
 │       │   └── ErrorBoundary.tsx
 │       ├── data/               # Static seed data (education, personal/about)
 │       ├── lib/
-│       │   └── firebase.ts     # Firebase app init — exports auth, db, storage
+│       │   └── firebase.ts     # Firebase app init - exports auth, db, storage
 │       ├── pages/              # Lazy-loaded route components (public + admin)
 │       ├── services/
 │       │   ├── project-service.ts   # Firestore CRUD for projects
@@ -91,7 +91,7 @@ npm install
 Create `frontend/.env.local`:
 
 ```env
-# Firebase client SDK (public — safe to expose)
+# Firebase client SDK (public - safe to expose)
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
@@ -129,7 +129,7 @@ Add all of the above `VITE_FIREBASE_*` keys, plus these server-side secrets for 
 ```env
 FIREBASE_PROJECT_ID=
 FIREBASE_CLIENT_EMAIL=
-FIREBASE_PRIVATE_KEY=           # paste with literal \n — Vercel handles the escape
+FIREBASE_PRIVATE_KEY=           # paste with literal \n - Vercel handles the escape
 SENDGRID_API_KEY=
 TO_EMAIL=                       # your inbox address
 FROM_EMAIL=                     # verified SendGrid sender
@@ -214,8 +214,8 @@ All content is managed through the admin panel at `/admin`. Log in with the Fire
 
 | File | Purpose |
 |---|---|
-| `src/lib/firebase.ts` | Single Firebase init — exports `auth`, `db`, `storage` |
-| `src/services/storage.ts` | `uploadImage(file)` — direct browser → Firebase Storage |
+| `src/lib/firebase.ts` | Single Firebase init - exports `auth`, `db`, `storage` |
+| `src/services/storage.ts` | `uploadImage(file)` - direct browser → Firebase Storage |
 | `src/shared/lib/queryKeys.ts` | Centralized TanStack Query cache key registry |
 | `src/components/SEO.tsx` | Per-page meta tags, OG, Twitter card, JSON-LD |
 | `api/contact.ts` | Serverless function: validates input, writes to Firestore, sends email via SendGrid |

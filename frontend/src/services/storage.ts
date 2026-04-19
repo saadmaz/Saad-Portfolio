@@ -27,7 +27,7 @@ export const uploadImage = (
       contentType: file.type,
     });
 
-    // Hard timeout — cancel the task and reject if it takes > 60 s
+    // Hard timeout - cancel the task and reject if it takes > 60 s
     const timer = setTimeout(() => {
       task.cancel();
       reject(new Error("Upload timed out. Check Firebase Storage rules and your internet connection."));

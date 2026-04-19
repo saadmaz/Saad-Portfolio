@@ -132,7 +132,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
         </div>
       )}
 
-      {/* Upload dropzone — shown when no images yet */}
+      {/* Upload dropzone - shown when no images yet */}
       {value.length === 0 && (
         <div
           onDrop={handleDrop}

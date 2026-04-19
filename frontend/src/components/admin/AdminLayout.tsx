@@ -89,7 +89,7 @@ const navGroups: NavGroup[] = [
 
 const SIDEBAR_KEY = 'admin_sidebar_collapsed';
 
-/* Emerald accent — used throughout admin panel */
+/* Emerald accent - used throughout admin panel */
 const GOLD = '#10b981';
 
 const AdminLayout = () => {

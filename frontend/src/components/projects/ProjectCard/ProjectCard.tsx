@@ -15,7 +15,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <div className="relative aspect-video overflow-hidden">
         <img
           src={project.heroImage}
-          alt={`${project.title} — ${project.tagline || "project preview"}`}
+          alt={`${project.title} - ${project.tagline || "project preview"}`}
           loading="lazy"
           decoding="async"
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"

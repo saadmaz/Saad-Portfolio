@@ -89,7 +89,7 @@ const BlogsPage: React.FC = () => {
     <div className="blogs-page">
       <SEO
         title="Blog"
-        description="Thoughts, tutorials, and insights from Saad Mazhar — covering startups, full-stack development, AI, and the Sri Lanka tech scene."
+        description="Thoughts, tutorials, and insights from Saad Mazhar - covering startups, full-stack development, AI, and the Sri Lanka tech scene."
         url="https://saadmaz.com/blog"
       />
       <div className="blogs-page-container">

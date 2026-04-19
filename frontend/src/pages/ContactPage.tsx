@@ -162,7 +162,7 @@ const ContactPage = () => {
                   <Calendar className="w-4 h-4 text-accent" />
                   <h4 className="text-sm font-semibold text-foreground">Book a 30-min Call</h4>
                 </div>
-                {/* Calendly inline widget — loads their script via iframe URL */}
+                {/* Calendly inline widget - loads their script via iframe URL */}
                 <iframe
                   src="https://calendly.com/saadmaz/30min?embed_domain=saadmaz.com&embed_type=Inline&hide_gdpr_banner=1&background_color=050505&text_color=ffffff&primary_color=2dd4bf"
                   title="Schedule a meeting with Saad Mazhar"

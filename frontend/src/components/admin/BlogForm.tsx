@@ -475,7 +475,7 @@ const BlogForm = () => {
       {/* ── Main grid ──────────────────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
 
-        {/* ══ Left column — content ══════════════════════════════ */}
+        {/* ══ Left column - content ══════════════════════════════ */}
         <div className="xl:col-span-3 space-y-5">
 
           {/* Title + slug + excerpt */}

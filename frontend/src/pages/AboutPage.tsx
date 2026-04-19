@@ -51,7 +51,7 @@ const AboutPage = () => {
     <Layout>
       <SEO
         title="About"
-        description="Beyond the code — Saad Mazhar's education, languages, volunteer work, awards, and interests. A CS undergrad building products in Colombo, Sri Lanka."
+        description="Beyond the code - Saad Mazhar's education, languages, volunteer work, awards, and interests. A CS undergrad building products in Colombo, Sri Lanka."
         url="https://saadmaz.com/about"
       />
       {/* section-padding: custom utility for consistent vertical spacing across the site */}
@@ -92,7 +92,7 @@ const AboutPage = () => {
                       className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
                     >
                       <div className="flex flex-col md:flex-row gap-6 items-start">
-                        {/* Institution Logo — clickable lightbox */}
+                        {/* Institution Logo - clickable lightbox */}
                         <button
                           type="button"
                           className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent/50 transition-colors focus:outline-none"
@@ -292,7 +292,7 @@ const AboutPage = () => {
                     {/* Shimmer on hover */}
                     <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/4 to-transparent pointer-events-none z-10" />
 
-                    {/* Cover image — clickable lightbox */}
+                    {/* Cover image - clickable lightbox */}
                     {hack.image && (
                       <button
                         type="button"

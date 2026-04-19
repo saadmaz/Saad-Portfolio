@@ -12,7 +12,7 @@
  *     allow write: if request.auth != null;
  *   }
  *
- * Public class API is kept identical — all hooks/pages stay unchanged.
+ * Public class API is kept identical - all hooks/pages stay unchanged.
  */
 
 import {

@@ -35,7 +35,7 @@ const ProjectsPage = () => {
     <Layout>
       <SEO
         title="Projects"
-        description="Browse all projects built by Saad Mazhar — web apps, mobile solutions, AI integrations and startup products."
+        description="Browse all projects built by Saad Mazhar - web apps, mobile solutions, AI integrations and startup products."
         url="https://saadmaz.com/projects"
       />
       <section className="section-padding">

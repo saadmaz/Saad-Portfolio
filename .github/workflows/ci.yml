@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        # All commands run inside the frontend/ folder — that's where
+        # All commands run inside the frontend/ folder - that's where
         # package.json, package-lock.json, and the Vite config live.
         working-directory: ./frontend
 
@@ -45,7 +45,7 @@ jobs:
         run: npm run build
         env:
           # Stub Firebase env vars so Vite doesn't abort the build.
-          # Real values are set in Vercel dashboard — not needed here.
+          # Real values are set in Vercel dashboard - not needed here.
           VITE_FIREBASE_API_KEY: ci-stub
           VITE_FIREBASE_AUTH_DOMAIN: ci-stub
           VITE_FIREBASE_PROJECT_ID: ci-stub

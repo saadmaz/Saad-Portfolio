@@ -6,7 +6,7 @@
  *
  * Usage:
  *   <SEO
- *     title="Projects — Saad Mazhar"
+ *     title="Projects - Saad Mazhar"
  *     description="Browse all projects built by Saad Mazhar..."
  *     image="https://saadmaz.com/og-projects.png"
  *   />
@@ -21,9 +21,9 @@ interface SEOProps {
   image?: string;
   /** Canonical URL for this page */
   url?: string;
-  /** JSON-LD structured data object — passed as-is to <script type="application/ld+json"> */
+  /** JSON-LD structured data object - passed as-is to <script type="application/ld+json"> */
   structuredData?: object;
-  /** "website" | "article" — defaults to "website" */
+  /** "website" | "article" - defaults to "website" */
   type?: string;
 }
 
@@ -32,7 +32,7 @@ const BASE_URL   = "https://saadmaz.com";
 const DEFAULT_OG = `${BASE_URL}/logo.png`;
 
 const DEFAULT_DESCRIPTION =
-  "Saad Mazhar — Startup Founder, Tech Speaker & Full-Stack Developer based in Colombo, Sri Lanka. Building products at the intersection of technology and impact.";
+  "Saad Mazhar - Startup Founder, Tech Speaker & Full-Stack Developer based in Colombo, Sri Lanka. Building products at the intersection of technology and impact.";
 
 export function SEO({
   title,
@@ -42,7 +42,7 @@ export function SEO({
   structuredData,
   type = "website",
 }: SEOProps) {
-  const fullTitle = title ? `${title} — ${SITE_NAME}` : `${SITE_NAME} — Founder · Speaker · Developer`;
+  const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
 
   return (
     <Helmet>

@@ -104,7 +104,7 @@ const CertificateDetailPage = () => {
           {/* Two-panel layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            {/* LEFT — credential card */}
+            {/* LEFT - credential card */}
             <div className="lg:col-span-4">
               <div className="bg-card rounded-2xl border border-border shadow-sm sticky top-24 overflow-hidden">
 
@@ -208,7 +208,7 @@ const CertificateDetailPage = () => {
               </div>
             </div>
 
-            {/* RIGHT — credential document */}
+            {/* RIGHT - credential document */}
             <div className="lg:col-span-8">
               <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col h-full">
 

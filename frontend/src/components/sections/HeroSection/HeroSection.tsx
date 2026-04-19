@@ -187,7 +187,7 @@ export function HeroSection() {
                 </Link>
               </Button>
 
-              {/* Tertiary: Resume download — icon-only on small screens */}
+              {/* Tertiary: Resume download - icon-only on small screens */}
               <Button
                 asChild
                 variant="ghost"

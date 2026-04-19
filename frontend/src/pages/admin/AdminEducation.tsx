@@ -114,7 +114,7 @@ const AdminEducation = () => {
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    {/* Logo — clickable lightbox */}
+                    {/* Logo - clickable lightbox */}
                     <button
                       type="button"
                       onClick={() => edu.logo && setLightbox(edu.logo)}

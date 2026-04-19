@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface BackButtonProps {
-  to?: string;        // explicit route — omit to use navigate(-1)
+  to?: string;        // explicit route - omit to use navigate(-1)
   label?: string;     // shown beside icon when provided
   className?: string;
 }

@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    // No proxy needed — all data fetching goes directly to Firebase SDK.
+    // No proxy needed - all data fetching goes directly to Firebase SDK.
     // The only HTTP call (/api/contact) is handled by the Vercel serverless
     // function in frontend/api/contact.ts. During local dev, run
     // `vercel dev` from the frontend/ folder to emulate the function locally.

@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────
  * TanStack Query hooks for blog data.
  *
- * BlogService now calls Firestore directly — no Express proxy.
+ * BlogService now calls Firestore directly - no Express proxy.
  * React Query caches results for 5 min (staleTime in App.tsx).
  * Query keys are sourced from the central queryKeys registry.
  */

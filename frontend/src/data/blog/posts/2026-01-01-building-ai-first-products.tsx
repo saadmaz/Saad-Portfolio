@@ -16,7 +16,7 @@ export const content = (
     <h2>The AI-First Mindset</h2>
     <p>
       Working on AI adoption projects has shown that the most successful products don't just treat AI 
-      as a feature—they treat it as the foundation of the user experience.
+      as a feature-they treat it as the foundation of the user experience.
     </p>
 
     <h2>Key Takeaways</h2>

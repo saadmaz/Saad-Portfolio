@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────
  * Replaced auto-rotating carousel with a static tabbed layout.
  * Users click a category tab to see all skills in that category
- * at once — no more spinning that users can't control.
+ * at once - no more spinning that users can't control.
  *
  * Visual highlights:
  *  - Animated tab underline that glides between tabs

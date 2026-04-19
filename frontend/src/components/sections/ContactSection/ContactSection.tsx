@@ -70,7 +70,7 @@ export function ContactSection() {
               </div>
             </div>
 
-            {/* Social Icons — Staggered entrance with spring bounce */}
+            {/* Social Icons - Staggered entrance with spring bounce */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -120,7 +120,7 @@ export function ContactSection() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* Send a Message — Glass card */}
+              {/* Send a Message - Glass card */}
               <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                 <Link
                   to="/contact"
@@ -142,7 +142,7 @@ export function ContactSection() {
                 </Link>
               </motion.div>
 
-              {/* Schedule a Call — Glass card */}
+              {/* Schedule a Call - Glass card */}
               <motion.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                 <a
                   href="https://cal.com/saad-mazhar"

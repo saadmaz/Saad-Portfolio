@@ -2,7 +2,7 @@
  * shared/services/common-service.ts
  * ─────────────────────────────────────────────────────────────
  * CRUD operations for every entity that isn't a Project or BlogPost.
- * All calls now go directly to Firestore — no Express proxy.
+ * All calls now go directly to Firestore - no Express proxy.
  *
  * BEFORE: browser → axios → Express (/api/...) → Firebase Admin → Firestore
  * AFTER:  browser → Firebase SDK → Firestore
@@ -10,7 +10,7 @@
  * The public class API (CommonService.*) is kept identical so every
  * admin page compiles without changes.
  *
- * Contact form is the ONE exception that still uses an HTTP call —
+ * Contact form is the ONE exception that still uses an HTTP call -
  * it hits /api/contact (a Vercel serverless function) because SendGrid
  * credentials must never be exposed to the browser.
  */
@@ -289,7 +289,7 @@ export class CommonService {
   /**
    * Submits a contact form message.
    *
-   * This is the ONE remaining HTTP call — it POSTs to the Vercel
+   * This is the ONE remaining HTTP call - it POSTs to the Vercel
    * serverless function at /api/contact which:
    *   1. Saves the message to Firestore via Firebase Admin SDK
    *   2. Sends the email notification via SendGrid

@@ -1,5 +1,5 @@
 /**
- * NotFound.tsx — 404 Page
+ * NotFound.tsx - 404 Page
  * ─────────────────────────────────────────────────────────────
  * Branded 404 that matches the portfolio's design language:
  *  - Large animated "404" with a teal glow
@@ -26,12 +26,12 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.error("404 — route not found:", location.pathname);
+    console.error("404 - route not found:", location.pathname);
   }, [location.pathname]);
 
   return (
     <>
-      <SEO title="404 — Page Not Found" description="This page doesn't exist. Head back to Saad Mazhar's portfolio." />
+      <SEO title="404 - Page Not Found" description="This page doesn't exist. Head back to Saad Mazhar's portfolio." />
 
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 relative overflow-hidden">
 

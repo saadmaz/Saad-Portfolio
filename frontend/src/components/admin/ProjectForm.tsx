@@ -361,7 +361,7 @@ const ProjectForm = () => {
             </div>
             <div>
               <label className={LABEL_CLS}>Overview (Detailed)</label>
-              <Textarea {...register('overview')} placeholder="Full project overview — goals, outcomes, architecture…"
+              <Textarea {...register('overview')} placeholder="Full project overview - goals, outcomes, architecture…"
                 className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 rounded-lg min-h-[120px] resize-none" />
               {errors.overview && <p className="text-xs text-red-400 mt-1">{errors.overview.message}</p>}
             </div>

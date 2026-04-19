@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   PROFESSIONAL PORTFOLIO DESIGN SYSTEM — DARK TEAL EDITION
+   PROFESSIONAL PORTFOLIO DESIGN SYSTEM - DARK TEAL EDITION
    ==========================================================================
    - Light Mode: Pearl White background with Deep Teal accents.
    - Dark Mode: Deep Teal-Space gradient background with luminous Teal accents.
@@ -275,10 +275,10 @@
   }
 
   /* ==========================================
-     BUTTON SYSTEM — DARK TEAL PREMIUM
+     BUTTON SYSTEM - DARK TEAL PREMIUM
      ========================================== */
 
-  /* PRIMARY BUTTON: Teal gradient — visible on both light and dark */
+  /* PRIMARY BUTTON: Teal gradient - visible on both light and dark */
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
     color: white !important;
@@ -305,7 +305,7 @@
     @apply scale-[1.02] -translate-y-px;
   }
 
-  /* ACCENT TEAL BUTTON: Header CTA — same teal gradient */
+  /* ACCENT TEAL BUTTON: Header CTA - same teal gradient */
   .btn-accent {
     @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
     color: white !important;
@@ -337,7 +337,7 @@
     @apply scale-[1.03] -translate-y-px;
   }
 
-  /* GLASS BUTTON: Translucent, frosted — for dark backgrounds (contact, footers) */
+  /* GLASS BUTTON: Translucent, frosted - for dark backgrounds (contact, footers) */
   .btn-glass {
     @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-sm;
     @apply backdrop-blur-md border transition-all duration-300;
@@ -544,7 +544,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     ADMIN PANEL — EDITORIAL DEEP NAVY DESIGN SYSTEM
+     ADMIN PANEL - EDITORIAL DEEP NAVY DESIGN SYSTEM
      ───────────────────────────────────────────────────────────────────
      Overriding ALL shadcn/Tailwind CSS variables inside .admin-panel
      so every component (Card, Button, Input, Badge, Dropdown…) inherits
@@ -575,7 +575,7 @@
     --muted:                    220 40% 16%;
     --muted-foreground:          36  8% 54%;   /* warm muted gray           */
 
-    /* ── Emerald accent — replaces every teal/gold reference ───── */
+    /* ── Emerald accent - replaces every teal/gold reference ───── */
     --accent:                   160 84% 39%;   /* #10b981 emerald-500        */
     --accent-foreground:          0  0% 100%;  /* white text on emerald      */
     --accent-glow:               160 84% 39%;
@@ -626,7 +626,7 @@
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
-  /* DM Sans bold for all admin headings — professional, no italic */
+  /* DM Sans bold for all admin headings - professional, no italic */
   .admin-panel h1,
   .admin-panel h2,
   .admin-panel h3,

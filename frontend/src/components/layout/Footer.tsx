@@ -153,7 +153,7 @@ export function Footer() {
               <span className="hidden sm:inline">All rights reserved.</span>
             </div>
 
-            {/* Built with — centred on desktop */}
+            {/* Built with - centred on desktop */}
             <div className="flex items-center gap-1.5 text-xs md:order-2">
               <span>Built with</span>
               <Heart className="w-3 h-3 text-accent fill-accent" />
