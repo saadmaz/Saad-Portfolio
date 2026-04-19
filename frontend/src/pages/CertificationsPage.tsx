@@ -167,18 +167,18 @@ const CertificationsPage = () => {
                             {/* Header: logo + title + org + badge */}
                             <div className="flex items-start gap-3 mb-3">
                               {/* Logo */}
-                              <div className="w-11 h-11 shrink-0 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden">
+                              <div className="w-13 h-13 shrink-0 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden" style={{ width: 52, height: 52 }}>
                                 {cert.issuer_logo ? (
-                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-7 h-7 object-contain" />
+                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-9 h-9 object-contain" />
                                 ) : (
-                                  <Award className="w-5 h-5 text-accent" />
+                                  <Award className="w-6 h-6 text-accent" />
                                 )}
                               </div>
 
                               {/* Title + org row */}
-                              <div className="flex-1 min-w-0">
+                              <div className="flex-1 min-w-0 pt-0.5">
                                 <h3
-                                  className="text-[13.5px] font-bold text-foreground leading-[1.35] mb-1 group-hover:text-accent transition-colors duration-200"
+                                  className="text-[13.5px] font-bold text-foreground leading-[1.35] mb-1.5 group-hover:text-accent transition-colors duration-200"
                                   style={{
                                     display: "-webkit-box",
                                     WebkitLineClamp: 2,
@@ -201,10 +201,10 @@ const CertificationsPage = () => {
                             </div>
 
                             {/* Divider */}
-                            <div className="border-t border-border/50 mb-2.5" />
+                            <div className="border-t border-border/50 mb-3" />
 
                             {/* Description */}
-                            <div className="relative overflow-hidden mb-2.5" style={{ maxHeight: "2.5rem" }}>
+                            <div className="relative overflow-hidden mb-3" style={{ maxHeight: "2.6rem" }}>
                               <p className="text-[11.5px] text-muted-foreground leading-[1.5] line-clamp-2">
                                 {cert.description}
                               </p>
@@ -223,11 +223,8 @@ const CertificationsPage = () => {
                               ))}
                             </div>
 
-                            {/* Spacer */}
-                            <div className="flex-1" />
-
-                            {/* Footer divider */}
-                            <div className="border-t border-border/50 mb-2.5" />
+                            {/* Footer divider — mt-auto pins footer to bottom */}
+                            <div className="border-t border-border/50 mt-auto mb-2.5" />
 
                             {/* Footer */}
                             <div className="flex items-center justify-between">
