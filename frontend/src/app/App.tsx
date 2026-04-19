@@ -1,9 +1,6 @@
 import React, { Suspense } from "react";
 import { LazyMotion } from "framer-motion";
 import { HelmetProvider } from "react-helmet-async";
-
-const loadMotionFeatures = () =>
-  import("framer-motion").then((mod) => mod.domAnimation);
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -57,6 +54,10 @@ const AdminLogs = React.lazy(() => import("../pages/admin/AdminLogs"));
 import { AuthProvider } from "@/shared/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
+// domMax includes layout animations used on /certifications and /events
+const loadMotionFeatures = () =>
+  import("framer-motion").then((mod) => mod.domMax);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -85,7 +86,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <LazyMotion features={loadMotionFeatures} strict>
+            <LazyMotion features={loadMotionFeatures}>
             <BrowserRouter>
               <ScrollToTop />
               <Suspense fallback={<PageLoader />}>
