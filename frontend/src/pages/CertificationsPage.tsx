@@ -142,8 +142,8 @@ const CertificationsPage = () => {
                 </div>
               </div>
 
-              {/* Cards grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* Cards grid — 3-col, 16px gap, fixed height */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
                 <AnimatePresence mode="popLayout">
                   {displayedCertificates.map((cert, index) => (
                     <motion.div
@@ -153,33 +153,50 @@ const CertificationsPage = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.97 }}
                       transition={{ duration: 0.25, delay: index * 0.04 }}
-                      className="h-[280px]"
+                      style={{ height: 220 }}
                     >
                       <Link to={`/certifications/${cert.id}`} className="group block h-full">
-                        <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:border-accent/35 hover:-translate-y-px">
-
-                          {/* Left accent stripe — hover only */}
-                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent rounded-l-xl z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                          {/* Card body */}
-                          <div className="relative z-10 flex flex-col h-full px-4 pt-4 pb-3.5">
-
-                            {/* Header: logo + title + org + badge */}
-                            <div className="flex items-start gap-3 mb-3">
-                              {/* Logo */}
-                              <div className="w-13 h-13 shrink-0 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden" style={{ width: 52, height: 52 }}>
+                        {/* Card: fixed 220px, all content clips inside */}
+                        <div
+                          className="relative h-full bg-card overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-px"
+                          style={{
+                            borderRadius: 12,
+                            border: "1px solid hsl(var(--border))",
+                            borderLeft: "3px solid #0a66c2",
+                          }}
+                        >
+                          {/* Inner body: 16px padding, flex col, gap-2 between rows */}
+                          <div
+                            className="flex flex-col h-full overflow-hidden"
+                            style={{ padding: 16 }}
+                          >
+                            {/* ── HEADER: logo · title stack · org+badge ── */}
+                            <div className="flex items-center gap-2.5" style={{ marginBottom: 8 }}>
+                              {/* Logo 40×40 */}
+                              <div
+                                className="shrink-0 rounded-lg bg-secondary/50 border border-border/60 flex items-center justify-center overflow-hidden"
+                                style={{ width: 40, height: 40 }}
+                              >
                                 {cert.issuer_logo ? (
-                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-9 h-9 object-contain" />
+                                  <img
+                                    src={cert.issuer_logo}
+                                    alt={cert.issuer}
+                                    style={{ width: 26, height: 26, objectFit: "contain" }}
+                                  />
                                 ) : (
-                                  <Award className="w-6 h-6 text-accent" />
+                                  <Award className="w-5 h-5 text-accent" />
                                 )}
                               </div>
 
-                              {/* Title + org row */}
-                              <div className="flex-1 min-w-0 pt-0.5">
+                              {/* Title + org — vertical stack */}
+                              <div className="flex-1 min-w-0">
                                 <h3
-                                  className="text-[13.5px] font-bold text-foreground leading-[1.35] mb-1.5 group-hover:text-accent transition-colors duration-200"
+                                  className="text-foreground group-hover:text-accent transition-colors duration-150"
                                   style={{
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    lineHeight: 1.35,
+                                    marginBottom: 2,
                                     display: "-webkit-box",
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: "vertical",
@@ -188,11 +205,23 @@ const CertificationsPage = () => {
                                 >
                                   {cert.title}
                                 </h3>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[11px] text-muted-foreground truncate">{cert.issuer}</span>
+                                {/* Org + badge — single row */}
+                                <div className="flex items-center gap-1.5 overflow-hidden">
+                                  <span
+                                    className="text-muted-foreground truncate shrink"
+                                    style={{ fontSize: 11, lineHeight: 1 }}
+                                  >
+                                    {cert.issuer}
+                                  </span>
                                   {cert.is_verifiable && (
-                                    <span className="flex items-center gap-1 shrink-0 text-[9px] font-bold uppercase tracking-wide text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.5 rounded-full">
-                                      <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                                    <span
+                                      className="shrink-0 flex items-center gap-1 text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full whitespace-nowrap"
+                                      style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px" }}
+                                    >
+                                      <span
+                                        className="rounded-full bg-emerald-500"
+                                        style={{ width: 5, height: 5, display: "inline-block" }}
+                                      />
                                       Verified
                                     </span>
                                   )}
@@ -200,36 +229,56 @@ const CertificationsPage = () => {
                               </div>
                             </div>
 
-                            {/* Divider */}
-                            <div className="border-t border-border/50 mb-3" />
+                            {/* ── DESCRIPTION ── */}
+                            <p
+                              className="text-muted-foreground"
+                              style={{
+                                fontSize: 11,
+                                lineHeight: 1.5,
+                                marginBottom: 8,
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {cert.description}
+                            </p>
 
-                            {/* Description */}
-                            <div className="relative overflow-hidden mb-3" style={{ maxHeight: "2.6rem" }}>
-                              <p className="text-[11.5px] text-muted-foreground leading-[1.5] line-clamp-2">
-                                {cert.description}
-                              </p>
-                              <div className="absolute bottom-0 inset-x-0 h-4 bg-gradient-to-t from-card to-transparent" />
-                            </div>
-
-                            {/* Tags — single row, no wrap, overflow clipped */}
-                            <div className="flex gap-1.5 overflow-hidden flex-nowrap" style={{ maxHeight: "1.625rem" }}>
+                            {/* ── TAGS — single row, clips overflow ── */}
+                            <div
+                              className="flex overflow-hidden"
+                              style={{ gap: 6, flexWrap: "nowrap", maxHeight: 22 }}
+                            >
                               {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
                                 <span
                                   key={idx}
-                                  className="shrink-0 text-[10px] font-medium text-muted-foreground bg-secondary/70 border border-border/60 px-2.5 py-0.5 rounded-full whitespace-nowrap"
+                                  className="shrink-0 text-muted-foreground whitespace-nowrap"
+                                  style={{
+                                    fontSize: 10,
+                                    fontWeight: 500,
+                                    padding: "2px 8px",
+                                    borderRadius: 20,
+                                    border: "0.5px solid hsl(var(--border))",
+                                    lineHeight: "16px",
+                                  }}
                                 >
                                   {item}
                                 </span>
                               ))}
                             </div>
 
-                            {/* Footer divider — mt-auto pins footer to bottom */}
-                            <div className="border-t border-border/50 mt-auto mb-2.5" />
-
-                            {/* Footer */}
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                                <Calendar className="w-3 h-3 shrink-0" />
+                            {/* ── FOOTER — pinned to bottom ── */}
+                            <div
+                              className="flex items-center justify-between"
+                              style={{
+                                marginTop: "auto",
+                                paddingTop: 8,
+                                borderTop: "0.5px solid hsl(var(--border))",
+                              }}
+                            >
+                              <div className="flex items-center gap-1.5 text-muted-foreground" style={{ fontSize: 11 }}>
+                                <Calendar style={{ width: 12, height: 12 }} />
                                 <span>{formatDate(cert.issue_date)}</span>
                               </div>
 
@@ -240,9 +289,10 @@ const CertificationsPage = () => {
                                     e.stopPropagation();
                                     window.open(cert.credential_url, "_blank");
                                   }}
-                                  className="flex items-center gap-1.5 bg-foreground text-background hover:bg-foreground/90 text-[11px] font-semibold px-3.5 py-1.5 rounded-lg transition-all active:scale-95"
+                                  className="flex items-center gap-1 bg-foreground text-background hover:bg-foreground/85 transition-all active:scale-95 rounded-lg"
+                                  style={{ fontSize: 11, fontWeight: 600, padding: "4px 12px" }}
                                 >
-                                  Verify <ExternalLink className="w-3 h-3" />
+                                  Verify <ExternalLink style={{ width: 11, height: 11 }} />
                                 </button>
                               )}
                             </div>
