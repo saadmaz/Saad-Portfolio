@@ -1,40 +1,45 @@
-import { motion } from "framer-motion";
-import { ArrowRight, Award, ExternalLink, Tag, Layers } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Award, ExternalLink, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { useCertificates } from "@/shared/hooks/useCommon";
 import { Certificate } from "@/types";
 
+const CARDS_PER_PAGE = 3;
+
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
 export function CertificatesPreview() {
   const { data: certificates, isLoading } = useCertificates();
+  const [page, setPage] = useState(0);
 
-  const getYear = (dateStr: string | null) => {
-    if (!dateStr) return "";
-    try {
-      return new Date(dateStr).getFullYear().toString();
-    } catch {
-      return dateStr.split("-")[0] || dateStr;
-    }
-  };
-
-  const sortedCertificates = [...(certificates || [])].sort((a, b) => {
+  const sorted = [...(certificates || [])].sort((a, b) => {
     const da = a.issue_date ? new Date(a.issue_date) : new Date(0);
     const db = b.issue_date ? new Date(b.issue_date) : new Date(0);
     return db.getTime() - da.getTime();
   });
 
+  const totalPages = Math.ceil(sorted.length / CARDS_PER_PAGE);
+  const visible = sorted.slice(page * CARDS_PER_PAGE, page * CARDS_PER_PAGE + CARDS_PER_PAGE);
+
+  const prev = () => setPage((p) => Math.max(0, p - 1));
+  const next = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+
   if (isLoading) {
     return (
       <section className="py-16 bg-secondary/30">
-        <div className="section-container text-center text-muted-foreground">
-          Loading certificates...
-        </div>
+        <div className="section-container text-center text-muted-foreground">Loading certificates...</div>
       </section>
     );
   }
@@ -52,7 +57,7 @@ export function CertificatesPreview() {
           className="mb-10"
         >
           <span className="section-title">Credentials</span>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Licenses & Certifications
@@ -62,10 +67,26 @@ export function CertificatesPreview() {
                 development, and data engineering.
               </p>
             </div>
-            <div className="mt-4 md:mt-0 shrink-0">
+
+            {/* Controls: arrows + see all */}
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={prev}
+                disabled={page === 0}
+                className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:border-accent/50 hover:text-accent"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={next}
+                disabled={page >= totalPages - 1}
+                className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:border-accent/50 hover:text-accent"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
               <Link
                 to="/certifications"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-accent-foreground rounded-full font-semibold shadow-sm hover:opacity-95 transition"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-accent-foreground rounded-full font-semibold text-sm shadow-sm hover:opacity-95 transition"
               >
                 See All Certificates
                 <ArrowRight className="w-4 h-4" />
@@ -74,118 +95,232 @@ export function CertificatesPreview() {
           </div>
         </motion.div>
 
-        {/* Carousel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="relative"
-        >
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent className="-ml-4">
-
-              {sortedCertificates.map((cert: Certificate, index: number) => (
-                <CarouselItem
-                  key={cert.id || index}
-                  className="pl-4 basis-full sm:basis-1/2 xl:basis-1/3"
+        {/* 3-card grid */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={page}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}
+          >
+            {visible.map((cert: Certificate) => (
+              <Link key={cert.id} to={`/certifications/${cert.id}`} className="group block" style={{ height: 220 }}>
+                <div
+                  className="relative h-full overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-px"
+                  style={{
+                    background: "var(--card)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderLeft: "3px solid #0d9488",
+                    borderRadius: 14,
+                    padding: 16,
+                  }}
                 >
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: index * 0.04 }}
-                    whileHover={{ y: -3, transition: { duration: 0.18 } }}
-                  >
-                    <Link to={`/certifications/${cert.id}`} className="block">
-                      <div className="group bg-card border border-border rounded-xl overflow-hidden hover:border-accent/40 hover:shadow-lg transition-all duration-300 relative">
+                  {/* ROW 1 — Header */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    {/* Logo 40×40 */}
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        minWidth: 40,
+                        borderRadius: 8,
+                        background: "#0a66c2",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {cert.issuer_logo ? (
+                        <img
+                          src={cert.issuer_logo}
+                          alt={cert.issuer}
+                          style={{ width: 26, height: 26, objectFit: "contain", filter: "brightness(0) invert(1)" }}
+                        />
+                      ) : (
+                        <Award style={{ width: 20, height: 20, color: "#fff" }} />
+                      )}
+                    </div>
 
-                        {/* Subtle hover gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                        <div className="relative z-10 flex items-stretch gap-0">
-
-                          {/* Left - logo column */}
-                          <div className="flex items-center justify-center w-24 shrink-0 bg-secondary/30 border-r border-border/60 group-hover:border-accent/20 transition-colors duration-300">
-                            <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center border border-border group-hover:border-accent/30 group-hover:shadow-[0_0_14px_hsl(174_72%_44%_/_0.2)] transition-all duration-300 overflow-hidden">
-                              {cert.issuer_logo ? (
-                                <img
-                                  src={cert.issuer_logo}
-                                  alt={cert.issuer}
-                                  className="w-9 h-9 object-contain"
-                                />
-                              ) : (
-                                <Award className="w-5 h-5 text-accent" />
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Right - content */}
-                          <div className="flex-1 px-5 py-4 min-w-0">
-
-                            {/* Title + year */}
-                            <div className="flex items-start justify-between gap-3 mb-1">
-                              <h4 className="font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-accent transition-colors duration-200">
-                                {cert.title}
-                              </h4>
-                              <span className="shrink-0 text-xs font-medium text-muted-foreground mt-0.5">
-                                {getYear(cert.issue_date)}
-                              </span>
-                            </div>
-
-                            {/* Organisation */}
-                            <p className="text-sm text-muted-foreground mb-3 truncate">
-                              {cert.issuer}
-                            </p>
-
-                            {/* Tags */}
-                            <div className="flex flex-wrap gap-1.5">
-                              {cert.category && (
-                                <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-tight text-muted-foreground bg-secondary/60 border border-border/60 px-2 py-0.5 rounded-md">
-                                  <Layers className="w-2.5 h-2.5" />
-                                  {cert.category}
-                                </span>
-                              )}
-                              {cert.tags?.slice(0, 2).map((tag: string, i: number) => (
-                                <span
-                                  key={i}
-                                  className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-tight text-accent/80 bg-accent/10 border border-accent/20 px-2 py-0.5 rounded-md"
-                                >
-                                  <Tag className="w-2.5 h-2.5" />
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
+                    {/* Title + org stack */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4
+                        className="group-hover:text-accent transition-colors duration-150"
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          lineHeight: 1.35,
+                          color: "var(--foreground)",
+                          marginBottom: 3,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {cert.title}
+                      </h4>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            color: "var(--muted-foreground)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {cert.issuer}
+                        </span>
+                        {cert.is_verifiable && (
+                          <span
+                            style={{
+                              flexShrink: 0,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              color: "#4ade80",
+                              background: "rgba(22,163,74,0.15)",
+                              borderRadius: 20,
+                              padding: "2px 8px",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#4ade80", display: "inline-block" }} />
+                            Verified
+                          </span>
+                        )}
                       </div>
-                    </Link>
-                  </motion.div>
-                </CarouselItem>
-              ))}
-
-              {/* See all card */}
-              <CarouselItem className="pl-4 basis-full sm:basis-1/2 xl:basis-1/3">
-                <Link to="/certifications" className="block h-full">
-                  <div className="group bg-accent/5 border border-accent/25 rounded-xl hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 flex items-center justify-center gap-4 px-6 py-8">
-                    <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors shrink-0">
-                      <ExternalLink className="w-4 h-4 text-accent" />
                     </div>
-                    <div>
-                      <p className="font-semibold text-accent">See All Certificates</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">View full credentials list</p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-accent ml-auto group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
-                </Link>
-              </CarouselItem>
 
-            </CarouselContent>
+                  {/* ROW 2 — Divider */}
+                  <div style={{ height: 1, background: "rgba(255,255,255,0.07)", marginBottom: 8 }} />
 
-            <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-secondary" />
-            <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-secondary" />
-          </Carousel>
-        </motion.div>
+                  {/* ROW 3 — Description */}
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: "var(--muted-foreground)",
+                      lineHeight: 1.5,
+                      marginBottom: 8,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {cert.description}
+                  </p>
+
+                  {/* ROW 4 — Tags */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 6,
+                      flexWrap: "nowrap",
+                      overflow: "hidden",
+                      maxHeight: 22,
+                      marginBottom: 8,
+                    }}
+                  >
+                    {(cert.tags?.length ? cert.tags : cert.skills || []).map((tag: string, i: number) => (
+                      <span
+                        key={i}
+                        style={{
+                          flexShrink: 0,
+                          fontSize: 10,
+                          fontWeight: 500,
+                          color: "#2dd4bf",
+                          background: "rgba(13,148,136,0.12)",
+                          borderRadius: 20,
+                          padding: "2px 9px",
+                          whiteSpace: "nowrap",
+                          lineHeight: "16px",
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* ROW 5 — Footer (pinned to bottom) */}
+                  <div
+                    style={{
+                      marginTop: "auto",
+                      paddingTop: 10,
+                      borderTop: "1px solid rgba(255,255,255,0.07)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "var(--muted-foreground)" }}>
+                      <Calendar style={{ width: 11, height: 11 }} />
+                      <span>{formatDate(cert.issue_date)}</span>
+                    </div>
+                    {cert.credential_url && (
+                      <button
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(cert.credential_url, "_blank"); }}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          fontSize: 10,
+                          fontWeight: 600,
+                          color: "#fff",
+                          background: "#0a66c2",
+                          borderRadius: 20,
+                          padding: "4px 12px",
+                          border: "none",
+                          cursor: "pointer",
+                          transition: "opacity 0.15s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+                        onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                      >
+                        Verify <ExternalLink style={{ width: 10, height: 10 }} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            ))}
+
+            {/* Fill empty slots if last page has < 3 cards */}
+            {visible.length < CARDS_PER_PAGE &&
+              Array.from({ length: CARDS_PER_PAGE - visible.length }).map((_, i) => (
+                <div key={`empty-${i}`} style={{ height: 220 }} />
+              ))}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dot indicators */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                style={{
+                  width: i === page ? 20 : 8,
+                  height: 8,
+                  borderRadius: 20,
+                  background: i === page ? "#0d9488" : "rgba(255,255,255,0.2)",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all 0.25s ease",
+                  padding: 0,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
       </div>
     </section>
   );
