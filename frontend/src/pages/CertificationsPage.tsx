@@ -1,15 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X, Layers } from "lucide-react";
+import { Award, ExternalLink, Calendar, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { dataManager, Certificate } from "@/shared/lib/dataManager";
 
-/**
- * INTERFACE: Matches your JSON structure
- */
 interface Certificate {
   id: string;
   title: string;
@@ -29,45 +26,52 @@ interface Certificate {
   pdf_document_link: string;
   is_verifiable: boolean;
   is_featured: boolean;
-  colour: string; 
+  colour: string;
 }
 
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+};
+
 const CertificationsPage = () => {
-  // --- STATE ---
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllCerts, setShowAllCerts] = useState(false);
 
-  // --- DATA LOADING ---
   useEffect(() => {
     dataManager.getCertificates().then((data) => {
-      const sorted = [...data].sort((a, b) => {
-        const dateA = new Date(a.issue_date || 0).getTime();
-        const dateB = new Date(b.issue_date || 0).getTime();
-        return dateB - dateA;
-      });
+      const sorted = [...data].sort((a, b) =>
+        new Date(b.issue_date || 0).getTime() - new Date(a.issue_date || 0).getTime()
+      );
       setCertificates(sorted);
       setLoading(false);
     });
   }, []);
 
-  // --- CATEGORY EXTRACTION ---
   const categories = useMemo(() => [
     "All",
-    ...Array.from(new Set(certificates.map((cert) => cert.category))),
+    ...Array.from(new Set(certificates.map((c) => c.category))),
   ], [certificates]);
 
-  // --- FILTERING LOGIC ---
   const filteredCertificates = certificates.filter((cert) => {
     const matchesCategory = selectedCategory === "All" || cert.category === selectedCategory;
+    const q = searchQuery.toLowerCase();
     const matchesSearch =
-      cert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cert.issuer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cert.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (cert.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
+      cert.title.toLowerCase().includes(q) ||
+      cert.issuer.toLowerCase().includes(q) ||
+      cert.description.toLowerCase().includes(q) ||
+      (cert.tags || []).some((t) => t.toLowerCase().includes(q));
     return matchesCategory && matchesSearch;
   });
 
@@ -78,9 +82,9 @@ const CertificationsPage = () => {
   return (
     <Layout>
       <section className="section-padding">
-        <div className="section-container" style={{ boxSizing: 'border-box', overflowX: 'hidden' }}>
-          
-          {/* --- HEADER --- */}
+        <div className="section-container" style={{ boxSizing: "border-box", overflowX: "hidden" }}>
+
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -98,11 +102,11 @@ const CertificationsPage = () => {
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin h-12 w-12 border-4 border-accent border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-12 w-12 border-4 border-accent border-t-transparent rounded-full" />
             </div>
           ) : (
             <>
-              {/* --- SEARCH & FILTERS --- */}
+              {/* Search & Filters */}
               <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
                 <div className="relative flex-1 lg:flex-none lg:max-w-xl">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -110,7 +114,7 @@ const CertificationsPage = () => {
                     placeholder="Search certifications..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-card border-border max-w-xl w-full"
+                    className="pl-10 bg-card border-border max-w-xl w-full"
                   />
                   {searchQuery && (
                     <button
@@ -121,7 +125,6 @@ const CertificationsPage = () => {
                     </button>
                   )}
                 </div>
-
                 <div className="flex flex-wrap gap-2 items-center">
                   {categories.map((category) => (
                     <button
@@ -139,71 +142,116 @@ const CertificationsPage = () => {
                 </div>
               </div>
 
-              {/* --- CERTIFICATES GRID --- */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {/* Cards grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <AnimatePresence mode="popLayout">
                   {displayedCertificates.map((cert, index) => (
                     <motion.div
                       key={cert.id}
                       layout
-                      initial={{ opacity: 0, scale: 0.95 }}
+                      initial={{ opacity: 0, scale: 0.97 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ duration: 0.25, delay: index * 0.04 }}
+                      className="h-[280px]"
                     >
                       <Link to={`/certifications/${cert.id}`} className="group block h-full">
-                        <div className="relative h-full bg-card rounded-2xl border border-border p-5 md:p-6 overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-accent/50 flex flex-col">
-                          
-                          {/* Hover Gradient Overlay */}
-                          <div className={`absolute inset-0 bg-gradient-to-br ${cert.colour || 'from-accent/5 to-transparent'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                        <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl hover:border-accent/40 hover:-translate-y-0.5">
 
-                          {/* Content Container */}
-                          <div className="relative z-10 flex flex-col h-full">
-                            
-                            {/* Header: Logo + Badge */}
-                            <div className="flex items-start justify-between mb-4 pb-4 border-b border-border/30">
-                              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-muted flex items-center justify-center border-2 border-border/40 group-hover:border-accent/50 transition-all duration-300 flex-shrink-0 overflow-hidden shadow-sm">
+                          {/* Left accent stripe */}
+                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent rounded-l-xl z-10" />
+
+                          {/* Hover tint */}
+                          <div className="absolute inset-0 bg-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                          {/* Watermark logo */}
+                          {cert.issuer_logo && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-[0.045] pointer-events-none select-none">
+                              <img
+                                src={cert.issuer_logo}
+                                alt=""
+                                aria-hidden="true"
+                                className="w-28 h-28 object-contain"
+                              />
+                            </div>
+                          )}
+
+                          {/* Card body */}
+                          <div className="relative z-10 flex flex-col h-full pl-5 pr-4 pt-4 pb-4">
+
+                            {/* Top: logo + title */}
+                            <div className="flex items-start gap-3 mb-2.5">
+                              <div className="w-9 h-9 shrink-0 rounded-lg bg-background border border-border flex items-center justify-center overflow-hidden shadow-sm group-hover:border-accent/30 transition-colors">
                                 {cert.issuer_logo ? (
-                                  <img src={cert.issuer_logo} alt={cert.issuer} className="w-9 h-9 md:w-11 md:h-11 object-contain" />
+                                  <img
+                                    src={cert.issuer_logo}
+                                    alt={cert.issuer}
+                                    className="w-6 h-6 object-contain"
+                                  />
                                 ) : (
-                                  <Award className="w-6 h-6 md:w-7 md:h-7 text-accent" />
+                                  <Award className="w-4 h-4 text-accent" />
                                 )}
                               </div>
+                              <h3
+                                className="text-sm font-bold text-foreground leading-snug group-hover:text-accent transition-colors duration-200"
+                                style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {cert.title}
+                              </h3>
+                            </div>
 
+                            {/* Org + verifiable inline */}
+                            <div className="flex items-center gap-2 mb-2.5 pl-12">
+                              <span className="text-xs text-muted-foreground font-medium truncate">
+                                {cert.issuer}
+                              </span>
                               {cert.is_verifiable && (
-                                <div className="flex items-center gap-1.5 bg-success/10 text-success px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider">
-                                  <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
-                                  Verifiable
-                                </div>
+                                <span className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-emerald-500 shrink-0">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                  Verified
+                                </span>
                               )}
                             </div>
 
-                            {/* Info Section */}
-                            <div className="mb-3">
-                              <h3 className="text-lg md:text-xl font-bold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors">
-                                {cert.title}
-                              </h3>
-                              <p className="text-xs md:text-sm text-muted-foreground font-medium">{cert.issuer}</p>
+                            {/* Divider */}
+                            <div className="border-t border-border/40 mb-2.5" />
+
+                            {/* Description — 2 line clamp with fade */}
+                            <div className="relative mb-2.5 overflow-hidden" style={{ maxHeight: "2.6rem" }}>
+                              <p className="text-[11px] text-muted-foreground leading-[1.45] line-clamp-2">
+                                {cert.description}
+                              </p>
+                              <div className="absolute bottom-0 inset-x-0 h-3 bg-gradient-to-t from-card to-transparent" />
                             </div>
 
-                            <p className="text-xs md:text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow">
-                              {cert.description}
-                            </p>
+                            {/* Divider */}
+                            <div className="border-t border-border/40 mb-2.5" />
 
-                            {/* Tags/Skills */}
-                            <div className="mb-4 flex flex-wrap gap-2">
-                              {(cert.skills?.slice(0, 3) || cert.tags?.slice(0, 3) || []).map((item, idx) => (
-                                <span key={idx} className="text-[10px] md:text-xs bg-secondary/60 text-secondary-foreground px-2.5 py-1 rounded-full font-medium">
+                            {/* Tags — single row, no wrap */}
+                            <div className="flex gap-1.5 overflow-hidden flex-nowrap mb-2.5" style={{ maxHeight: "1.5rem" }}>
+                              {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="shrink-0 text-[9px] font-semibold uppercase tracking-tight bg-accent/10 text-accent border border-accent/20 px-2 py-0.5 rounded-full whitespace-nowrap"
+                                >
                                   {item}
                                 </span>
                               ))}
                             </div>
 
-                            {/* Footer: Date + Verify Button */}
-                            <div className="flex items-center justify-between gap-3 mt-auto pt-4 border-t border-border/30">
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="w-4 h-4" />
-                                <span>{cert.issue_date}</span>
+                            {/* Divider */}
+                            <div className="border-t border-border/40 mt-auto" />
+
+                            {/* Footer */}
+                            <div className="flex items-center justify-between pt-2.5">
+                              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                                <Calendar className="w-3 h-3 shrink-0" />
+                                <span>{formatDate(cert.issue_date)}</span>
                               </div>
 
                               {cert.credential_url && (
@@ -211,11 +259,11 @@ const CertificationsPage = () => {
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    window.open(cert.credential_url, '_blank');
+                                    window.open(cert.credential_url, "_blank");
                                   }}
-                                  className="flex items-center gap-1 bg-foreground/5 hover:bg-accent/20 text-foreground group-hover:text-accent font-bold text-xs px-3 py-1.5 rounded-md transition-all border border-transparent hover:border-accent/30"
+                                  className="flex items-center gap-1 bg-accent text-accent-foreground hover:bg-accent/90 text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active:scale-95 shadow-sm shadow-accent/20"
                                 >
-                                  Verify <ExternalLink className="w-3.5 h-3.5" />
+                                  Verify <ExternalLink className="w-3 h-3" />
                                 </button>
                               )}
                             </div>
@@ -227,7 +275,7 @@ const CertificationsPage = () => {
                 </AnimatePresence>
               </div>
 
-              {/* --- PAGINATION TOGGLE --- */}
+              {/* Expand/collapse */}
               {filteredCertificates.length > 6 && (
                 <div className="mt-12 text-center">
                   <Button
@@ -244,12 +292,16 @@ const CertificationsPage = () => {
                 </div>
               )}
 
-              {/* --- EMPTY STATE --- */}
+              {/* Empty state */}
               {filteredCertificates.length === 0 && (
                 <div className="text-center py-24 bg-secondary/10 rounded-3xl border border-dashed border-border mt-10">
                   <Award className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-20" />
                   <p className="text-muted-foreground font-medium text-lg">No certifications found.</p>
-                  <Button variant="link" onClick={() => {setSelectedCategory("All"); setSearchQuery("");}} className="text-accent mt-2">
+                  <Button
+                    variant="link"
+                    onClick={() => { setSelectedCategory("All"); setSearchQuery(""); }}
+                    className="text-accent mt-2"
+                  >
                     Clear all filters
                   </Button>
                 </div>
