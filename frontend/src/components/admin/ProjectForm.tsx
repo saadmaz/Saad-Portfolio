@@ -109,7 +109,7 @@ const TagListEditor = ({
             </button>
           </span>
         ))}
-        {values.length === 0 && <p className="text-xs text-white/20 italic">None added</p>}
+        {values.length === 0 && <p className="text-xs text-white/20">None added</p>}
       </div>
       <div className="flex gap-2">
         <Input value={input} onChange={e => setInput(e.target.value)}

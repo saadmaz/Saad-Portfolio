@@ -119,7 +119,7 @@ const CertificateForm = () => {
           <h1 className="text-3xl font-bold tracking-tight">
             {isEditMode ? 'Edit Certificate' : 'Add Achievement'}
           </h1>
-          <p className="text-muted-foreground italic">
+          <p className="text-muted-foreground">
             "Your hard work is your unique signature."
           </p>
         </div>

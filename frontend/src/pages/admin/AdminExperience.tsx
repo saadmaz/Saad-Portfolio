@@ -119,7 +119,7 @@ const AdminExperience = () => {
           ))
         ) : (
           <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-            <p className="text-muted-foreground italic">No experience items yet.</p>
+            <p className="text-muted-foreground">No experience items yet.</p>
           </div>
         )}
       </div>

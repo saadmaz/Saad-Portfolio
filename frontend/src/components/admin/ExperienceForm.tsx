@@ -132,7 +132,7 @@ const ExperienceForm = () => {
           <h1 className="text-3xl font-bold tracking-tight">
             {isEditMode ? 'Edit Experience' : 'New Role'}
           </h1>
-          <p className="text-muted-foreground italic">
+          <p className="text-muted-foreground">
             "Your journey is a testament to your growth."
           </p>
         </div>

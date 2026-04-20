@@ -134,7 +134,7 @@ const AdminCertificates = () => {
           ))
         ) : (
           <div className="col-span-full p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-            <p className="text-muted-foreground italic">No certificates added yet.</p>
+            <p className="text-muted-foreground">No certificates added yet.</p>
           </div>
         )}
       </div>

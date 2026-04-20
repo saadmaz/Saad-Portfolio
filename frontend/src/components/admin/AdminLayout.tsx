@@ -197,7 +197,7 @@ const AdminLayout = () => {
             </div>
             <div>
               <span
-                className="admin-editorial text-[13px] font-semibold italic block leading-none"
+                className="admin-editorial text-[13px] font-semibold block leading-none"
                 style={{ color: 'rgba(237,233,227,0.90)' }}
               >
                 Admin

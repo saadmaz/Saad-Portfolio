@@ -131,7 +131,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
           <p className="text-[10px] font-medium tracking-[0.22em] mb-4" style={{ color: IV22 }}>
             {dayName} · {dateStr} · VOLUME {volumeN}
           </p>
-          <h1 className="admin-editorial text-4xl md:text-5xl font-semibold italic mb-3 leading-[1.08]"
+          <h1 className="admin-editorial text-4xl md:text-5xl font-semibold mb-3 leading-[1.08]"
               style={{ color: IV85 }}>
             {greeting}, Saad.
           </h1>
@@ -182,7 +182,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
                 </div>
               </div>
               <div className="px-4 pb-4">
-                <h3 className="admin-editorial text-xl font-semibold italic mb-1" style={{ color: IV85 }}>
+                <h3 className="admin-editorial text-xl font-semibold mb-1" style={{ color: IV85 }}>
                   {latestDraft.title}
                 </h3>
                 <div className="flex gap-2 mt-3">
@@ -254,7 +254,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
           </div>
           <div className="px-4 pt-2 pb-1">
             <div className="flex items-end gap-2">
-              <span className="admin-editorial text-4xl font-semibold italic leading-none" style={{ color: IV85 }}>
+              <span className="admin-editorial text-4xl font-semibold leading-none" style={{ color: IV85 }}>
                 {loading ? '—' : `${data.stats.find(s => s.key === 'projects')?.value ?? '—'}`}
               </span>
               <span className="text-[11px] font-medium mb-1" style={{ color: EM }}>projects live</span>
@@ -284,7 +284,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
         <div className="flex items-center justify-between py-3.5 px-5" style={{ borderBottom: `1px solid ${BDR}` }}>
           <div className="flex items-center gap-2">
             <History className="w-3.5 h-3.5" style={{ color: EM }} />
-            <span className="admin-editorial text-[13px] font-semibold italic" style={{ color: IV55 }}>
+            <span className="admin-editorial text-[13px] font-semibold" style={{ color: IV55 }}>
               Recent Activity
             </span>
           </div>
@@ -334,7 +334,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
           </div>
         ) : (
           <div className="py-12 text-center">
-            <p className="admin-editorial text-sm italic" style={{ color: IV22 }}>No activity yet.</p>
+            <p className="admin-editorial text-sm" style={{ color: IV22 }}>No activity yet.</p>
           </div>
         )}
       </Card>
@@ -388,7 +388,7 @@ const WorkbenchView = ({ data, loading }: { data: DashData; loading: boolean }) 
                 {stat.alert && <span className="text-[8.5px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full"
                   style={{ background: 'rgba(208,107,107,0.12)', color: '#D06B6B' }}>NEW</span>}
               </div>
-              <div className="admin-editorial text-2xl font-semibold italic mb-0.5" style={{ color: IV85 }}>
+              <div className="admin-editorial text-2xl font-semibold mb-0.5" style={{ color: IV85 }}>
                 {loading ? <span className="inline-block w-8 h-5 rounded animate-pulse" style={{ background: 'rgba(255,255,255,0.08)' }} /> : stat.value}
               </div>
               <p className="text-[9px] font-semibold uppercase tracking-[0.12em]" style={{ color: IV22 }}>
@@ -489,7 +489,7 @@ const WorkbenchView = ({ data, loading }: { data: DashData; loading: boolean }) 
                   {selectedProject.status ?? 'live'}
                 </span>
               </div>
-              <h3 className="admin-editorial text-xl font-semibold italic mb-1" style={{ color: IV85 }}>
+              <h3 className="admin-editorial text-xl font-semibold mb-1" style={{ color: IV85 }}>
                 {selectedProject.title}
               </h3>
               <p className="text-[11px] mb-4" style={{ color: IV22 }}>

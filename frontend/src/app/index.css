@@ -626,10 +626,10 @@
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
-  /* Editorial class: Playfair Display serif for display headings */
+  /* Editorial class: formal sans-serif for display headings */
   .admin-panel .admin-editorial {
-    font-family: 'Playfair Display', Georgia, serif !important;
-    font-style:  italic !important;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif !important;
+    font-style:  normal !important;
   }
 
   /* Monospace class: system mono stack for command / terminal UI */

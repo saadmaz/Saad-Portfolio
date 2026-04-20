@@ -126,7 +126,7 @@ const AdminTestimonials = () => {
                     <p className="text-xs text-muted-foreground">{test.position} at {test.company}</p>
                   </div>
                 </div>
-                <p className="text-sm text-white/70 italic leading-relaxed line-clamp-4 mb-4">
+                <p className="text-sm text-white/70 leading-relaxed line-clamp-4 mb-4">
                   "{test.content}"
                 </p>
                 <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
