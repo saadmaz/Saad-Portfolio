@@ -100,7 +100,7 @@ export function SEO({
       {/* ── JSON-LD Structured Data ───────────────────────────────── */}
       {structuredData && (
         <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
+          {JSON.stringify(structuredData)}  
         </script>
       )}
       {breadcrumbSchema && (

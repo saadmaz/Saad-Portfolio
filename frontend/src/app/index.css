@@ -626,14 +626,26 @@
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 
-  /* DM Sans bold for all admin headings - professional, no italic */
+  /* Editorial class: Playfair Display serif for display headings */
+  .admin-panel .admin-editorial {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-style:  italic !important;
+  }
+
+  /* Monospace class: system mono stack for command / terminal UI */
+  .admin-panel .admin-mono,
+  .admin-panel .admin-mono * {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace !important;
+    font-variant-ligatures: none;
+  }
+
+  /* Headings default (non-editorial): DM Sans bold */
   .admin-panel h1,
   .admin-panel h2,
   .admin-panel h3,
   .admin-panel h4,
   .admin-panel h5,
-  .admin-panel h6,
-  .admin-panel .admin-editorial {
+  .admin-panel h6 {
     font-family:    'DM Sans', system-ui, sans-serif !important;
     font-style:     normal   !important;
     font-weight:    700      !important;
