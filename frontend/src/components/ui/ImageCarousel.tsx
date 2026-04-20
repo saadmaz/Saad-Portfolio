@@ -50,6 +50,8 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
       <div className={`relative overflow-hidden rounded-2xl select-none ${className ?? ''}`}>
         {/* Slides */}
         <div
+          role="region"
+          aria-label={alt ? `${alt} image carousel` : 'Image carousel'}
           className="relative aspect-video bg-black cursor-zoom-in"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -66,47 +68,63 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
               transition={{ duration: 0.35, ease: 'easeInOut' }}
               src={images[current]}
               alt={alt ? `${alt} - ${current + 1}` : `Image ${current + 1}`}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
           </AnimatePresence>
         </div>
 
-        {/* Arrow buttons */}
+        {/* Arrow buttons — 44×44px min touch target */}
         {images.length > 1 && (
           <>
             <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
               disabled={current === 0}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+              aria-label="Previous image"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); next(); }}
               disabled={current === images.length - 1}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+              aria-label="Next image"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </>
         )}
 
-        {/* Dot indicators */}
+        {/* Dot indicators — padded to ensure ≥44px touch target */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+          <div
+            role="tablist"
+            aria-label="Image navigation"
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-0.5 z-10"
+          >
             {images.map((_, i) => (
               <button
                 key={i}
+                role="tab"
+                aria-selected={i === current}
+                aria-label={`Go to image ${i + 1} of ${images.length}`}
                 onClick={(e) => { e.stopPropagation(); go(i, i > current ? 1 : -1); }}
-                className={`rounded-full transition-all ${i === current ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/70'}`}
-              />
+                className="w-8 h-8 flex items-center justify-center rounded-full"
+              >
+                <span className={`block rounded-full transition-all ${i === current ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/70'}`} />
+              </button>
             ))}
           </div>
         )}
 
         {/* Counter badge */}
         {images.length > 1 && (
-          <div className="absolute top-3 right-3 z-10 bg-black/50 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="absolute top-3 right-3 z-10 bg-black/50 text-white text-[11px] font-bold px-2 py-0.5 rounded-full"
+          >
             {current + 1} / {images.length}
           </div>
         )}

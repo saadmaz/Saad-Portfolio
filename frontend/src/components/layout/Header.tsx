@@ -136,7 +136,7 @@ export function Header() {
             </div>
 
             <div className="flex lg:hidden items-center gap-2 relative z-[60]">
-              <button onClick={toggleTheme} className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all">
+              <button onClick={toggleTheme} aria-label="Toggle theme" className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
@@ -144,7 +144,13 @@ export function Header() {
                 <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Resume</a>
               </Button>
 
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-foreground focus:outline-none">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-nav"
+                className="p-2 text-foreground focus:outline-none"
+              >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -156,7 +162,7 @@ export function Header() {
         {isMobileMenuOpen && (
           <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-[45] lg:hidden">
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
-            <m.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]">
+            <m.nav id="mobile-nav" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]">
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -168,13 +174,13 @@ export function Header() {
 
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex flex-wrap items-center gap-6">
-                  <a href="tel:+94720135801" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Phone className="w-6 h-6" /></a>
-                  <a href="mailto:saadmazaa@gmail.com" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Mail className="w-6 h-6" /></a>
-                  <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Linkedin className="w-6 h-6" /></a>
-                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Github className="w-6 h-6" /></a>
-                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Instagram className="w-6 h-6" /></a>
-                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Facebook className="w-6 h-6" /></a>
-                  <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" className="p-2 text-muted-foreground hover:text-accent transition-colors"><X className="w-6 h-6" /></a>
+                  <a href="tel:+94720135801" aria-label="Call Saad" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Phone className="w-6 h-6" /></a>
+                  <a href="mailto:saadmazaa@gmail.com" aria-label="Email Saad" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Mail className="w-6 h-6" /></a>
+                  <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Linkedin className="w-6 h-6" /></a>
+                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" aria-label="GitHub" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Github className="w-6 h-6" /></a>
+                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" aria-label="Instagram" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Instagram className="w-6 h-6" /></a>
+                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" aria-label="Facebook" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Facebook className="w-6 h-6" /></a>
+                  <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="p-2 text-muted-foreground hover:text-accent transition-colors"><X className="w-6 h-6" /></a>
                 </div>
               </div>
             </m.nav>

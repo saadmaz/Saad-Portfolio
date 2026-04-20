@@ -38,6 +38,9 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
     <AnimatePresence>
       {isOpen && (
         <m.div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image lightbox"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -47,7 +50,8 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+            aria-label="Close lightbox"
+            className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -56,7 +60,8 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
           {hasPrev && onNavigate && (
             <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
-              className="absolute left-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Previous image"
+              className="absolute left-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -79,7 +84,8 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
           {hasNext && onNavigate && (
             <button
               onClick={(e) => { e.stopPropagation(); next(); }}
-              className="absolute right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Next image"
+              className="absolute right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -87,13 +93,18 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
 
           {/* Dots */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1" role="tablist" aria-label="Image navigation">
               {images.map((_, i) => (
                 <button
                   key={i}
+                  role="tab"
+                  aria-selected={i === currentIndex}
+                  aria-label={`View image ${i + 1} of ${images.length}`}
                   onClick={(e) => { e.stopPropagation(); onNavigate?.(i); }}
-                  className={`w-2 h-2 rounded-full transition-all ${i === currentIndex ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/60'}`}
-                />
+                  className={`w-8 h-8 flex items-center justify-center rounded-full transition-all ${i === currentIndex ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
+                >
+                  <span className={`block rounded-full transition-all ${i === currentIndex ? 'w-2.5 h-2.5 bg-white scale-125' : 'w-2 h-2 bg-current'}`} />
+                </button>
               ))}
             </div>
           )}

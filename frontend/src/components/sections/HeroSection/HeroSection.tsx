@@ -257,6 +257,9 @@ export function HeroSection() {
                   <m.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="sync"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Teal overlay gradient on hover */}
