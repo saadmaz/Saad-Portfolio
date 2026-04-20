@@ -60,11 +60,16 @@ export default function BlogDetailPage() {
     <Layout>
       <SEO
         title={title}
-        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog.`}
+        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog — AI, startups, and full-stack development from Colombo, Sri Lanka.`}
         image={coverImage}
         url={`https://saadmaz.com/blog/${slug}`}
         type="article"
         structuredData={articleSchema}
+        keywords={tags?.join(", ")}
+        breadcrumbs={[
+          { name: "Blog", url: "https://saadmaz.com/blog" },
+          { name: title, url: `https://saadmaz.com/blog/${slug}` },
+        ]}
       />
       <article className="blog-detail-page">
         <div className="blog-detail-container">

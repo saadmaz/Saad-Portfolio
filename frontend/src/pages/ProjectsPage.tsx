@@ -35,8 +35,9 @@ const ProjectsPage = () => {
     <Layout>
       <SEO
         title="Projects | AI, Web & Mobile Apps by Saad Mazhar"
-        description="Explore projects built by Saad Mazhar — full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka."
+        description="View case studies and live projects by Saad Mazhar — full-stack web apps, AI integrations, Flutter mobile apps, and startup products. Available for hire in Colombo, Sri Lanka."
         url="https://saadmaz.com/projects"
+        keywords="full-stack developer portfolio Sri Lanka, React projects, Flutter apps, AI developer Colombo, hire developer Sri Lanka"
       />
       <section className="section-padding">
         <div className="section-container">

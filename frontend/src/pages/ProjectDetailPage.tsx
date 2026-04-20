@@ -95,14 +95,19 @@ const ProjectDetailPage = () => {
         title={`${project.title} | Project by Saad Mazhar`}
         description={
           project.tagline
-            ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} A project by Saad Mazhar, full-stack developer based in Sri Lanka.`
+            ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
             : project.overview
-            ? `${project.overview} Built by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
+            ? `${project.overview.slice(0, 140)} — case study by Saad Mazhar, full-stack developer in Sri Lanka.`
             : `${project.title} — a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
         }
         image={project.heroImage}
         url={`https://saadmaz.com/projects/${project.slug}`}
         structuredData={projectSchema}
+        keywords={project.technologies?.join(", ")}
+        breadcrumbs={[
+          { name: "Projects", url: "https://saadmaz.com/projects" },
+          { name: project.title, url: `https://saadmaz.com/projects/${project.slug}` },
+        ]}
       />
       {/* Background container: Neutral, sleek tones */}
       <section className="pt-8 pb-24 bg-background transition-colors duration-300">

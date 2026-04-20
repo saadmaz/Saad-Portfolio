@@ -36,8 +36,9 @@ const ContactPage = () => {
     <Layout>
       <SEO
         title="Contact Saad Mazhar | Hire a Freelance Developer in Sri Lanka"
-        description="Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting — based in Colombo, Sri Lanka."
+        description="Ready to hire a freelance developer in Colombo? Contact Saad Mazhar for web development, AI integration, mobile apps, speaking engagements, or consulting. Fast response guaranteed."
         url="https://saadmaz.com/contact"
+        keywords="hire freelance developer Sri Lanka, hire full-stack developer Colombo, freelance React developer, Flutter developer for hire"
       />
       <section className="section-padding">
         <div className="section-container">

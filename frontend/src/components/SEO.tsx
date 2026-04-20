@@ -14,6 +14,11 @@
 
 import { Helmet } from "react-helmet-async";
 
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -25,6 +30,10 @@ interface SEOProps {
   structuredData?: object;
   /** "website" | "article" - defaults to "website" */
   type?: string;
+  /** Page-specific keywords for <meta name="keywords"> */
+  keywords?: string;
+  /** Breadcrumb trail — renders a BreadcrumbList JSON-LD block for rich results */
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 const SITE_NAME  = "Saad Mazhar";
@@ -41,8 +50,26 @@ export function SEO({
   url = BASE_URL,
   structuredData,
   type = "website",
+  keywords,
+  breadcrumbs,
 }: SEOProps) {
   const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
+
+  const breadcrumbSchema = breadcrumbs
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+          ...breadcrumbs.map((crumb, i) => ({
+            "@type": "ListItem",
+            position: i + 2,
+            name: crumb.name,
+            item: crumb.url,
+          })),
+        ],
+      }
+    : null;
 
   return (
     <Helmet>
@@ -50,6 +77,7 @@ export function SEO({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      {keywords && <meta name="keywords" content={keywords} />}
 
       {/* ── Open Graph ───────────────────────────────────────────── */}
       <meta property="og:site_name"   content={SITE_NAME} />
@@ -69,10 +97,15 @@ export function SEO({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image"       content={image} />
 
-      {/* ── JSON-LD Structured Data (optional) ───────────────────── */}
+      {/* ── JSON-LD Structured Data ───────────────────────────────── */}
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
+        </script>
+      )}
+      {breadcrumbSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
         </script>
       )}
     </Helmet>

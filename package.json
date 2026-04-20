@@ -3,9 +3,10 @@
   "private": true,
   "scripts": {
     "dev": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
+    "build": "node scripts/generate-sitemap.mjs && npm --prefix frontend run build",
     "lint": "npm --prefix frontend run lint",
-    "import:certificates": "node scripts/import-certificates.js"
+    "import:certificates": "node scripts/import-certificates.js",
+    "sitemap": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
     "firebase-admin": "^12.0.0"
