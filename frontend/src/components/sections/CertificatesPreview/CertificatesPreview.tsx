@@ -57,14 +57,16 @@ export function CertificatesPreview() {
               <button
                 onClick={() => setPage((p: number) => Math.max(0, p - 1))}
                 disabled={page === 0}
-                className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
+                aria-label="Previous certificates page"
+                className="w-11 h-11 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setPage((p: number) => Math.min(totalPages - 1, p + 1))}
                 disabled={page >= totalPages - 1}
-                className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
+                aria-label="Next certificates page"
+                className="w-11 h-11 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -108,7 +110,7 @@ export function CertificatesPreview() {
                       style={{ width: 40, height: 40, borderRadius: 8, background: "#0a66c2" }}
                     >
                       {cert.issuer_logo
-                        ? <img src={cert.issuer_logo} alt="" style={{ width: 26, height: 26, objectFit: "contain", filter: "brightness(0) invert(1)" }} />
+                        ? <img src={cert.issuer_logo} alt="" loading="lazy" decoding="async" style={{ width: 26, height: 26, objectFit: "contain", filter: "brightness(0) invert(1)" }} />
                         : <Award style={{ width: 20, height: 20, color: "#fff" }} />
                       }
                     </div>

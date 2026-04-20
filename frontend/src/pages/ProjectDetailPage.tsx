@@ -174,10 +174,12 @@ const ProjectDetailPage = () => {
                     onClick={() => setSelectedImage(project!.heroImage!)}
                     className="group rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in"
                   >
-                    <img 
-                      src={project.heroImage} 
-                      alt={`${project.title} Cover`} 
-                      className="w-full object-cover h-[300px] md:h-[450px] transition-transform duration-700 ease-out group-hover:scale-105" 
+                    <img
+                      src={project.heroImage}
+                      alt={`${project.title} Cover`}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full object-cover h-[300px] md:h-[450px] transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   </div>
                 )}

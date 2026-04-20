@@ -2,7 +2,7 @@ import { m, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import profilePhoto from "@/assets/profile-photo.png";
+import profilePhoto from "@/assets/profile-photo.webp";
 import { useRef } from "react";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 

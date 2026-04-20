@@ -61,9 +61,11 @@ const ExperiencePage = () => {
                       rel="noopener noreferrer"
                       className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent transition-colors"
                     >
-                      <img 
-                        src={exp.companyLogo} 
+                      <img
+                        src={exp.companyLogo}
                         alt={`${exp.company} logo`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     </a>
