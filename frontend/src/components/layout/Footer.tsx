@@ -64,7 +64,7 @@ export function Footer() {
             {/* COLUMN 1: BRAND IDENTITY - Brief summary of the persona. */}
             <div className="lg:col-span-1">
               <h3 className="font-display text-xl font-bold text-card-foreground mb-4">Saad Mazhar</h3>
-              <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
+              <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                 CS Undergraduate. Startup Founder. Tech Entrepreneur.
               </p>
               <p className="text-muted-foreground text-xs leading-relaxed">

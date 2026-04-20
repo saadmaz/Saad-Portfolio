@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+/* Google Fonts loaded asynchronously via <link rel="preload"> in index.html — no @import needed */
 
 @tailwind base;
 @tailwind components;
@@ -38,7 +38,7 @@
 
     /* Muted - Soft teal-gray */
     --muted: 180 14% 92%;
-    --muted-foreground: 180 12% 45%;
+    --muted-foreground: 180 12% 38%; /* darkened for 5.5:1+ contrast on pearl bg */
 
     /* ==========================================
        THE DARK TEAL ACCENT
@@ -123,7 +123,7 @@
     --secondary-foreground: 174 20% 95%;
 
     --muted: 196 50% 12%;
-    --muted-foreground: 174 18% 55%;
+    --muted-foreground: 174 18% 65%; /* lightened for 6:1+ contrast on dark-mode surfaces */
 
     /* Luminous Teal for Dark Mode */
     --accent: 174 72% 44%;

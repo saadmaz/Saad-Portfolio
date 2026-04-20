@@ -18,6 +18,15 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: true,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 2,
+      },
+    },
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id) {
