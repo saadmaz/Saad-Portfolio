@@ -20,11 +20,9 @@ const BlogsPage: React.FC = () => {
 
   const selectedTag = searchParams.get("tag");
 
-  // Extract all unique tags
   const allTags = Array.from(new Set(blogPosts.flatMap(post => post.tags || []))).sort();
 
-  // Mapping from BlogPost to the internal structure expected by BlogCard
-  const blogPreviews = blogPosts.map(post => ({
+  const blogPreviews: BlogPreview[] = blogPosts.map(post => ({
     slug: post.slug,
     metadata: {
       id: post.id,
@@ -32,23 +30,23 @@ const BlogsPage: React.FC = () => {
       excerpt: post.excerpt,
       date: post.date,
       category: post.category,
-      readTime: "5 min", // Default or extract if available
+      readTime: "5 min",
       slug: post.slug,
       author: post.author,
       coverImage: post.image,
       tags: post.tags,
-      isLatest: post.is_latest
-    }
+      isLatest: post.is_latest,
+    },
   }));
 
   const filteredBlogs = blogPreviews.filter(blog => {
-    const matchesTag = !selectedTag || (blog.metadata.tags?.includes(decodeURIComponent(selectedTag)));
+    const matchesTag = !selectedTag || blog.metadata.tags?.includes(decodeURIComponent(selectedTag));
     const query = searchQuery.toLowerCase().trim();
-    const matchesSearch = !query || 
+    const matchesSearch =
+      !query ||
       blog.metadata.title.toLowerCase().includes(query) ||
       blog.metadata.excerpt.toLowerCase().includes(query) ||
       blog.metadata.tags?.some(tag => tag.toLowerCase().includes(query));
-    
     return matchesTag && matchesSearch;
   });
 
@@ -61,9 +59,7 @@ const BlogsPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleClearSearch = () => {
-    setSearchQuery("");
-  };
+  const handleClearSearch = () => setSearchQuery("");
 
   const handleClearFilter = () => {
     setSearchParams({});
@@ -71,19 +67,46 @@ const BlogsPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="blogs-page flex items-center justify-center min-h-[50vh]">Loading blogs...</div>;
+    return (
+      <div className="blogs-page">
+        <div className="blogs-page-container">
+          <div className="blogs-header">
+            <h1>Blog</h1>
+          </div>
+          <div className="blogs-grid">
+            {[1, 2, 3].map(i => (
+              <div
+                key={i}
+                style={{
+                  height: 320,
+                  borderRadius: 12,
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  opacity: 0.5,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (blogPosts.length === 0) {
     return (
       <div className="blogs-page">
-        <header className="blogs-header">
-          <h1>Blog</h1>
-        </header>
-        <p className="no-blogs">No blogs published yet. Check back soon!</p>
+        <div className="blogs-page-container">
+          <div className="blogs-header">
+            <h1>Blog</h1>
+            <p>Thoughts, tutorials, and insights from my journey</p>
+          </div>
+          <p className="no-blogs">No blogs published yet. Check back soon!</p>
+        </div>
       </div>
     );
   }
+
+  const isFiltered = !!(selectedTag || searchQuery);
 
   return (
     <div className="blogs-page">
@@ -98,9 +121,27 @@ const BlogsPage: React.FC = () => {
           <p>Thoughts, tutorials, and insights from my journey</p>
         </header>
 
-        {/* Search & Filter Section */}
-        <div className="blogs-search-filter-section">
-          {/* Horizontal Tag Bar */}
+        <div className="blogs-controls">
+          {/* Search */}
+          <div className="blog-search-container">
+            <div className="search-input-wrapper">
+              <Search size={16} className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search by title, topic, or tag…"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="blog-search-input"
+              />
+              {searchQuery && (
+                <button onClick={handleClearSearch} className="search-clear-button" aria-label="Clear search">
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Tag filter bar */}
           <div className="blogs-tag-bar-wrapper">
             <div className="blogs-tag-bar">
               <button
@@ -109,12 +150,10 @@ const BlogsPage: React.FC = () => {
               >
                 All
               </button>
-              {allTags.map((tag) => (
+              {allTags.map(tag => (
                 <button
                   key={tag}
-                  className={`tag-bar-button ${
-                    selectedTag === tag ? "active" : ""
-                  }`}
+                  className={`tag-bar-button ${selectedTag === tag ? "active" : ""}`}
                   onClick={() => handleTagClick(tag)}
                   aria-pressed={selectedTag === tag}
                 >
@@ -124,115 +163,42 @@ const BlogsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="blog-search-container">
-            <div className="search-input-wrapper">
-              <Search size={18} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search blogs by title, topic, or keyword..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="blog-search-input"
-              />
-              {searchQuery && (
-                <button
-                  onClick={handleClearSearch}
-                  className="search-clear-button"
-                  aria-label="Clear search"
-                >
-                  <X size={16} />
-                </button>
-              )}
+          {/* Active filter strip */}
+          {isFiltered && (
+            <div className="filter-active-label">
+              <span>
+                {searchQuery && selectedTag
+                  ? `"${searchQuery}" · ${decodeURIComponent(selectedTag)}`
+                  : searchQuery
+                  ? `"${searchQuery}"`
+                  : decodeURIComponent(selectedTag || "")}
+              </span>
+              <button className="filter-clear-button" onClick={handleClearFilter}>
+                <X size={12} /> Clear
+              </button>
             </div>
-          </div>
-
-          {/* Tag Filter Section */}
-          <div className="blogs-filter-section">
-            <div className="filter-container">
-              <div className="filter-header">
-                <h3 className="filter-title">Filter by Tag</h3>
-              </div>
-              <div className="tags-filter-grid">
-                <button
-                  className={`tag-filter-button ${!selectedTag ? "active" : ""}`}
-                  onClick={handleClearFilter}
-                >
-                  All
-                </button>
-                {allTags.map((tag) => (
-                  <button
-                    key={tag}
-                    className={`tag-filter-button ${
-                      selectedTag === tag ? "active" : ""
-                    }`}
-                    onClick={() => handleTagClick(tag)}
-                    aria-pressed={selectedTag === tag}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-
-              {(selectedTag || searchQuery) && (
-                <div className="filter-active-label">
-                  <span>
-                    {searchQuery && selectedTag
-                      ? `Filtered by: "${searchQuery}" + ${decodeURIComponent(
-                          selectedTag
-                        )}`
-                      : searchQuery
-                      ? `Search: "${searchQuery}"`
-                      : `Filtered by: ${decodeURIComponent(selectedTag || "")}`}
-                  </span>
-                  <button
-                    className="filter-clear-button"
-                    onClick={handleClearFilter}
-                    aria-label="Clear filter"
-                  >
-                    <X size={16} />
-                    Clear
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Results */}
         {filteredBlogs.length === 0 ? (
           <div className="no-blogs-results">
-            <p>
-              {searchQuery && selectedTag
-                ? `No blog posts match "${searchQuery}" with tag "${decodeURIComponent(
-                    selectedTag
-                  )}"`
-                : searchQuery
-                ? `No blog posts match "${searchQuery}"`
-                : `No blog posts found with tag "${decodeURIComponent(
-                    selectedTag || ""
-                  )}"`}
-            </p>
+            <p>No posts match your search.</p>
             <button className="reset-filter-link" onClick={handleClearFilter}>
-              View all blogs
+              View all posts
             </button>
           </div>
         ) : (
           <>
-            {(selectedTag || searchQuery) && (
+            {isFiltered && (
               <div className="blogs-results-header">
                 <p className="results-count">
-                  Found {filteredBlogs.length} {filteredBlogs.length === 1 ? "post" : "posts"}
+                  {filteredBlogs.length} {filteredBlogs.length === 1 ? "post" : "posts"}
                 </p>
               </div>
             )}
             <div className="blogs-grid">
-              {filteredBlogs.map((blog) => (
-                <BlogCard
-                  key={blog.slug}
-                  slug={blog.slug}
-                  metadata={blog.metadata}
-                />
+              {filteredBlogs.map(blog => (
+                <BlogCard key={blog.slug} slug={blog.slug} metadata={blog.metadata} />
               ))}
             </div>
           </>
