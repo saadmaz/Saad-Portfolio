@@ -99,6 +99,7 @@ export default function BlogDetailPage() {
                 src={coverImage}
                 alt={title}
                 className="blog-cover-image"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = "none"; }}
               />
             </m.div>
           )}
@@ -150,9 +151,10 @@ export default function BlogDetailPage() {
             transition={{ delay: 0.3 }}
             className="blog-content-wrapper"
           >
-            <div className="blog-content">
-              {content}
-            </div>
+            <div
+              className="blog-content"
+              dangerouslySetInnerHTML={{ __html: content ?? "" }}
+            />
           </m.div>
         </div>
       </article>
