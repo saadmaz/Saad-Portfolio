@@ -10,6 +10,7 @@ service cloud.firestore {
     // Public portfolio data - anyone reads, admin writes
     match /projects/{id}      { allow read: if true; allow write: if isAdmin(); }
     match /blogs/{id}         { allow read: if true; allow write: if isAdmin(); }
+    match /blog_posts/{id}    { allow read: if true; allow write: if isAdmin(); }
     match /experience/{id}    { allow read: if true; allow write: if isAdmin(); }
     match /skills/{id}        { allow read: if true; allow write: if isAdmin(); }
     match /certificates/{id}  { allow read: if true; allow write: if isAdmin(); }
