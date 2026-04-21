@@ -24,9 +24,7 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where,
   orderBy,
-  limit,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -59,18 +57,11 @@ export class BlogService {
    * Used on the public /blog page.
    */
   static async getPublished(): Promise<BlogPost[]> {
-    try {
-      const q = query(
-        collection(db, COL),
-        where("published", "==", true),
-        orderBy("date", "desc")
-      );
-      const snap = await getDocs(q);
-      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogPost));
-    } catch (error) {
-      console.error("[BlogService] getPublished:", error);
-      return [];
-    }
+    const q = query(collection(db, COL), orderBy("date", "desc"));
+    const snap = await getDocs(q);
+    return snap.docs
+      .map((d) => ({ id: d.id, ...d.data() } as BlogPost))
+      .filter((p) => p.published === true);
   }
 
   /**
@@ -78,21 +69,8 @@ export class BlogService {
    * Replaces the old GET /blog-posts/latest endpoint.
    */
   static async getLatest(): Promise<BlogPost | null> {
-    try {
-      const q = query(
-        collection(db, COL),
-        where("published", "==", true),
-        orderBy("date", "desc"),
-        limit(1)  // only need one document
-      );
-      const snap = await getDocs(q);
-      if (snap.empty) return null;
-      const d = snap.docs[0];
-      return { id: d.id, ...d.data() } as BlogPost;
-    } catch (error) {
-      console.error("[BlogService] getLatest:", error);
-      return null;
-    }
+    const posts = await BlogService.getPublished();
+    return posts[0] ?? null;
   }
 
   /** Fetch one post by its Firestore document ID. */
