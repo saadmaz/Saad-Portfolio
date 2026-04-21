@@ -34,6 +34,6 @@ export const useLatestBlogPost = () =>
 export const useBlogPost = (slug: string) =>
   useQuery<BlogPost | null>({
     queryKey: queryKeys.blog.detail(slug),
-    queryFn:  () => BlogService.getBySlug(slug),
+    queryFn:  () => BlogService.getBySlugOrId(slug),
     enabled:  !!slug,
   });

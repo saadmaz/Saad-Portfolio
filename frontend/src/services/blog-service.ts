@@ -24,6 +24,7 @@ import {
   updateDoc,
   deleteDoc,
   query,
+  where,
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
@@ -97,6 +98,13 @@ export class BlogService {
       console.error("[BlogService] getBySlug:", error);
       return null;
     }
+  }
+
+  /** Try slug first, fall back to Firestore document ID. */
+  static async getBySlugOrId(slugOrId: string): Promise<BlogPost | null> {
+    const bySlug = await BlogService.getBySlug(slugOrId);
+    if (bySlug) return bySlug;
+    return BlogService.getById(slugOrId);
   }
 
   // ─── Admin writes (require active Firebase Auth session) ────────

@@ -1,230 +1,178 @@
 import { useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { m } from "framer-motion";
+import { Layout } from "../components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { BlogCard } from "../components/blog/BlogCard/BlogCard";
 import { useBlogPosts } from "../shared/hooks/useBlog";
-import { X, Search } from "lucide-react";
-import { SEO } from "@/components/SEO";
-import "./BlogsPage.css";
-
-import { Blog } from "../shared/lib/dataManager";
-
-interface BlogPreview {
-  slug: string;
-  metadata: Blog;
-}
 
 const BlogsPage: React.FC = () => {
   const { data: blogPosts = [], isLoading } = useBlogPosts();
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const selectedTag = searchParams.get("tag");
 
-  // Tag → count map for sidebar
-  const tagCounts = blogPosts.reduce<Record<string, number>>((acc, post) => {
-    (post.tags || []).forEach(t => { acc[t] = (acc[t] || 0) + 1; });
-    return acc;
-  }, {});
-  const allTags = Object.keys(tagCounts).sort();
+  const allTags = [
+    "All",
+    ...Array.from(new Set(blogPosts.flatMap(p => p.tags || []))).sort(),
+  ];
 
-  const blogPreviews: BlogPreview[] = blogPosts.map(post => ({
-    slug: post.slug,
-    metadata: {
-      id: post.id,
-      title: post.title,
-      excerpt: post.excerpt,
-      date: post.date,
-      category: post.category,
-      readTime: "5 min",
-      slug: post.slug,
-      author: post.author,
-      coverImage: post.image,
-      tags: post.tags,
-      isLatest: post.is_latest,
-    },
-  }));
-
-  const filteredBlogs = blogPreviews.filter(blog => {
-    const matchesTag = !selectedTag || blog.metadata.tags?.includes(decodeURIComponent(selectedTag));
-    const query = searchQuery.toLowerCase().trim();
+  const filteredPosts = blogPosts.filter(post => {
+    const matchesTag = !selectedTag || (post.tags || []).includes(selectedTag);
+    const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
-      !query ||
-      blog.metadata.title.toLowerCase().includes(query) ||
-      blog.metadata.excerpt.toLowerCase().includes(query) ||
-      blog.metadata.tags?.some(t => t.toLowerCase().includes(query));
+      !q ||
+      post.title?.toLowerCase().includes(q) ||
+      post.excerpt?.toLowerCase().includes(q) ||
+      (post.tags || []).some(t => t.toLowerCase().includes(q));
     return matchesTag && matchesSearch;
   });
 
   const handleTagClick = (tag: string) => {
-    setSearchParams(selectedTag === tag ? {} : { tag });
+    setSearchParams(tag === "All" ? {} : { tag });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleClearFilter = () => {
-    setSearchParams({});
-    setSearchQuery("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const isFiltered = !!(selectedTag || searchQuery);
+  if (isLoading) {
+    return (
+      <Layout>
+        <section className="section-padding">
+          <div className="section-container">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="aspect-[3/4] rounded-xl bg-secondary/30 animate-pulse" />
+              ))}
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
 
   return (
-    <div className="blogs-page">
+    <Layout>
       <SEO
         title="Blog | Startups, AI & Developer Insights by Saad Mazhar"
         description="Thoughts, tutorials, and real-world insights from Saad Mazhar — covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem."
         url="https://saadmaz.com/blog"
       />
 
-      {/* ── Page Header ── */}
-      <div className="blogs-hero">
-        <span className="blogs-hero-label">BLOG</span>
-        <h1 className="blogs-hero-title">Thoughts, Ideas &amp; Insights</h1>
-        <p className="blogs-hero-sub">
-          I share my thoughts on AI, startups, full-stack development, and building
-          things from Colombo, Sri Lanka.
-        </p>
-      </div>
+      <section className="section-padding">
+        <div className="section-container">
 
-      <div className="blogs-page-container">
-        {/* ── Main + Sidebar layout ── */}
-        <div className="blogs-layout">
+          {/* Header */}
+          <m.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-12"
+          >
+            <span className="section-title">Blog</span>
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Thoughts, Ideas &amp; Insights
+            </h1>
+            <p className="text-muted-foreground max-w-2xl">
+              I write about AI, startups, full-stack development, and building
+              products from Colombo, Sri Lanka.
+            </p>
+          </m.div>
 
-          {/* ── Main column ── */}
-          <main className="blogs-main">
-            {/* Controls */}
-            <div className="blogs-controls-row">
-              <h2 className="blogs-section-label">
-                {isFiltered
-                  ? `${filteredBlogs.length} ${filteredBlogs.length === 1 ? "post" : "posts"} found`
-                  : "All Posts"}
-              </h2>
+          {/* Controls: tags + search */}
+          <m.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex flex-wrap items-center gap-3 mb-12"
+          >
+            {/* Tag pills */}
+            {allTags.map(tag => (
+              <button
+                key={tag}
+                onClick={() => handleTagClick(tag)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors capitalize ${
+                  (tag === "All" && !selectedTag) || selectedTag === tag
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-muted"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
 
-              <div className="search-input-wrapper">
-                <Search size={15} className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search posts…"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="blog-search-input"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery("")} className="search-clear-button" aria-label="Clear">
-                    <X size={13} />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Active filter pill */}
-            {isFiltered && (
-              <div className="blogs-active-filter">
-                <span>
-                  {selectedTag && searchQuery
-                    ? `"${searchQuery}" · ${decodeURIComponent(selectedTag)}`
-                    : selectedTag
-                    ? decodeURIComponent(selectedTag)
-                    : `"${searchQuery}"`}
-                </span>
-                <button onClick={handleClearFilter} className="filter-clear-btn">
-                  <X size={12} /> Clear
+            {/* Search */}
+            <div className="relative ml-auto">
+              <input
+                type="text"
+                placeholder="Search posts…"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-3 pr-8 py-2 text-sm rounded-full border border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all w-48"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs leading-none"
+                  aria-label="Clear"
+                >
+                  ✕
                 </button>
-              </div>
-            )}
-
-            {/* Post list */}
-            {isLoading ? (
-              <div className="blogs-skeleton">
-                {[1, 2, 3].map(i => <div key={i} className="blogs-skeleton-item" />)}
-              </div>
-            ) : filteredBlogs.length === 0 ? (
-              <div className="blogs-empty">
-                <p>No posts match your search.</p>
-                <button className="blogs-reset-btn" onClick={handleClearFilter}>View all posts</button>
-              </div>
-            ) : (
-              <div className="blogs-list">
-                {filteredBlogs.map(blog => (
-                  <BlogCard key={blog.slug} slug={blog.slug} metadata={blog.metadata} />
-                ))}
-              </div>
-            )}
-          </main>
-
-          {/* ── Sidebar ── */}
-          <aside className="blogs-sidebar">
-            {/* About */}
-            <div className="sidebar-card">
-              <h3 className="sidebar-card-title">About Me</h3>
-              <p className="sidebar-about-text">
-                I'm a software engineer and startup builder from Colombo, Sri Lanka —
-                writing about AI, product, and full-stack development.
-              </p>
-              <Link to="/" className="sidebar-cta">View My Work</Link>
+              )}
             </div>
+          </m.div>
 
-            {/* Categories */}
-            {allTags.length > 0 && (
-              <div className="sidebar-card">
-                <h3 className="sidebar-card-title">Categories</h3>
-                <ul className="sidebar-categories">
-                  <li>
-                    <button
-                      className={`sidebar-cat-btn ${!selectedTag ? "active" : ""}`}
-                      onClick={handleClearFilter}
-                    >
-                      <span>All Posts</span>
-                      <span className="sidebar-cat-count">{blogPosts.length}</span>
-                    </button>
-                  </li>
-                  {allTags.map(tag => (
-                    <li key={tag}>
-                      <button
-                        className={`sidebar-cat-btn ${selectedTag === tag ? "active" : ""}`}
-                        onClick={() => handleTagClick(tag)}
-                      >
-                        <span>{tag}</span>
-                        <span className="sidebar-cat-count">{tagCounts[tag]}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+          {/* Empty state */}
+          {filteredPosts.length === 0 && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24 text-muted-foreground"
+            >
+              <p className="text-lg mb-4">No posts found.</p>
+              <button
+                onClick={() => { setSearchQuery(""); setSearchParams({}); }}
+                className="px-5 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-muted text-sm font-medium transition-colors"
+              >
+                Clear filters
+              </button>
+            </m.div>
+          )}
 
-            {/* Latest posts */}
-            {blogPosts.length > 0 && (
-              <div className="sidebar-card">
-                <h3 className="sidebar-card-title">Latest Posts</h3>
-                <ul className="sidebar-latest">
-                  {blogPosts.slice(0, 4).map(post => (
-                    <li key={post.id}>
-                      <Link to={`/blog/${post.slug}`} className="sidebar-latest-item">
-                        {post.image && (
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="sidebar-latest-thumb"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                          />
-                        )}
-                        <div>
-                          <span className="sidebar-latest-title">{post.title}</span>
-                          <span className="sidebar-latest-date">
-                            {post.date ? new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </aside>
+          {/* 3-column grid */}
+          {filteredPosts.length > 0 && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPosts.map((post, index) => (
+                <m.div
+                  key={post.id || post.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="h-full"
+                >
+                  <BlogCard
+                    slug={post.slug || post.id}
+                    metadata={{
+                      id: post.id,
+                      title: post.title,
+                      excerpt: post.excerpt,
+                      date: post.date,
+                      category: post.category,
+                      readTime: "5 min",
+                      slug: post.slug || post.id,
+                      author: post.author,
+                      coverImage: post.image,
+                      tags: post.tags,
+                      isLatest: post.is_latest,
+                    }}
+                  />
+                </m.div>
+              ))}
+            </div>
+          )}
+
         </div>
-      </div>
-    </div>
+      </section>
+    </Layout>
   );
 };
 
