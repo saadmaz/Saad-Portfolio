@@ -5,10 +5,10 @@
  *
  * Strategy:
  *   1. Try full Puppeteer rendering (real React content, needs Chrome).
- *   2. If Chrome is unavailable, fall back to meta-only injection —
- *      copies index.html to each route directory with correct head tags.
- *      Google will still render the JS content; this just ensures the
- *      crawl-time meta is right and canonicals point at the correct URL.
+ *      Uses domcontentloaded + custom wait so Firebase WebSocket connections
+ *      don't block the networkidle2 phase indefinitely.
+ *   2. Per-route fallback to meta-only injection if Puppeteer fails for that
+ *      specific route — every route always gets a pre-rendered index.html.
  */
 
 import { createServer } from 'http';
@@ -144,13 +144,17 @@ function writeRoute(routePath, html) {
 
 // ── Meta-only fallback (no browser required) ────────────────────────────────
 
+function metaOnlyForRoute(route) {
+  const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
+  const html = injectMeta(shell, route);
+  writeRoute(route.path, html);
+}
+
 function metaOnlyPrerender() {
   console.log('\n📄  Running meta-only prerender (no browser available).');
-  const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
   let ok = 0;
   for (const route of ROUTES) {
-    const html = injectMeta(shell, route);
-    writeRoute(route.path, html);
+    metaOnlyForRoute(route);
     console.log(`  ✅  ${route.path}`);
     ok++;
   }
@@ -203,7 +207,14 @@ async function puppeteerPrerender() {
     browser = await puppeteer.launch({
       headless: true,
       executablePath,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--single-process',
+        '--no-zygote',
+      ],
     });
   } catch (err) {
     console.warn(`\n⚠️  Puppeteer launch failed (${err.message}) — falling back to meta-only prerender.`);
@@ -226,8 +237,10 @@ async function puppeteerPrerender() {
     page.on('pageerror', () => {});
 
     try {
+      // Use domcontentloaded instead of networkidle2 — Firebase keeps WebSocket
+      // connections open which would cause networkidle2 to never resolve.
       await page.goto(`http://localhost:${PORT}${route.path}`, {
-        waitUntil: 'networkidle2',
+        waitUntil: 'domcontentloaded',
         timeout: 30_000,
       });
 
@@ -241,7 +254,7 @@ async function puppeteerPrerender() {
         )
         .catch(() => {});
 
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise(r => setTimeout(r, 3000));
 
       const html = injectMeta(await page.content(), route);
       writeRoute(route.path, html);
@@ -249,6 +262,13 @@ async function puppeteerPrerender() {
       success++;
     } catch (err) {
       console.error(`  ❌  ${route.path} — ${err.message}`);
+      // Always fall back to meta-only for this route so it's never skipped.
+      try {
+        metaOnlyForRoute(route);
+        console.log(`  📄  ${route.path} — meta-only fallback applied`);
+      } catch (fallbackErr) {
+        console.error(`  💥  ${route.path} — meta-only also failed: ${fallbackErr.message}`);
+      }
       failed++;
     } finally {
       await page.close();
@@ -257,11 +277,8 @@ async function puppeteerPrerender() {
 
   await browser.close();
   server.close();
-  console.log(`\n🎉  Puppeteer prerender done — ${success} succeeded, ${failed} failed.\n`);
+  console.log(`\n🎉  Puppeteer prerender done — ${success} succeeded, ${failed} fell back to meta-only.\n`);
 
-  if (failed === ROUTES.length) {
-    return false;
-  }
   return true;
 }
 
