@@ -31,7 +31,7 @@ const NotFound = () => {
 
   return (
     <>
-      <SEO title="404 - Page Not Found" description="This page doesn't exist. Head back to Saad Mazhar's portfolio." />
+      <SEO title="404 - Page Not Found" description="This page doesn't exist. Head back to Saad Mazhar's portfolio." noIndex />
 
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 relative overflow-hidden">
 

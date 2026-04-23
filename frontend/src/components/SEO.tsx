@@ -34,6 +34,8 @@ interface SEOProps {
   keywords?: string;
   /** Breadcrumb trail — renders a BreadcrumbList JSON-LD block for rich results */
   breadcrumbs?: BreadcrumbItem[];
+  /** Prevent search engines from indexing this page */
+  noIndex?: boolean;
 }
 
 const SITE_NAME  = "Saad Mazhar";
@@ -52,6 +54,7 @@ export function SEO({
   type = "website",
   keywords,
   breadcrumbs,
+  noIndex = false,
 }: SEOProps) {
   const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
 
@@ -76,7 +79,10 @@ export function SEO({
       {/* ── Primary ──────────────────────────────────────────────── */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={url} />
+      {noIndex
+        ? <meta name="robots" content="noindex, nofollow" />
+        : <link rel="canonical" href={url} />
+      }
       {keywords && <meta name="keywords" content={keywords} />}
 
       {/* ── Open Graph ───────────────────────────────────────────── */}
