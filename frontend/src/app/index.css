@@ -622,7 +622,11 @@
     color:            hsl(var(--foreground));
   }
 
-  /* ── Text selection ─────────────────────────────────────────── */
+  /* ── Text selection (site-wide emerald) ─────────────────────── */
+  ::selection {
+    background-color: rgba(16,185,129,0.28);
+    color: inherit;
+  }
   .admin-panel ::selection {
     background-color: rgba(16,185,129,0.25);
     color: inherit;
