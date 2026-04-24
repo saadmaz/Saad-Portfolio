@@ -2,9 +2,19 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
+
+    // Same admin email restriction as Firestore rules.
+    // Replace YOUR_ADMIN_EMAIL_HERE with your actual admin email.
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == "YOUR_ADMIN_EMAIL_HERE";
+    }
+
+    // Anyone can read public assets (logos, certificates, images).
+    // Only the admin can upload or delete files.
     match /{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read:  if true;
+      allow write: if isAdmin();
     }
   }
 }
