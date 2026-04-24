@@ -259,7 +259,7 @@ const AdminLayout = () => {
                     key={item.path}
                     to={item.path}
                     className={cn(
-                      "flex items-center gap-2.5 rounded-lg transition-all duration-150 group relative mb-0.5",
+                      "flex items-center gap-2.5 rounded-lg transition-all duration-150 group relative mb-0.5 outline-none focus-visible:ring-1 focus-visible:ring-emerald-500/40",
                       collapsed ? "justify-center px-0 py-2.5" : "px-2.5 py-2"
                     )}
                     style={{

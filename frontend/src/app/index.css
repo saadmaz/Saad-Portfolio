@@ -620,6 +620,12 @@
     color:            hsl(var(--foreground));
   }
 
+  /* ── Text selection ─────────────────────────────────────────── */
+  .admin-panel ::selection {
+    background-color: rgba(16,185,129,0.25);
+    color: inherit;
+  }
+
   /* ── Font stack ────────────────────────────────────────────── */
   .admin-panel,
   .admin-panel * {
