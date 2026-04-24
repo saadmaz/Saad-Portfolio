@@ -4,36 +4,7 @@ import { SEO } from "@/components/SEO";
 import { TrendingUp, Rocket, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-// ----------------------------------------------------------------------
-// 1. TYPE DEFINITIONS
-// ----------------------------------------------------------------------
-interface NewsletterIssue {
-  id: number;
-  title: string;
-  date: string;
-  linkedinUrl: string; // The specific URL for this edition
-  isLatest: boolean;
-}
-
-interface NewsletterData {
-  newsletters: NewsletterIssue[];
-}
-
-// ----------------------------------------------------------------------
-// 2. CENTRALIZED DATA IMPORT
-// ----------------------------------------------------------------------
-// Use the centralized newsletters JSON in `src/data/content`
-import allNewsRaw from "@/data/content/newsletters.json";
-const allNews = allNewsRaw as Array<{
-  id: number;
-  type: string;
-  title: string;
-  date: string;
-  link?: string;
-  linkedinUrl?: string;
-  isLatest?: boolean;
-}>;
+import { useNewsletters } from "@/shared/hooks/useCommon";
 
 // ----------------------------------------------------------------------
 // 3. COMPONENT CONFIGURATION
@@ -72,29 +43,14 @@ const newsletterConfigs = [
 ];
 
 const NewslettersPage = () => {
-  // ----------------------------------------------------------------------
-  // 4. SCRAPING & REDIRECTION LOGIC
-  // ----------------------------------------------------------------------
-  
-  /**
-   * getLatestFromSource: Selects correct JSON source and finds the latest entry.
-   */
-  const getLatestFromSource = (configId: string): NewsletterIssue => {
+  const { data: allNews = [] } = useNewsletters();
+
+  const getLatestFromSource = (configId: string) => {
     const type = configId === "cse-newsroom" ? "cse" : "founder";
-    const list = allNews.filter((n) => n.type === type) || [];
-
-    const latest = list.find((item) => item.isLatest === true) ||
-      [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
-
-    if (!latest) return { id: 0, title: "Coming Soon", date: "TBD", linkedinUrl: "#", isLatest: false };
-
-    return {
-      id: latest.id,
-      title: latest.title,
-      date: latest.date,
-      linkedinUrl: latest.link || latest.linkedinUrl || "#",
-      isLatest: !!latest.isLatest,
-    };
+    const list = allNews.filter((n) => n.type === type);
+    if (!list.length) return { id: "", title: "Coming Soon", date: "TBD", linkedinUrl: "#" };
+    const latest = [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+    return { id: latest.id, title: latest.title, date: latest.date, linkedinUrl: latest.content_url || "#" };
   };
 
   const handleRedirect = (url: string, title: string) => {

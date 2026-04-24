@@ -85,3 +85,9 @@ export const useCauses = () =>
     queryKey: ['causes'],
     queryFn:  () => CommonService.getCauses(),
   });
+
+export const useNewsletters = () =>
+  useQuery({
+    queryKey: ['newsletters'],
+    queryFn:  () => CommonService.getNewsletters(),
+  });
