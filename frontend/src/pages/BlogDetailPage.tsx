@@ -18,11 +18,23 @@ export default function BlogDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="section-padding">
-        <div className="section-container text-center text-muted-foreground pt-20">
-          Loading blog...
-        </div>
-      </div>
+      <Layout>
+        <section className="section-padding">
+          <div className="section-container">
+            <div className="max-w-3xl mx-auto space-y-4 pt-8">
+              <div className="h-6 w-32 rounded bg-secondary/50 animate-pulse" />
+              <div className="aspect-video rounded-xl bg-secondary/30 animate-pulse" />
+              <div className="h-10 w-3/4 rounded bg-secondary/50 animate-pulse" />
+              <div className="h-4 w-1/2 rounded bg-secondary/30 animate-pulse" />
+              <div className="space-y-3 pt-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-4 rounded bg-secondary/30 animate-pulse" style={{ width: `${85 + (i % 3) * 5}%` }} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </Layout>
     );
   }
 

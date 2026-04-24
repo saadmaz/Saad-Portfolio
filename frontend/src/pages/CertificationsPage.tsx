@@ -102,7 +102,9 @@ const CertificationsPage = () => {
               Licenses & Certificates
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              {certificates.length}+ professional certifications earned through continuous learning and industry validation.
+              {loading || certificates.length === 0
+                ? "Professional certifications earned through continuous learning and industry validation."
+                : `${certificates.length}+ professional certifications earned through continuous learning and industry validation.`}
             </p>
           </m.div>
 

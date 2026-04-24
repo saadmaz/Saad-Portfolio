@@ -25,13 +25,17 @@ const itemVariants = {
 };
 
 export function FeaturedProjects() {
-  const { data: featuredProjects, isLoading, error } = useFeaturedProjects();
+  const { data: featuredProjects, isLoading } = useFeaturedProjects();
 
   if (isLoading) {
     return (
       <section className="py-12 bg-secondary/30">
-        <div className="section-container text-center">
-          <p className="text-muted-foreground">Loading featured projects...</p>
+        <div className="section-container">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="rounded-xl bg-card animate-pulse aspect-[4/3]" />
+            ))}
+          </div>
         </div>
       </section>
     );

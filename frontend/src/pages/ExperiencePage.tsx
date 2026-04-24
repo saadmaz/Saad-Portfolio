@@ -2,12 +2,27 @@ import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Calendar, Building, MapPin, ExternalLink } from "lucide-react";
-
-import { dataManager, WorkExperience } from "@/shared/lib/dataManager";
-
-const experiences: WorkExperience[] = dataManager.getWorkExperience();
+import { useExperience } from "@/shared/hooks/useCommon";
 
 const ExperiencePage = () => {
+  const { data: experiences = [], isLoading } = useExperience();
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <section className="section-padding">
+          <div className="section-container">
+            <div className="space-y-8">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-64 rounded-xl bg-secondary/30 animate-pulse" />
+              ))}
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <SEO
@@ -103,7 +118,7 @@ const ExperiencePage = () => {
 
                   {/* Title & Description */}
                   <h2 className="font-display text-2xl font-bold text-foreground mb-2">
-                    {exp.role}
+                    {exp.position}
                   </h2>
                   <p className="text-muted-foreground mb-6">
                     {exp.description}

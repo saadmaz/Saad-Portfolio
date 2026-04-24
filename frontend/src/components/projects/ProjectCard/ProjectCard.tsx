@@ -35,7 +35,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </div>
       <CardContent className="p-5">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="font-display text-xl font-bold group-hover:text-primary transition-colors">
+          <h3 className="font-display text-xl font-bold group-hover:text-accent transition-colors">
             {project.title}
           </h3>
           <Badge variant="outline" className="text-[10px] uppercase tracking-wider">
@@ -57,9 +57,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </span>
           )}
         </div>
-        <Link 
+        <Link
           to={`/projects/${project.slug}`}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:gap-3 transition-all"
         >
           View Details <ArrowRight className="w-4 h-4" />
         </Link>

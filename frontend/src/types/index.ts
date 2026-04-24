@@ -39,7 +39,7 @@ export interface Project {
   pdfReport?: string;
 
   // Content
-  challenges?: string[];
+  challenges?: Array<string | { wall?: string; fix?: string; lesson?: string }>;
   learnings?: string[];
   features?: string[];
   roadmap?: string[];
@@ -88,6 +88,7 @@ export interface Experience {
   referenceAvailable?: boolean;
   linkedinUrl?: string;
   mediaLinks?: string[];
+  impact?: string;
 }
 
 export interface Certificate {

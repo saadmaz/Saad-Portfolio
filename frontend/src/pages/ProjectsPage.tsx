@@ -24,9 +24,15 @@ const ProjectsPage = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="section-padding flex items-center justify-center min-vh-50">
-          <div className="animate-pulse text-muted-foreground">Loading projects...</div>
-        </div>
+        <section className="section-padding">
+          <div className="section-container">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="rounded-xl bg-secondary/30 animate-pulse aspect-[4/3]" />
+              ))}
+            </div>
+          </div>
+        </section>
       </Layout>
     );
   }

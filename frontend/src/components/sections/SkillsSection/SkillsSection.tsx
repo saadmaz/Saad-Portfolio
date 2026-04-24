@@ -105,21 +105,21 @@ export function SkillsSection() {
                 key={cat.category}
                 onClick={() => setActiveTab(i)}
                 className={`
-                  relative shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
+                  relative shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200
                   ${activeTab === i
-                    ? "bg-accent text-accent-foreground shadow-md shadow-accent/20"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-accent/30 hover:bg-card"
+                    ? "text-accent-foreground"
+                    : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-accent/30"
                   }
                 `}
               >
-                {cat.category}
                 {activeTab === i && (
                   <m.span
                     layoutId="tab-pill"
-                    className="absolute inset-0 rounded-xl bg-accent -z-10"
+                    className="absolute inset-0 rounded-xl bg-accent shadow-md shadow-accent/20 -z-10"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
+                <span className="relative z-10">{cat.category}</span>
               </button>
             ))}
           </div>

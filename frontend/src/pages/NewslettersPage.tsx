@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import { TrendingUp, Rocket, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -104,6 +105,11 @@ const NewslettersPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Newsletters | Saad Mazhar — CSE Newsroom & Founders' Brief"
+        description="Subscribe to Saad Mazhar's LinkedIn newsletters: The CSE Newsroom for Colombo Stock Exchange analysis and Founders' Brief for Sri Lankan startup founder stories."
+        url="https://saadmaz.com/newsletters"
+      />
       <section className="section-padding">
         <div className="section-container">
           
@@ -176,7 +182,7 @@ const NewslettersPage = () => {
 
                       {/* MAIN SUBSCRIBE CTA: Uses unique config.subscribeUrl */}
                       <div className="mt-auto">
-                        <Button asChild className="btn-primary w-full h-12 gap-2 text-md shadow-lg shadow-accent/20">
+                        <Button asChild className="btn-primary w-full h-12 gap-2 text-sm shadow-lg shadow-accent/20">
                           <a 
                             href={config.subscribeUrl}
                             target="_blank" 

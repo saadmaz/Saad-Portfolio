@@ -292,26 +292,33 @@ const ProjectDetailPage = () => {
                   <section className="space-y-6">
                     <h2 className="text-2xl font-bold text-foreground">Technical Challenges</h2>
                     <div className="grid gap-4">
-                      {project.challenges.map((c, i) => (
-                        <div key={i} className="p-6 rounded-2xl border border-border bg-card shadow-sm">
-                          <div className="flex gap-4 items-start">
-                            <div className="mt-1 w-8 h-8 shrink-0 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
-                              <AlertCircle className="w-4 h-4" />
-                            </div>
-                            <div className="space-y-3">
-                              <h4 className="text-base font-bold text-foreground">{c.wall}</h4>
-                              <div className="text-sm text-muted-foreground">
-                                <strong className="text-foreground">The Fix: </strong> {c.fix}
+                      {project.challenges.map((c, i) => {
+                        const wall   = typeof c === 'string' ? c : c.wall;
+                        const fix    = typeof c === 'string' ? undefined : c.fix;
+                        const lesson = typeof c === 'string' ? undefined : c.lesson;
+                        return (
+                          <div key={i} className="p-6 rounded-2xl border border-border bg-card shadow-sm">
+                            <div className="flex gap-4 items-start">
+                              <div className="mt-1 w-8 h-8 shrink-0 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+                                <AlertCircle className="w-4 h-4" />
                               </div>
-                              {hasValue(c.lesson) && (
-                                <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-muted text-muted-foreground text-xs font-medium">
-                                  <Lightbulb className="w-3 h-3 text-accent" /> Lesson: {c.lesson}
-                                </div>
-                              )}
+                              <div className="space-y-3">
+                                <h4 className="text-base font-bold text-foreground">{wall}</h4>
+                                {fix && (
+                                  <div className="text-sm text-muted-foreground">
+                                    <strong className="text-foreground">The Fix: </strong>{fix}
+                                  </div>
+                                )}
+                                {hasValue(lesson) && (
+                                  <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-muted text-muted-foreground text-xs font-medium">
+                                    <Lightbulb className="w-3 h-3 text-accent" /> Lesson: {lesson}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </section>
                 )}
