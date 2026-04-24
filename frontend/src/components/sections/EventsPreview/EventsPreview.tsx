@@ -33,7 +33,7 @@ export function EventsPreview() {
                 Events &amp; Hosting
               </h2>
               <p className="text-muted-foreground max-w-xl">
-                From hosting tech conferences to speaking at industry events —
+                From hosting tech conferences to speaking at industry events -
                 building community and sharing knowledge.
               </p>
             </div>

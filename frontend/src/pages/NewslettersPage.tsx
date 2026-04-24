@@ -106,7 +106,7 @@ const NewslettersPage = () => {
   return (
     <Layout>
       <SEO
-        title="Newsletters | Saad Mazhar — CSE Newsroom & Founders' Brief"
+        title="Newsletters | Saad Mazhar - CSE Newsroom & Founders' Brief"
         description="Subscribe to Saad Mazhar's LinkedIn newsletters: The CSE Newsroom for Colombo Stock Exchange analysis and Founders' Brief for Sri Lankan startup founder stories."
         url="https://saadmaz.com/newsletters"
       />

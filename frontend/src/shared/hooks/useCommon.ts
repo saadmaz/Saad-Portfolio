@@ -49,3 +49,39 @@ export const useContactMutation = () =>
     mutationFn: (data: { name: string; email: string; subject?: string; message: string }) =>
       CommonService.submitContact(data),
   });
+
+export const useCourses = () =>
+  useQuery({
+    queryKey: ['courses'],
+    queryFn:  () => CommonService.getCourses(),
+  });
+
+export const usePublications = () =>
+  useQuery({
+    queryKey: ['publications'],
+    queryFn:  () => CommonService.getPublications(),
+  });
+
+export const usePatents = () =>
+  useQuery({
+    queryKey: ['patents'],
+    queryFn:  () => CommonService.getPatents(),
+  });
+
+export const useTestScores = () =>
+  useQuery({
+    queryKey: ['testScores'],
+    queryFn:  () => CommonService.getTestScores(),
+  });
+
+export const useOrganizations = () =>
+  useQuery({
+    queryKey: ['organizations'],
+    queryFn:  () => CommonService.getOrganizations(),
+  });
+
+export const useCauses = () =>
+  useQuery({
+    queryKey: ['causes'],
+    queryFn:  () => CommonService.getCauses(),
+  });

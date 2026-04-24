@@ -52,7 +52,7 @@ const AboutPage = () => {
     <Layout>
       <SEO
         title="About Saad Mazhar | CS Student, Startup Founder & Tech Speaker in Colombo"
-        description="Get to know Saad Mazhar — a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code."
+        description="Get to know Saad Mazhar - a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code."
         url="https://saadmaz.com/about"
       />
       {/* section-padding: custom utility for consistent vertical spacing across the site */}

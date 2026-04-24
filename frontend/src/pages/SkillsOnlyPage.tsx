@@ -35,7 +35,7 @@ const SkillsOnlyPage = () => {
     <Layout>
       <SEO
         title="Skills | Saad Mazhar's Technical Stack & Expertise"
-        description="Explore the full technical skill set of Saad Mazhar — proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka."
+        description="Explore the full technical skill set of Saad Mazhar - proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka."
         url="https://saadmaz.com/skills"
       />
       <section className="section-padding">

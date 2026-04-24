@@ -113,7 +113,7 @@ function escapeXml(str) {
 async function fetchDynamicData() {
   const keyPath = resolve(ROOT, 'serviceAccountKey.json');
   if (!existsSync(keyPath)) {
-    console.warn('⚠️  serviceAccountKey.json not found — skipping dynamic routes.');
+    console.warn('⚠️  serviceAccountKey.json not found - skipping dynamic routes.');
     return { projects: [], blogs: [], events: [], certs: [] };
   }
 
@@ -248,7 +248,7 @@ async function run() {
   write(resolve(PUBLIC_DIR, 'sitemap.xml'), buildSitemapIndex(indexFiles));
 
   const total = mainEntries.length + projectEntries.length + blogEntries.length + eventEntries.length;
-  console.log(`\n🎉  Done — ${total} URLs across ${indexFiles.length} sitemaps\n`);
+  console.log(`\n🎉  Done - ${total} URLs across ${indexFiles.length} sitemaps\n`);
 }
 
 run().catch((err) => {

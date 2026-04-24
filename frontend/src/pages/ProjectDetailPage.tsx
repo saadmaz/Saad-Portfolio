@@ -97,8 +97,8 @@ const ProjectDetailPage = () => {
           project.tagline
             ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
             : project.overview
-            ? `${project.overview.slice(0, 140)} — case study by Saad Mazhar, full-stack developer in Sri Lanka.`
-            : `${project.title} — a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
+            ? `${project.overview.slice(0, 140)} - case study by Saad Mazhar, full-stack developer in Sri Lanka.`
+            : `${project.title} - a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
         }
         image={project.heroImage}
         url={`https://saadmaz.com/projects/${project.slug}`}

@@ -102,7 +102,7 @@ export function CertificatesPreview() {
                     background: "var(--card)",
                   }}
                 >
-                  {/* Row 1 — logo + title + org */}
+                  {/* Row 1 - logo + title + org */}
                   <div className="flex items-center gap-2.5" style={{ marginBottom: 8 }}>
                     {/* Logo 40×40 */}
                     <div
@@ -144,10 +144,10 @@ export function CertificatesPreview() {
                     </div>
                   </div>
 
-                  {/* Row 2 — divider */}
+                  {/* Row 2 - divider */}
                   <div style={{ height: 1, background: "rgba(255,255,255,0.07)", marginBottom: 8 }} />
 
-                  {/* Row 3 — description (fills remaining space, clamps at 3 lines) */}
+                  {/* Row 3 - description (fills remaining space, clamps at 3 lines) */}
                   <p
                     className="line-clamp-3"
                     style={{ fontSize: 11, color: "var(--muted-foreground)", lineHeight: 1.5, flex: 1, overflow: "hidden" }}
@@ -155,9 +155,9 @@ export function CertificatesPreview() {
                     {cert.description}
                   </p>
 
-                  {/* Row 4+5 — tags + footer, grouped at bottom */}
+                  {/* Row 4+5 - tags + footer, grouped at bottom */}
                   <div style={{ marginTop: "auto" }}>
-                    {/* Tags — single row, no wrap */}
+                    {/* Tags - single row, no wrap */}
                     <div
                       className="flex overflow-hidden"
                       style={{ gap: 5, flexWrap: "nowrap", maxHeight: 20, marginBottom: 8 }}

@@ -269,6 +269,65 @@ export interface Newsletter {
   tags?: string[];
 }
 
+export interface Course {
+  id: string;
+  name: string;
+  school: string;
+  associatedWith?: string;
+  completedDate?: string;
+  description?: string;
+  link?: string;
+}
+
+export interface Publication {
+  id: string;
+  title: string;
+  publisher: string;
+  date: string;
+  description?: string;
+  link?: string;
+  authors?: string[];
+  tags?: string[];
+}
+
+export interface Patent {
+  id: string;
+  title: string;
+  patentOffice: string;
+  patentNumber?: string;
+  status: string;
+  filingDate?: string;
+  issueDate?: string;
+  description?: string;
+  link?: string;
+}
+
+export interface TestScore {
+  id: string;
+  testName: string;
+  score: string;
+  date?: string;
+  description?: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  position?: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  description?: string;
+  link?: string;
+  image?: string;
+}
+
+export interface Cause {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

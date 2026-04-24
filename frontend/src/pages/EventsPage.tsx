@@ -79,7 +79,7 @@ const EventsPage = () => {
               Events &amp; Hosting
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              From hosting tech conferences to speaking at industry events —
+              From hosting tech conferences to speaking at industry events -
               building community, sharing knowledge, and connecting with brilliant minds.
             </p>
           </m.div>

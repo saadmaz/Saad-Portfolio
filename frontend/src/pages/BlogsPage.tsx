@@ -54,7 +54,7 @@ const BlogsPage: React.FC = () => {
     <Layout>
       <SEO
         title="Blog | Startups, AI & Developer Insights by Saad Mazhar"
-        description="Thoughts, tutorials, and real-world insights from Saad Mazhar — covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem."
+        description="Thoughts, tutorials, and real-world insights from Saad Mazhar - covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem."
         url="https://saadmaz.com/blog"
       />
 

@@ -255,7 +255,7 @@ const EditorialView = ({ data, loading }: { data: DashData; loading: boolean }) 
           <div className="px-4 pt-2 pb-1">
             <div className="flex items-end gap-2">
               <span className="admin-editorial text-4xl font-semibold leading-none" style={{ color: IV85 }}>
-                {loading ? '—' : `${data.stats.find(s => s.key === 'projects')?.value ?? '—'}`}
+                {loading ? '-' : `${data.stats.find(s => s.key === 'projects')?.value ?? '-'}`}
               </span>
               <span className="text-[11px] font-medium mb-1" style={{ color: EM }}>projects live</span>
             </div>
@@ -451,9 +451,9 @@ const WorkbenchView = ({ data, loading }: { data: DashData; loading: boolean }) 
                   </span>
                 </div>
                 <span className="text-[10px] truncate" style={{ color: IV22 }}>
-                  {p.category ?? '—'}
+                  {p.category ?? '-'}
                 </span>
-                <span className="text-[10px]" style={{ color: IV22 }}>—</span>
+                <span className="text-[10px]" style={{ color: IV22 }}>-</span>
               </div>
             );
           })}
@@ -562,15 +562,15 @@ const CommandView = ({ data, loading }: { data: DashData; loading: boolean }) =>
       {/* Stat grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'VISITORS 14D',   val: '—',   delta: '+%',  color: EM,        seed: 8  },
-          { label: 'PAGEVIEWS 14D',  val: '—',   delta: '+%',  color: '#6B8ED6', seed: 12 },
+          { label: 'VISITORS 14D',   val: '-',   delta: '+%',  color: EM,        seed: 8  },
+          { label: 'PAGEVIEWS 14D',  val: '-',   delta: '+%',  color: '#6B8ED6', seed: 12 },
           { label: 'UNREAD',         val: String(unread || '0'), delta: unread > 0 ? `+${unread}` : '0', color: unread > 0 ? '#D06B6B' : IV35, seed: 6 },
           { label: 'DRAFTS',         val: String(data.recentProjects.filter(p => p.status === 'draft').length), delta: '', color: '#D4956A', seed: 4 },
         ].map((s, i) => (
           <div key={s.label} className="rounded-xl p-4" style={{ background: SURF, border: `1px solid ${BDR}` }}>
             <p className="text-[9px] font-semibold tracking-[0.16em] mb-2" style={{ color: IV22 }}>{s.label}</p>
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-2xl font-bold tabular-nums" style={{ color: IV85 }}>{loading ? '—' : s.val}</span>
+              <span className="text-2xl font-bold tabular-nums" style={{ color: IV85 }}>{loading ? '-' : s.val}</span>
               {s.delta && <span className="text-[11px] font-medium mb-0.5" style={{ color: s.color }}>{s.delta}</span>}
             </div>
             <Sparkline data={spark(s.seed + i)} color={s.color} />
@@ -655,8 +655,8 @@ const CommandView = ({ data, loading }: { data: DashData; loading: boolean }) =>
                   <span className="text-[12px] font-medium truncate" style={{ color: IV85 }}>{p.title}</span>
                 </div>
                 <span className="text-[10px]" style={{ color: sc }}>{p.status ?? 'live'}</span>
-                <span className="text-[10px] truncate" style={{ color: IV22 }}>{p.category ?? '—'}</span>
-                <span className="text-[10px]" style={{ color: IV22 }}>—</span>
+                <span className="text-[10px] truncate" style={{ color: IV22 }}>{p.category ?? '-'}</span>
+                <span className="text-[10px]" style={{ color: IV22 }}>-</span>
               </div>
             );
           })}
@@ -667,7 +667,7 @@ const CommandView = ({ data, loading }: { data: DashData; loading: boolean }) =>
 };
 
 /* ══════════════════════════════════════════════════════════════
-   ROOT DASHBOARD — reads mode from outlet context
+   ROOT DASHBOARD - reads mode from outlet context
    ══════════════════════════════════════════════════════════════ */
 const AdminDashboard = () => {
   const { mode } = useOutletContext<{ mode: AdminMode }>();

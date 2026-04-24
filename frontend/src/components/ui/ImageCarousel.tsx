@@ -74,7 +74,7 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
           </AnimatePresence>
         </div>
 
-        {/* Arrow buttons — 44×44px min touch target */}
+        {/* Arrow buttons - 44×44px min touch target */}
         {images.length > 1 && (
           <>
             <button
@@ -96,7 +96,7 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
           </>
         )}
 
-        {/* Dot indicators — padded to ensure ≥44px touch target */}
+        {/* Dot indicators - padded to ensure ≥44px touch target */}
         {images.length > 1 && (
           <div
             role="tablist"

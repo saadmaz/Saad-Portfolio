@@ -27,7 +27,7 @@ const ExperiencePage = () => {
     <Layout>
       <SEO
         title="Work Experience | Saad Mazhar's Professional Journey in Sri Lanka"
-        description="Explore Saad Mazhar's career timeline — startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka. Real roles, real impact, available to hire."
+        description="Explore Saad Mazhar's career timeline - startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka. Real roles, real impact, available to hire."
         url="https://saadmaz.com/experience"
         keywords="full-stack developer experience Sri Lanka, startup founder Colombo, software engineer career Sri Lanka"
       />

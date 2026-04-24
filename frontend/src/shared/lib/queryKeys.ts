@@ -34,4 +34,10 @@ export const queryKeys = {
   newsletters:  { all: ["newsletters"]            as const },
   messages:     { all: ["messages"]               as const },
   logs:         { all: ["logs"]                   as const },
+  courses:      { all: ["courses"]                as const },
+  publications: { all: ["publications"]           as const },
+  patents:      { all: ["patents"]                as const },
+  testScores:   { all: ["testScores"]             as const },
+  organizations:{ all: ["organizations"]          as const },
+  causes:       { all: ["causes"]                 as const },
 } as const;

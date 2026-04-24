@@ -72,7 +72,7 @@ export default function BlogDetailPage() {
     <Layout>
       <SEO
         title={title}
-        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog — AI, startups, and full-stack development from Colombo, Sri Lanka.`}
+        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog - AI, startups, and full-stack development from Colombo, Sri Lanka.`}
         image={coverImage}
         url={`https://saadmaz.com/blog/${slug}`}
         type="article"

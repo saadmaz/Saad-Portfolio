@@ -8,7 +8,7 @@
  *      Uses domcontentloaded + custom wait so Firebase WebSocket connections
  *      don't block the networkidle2 phase indefinitely.
  *   2. Per-route fallback to meta-only injection if Puppeteer fails for that
- *      specific route — every route always gets a pre-rendered index.html.
+ *      specific route - every route always gets a pre-rendered index.html.
  */
 
 import { createServer } from 'http';
@@ -48,47 +48,47 @@ const ROUTES = [
   {
     path: '/',
     title: 'Saad Mazhar | Startup Founder, Tech Speaker & Full-Stack Developer in Sri Lanka',
-    description: 'Portfolio of Saad Mazhar — startup founder, tech speaker, and full-stack developer based in Colombo, Sri Lanka. Building AI-powered products, web apps, and mobile solutions.',
+    description: 'Portfolio of Saad Mazhar - startup founder, tech speaker, and full-stack developer based in Colombo, Sri Lanka. Building AI-powered products, web apps, and mobile solutions.',
   },
   {
     path: '/projects',
     title: 'Projects | AI, Web & Mobile Apps by Saad Mazhar',
-    description: 'Explore projects built by Saad Mazhar — full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka.',
+    description: 'Explore projects built by Saad Mazhar - full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka.',
   },
   {
     path: '/about',
     title: 'About Saad Mazhar | CS Student, Startup Founder & Tech Speaker in Colombo',
-    description: 'Get to know Saad Mazhar — a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code.',
+    description: 'Get to know Saad Mazhar - a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code.',
   },
   {
     path: '/blog',
     title: 'Blog | Startups, AI & Developer Insights by Saad Mazhar',
-    description: 'Thoughts, tutorials, and real-world insights from Saad Mazhar — covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem.',
+    description: 'Thoughts, tutorials, and real-world insights from Saad Mazhar - covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem.',
   },
   {
     path: '/contact',
     title: 'Contact Saad Mazhar | Hire a Freelance Developer in Sri Lanka',
-    description: 'Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting — based in Colombo, Sri Lanka.',
+    description: 'Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting - based in Colombo, Sri Lanka.',
   },
   {
     path: '/experience',
     title: "Work Experience | Saad Mazhar's Professional Journey in Sri Lanka",
-    description: "A timeline of Saad Mazhar's professional experience — from internships to founding startups in Sri Lanka. Full-stack development, AI, product management and leadership roles.",
+    description: "A timeline of Saad Mazhar's professional experience - from internships to founding startups in Sri Lanka. Full-stack development, AI, product management and leadership roles.",
   },
   {
     path: '/skills',
     title: "Skills | Saad Mazhar's Technical Stack & Expertise",
-    description: "Explore the full technical skill set of Saad Mazhar — proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka.",
+    description: "Explore the full technical skill set of Saad Mazhar - proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka.",
   },
   {
     path: '/certifications',
     title: "Certifications | Saad Mazhar's Professional Credentials",
-    description: "Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA.",
+    description: "Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more - earned from Microsoft, LinkedIn Learning, Google, and ISACA.",
   },
   {
     path: '/events',
     title: "Events | Saad Mazhar's Speaking & Community Engagements",
-    description: "Talks, workshops, and community events featuring Saad Mazhar — tech speaker and startup founder based in Colombo, Sri Lanka.",
+    description: "Talks, workshops, and community events featuring Saad Mazhar - tech speaker and startup founder based in Colombo, Sri Lanka.",
   },
   {
     path: '/newsletters',
@@ -116,7 +116,7 @@ function injectMeta(html, { path: routePath, title, description }) {
 
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${et}</title>`);
 
-  // canonical — update existing or insert before </head>
+  // canonical - update existing or insert before </head>
   if (/<link\s[^>]*rel=["']canonical["'][^>]*>/i.test(html)) {
     html = html.replace(
       /<link\s[^>]*rel=["']canonical["'][^>]*>/i,
@@ -158,7 +158,7 @@ function metaOnlyPrerender() {
     console.log(`  ✅  ${route.path}`);
     ok++;
   }
-  console.log(`\n🎉  Meta prerender done — ${ok} routes written.\n`);
+  console.log(`\n🎉  Meta prerender done - ${ok} routes written.\n`);
 }
 
 // ── Full Puppeteer prerender ─────────────────────────────────────────────────
@@ -217,7 +217,7 @@ async function puppeteerPrerender() {
       ],
     });
   } catch (err) {
-    console.warn(`\n⚠️  Puppeteer launch failed (${err.message}) — falling back to meta-only prerender.`);
+    console.warn(`\n⚠️  Puppeteer launch failed (${err.message}) - falling back to meta-only prerender.`);
     return false;
   }
 
@@ -237,7 +237,7 @@ async function puppeteerPrerender() {
     page.on('pageerror', () => {});
 
     try {
-      // Use domcontentloaded instead of networkidle2 — Firebase keeps WebSocket
+      // Use domcontentloaded instead of networkidle2 - Firebase keeps WebSocket
       // connections open which would cause networkidle2 to never resolve.
       await page.goto(`http://localhost:${PORT}${route.path}`, {
         waitUntil: 'domcontentloaded',
@@ -261,13 +261,13 @@ async function puppeteerPrerender() {
       console.log(`  ✅  ${route.path}`);
       success++;
     } catch (err) {
-      console.error(`  ❌  ${route.path} — ${err.message}`);
+      console.error(`  ❌  ${route.path} - ${err.message}`);
       // Always fall back to meta-only for this route so it's never skipped.
       try {
         metaOnlyForRoute(route);
-        console.log(`  📄  ${route.path} — meta-only fallback applied`);
+        console.log(`  📄  ${route.path} - meta-only fallback applied`);
       } catch (fallbackErr) {
-        console.error(`  💥  ${route.path} — meta-only also failed: ${fallbackErr.message}`);
+        console.error(`  💥  ${route.path} - meta-only also failed: ${fallbackErr.message}`);
       }
       failed++;
     } finally {
@@ -277,7 +277,7 @@ async function puppeteerPrerender() {
 
   await browser.close();
   server.close();
-  console.log(`\n🎉  Puppeteer prerender done — ${success} succeeded, ${failed} fell back to meta-only.\n`);
+  console.log(`\n🎉  Puppeteer prerender done - ${success} succeeded, ${failed} fell back to meta-only.\n`);
 
   return true;
 }

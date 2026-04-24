@@ -41,6 +41,12 @@ import type {
   Message,
   Event,
   Newsletter,
+  Course,
+  Publication,
+  Patent,
+  TestScore,
+  Organization,
+  Cause,
 } from "@/types";
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -101,6 +107,12 @@ const COLLECTIONS = {
   messages:     "contact_messages",
   events:       "events",
   newsletters:  "newsletters",
+  courses:      "courses",
+  publications: "publications",
+  patents:      "patents",
+  testScores:   "test_scores",
+  organizations:"organizations",
+  causes:       "causes",
 } as const;
 
 // ─── Public class API ─────────────────────────────────────────────
@@ -369,5 +381,113 @@ export class CommonService {
 
   static async deleteNewsletter(id: string): Promise<void> {
     return deleteDoc_(COLLECTIONS.newsletters, id);
+  }
+
+  // ── Courses ──────────────────────────────────────────────────────
+
+  static async getCourses(): Promise<Course[]> {
+    return fetchAll<Course>(COLLECTIONS.courses);
+  }
+
+  static async createCourse(data: Partial<Course>): Promise<Course> {
+    return createDoc<Course>(COLLECTIONS.courses, data);
+  }
+
+  static async updateCourse(id: string, data: Partial<Course>): Promise<Course> {
+    return updateDoc_<Course>(COLLECTIONS.courses, id, data);
+  }
+
+  static async deleteCourse(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.courses, id);
+  }
+
+  // ── Publications ─────────────────────────────────────────────────
+
+  static async getPublications(): Promise<Publication[]> {
+    return fetchAll<Publication>(COLLECTIONS.publications, "date");
+  }
+
+  static async createPublication(data: Partial<Publication>): Promise<Publication> {
+    return createDoc<Publication>(COLLECTIONS.publications, data);
+  }
+
+  static async updatePublication(id: string, data: Partial<Publication>): Promise<Publication> {
+    return updateDoc_<Publication>(COLLECTIONS.publications, id, data);
+  }
+
+  static async deletePublication(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.publications, id);
+  }
+
+  // ── Patents ──────────────────────────────────────────────────────
+
+  static async getPatents(): Promise<Patent[]> {
+    return fetchAll<Patent>(COLLECTIONS.patents);
+  }
+
+  static async createPatent(data: Partial<Patent>): Promise<Patent> {
+    return createDoc<Patent>(COLLECTIONS.patents, data);
+  }
+
+  static async updatePatent(id: string, data: Partial<Patent>): Promise<Patent> {
+    return updateDoc_<Patent>(COLLECTIONS.patents, id, data);
+  }
+
+  static async deletePatent(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.patents, id);
+  }
+
+  // ── Test Scores ──────────────────────────────────────────────────
+
+  static async getTestScores(): Promise<TestScore[]> {
+    return fetchAll<TestScore>(COLLECTIONS.testScores);
+  }
+
+  static async createTestScore(data: Partial<TestScore>): Promise<TestScore> {
+    return createDoc<TestScore>(COLLECTIONS.testScores, data);
+  }
+
+  static async updateTestScore(id: string, data: Partial<TestScore>): Promise<TestScore> {
+    return updateDoc_<TestScore>(COLLECTIONS.testScores, id, data);
+  }
+
+  static async deleteTestScore(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.testScores, id);
+  }
+
+  // ── Organizations ────────────────────────────────────────────────
+
+  static async getOrganizations(): Promise<Organization[]> {
+    return fetchAll<Organization>(COLLECTIONS.organizations);
+  }
+
+  static async createOrganization(data: Partial<Organization>): Promise<Organization> {
+    return createDoc<Organization>(COLLECTIONS.organizations, data);
+  }
+
+  static async updateOrganization(id: string, data: Partial<Organization>): Promise<Organization> {
+    return updateDoc_<Organization>(COLLECTIONS.organizations, id, data);
+  }
+
+  static async deleteOrganization(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.organizations, id);
+  }
+
+  // ── Causes ───────────────────────────────────────────────────────
+
+  static async getCauses(): Promise<Cause[]> {
+    return fetchAll<Cause>(COLLECTIONS.causes);
+  }
+
+  static async createCause(data: Partial<Cause>): Promise<Cause> {
+    return createDoc<Cause>(COLLECTIONS.causes, data);
+  }
+
+  static async updateCause(id: string, data: Partial<Cause>): Promise<Cause> {
+    return updateDoc_<Cause>(COLLECTIONS.causes, id, data);
+  }
+
+  static async deleteCause(id: string): Promise<void> {
+    return deleteDoc_(COLLECTIONS.causes, id);
   }
 }

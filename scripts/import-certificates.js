@@ -7,7 +7,7 @@
  *   2. From the project root, run:
  *        node scripts/import-certificates.js
  *
- * The script is idempotent — run it again to overwrite with the latest JSON.
+ * The script is idempotent - run it again to overwrite with the latest JSON.
  * It deletes all existing docs first, then writes fresh ones.
  */
 

@@ -84,7 +84,7 @@ const CertificationsPage = () => {
     <Layout>
       <SEO
         title="Certifications | Saad Mazhar's Professional Credentials"
-        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA."
+        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more - earned from Microsoft, LinkedIn Learning, Google, and ISACA."
         url="https://saadmaz.com/certifications"
       />
       <section className="section-padding">
@@ -166,7 +166,7 @@ const CertificationsPage = () => {
                       <Link to={`/certifications/${cert.id}`} className="group block h-full">
                         <div className="relative h-full bg-card rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-px">
 
-                          {/* Emerald left accent — hover only */}
+                          {/* Emerald left accent - hover only */}
                           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10" />
 
                           {/* Body */}
@@ -215,7 +215,7 @@ const CertificationsPage = () => {
                               </div>
                             </div>
 
-                            {/* Description — 2 lines */}
+                            {/* Description - 2 lines */}
                             <p
                               className="text-muted-foreground"
                               style={{
@@ -230,9 +230,9 @@ const CertificationsPage = () => {
                               {cert.description}
                             </p>
 
-                            {/* Tags + Footer — pushed to bottom together */}
+                            {/* Tags + Footer - pushed to bottom together */}
                             <div className="mt-auto">
-                              {/* Tags row — single line, clips overflow */}
+                              {/* Tags row - single line, clips overflow */}
                               <div className="flex overflow-hidden mb-3" style={{ gap: 6, flexWrap: "nowrap", maxHeight: 22 }}>
                                 {(cert.tags?.length ? cert.tags : cert.skills || []).map((item: string, idx: number) => (
                                   <span

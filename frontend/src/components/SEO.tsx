@@ -32,7 +32,7 @@ interface SEOProps {
   type?: string;
   /** Page-specific keywords for <meta name="keywords"> */
   keywords?: string;
-  /** Breadcrumb trail — renders a BreadcrumbList JSON-LD block for rich results */
+  /** Breadcrumb trail - renders a BreadcrumbList JSON-LD block for rich results */
   breadcrumbs?: BreadcrumbItem[];
   /** Prevent search engines from indexing this page */
   noIndex?: boolean;

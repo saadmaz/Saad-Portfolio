@@ -476,7 +476,7 @@ const AdminLayout = () => {
               <span style={{ color: 'rgba(237,233,227,0.48)' }}>{currentPageLabel}</span>
             </div>
 
-            {/* Mode tabs — centered */}
+            {/* Mode tabs - centered */}
             <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
               <ModeTab label="Editorial" active={mode === 'editorial'} onClick={() => setMode('editorial')} />
               <ModeTab label="Command"   active={mode === 'command'}   onClick={() => setMode('command')}   />
