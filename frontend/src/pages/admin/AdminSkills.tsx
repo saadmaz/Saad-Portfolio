@@ -10,12 +10,102 @@ import {
   GripVertical,
   ChevronDown,
   ChevronUp,
-  Save
+  Save,
+  DatabaseZap,
 } from 'lucide-react';
 import { CommonService } from '@/shared/services/common-service';
 import BackButton from '@/components/admin/BackButton';
 import { SkillSet, Skill } from '@/types';
 import { toast } from "sonner";
+
+const SEED_DATA: SkillSet[] = [
+  { category: "Programming Languages", skills: [
+    { name: "Java", level: "Advance", startYear: 2023 },
+    { name: "Python", level: "Advance", startYear: 2023 },
+    { name: "JavaScript", level: "Intermediate", startYear: 2024 },
+    { name: "TypeScript", level: "Expert", startYear: 2023 },
+    { name: "Rust", level: "Beginner", startYear: 2025 },
+  ]},
+  { category: "Frontend Development", skills: [
+    { name: "HTML5 & CSS3", level: "Expert", startYear: 2021 },
+    { name: "React.js", level: "Expert", startYear: 2023 },
+    { name: "Tailwind CSS", level: "Advance", startYear: 2023 },
+    { name: "Vue.js", level: "Beginner", startYear: 2025 },
+    { name: "Responsive Web Design", level: "Expert", startYear: 2022 },
+  ]},
+  { category: "Backend Development", skills: [
+    { name: "Node.js", level: "Advance", startYear: 2023 },
+    { name: "Express.js", level: "Intermediate", startYear: 2023 },
+    { name: "RESTful Services", level: "Advance", startYear: 2023 },
+    { name: "Authentication & Authorization", level: "Intermediate", startYear: 2024 },
+    { name: "Server-Side Business Logic", level: "Intermediate", startYear: 2023 },
+  ]},
+  { category: "Database Technologies", skills: [
+    { name: "MySQL", level: "Advance", startYear: 2023 },
+    { name: "PostgreSQL", level: "Intermediate", startYear: 2024 },
+    { name: "MongoDB", level: "Advance", startYear: 2024 },
+    { name: "Firebase", level: "Beginner", startYear: 2024 },
+    { name: "Supabase", level: "Advance", startYear: 2024 },
+  ]},
+  { category: "DevOps & Cloud", skills: [
+    { name: "AWS (EC2, S3, IAM)", level: "Intermediate", startYear: 2024 },
+    { name: "Docker", level: "Beginner", startYear: 2025 },
+    { name: "CI/CD Pipelines", level: "Intermediate", startYear: 2023 },
+    { name: "Environment Configuration", level: "Intermediate", startYear: 2024 },
+    { name: "Cloud Deployment & Monitoring", level: "Beginner", startYear: 2025 },
+  ]},
+  { category: "API Design & Integration", skills: [
+    { name: "REST API Design", level: "Expert", startYear: 2024 },
+    { name: "Third-Party API Integration", level: "Intermediate", startYear: 2024 },
+    { name: "API Authentication (JWT, OAuth)", level: "Advance", startYear: 2024 },
+    { name: "Webhooks", level: "Advance", startYear: 2024 },
+    { name: "API Documentation (Postman)", level: "Expert", startYear: 2023 },
+  ]},
+  { category: "Prompt Engineering", skills: [
+    { name: "LLM Prompt Structuring", level: "Expert", startYear: 2023 },
+    { name: "AI Workflow Automation", level: "Advance", startYear: 2024 },
+    { name: "Context Optimization", level: "Beginner", startYear: 2025 },
+    { name: "Output Evaluation & Iteration", level: "Advance", startYear: 2024 },
+    { name: "AI Tool Integration", level: "Expert", startYear: 2024 },
+  ]},
+  { category: "Design & UX", skills: [
+    { name: "Canva / Figma", level: "Expert", startYear: 2021 },
+    { name: "Wireframing & Prototyping", level: "Expert", startYear: 2022 },
+    { name: "Design Systems", level: "Expert", startYear: 2023 },
+    { name: "UI Consistency & Layout", level: "Advance", startYear: 2023 },
+    { name: "Visual Storytelling", level: "Advance", startYear: 2024 },
+    { name: "UX Optimization for Conversion", level: "Intermediate", startYear: 2024 },
+  ]},
+  { category: "Business, Startup & Strategy", skills: [
+    { name: "Startup Ideation & Validation", level: "Expert", startYear: 2022 },
+    { name: "Go-To-Market Strategy", level: "Intermediate", startYear: 2023 },
+    { name: "Product Positioning", level: "Intermediate", startYear: 2023 },
+    { name: "Business Model Design", level: "Advance", startYear: 2024 },
+    { name: "Strategic Partnerships", level: "Intermediate", startYear: 2023 },
+  ]},
+  { category: "Market Research & Analysis", skills: [
+    { name: "Competitive Analysis", level: "Intermediate", startYear: 2023 },
+    { name: "Industry Trend Analysis", level: "Intermediate", startYear: 2023 },
+    { name: "Competitor Benchmarking", level: "Beginner", startYear: 2023 },
+    { name: "Customer Persona Development", level: "Beginner", startYear: 2023 },
+    { name: "Market Sizing (TAM/SAM/SOM)", level: "Intermediate", startYear: 2023 },
+    { name: "Insight-Driven Decision Making", level: "Advance", startYear: 2024 },
+  ]},
+  { category: "Content & Community", skills: [
+    { name: "Newsletter Writing", level: "Expert", startYear: 2023 },
+    { name: "Podcast Production", level: "Advance", startYear: 2020 },
+    { name: "Social Media Content Strategy", level: "Expert", startYear: 2021 },
+    { name: "Community Building", level: "Intermediate", startYear: 2021 },
+    { name: "Event Hosting & Moderation", level: "Expert", startYear: 2018 },
+  ]},
+  { category: "Negotiation & Sales", skills: [
+    { name: "Client Pitching", level: "Expert", startYear: 2021 },
+    { name: "Proposal & Deck Creation", level: "Advance", startYear: 2021 },
+    { name: "Pricing Strategy", level: "Advance", startYear: 2023 },
+    { name: "Objection Handling", level: "Intermediate", startYear: 2023 },
+    { name: "Relationship Management", level: "Intermediate", startYear: 2023 },
+  ]},
+];
 
 const AdminSkills = () => {
   const [skillSets, setSkillSets] = useState<SkillSet[]>([]);
@@ -35,6 +125,19 @@ const AdminSkills = () => {
       toast.error('Failed to load skills');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSeed = async () => {
+    try {
+      setIsSaving(true);
+      await CommonService.updateSkills(SEED_DATA);
+      await fetchSkills();
+      toast.success('Skills seeded successfully');
+    } catch (error) {
+      toast.error('Failed to seed skills');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -99,16 +202,26 @@ const AdminSkills = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-            <Button 
-              variant="outline" 
-              onClick={addCategory} 
+            {!isLoading && skillSets.length === 0 && (
+              <Button
+                variant="outline"
+                onClick={handleSeed}
+                disabled={isSaving}
+                className="border-accent/30 hover:bg-accent/10 rounded-xl px-4 py-2 text-accent hover:text-accent transition-all shadow-lg"
+              >
+                <DatabaseZap className="w-4 h-4 mr-2" /> Seed Default Data
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={addCategory}
               className="border-white/10 hover:bg-white/5 rounded-xl px-4 py-2 text-white/80 hover:text-white transition-all shadow-lg"
             >
                 <Plus className="w-4 h-4 mr-2" /> Add Category
             </Button>
-            <Button 
-              onClick={handleSave} 
-              disabled={isSaving} 
+            <Button
+              onClick={handleSave}
+              disabled={isSaving}
               className="bg-accent hover:bg-accent/90 text-black font-bold shadow-[0_0_20px_rgba(255,184,0,0.2)] rounded-xl transition-all hover:scale-105 active:scale-95"
             >
                 <Save className="w-4 h-4 mr-2" /> {isSaving ? 'Saving...' : 'Save All Changes'}
