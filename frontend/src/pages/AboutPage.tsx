@@ -7,14 +7,14 @@ import { useState } from "react";
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal } from "lucide-react";
+import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal, BookMarked, Lightbulb, ClipboardList, Building2, Leaf, Calendar } from "lucide-react";
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge";
 import { educationList } from "@/data/personal/education";
 import { languages, volunteer, sports, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
-import { useHackathons, useVolunteer } from "@/shared/hooks/useCommon";
+import { useHackathons, useVolunteer, useCourses, usePatents, useTestScores, useOrganizations, useCauses } from "@/shared/hooks/useCommon";
 import type { VolunteerExperience } from "@/types";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 
@@ -40,6 +40,11 @@ const StarRating = ({ filled }: { filled: number }) => (
 const AboutPage = () => {
   const { data: hackathons = [], isLoading: hackLoading } = useHackathons();
   const { data: volunteerData = [] } = useVolunteer();
+  const { data: courses = [] } = useCourses();
+  const { data: patents = [] } = usePatents();
+  const { data: testScores = [] } = useTestScores();
+  const { data: organizations = [] } = useOrganizations();
+  const { data: causes = [] } = useCauses();
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -352,6 +357,272 @@ const AboutPage = () => {
                         )}
                       </div>
                     </div>
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
+          )}
+
+          {/* --- COURSES SECTION --- */}
+          {courses.length > 0 && (
+            <m.div
+              id="courses"
+              className="mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <BookMarked className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Courses</h2>
+                  <p className="text-sm text-muted-foreground">{courses.length} completed</p>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {courses.map((course, i) => (
+                  <m.div
+                    key={course.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05, duration: 0.35 }}
+                    className="bg-card rounded-xl border border-border p-5 hover:border-accent/40 hover:shadow-sm transition-all group"
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h4 className="font-semibold text-foreground text-sm leading-snug group-hover:text-accent transition-colors">
+                        {course.name}
+                      </h4>
+                      {course.link && (
+                        <a href={course.link} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 text-muted-foreground hover:text-accent transition-colors">
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+                    <p className="text-xs text-accent font-medium mb-1">{course.school}</p>
+                    {course.associatedWith && (
+                      <p className="text-xs text-muted-foreground">{course.associatedWith}</p>
+                    )}
+                    {course.completedDate && (
+                      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {course.completedDate}
+                      </p>
+                    )}
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
+          )}
+
+          {/* --- TEST SCORES SECTION --- */}
+          {testScores.length > 0 && (
+            <m.div
+              id="test-scores"
+              className="mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <ClipboardList className="w-6 h-6 text-accent" />
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Test Scores</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {testScores.map((score, i) => (
+                  <m.div
+                    key={score.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05, duration: 0.35 }}
+                    className="bg-card rounded-xl border border-border p-5 flex items-center gap-4"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <ClipboardList className="w-5 h-5 text-accent" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground text-sm">{score.testName}</p>
+                      <p className="text-accent font-bold">{score.score}</p>
+                      {score.date && <p className="text-xs text-muted-foreground mt-0.5">{score.date}</p>}
+                    </div>
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
+          )}
+
+          {/* --- PATENTS SECTION --- */}
+          {patents.length > 0 && (
+            <m.div
+              id="patents"
+              className="mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Lightbulb className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Patents</h2>
+                  <p className="text-sm text-muted-foreground">{patents.length} {patents.length === 1 ? 'filing' : 'filings'}</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                {patents.map((patent, i) => (
+                  <m.div
+                    key={patent.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06, duration: 0.4 }}
+                    className="bg-card rounded-xl border border-border p-5 hover:border-accent/40 transition-all"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <h4 className="font-semibold text-foreground">{patent.title}</h4>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                            patent.status.toLowerCase() === 'issued'
+                              ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                              : patent.status.toLowerCase() === 'pending'
+                              ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                              : 'bg-secondary text-muted-foreground border-border'
+                          }`}>
+                            {patent.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {patent.patentOffice}{patent.patentNumber ? ` · ${patent.patentNumber}` : ''}
+                        </p>
+                        {(patent.filingDate || patent.issueDate) && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {patent.filingDate ? `Filed: ${patent.filingDate}` : ''}
+                            {patent.filingDate && patent.issueDate ? ' · ' : ''}
+                            {patent.issueDate ? `Issued: ${patent.issueDate}` : ''}
+                          </p>
+                        )}
+                        {patent.description && (
+                          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{patent.description}</p>
+                        )}
+                      </div>
+                      {patent.link && (
+                        <a
+                          href={patent.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-sm text-accent hover:underline flex-shrink-0"
+                        >
+                          View <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
+          )}
+
+          {/* --- ORGANIZATIONS SECTION --- */}
+          {organizations.length > 0 && (
+            <m.div
+              id="organizations"
+              className="mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Building2 className="w-6 h-6 text-accent" />
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Organizations</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {organizations.map((org, i) => (
+                  <m.div
+                    key={org.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06, duration: 0.4 }}
+                    className="bg-card rounded-xl border border-border overflow-hidden hover:border-accent/40 transition-all group"
+                  >
+                    {org.image && (
+                      <button
+                        type="button"
+                        className="block w-full h-32 overflow-hidden focus:outline-none"
+                        onClick={() => openLightbox([org.image!])}
+                      >
+                        <img src={org.image} alt={org.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-zoom-in" />
+                      </button>
+                    )}
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h4 className="font-semibold text-foreground">{org.name}</h4>
+                          {org.position && <p className="text-sm text-accent">{org.position}</p>}
+                          {(org.startDate || org.endDate) && (
+                            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {org.startDate}{org.isCurrent ? ' – Present' : org.endDate ? ` – ${org.endDate}` : ''}
+                            </p>
+                          )}
+                        </div>
+                        {org.link && (
+                          <a href={org.link} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors flex-shrink-0">
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                      {org.description && (
+                        <p className="text-sm text-muted-foreground mt-2">{org.description}</p>
+                      )}
+                    </div>
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
+          )}
+
+          {/* --- CAUSES SECTION --- */}
+          {causes.length > 0 && (
+            <m.div
+              id="causes"
+              className="mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Leaf className="w-6 h-6 text-accent" />
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Causes I Care About</h2>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {causes.map((cause, i) => (
+                  <m.div
+                    key={cause.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.04, duration: 0.3 }}
+                    title={cause.description}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border hover:border-accent/50 hover:bg-accent/5 transition-all cursor-default group"
+                  >
+                    <Leaf className="w-3.5 h-3.5 text-accent group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-foreground">{cause.name}</span>
                   </m.div>
                 ))}
               </div>

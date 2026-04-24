@@ -5,6 +5,7 @@ import {
   LogOut, Menu, X, ShieldCheck, Zap, Award, Globe, Trophy,
   Mail, Heart, GraduationCap, History, CalendarDays, Newspaper,
   Quote, ChevronLeft, ChevronRight, ExternalLink,
+  BookMarked, FileText, Lightbulb, ClipboardList, Building2, Leaf,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -69,6 +70,17 @@ const navGroups: NavGroup[] = [
       { icon: Globe,        label: 'Languages',     path: '/admin/languages',    countKey: 'languages' },
       { icon: Trophy,       label: 'Hackathons',    path: '/admin/hackathons',   countKey: 'hackathons' },
       { icon: Quote,        label: 'Testimonials',  path: '/admin/testimonials', countKey: 'testimonials' },
+    ],
+  },
+  {
+    label: 'Profile',
+    items: [
+      { icon: BookMarked,    label: 'Courses',         path: '/admin/courses',       countKey: 'courses' },
+      { icon: FileText,      label: 'Publications',    path: '/admin/publications',  countKey: 'publications' },
+      { icon: Lightbulb,     label: 'Patents',         path: '/admin/patents',       countKey: 'patents' },
+      { icon: ClipboardList, label: 'Test Scores',     path: '/admin/test-scores',   countKey: 'testScores' },
+      { icon: Building2,     label: 'Organizations',   path: '/admin/organizations', countKey: 'organizations' },
+      { icon: Leaf,          label: 'Causes',          path: '/admin/causes',        countKey: 'causes' },
     ],
   },
   {
@@ -153,19 +165,31 @@ const AdminLayout = () => {
       CommonService.getAwards(),
       CommonService.getEvents(),
       CommonService.getTestimonials(),
-    ]).then(([projects, blogs, messages, experience, skills, certs, awards, events, testimonials]) => {
+      CommonService.getCourses(),
+      CommonService.getPublications(),
+      CommonService.getPatents(),
+      CommonService.getTestScores(),
+      CommonService.getOrganizations(),
+      CommonService.getCauses(),
+    ]).then(([projects, blogs, messages, experience, skills, certs, awards, events, testimonials, courses, publications, patents, testScores, organizations, causes]) => {
       const unread = messages.filter((m) => !m.read).length;
       setUnreadCount(unread);
       setNavCounts({
-        projects:     projects.length,
-        blogs:        blogs.length,
-        experience:   experience.length,
-        skills:       skills.length,
-        certificates: certs.length,
-        awards:       awards.length,
-        events:       events.length,
-        testimonials: testimonials.length,
-        messages:     unread,
+        projects:      projects.length,
+        blogs:         blogs.length,
+        experience:    experience.length,
+        skills:        skills.length,
+        certificates:  certs.length,
+        awards:        awards.length,
+        events:        events.length,
+        testimonials:  testimonials.length,
+        messages:      unread,
+        courses:       courses.length,
+        publications:  publications.length,
+        patents:       patents.length,
+        testScores:    testScores.length,
+        organizations: organizations.length,
+        causes:        causes.length,
       });
     }).catch(() => {});
   }, [location.pathname]);

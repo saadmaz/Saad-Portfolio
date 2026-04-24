@@ -56,6 +56,13 @@ const AdminEvents = React.lazy(() => import("../pages/admin/AdminEvents"));
 const AdminNewsletters = React.lazy(() => import("../pages/admin/AdminNewsletters"));
 const AdminMessages = React.lazy(() => import("../pages/admin/AdminMessages"));
 const AdminLogs = React.lazy(() => import("../pages/admin/AdminLogs"));
+const AdminCourses = React.lazy(() => import("../pages/admin/AdminCourses"));
+const AdminPublications = React.lazy(() => import("../pages/admin/AdminPublications"));
+const AdminPatents = React.lazy(() => import("../pages/admin/AdminPatents"));
+const AdminTestScores = React.lazy(() => import("../pages/admin/AdminTestScores"));
+const AdminOrganizations = React.lazy(() => import("../pages/admin/AdminOrganizations"));
+const AdminCauses = React.lazy(() => import("../pages/admin/AdminCauses"));
+const PublicationsPage = React.lazy(() => import("../pages/PublicationsPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -104,6 +111,7 @@ const App = () => (
                       <Route path="/newsletters" element={<NewslettersPage />} />
                       <Route path="/events" element={<EventsPage />} />
                       <Route path="/events/:id" element={<EventDetailPage />} />
+                      <Route path="/publications" element={<PublicationsPage />} />
 
                       <Route path="/admin/login" element={<AdminLoginPage />} />
                       <Route
@@ -139,6 +147,12 @@ const App = () => (
                         <Route path="newsletters" element={<AdminNewsletters />} />
                         <Route path="messages" element={<AdminMessages />} />
                         <Route path="logs" element={<AdminLogs />} />
+                        <Route path="courses" element={<AdminCourses />} />
+                        <Route path="publications" element={<AdminPublications />} />
+                        <Route path="patents" element={<AdminPatents />} />
+                        <Route path="test-scores" element={<AdminTestScores />} />
+                        <Route path="organizations" element={<AdminOrganizations />} />
+                        <Route path="causes" element={<AdminCauses />} />
                       </Route>
 
                       <Route path="*" element={<NotFound />} />
