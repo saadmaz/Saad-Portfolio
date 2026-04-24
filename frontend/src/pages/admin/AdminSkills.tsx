@@ -3,10 +3,10 @@ import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { 
-  Zap, 
-  Plus, 
-  Trash2, 
+import {
+  Calendar,
+  Plus,
+  Trash2,
   GripVertical,
   ChevronDown,
   ChevronUp,
@@ -63,7 +63,7 @@ const AdminSkills = () => {
 
   const addSkill = (catIndex: number) => {
     const newSkillSets = [...skillSets];
-    newSkillSets[catIndex].skills.push({ name: 'New Skill', level: 'Intermediate', years: 1 });
+    newSkillSets[catIndex].skills.push({ name: 'New Skill', level: 'Intermediate', startYear: new Date().getFullYear() });
     setSkillSets(newSkillSets);
   };
 
@@ -169,7 +169,7 @@ const AdminSkills = () => {
                         </button>
                     </div>
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                        <select 
+                        <select
                             value={skill.level}
                             onChange={(e) => updateSkill(catIndex, skillIndex, 'level', e.target.value)}
                             className="bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] font-bold text-white/70 outline-none focus:border-accent/50 cursor-pointer"
@@ -180,14 +180,21 @@ const AdminSkills = () => {
                             <option value="Expert">Expert</option>
                         </select>
                         <div className="relative">
-                          <Input 
+                          <Input
                               type="number"
-                              value={skill.years}
-                              onChange={(e) => updateSkill(catIndex, skillIndex, 'years', parseInt(e.target.value))}
+                              value={skill.startYear}
+                              onChange={(e) => updateSkill(catIndex, skillIndex, 'startYear', parseInt(e.target.value))}
                               className="bg-black/40 border-white/10 h-8 text-[11px] py-0 px-3 pl-7 rounded-lg font-mono focus:border-accent/50 ring-0"
-                              placeholder="Yrs"
+                              placeholder="Year"
+                              min={1990}
+                              max={new Date().getFullYear()}
                           />
-                          <Zap className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-accent" />
+                          <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-accent" />
+                          {skill.startYear > 0 && (
+                            <span className="absolute -top-4 right-0 text-[9px] text-accent/70 font-mono">
+                              {new Date().getFullYear() - skill.startYear}y
+                            </span>
+                          )}
                         </div>
                     </div>
                   </div>

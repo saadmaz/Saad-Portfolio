@@ -158,9 +158,9 @@ export function SkillsSection() {
                         <span className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
                           {skill.name}
                         </span>
-                        {skill.years && (
+                        {skill.startYear > 0 && (
                           <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
-                            {skill.years}y
+                            {new Date().getFullYear() - skill.startYear}y
                           </span>
                         )}
                       </div>
