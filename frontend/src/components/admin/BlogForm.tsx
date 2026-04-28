@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, KeyboardEvent } from 'react';
+import React, { useEffect, useState, useCallback, useRef, KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,9 +14,10 @@ import {
   List, ListOrdered, Code, Minus, Link as LinkIcon,
   Undo, Redo, Quote, Image as ImageIcon, Tag as TagIcon,
   Search, Calendar, Globe, ToggleLeft, FileText,
-  MousePointerClick, Settings2, X,
+  MousePointerClick, Settings2, X, Loader2,
 } from 'lucide-react';
 import { BlogService } from '@/services/blog-service';
+import { uploadImage } from '@/services/storage';
 import { toast } from 'sonner';
 import ImageUpload from './ImageUpload';
 import { cn } from '@/shared/lib/utils';
@@ -188,14 +189,16 @@ const BlogForm = () => {
   const navigate     = useNavigate();
   const isEditMode   = !!id && id !== 'new';
 
-  const [isLoading,       setIsLoading]       = useState(false);
-  const [deleteOpen,      setDeleteOpen]       = useState(false);
-  const [contentError,    setContentError]     = useState('');
-  const [tagInput,        setTagInput]         = useState('');
-  const [publishMode,     setPublishMode]      = useState<'draft' | 'publish' | 'schedule'>('draft');
-  const [showDeleteModal, setShowDeleteModal]  = useState(false);
-  const [excerptLen,      setExcerptLen]       = useState(0);
-  const [metaLen,         setMetaLen]          = useState(0);
+  const [isLoading,          setIsLoading]          = useState(false);
+  const [deleteOpen,         setDeleteOpen]          = useState(false);
+  const [contentError,       setContentError]        = useState('');
+  const [tagInput,           setTagInput]            = useState('');
+  const [publishMode,        setPublishMode]         = useState<'draft' | 'publish' | 'schedule'>('draft');
+  const [showDeleteModal,    setShowDeleteModal]      = useState(false);
+  const [excerptLen,         setExcerptLen]          = useState(0);
+  const [metaLen,            setMetaLen]             = useState(0);
+  const [isInlineUploading,  setIsInlineUploading]   = useState(false);
+  const inlineImageInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register, handleSubmit, reset, setValue, watch,
@@ -363,8 +366,26 @@ const BlogForm = () => {
 
   /* ── Image insert ──────────────────────────────────────────────── */
   const handleInsertImage = () => {
-    const url = window.prompt('Image URL:');
-    if (url) editor?.chain().focus().setImage({ src: url }).run();
+    inlineImageInputRef.current?.click();
+  };
+
+  const handleInlineImageFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast.error('Please select an image file'); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error('Image must be under 10 MB'); return; }
+
+    setIsInlineUploading(true);
+    try {
+      const url = await uploadImage(file, 'uploads');
+      editor?.chain().focus().setImage({ src: url }).run();
+      toast.success('Image inserted');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setIsInlineUploading(false);
+      if (inlineImageInputRef.current) inlineImageInputRef.current.value = '';
+    }
   };
 
   /* ── Tag management ────────────────────────────────────────────── */
@@ -579,8 +600,10 @@ const BlogForm = () => {
                 <ToolbarBtn onClick={handleSetLink} active={editor.isActive('link')} title="Insert Link">
                   <LinkIcon className="w-3.5 h-3.5" />
                 </ToolbarBtn>
-                <ToolbarBtn onClick={handleInsertImage} active={false} title="Insert Image">
-                  <ImageIcon className="w-3.5 h-3.5" />
+                <ToolbarBtn onClick={isInlineUploading ? () => {} : handleInsertImage} active={false} title="Insert Image">
+                  {isInlineUploading
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <ImageIcon className="w-3.5 h-3.5" />}
                 </ToolbarBtn>
                 <ToolbarBtn onClick={() => editor.chain().focus().setHorizontalRule().run()} active={false} title="Divider">
                   <Minus className="w-3.5 h-3.5" />
@@ -600,6 +623,13 @@ const BlogForm = () => {
             {contentError && (
               <p className="text-xs text-red-400 px-5 pb-4">{contentError}</p>
             )}
+            <input
+              type="file"
+              ref={inlineImageInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleInlineImageFile}
+            />
           </div>
 
           {/* Call to Action */}
