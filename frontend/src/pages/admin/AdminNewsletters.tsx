@@ -4,7 +4,7 @@ import { CommonService } from '@/shared/services/common-service';
 import { Newsletter } from '@/types';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Search, Mail, Edit2, Trash2, ExternalLink, Calendar, DatabaseZap } from 'lucide-react';
+import { Plus, Search, Mail, Edit2, Trash2, ExternalLink, Calendar } from 'lucide-react';
 import { toast } from "sonner";
 import AdminEntityDialog from '@/components/admin/AdminEntityDialog';
 import BackButton from '@/components/admin/BackButton';
@@ -20,22 +20,6 @@ const newsletterSchema = z.object({
 });
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
-type SeedNewsletter = Omit<Newsletter, 'id'>;
-
-const SEED_DATA: SeedNewsletter[] = [
-  { type: "cse", title: "CSE WEEKLY ROUNDUP – Week 05, 2026", date: "2026-01-31", description: "The Colombo Stock Exchange moved into a consolidation phase this week.", content_url: "https://www.linkedin.com/pulse/cse-weekly-roundup-week-05-2026-saad-mazhar--uxytc" },
-  { type: "founder", title: "Building Startups in 2026", date: "2026-01-30", description: "Insights on building and scaling startups in the new year", content_url: "https://newsletter.saadmalik.dev/45" },
-  { type: "cse", title: "Advanced TypeScript Patterns", date: "2026-01-28", description: "Deep dive into TypeScript's advanced type system", content_url: "https://newsletter.saadmalik.dev/cse/25" },
-  { type: "founder", title: "Founders' Brief – Scaling Beyond Sri Lanka", date: "2026-01-24", description: "Deep dive into the journey of moving from a local MVP to a global product.", content_url: "https://www.linkedin.com/newsletters/your-founder-newsletter-id" },
-  { type: "founder", title: "The Future of Funding", date: "2026-01-23", description: "How funding landscape is changing for startups", content_url: "https://newsletter.saadmalik.dev/44" },
-  { type: "cse", title: "React 19 New Features", date: "2026-01-21", description: "Exploring the latest features in React 19", content_url: "https://newsletter.saadmalik.dev/cse/24" },
-  { type: "cse", title: "CSE WEEKLY ROUNDUP – Week 04, 2026", date: "2026-01-26", description: "After touching fresh highs, the CSE took a breather as profit-taking surfaced, but the bigger picture stayed intact.", content_url: "https://www.linkedin.com/pulse/cse-weekly-roundup-week-04-2026-saad-mazhar--lwjhc" },
-  { type: "founder", title: "10 Lessons from Failed Startups", date: "2026-01-16", description: "Critical lessons learned from startups that didn't make it", content_url: "https://newsletter.saadmalik.dev/43" },
-  { type: "founder", title: "Founders' Brief – The Art of the Pivot", date: "2026-01-15", description: "How local startups are navigating the current funding winter.", content_url: "https://www.linkedin.com/pulse/cse-weekly-roundup-week-ending-january-09-2026-saad-mazhar--3d2uc" },
-  { type: "cse", title: "Web Performance Tips", date: "2026-01-14", description: "Practical tips for optimizing web performance", content_url: "https://newsletter.saadmalik.dev/cse/23" },
-  { type: "cse", title: "CSE WEEKLY ROUNDUP – Week 03, 2026", date: "2026-01-18", description: "The Colombo Stock Exchange moved into a more measured but confident phase this week.", content_url: "https://www.linkedin.com/pulse/cse-weekly-roundup-week-03-2026-saad-mazhar--1cznc" },
-  { type: "cse", title: "CSE WEEKLY ROUNDUP – Week 02, 2026", date: "2026-01-11", description: "The Colombo Stock Exchange witnessed a roller-coaster week, starting with a dramatic market-wide halt but ending on a bullish high.", content_url: "https://www.linkedin.com/pulse/cse-weekly-roundup-week-ending-january-09-2026-saad-mazhar--3d2uc" },
-];
 
 const newsletterFields = [
   { name: 'title', label: 'Newsletter Title', type: 'text', placeholder: 'e.g. Founder Journey #1' },
@@ -59,7 +43,6 @@ const newsletterFields = [
 const AdminNewsletters = () => {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSeedLoading, setIsSeedLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentNewsletter, setCurrentNewsletter] = useState<Newsletter | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,19 +61,6 @@ const AdminNewsletters = () => {
       toast.error('Failed to load newsletters');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleSeed = async () => {
-    try {
-      setIsSeedLoading(true);
-      await Promise.all(SEED_DATA.map(n => CommonService.createNewsletter(n)));
-      await fetchNewsletters();
-      toast.success('12 newsletters seeded successfully');
-    } catch {
-      toast.error('Failed to seed newsletters');
-    } finally {
-      setIsSeedLoading(false);
     }
   };
 
@@ -152,16 +122,6 @@ const AdminNewsletters = () => {
           </div>
         </div>
         <div className="flex gap-3 flex-shrink-0">
-          {!isLoading && newsletters.length === 0 && (
-            <Button
-              variant="outline"
-              onClick={handleSeed}
-              disabled={isSeedLoading}
-              className="border-accent/30 hover:bg-accent/10 rounded-xl px-4 h-11 text-accent hover:text-accent transition-all shadow-lg"
-            >
-              <DatabaseZap className="w-4 h-4 mr-2" /> {isSeedLoading ? 'Seeding...' : 'Seed Default Data'}
-            </Button>
-          )}
           <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-black h-11 px-6 rounded-lg">
             <Plus className="w-4 h-4 mr-2" /> Add Newsletter
           </Button>

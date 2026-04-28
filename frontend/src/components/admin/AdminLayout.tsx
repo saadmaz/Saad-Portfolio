@@ -1,11 +1,11 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, Briefcase, Code, BookOpen, FileCheck,
   LogOut, Menu, X, ShieldCheck, Zap, Award, Globe, Trophy,
-  Mail, Heart, GraduationCap, History, CalendarDays, Newspaper,
+  Mail, Heart, GraduationCap, CalendarDays, Newspaper,
   Quote, ChevronLeft, ChevronRight, ExternalLink,
-  BookMarked, FileText, Lightbulb, ClipboardList, Building2, Leaf,
+  BookMarked, FileText, Lightbulb, Building2,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -14,21 +14,6 @@ import { auth } from '@/lib/firebase';
 import { CommonService } from '@/shared/services/common-service';
 import { ProjectService } from '@/services/project-service';
 import { BlogService } from '@/services/blog-service';
-
-/* ─── Mode context ───────────────────────────────────────────── */
-export type AdminMode = 'editorial' | 'workbench' | 'command';
-
-interface AdminContextValue {
-  mode: AdminMode;
-  setMode: (m: AdminMode) => void;
-}
-
-export const AdminContext = createContext<AdminContextValue>({
-  mode: 'editorial',
-  setMode: () => {},
-});
-
-export const useAdminMode = () => useContext(AdminContext);
 
 /* ─── Nav definition ─────────────────────────────────────────── */
 interface NavItem {
@@ -78,9 +63,7 @@ const navGroups: NavGroup[] = [
       { icon: BookMarked,    label: 'Courses',         path: '/admin/courses',       countKey: 'courses' },
       { icon: FileText,      label: 'Publications',    path: '/admin/publications',  countKey: 'publications' },
       { icon: Lightbulb,     label: 'Patents',         path: '/admin/patents',       countKey: 'patents' },
-      { icon: ClipboardList, label: 'Test Scores',     path: '/admin/test-scores',   countKey: 'testScores' },
       { icon: Building2,     label: 'Organizations',   path: '/admin/organizations', countKey: 'organizations' },
-      { icon: Leaf,          label: 'Causes',          path: '/admin/causes',        countKey: 'causes' },
     ],
   },
   {
@@ -89,39 +72,13 @@ const navGroups: NavGroup[] = [
       { icon: Heart,         label: 'Volunteer',      path: '/admin/volunteer',   countKey: 'volunteer' },
       { icon: GraduationCap, label: 'Education',      path: '/admin/education',   countKey: 'education' },
       { icon: Mail,          label: 'Messages',        path: '/admin/messages',    countKey: 'messages', badge: true },
-      { icon: History,       label: 'Activity Logs',  path: '/admin/logs' },
     ],
   },
 ];
 
 /* ─── Palette ────────────────────────────────────────────────── */
-const EMERALD        = '#10b981';
-const SIDEBAR_KEY    = 'admin_sidebar_collapsed';
-const MODE_KEY       = 'admin_mode';
-const APP_VERSION    = 'v2.4';
-
-/* ─── Mode tab button ────────────────────────────────────────── */
-const ModeTab = ({
-  label, active, onClick,
-}: { label: string; active: boolean; onClick: () => void }) => (
-  <button
-    onClick={onClick}
-    className="text-[11px] font-medium px-3 py-1 rounded-md transition-all duration-150 tracking-wide"
-    style={{
-      background: active ? 'rgba(16,185,129,0.12)' : 'transparent',
-      color: active ? EMERALD : 'rgba(237,233,227,0.35)',
-      border: `1px solid ${active ? 'rgba(16,185,129,0.25)' : 'transparent'}`,
-    }}
-    onMouseEnter={e => {
-      if (!active) (e.currentTarget as HTMLButtonElement).style.color = 'rgba(237,233,227,0.65)';
-    }}
-    onMouseLeave={e => {
-      if (!active) (e.currentTarget as HTMLButtonElement).style.color = 'rgba(237,233,227,0.35)';
-    }}
-  >
-    {label}
-  </button>
-);
+const EMERALD     = '#10b981';
+const SIDEBAR_KEY = 'admin_sidebar_collapsed';
 
 /* ─── Main layout ────────────────────────────────────────────── */
 const AdminLayout = () => {
@@ -130,18 +87,10 @@ const AdminLayout = () => {
   });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [mode, setModeState] = useState<AdminMode>(() => {
-    try { return (localStorage.getItem(MODE_KEY) as AdminMode) ?? 'editorial'; } catch { return 'editorial'; }
-  });
   const [navCounts, setNavCounts] = useState<Record<string, number>>({});
 
-  const navigate  = useNavigate();
-  const location  = useLocation();
-
-  const setMode = (m: AdminMode) => {
-    setModeState(m);
-    try { localStorage.setItem(MODE_KEY, m); } catch {}
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     try { localStorage.setItem(SIDEBAR_KEY, String(collapsed)); } catch {}
@@ -168,10 +117,8 @@ const AdminLayout = () => {
       CommonService.getCourses(),
       CommonService.getPublications(),
       CommonService.getPatents(),
-      CommonService.getTestScores(),
       CommonService.getOrganizations(),
-      CommonService.getCauses(),
-    ]).then(([projects, blogs, messages, experience, skills, certs, awards, events, testimonials, courses, publications, patents, testScores, organizations, causes]) => {
+    ]).then(([projects, blogs, messages, experience, skills, certs, awards, events, testimonials, courses, publications, patents, organizations]) => {
       const unread = messages.filter((m) => !m.read).length;
       setUnreadCount(unread);
       setNavCounts({
@@ -187,9 +134,7 @@ const AdminLayout = () => {
         courses:       courses.length,
         publications:  publications.length,
         patents:       patents.length,
-        testScores:    testScores.length,
         organizations: organizations.length,
-        causes:        causes.length,
       });
     }).catch(() => {});
   }, [location.pathname]);
@@ -219,20 +164,12 @@ const AdminLayout = () => {
             >
               <ShieldCheck className="w-3.5 h-3.5" style={{ color: EMERALD }} />
             </div>
-            <div>
-              <span
-                className="admin-editorial text-[13px] font-semibold block leading-none"
-                style={{ color: 'rgba(237,233,227,0.90)' }}
-              >
-                Admin
-              </span>
-              <span
-                className="text-[9px] font-medium tracking-widest uppercase"
-                style={{ color: 'rgba(237,233,227,0.22)' }}
-              >
-                {APP_VERSION}
-              </span>
-            </div>
+            <span
+              className="text-[13px] font-semibold"
+              style={{ color: 'rgba(237,233,227,0.90)' }}
+            >
+              Admin
+            </span>
           </div>
         )}
         {collapsed && (
@@ -437,8 +374,7 @@ const AdminLayout = () => {
 
   /* ── Root render ──────────────────────────────────────────── */
   return (
-    <AdminContext.Provider value={{ mode, setMode }}>
-      <div className="admin-panel min-h-screen flex" style={{ background: '#080C18', color: '#EDE9E3' }}>
+    <div className="admin-panel min-h-screen flex" style={{ background: '#080C18', color: '#EDE9E3' }}>
 
         {/* Desktop sidebar */}
         <aside
@@ -500,13 +436,6 @@ const AdminLayout = () => {
               <span style={{ color: 'rgba(237,233,227,0.48)' }}>{currentPageLabel}</span>
             </div>
 
-            {/* Mode tabs - centered */}
-            <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
-              <ModeTab label="Editorial" active={mode === 'editorial'} onClick={() => setMode('editorial')} />
-              <ModeTab label="Command"   active={mode === 'command'}   onClick={() => setMode('command')}   />
-              <ModeTab label="Workbench" active={mode === 'workbench'} onClick={() => setMode('workbench')} />
-            </div>
-
             {/* Right actions */}
             <div className="ml-auto flex items-center gap-2 flex-shrink-0">
               <a
@@ -551,12 +480,11 @@ const AdminLayout = () => {
           {/* Page content */}
           <div className="flex-1 overflow-y-auto custom-scrollbar">
             <div className="p-5 md:p-7 max-w-[1400px] mx-auto">
-              <Outlet context={{ mode } as { mode: AdminMode }} />
+              <Outlet />
             </div>
           </div>
         </main>
       </div>
-    </AdminContext.Provider>
   );
 };
 

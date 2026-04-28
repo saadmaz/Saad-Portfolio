@@ -14,7 +14,7 @@ import {
   List, ListOrdered, Code, Minus, Link as LinkIcon,
   Undo, Redo, Quote, Image as ImageIcon, Tag as TagIcon,
   Search, Calendar, Globe, ToggleLeft, FileText,
-  MousePointerClick, Settings2, X, Loader2,
+  X, Loader2,
 } from 'lucide-react';
 import { BlogService } from '@/services/blog-service';
 import { uploadImage } from '@/services/storage';
@@ -36,10 +36,6 @@ const blogSchema = z.object({
   image:               z.string().optional().or(z.literal('')),
   published:           z.boolean().default(false),
   scheduledDate:       z.string().optional().or(z.literal('')),
-  ctaText:             z.string().optional().or(z.literal('')),
-  ctaUrl:              z.string().optional().or(z.literal('')),
-  tableOfContents:     z.boolean().default(false),
-  socialShareEnabled:  z.boolean().default(true),
 });
 
 type BlogFormValues = z.infer<typeof blogSchema>;
@@ -210,16 +206,12 @@ const BlogForm = () => {
       published: false,
       tags: [],
       category: 'Tech',
-      tableOfContents: false,
-      socialShareEnabled: true,
     },
   });
 
   const titleValue    = watch('title');
   const slugValue     = watch('slug');
   const tags          = watch('tags') ?? [];
-  const toc           = watch('tableOfContents');
-  const social        = watch('socialShareEnabled');
   const schedDate     = watch('scheduledDate');
   const excerptValue  = watch('excerpt') ?? '';
   const metaValue     = watch('metaDescription') ?? '';
@@ -286,10 +278,6 @@ const BlogForm = () => {
         image:              post.image ?? '',
         published:          post.published,
         scheduledDate:      post.scheduledDate ?? '',
-        ctaText:            post.ctaText ?? '',
-        ctaUrl:             post.ctaUrl ?? '',
-        tableOfContents:    post.tableOfContents ?? false,
-        socialShareEnabled: post.socialShareEnabled ?? true,
       });
       if (editor && post.content) editor.commands.setContent(post.content);
       if (post.published) setPublishMode('publish');
@@ -632,20 +620,6 @@ const BlogForm = () => {
             />
           </div>
 
-          {/* Call to Action */}
-          <SectionCard title="Call to Action" icon={MousePointerClick}>
-            <p className="text-[12px] -mt-1 mb-1" style={{ color: 'rgba(237,233,227,0.35)' }}>
-              Encourage readers to take the next step at the end of the post.
-            </p>
-            <Field error={errors.ctaText?.message}>
-              <Label>Button Label</Label>
-              <StyledInput {...register('ctaText')} placeholder="e.g. Subscribe to Newsletter" />
-            </Field>
-            <Field error={errors.ctaUrl?.message}>
-              <Label>Button URL</Label>
-              <StyledInput {...register('ctaUrl')} placeholder="https://…" />
-            </Field>
-          </SectionCard>
         </div>
 
         {/* ══ Right sidebar ══════════════════════════════════════ */}
@@ -795,19 +769,6 @@ const BlogForm = () => {
             </Field>
           </SectionCard>
 
-          {/* ── Settings ── */}
-          <SectionCard title="Settings" icon={Settings2}>
-            <Toggle
-              checked={toc}
-              onChange={v => setValue('tableOfContents', v)}
-              label="Table of Contents"
-            />
-            <Toggle
-              checked={social}
-              onChange={v => setValue('socialShareEnabled', v)}
-              label="Social Share Buttons"
-            />
-          </SectionCard>
         </div>
       </div>
 
