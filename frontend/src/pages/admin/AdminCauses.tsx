@@ -80,10 +80,10 @@ const AdminCauses = () => {
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">PROFILE</p>
-            <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-foreground" style={{ fontFamily: 'DM Sans' }}>
               Causes
             </h1>
-            <p className="text-sm text-[#64748B] font-medium">
+            <p className="text-sm text-muted-foreground font-medium">
               Issues and causes you care about.
             </p>
           </div>
@@ -96,26 +96,26 @@ const AdminCauses = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {isLoading && !isDialogOpen ? (
           [1, 2, 3].map(i => (
-            <div key={i} className="h-20 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-lg animate-pulse" />
+            <div key={i} className="h-20 w-full bg-secondary border border-border rounded-lg animate-pulse" />
           ))
         ) : causes.length > 0 ? (
           causes.map((cause) => (
-            <Card key={cause.id} className="bg-white border-[#E5E7EB] hover:border-accent/30 hover:bg-[#F8FAFC] transition-all group rounded-lg shadow-sm">
+            <Card key={cause.id} className="bg-card border-border hover:border-accent/30 hover:bg-secondary transition-all group rounded-lg shadow-sm">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-500 flex-shrink-0 mt-0.5">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0 mt-0.5">
                       <Leaf className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-black text-[#0F172A] text-sm" style={{ fontFamily: 'DM Sans' }}>{cause.name}</h3>
+                      <h3 className="font-black text-foreground text-sm" style={{ fontFamily: 'DM Sans' }}>{cause.name}</h3>
                       {cause.description && (
-                        <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed line-clamp-2">{cause.description}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed line-clamp-2">{cause.description}</p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(cause)} className="h-7 w-7 hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] rounded-md">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(cause)} className="h-7 w-7 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-md">
                       <Edit2 className="w-3.5 h-3.5" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={() => handleDelete(cause.id, cause.name)} className="h-7 w-7 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-md">
@@ -127,9 +127,9 @@ const AdminCauses = () => {
             </Card>
           ))
         ) : (
-          <div className="col-span-full rounded-lg border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
-            <h3 className="text-lg font-black text-[#64748B]" style={{ fontFamily: 'DM Sans' }}>No causes added</h3>
-            <p className="text-sm text-[#94A3B8] mt-1 font-medium">
+          <div className="col-span-full rounded-lg border border-border bg-card p-12 text-center shadow-sm">
+            <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No causes added</h3>
+            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
               Share the issues and causes you care about.
             </p>
           </div>

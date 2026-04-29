@@ -37,12 +37,12 @@ const STAT_CARDS = [
 
 /* ── Quick actions ─────────────────────────────────────────────── */
 const QUICK_ACTIONS = [
-  { label: 'Add Project',      sub: 'Upload a new project entry',        icon: Code,         color: '#2563EB', bg: '#EFF6FF',  path: '/admin/projects/new' },
-  { label: 'Write Blog',       sub: 'Publish an article',                 icon: BookOpen,     color: '#D97706', bg: '#FFFBEB',  path: '/admin/blogs/new' },
-  { label: 'Add Event',        sub: 'Log a speaking or attended event',   icon: CalendarDays, color: '#059669', bg: '#ECFDF5',  path: '/admin/events' },
-  { label: 'Add Hackathon',    sub: 'Record a hackathon entry',           icon: Trophy,       color: '#7C3AED', bg: '#F5F3FF',  path: '/admin/hackathons' },
-  { label: 'Add Experience',   sub: 'Add a work experience entry',        icon: Briefcase,    color: '#0D9488', bg: '#F0FDFA',  path: '/admin/experience/new' },
-  { label: 'Manage Education', sub: 'Edit your academic background',      icon: GraduationCap,color: '#E11D48', bg: '#FFF1F2',  path: '/admin/education' },
+  { label: 'Add Project',      sub: 'Upload a new project entry',        icon: Code,         color: '#2563EB', bg: 'rgba(37,99,235,0.12)',   path: '/admin/projects/new' },
+  { label: 'Write Blog',       sub: 'Publish an article',                 icon: BookOpen,     color: '#D97706', bg: 'rgba(217,119,6,0.12)',   path: '/admin/blogs/new' },
+  { label: 'Add Event',        sub: 'Log a speaking or attended event',   icon: CalendarDays, color: '#059669', bg: 'rgba(5,150,105,0.12)',   path: '/admin/events' },
+  { label: 'Add Hackathon',    sub: 'Record a hackathon entry',           icon: Trophy,       color: '#7C3AED', bg: 'rgba(124,58,237,0.12)',  path: '/admin/hackathons' },
+  { label: 'Add Experience',   sub: 'Add a work experience entry',        icon: Briefcase,    color: '#0D9488', bg: 'rgba(13,148,136,0.12)',  path: '/admin/experience/new' },
+  { label: 'Manage Education', sub: 'Edit your academic background',      icon: GraduationCap,color: '#E11D48', bg: 'rgba(225,29,72,0.12)',   path: '/admin/education' },
 ];
 
 /* ── Helpers ───────────────────────────────────────────────────── */
@@ -139,24 +139,18 @@ const AdminDashboard = () => {
       {/* ── Greeting ───────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4 pt-0.5">
         <div>
-          <p
-            className="text-[10px] font-semibold tracking-[0.18em] uppercase mb-1.5"
-            style={{ color: '#94A3B8' }}
-          >
+          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase mb-1.5 text-muted-foreground/70">
             {dateStr}
           </p>
-          <h1 className="text-[27px] font-bold leading-tight" style={{ color: '#0F172A' }}>
+          <h1 className="text-[27px] font-bold leading-tight text-foreground">
             {greeting}, Saad.
           </h1>
-          <p className="text-[13px] mt-1" style={{ color: '#64748B' }}>
+          <p className="text-[13px] mt-1 text-muted-foreground">
             Here's an overview of your portfolio content.
           </p>
         </div>
-        <div
-          className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 mt-1"
-          style={{ background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#10B981' }} />
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 mt-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-emerald-400" />
           Portfolio Live
         </div>
       </div>
@@ -224,14 +218,11 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
 
         {/* Quick Actions */}
-        <div
-          className="rounded-2xl p-6"
-          style={{ background: '#FFFFFF', boxShadow: '0 1px 10px rgba(0,0,0,0.06)' }}
-        >
-          <h2 className="text-[15px] font-bold mb-0.5" style={{ color: '#0F172A' }}>
+        <div className="rounded-2xl p-6 bg-card shadow-[0_1px_10px_rgba(0,0,0,0.06)]">
+          <h2 className="text-[15px] font-bold mb-0.5 text-foreground">
             Quick Actions
           </h2>
-          <p className="text-[12px] mb-5" style={{ color: '#94A3B8' }}>
+          <p className="text-[12px] mb-5 text-muted-foreground/70">
             Jump to the most common tasks
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -248,10 +239,10 @@ const AdminDashboard = () => {
                     <action.icon className="w-4 h-4" style={{ color: action.color }} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[12.5px] font-semibold" style={{ color: '#0F172A' }}>
+                    <p className="text-[12.5px] font-semibold text-foreground">
                       {action.label}
                     </p>
-                    <p className="text-[10.5px] truncate" style={{ color: '#94A3B8' }}>
+                    <p className="text-[10.5px] truncate text-muted-foreground/70">
                       {action.sub}
                     </p>
                   </div>
@@ -262,26 +253,19 @@ const AdminDashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{ background: '#FFFFFF', boxShadow: '0 1px 10px rgba(0,0,0,0.06)' }}
-        >
-          <div
-            className="flex items-center justify-between px-5 py-4"
-            style={{ borderBottom: '1px solid #F1F5F9' }}
-          >
+        <div className="rounded-2xl overflow-hidden bg-card shadow-[0_1px_10px_rgba(0,0,0,0.06)]">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <div>
-              <h2 className="text-[15px] font-bold" style={{ color: '#0F172A' }}>
+              <h2 className="text-[15px] font-bold text-foreground">
                 Recent Activity
               </h2>
-              <p className="text-[11px]" style={{ color: '#94A3B8' }}>
+              <p className="text-[11px] text-muted-foreground/70">
                 Latest events across the platform
               </p>
             </div>
             <Link
               to="/admin/messages"
-              className="text-[11px] font-semibold flex items-center gap-0.5 transition-opacity hover:opacity-70"
-              style={{ color: '#3B82F6' }}
+              className="text-[11px] font-semibold flex items-center gap-0.5 transition-opacity hover:opacity-70 text-blue-400"
             >
               View all <ArrowRight className="w-3 h-3" />
             </Link>
@@ -291,19 +275,10 @@ const AdminDashboard = () => {
             <div className="p-4 space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex-shrink-0 animate-pulse"
-                    style={{ background: '#F1F5F9' }}
-                  />
+                  <div className="w-8 h-8 rounded-lg flex-shrink-0 animate-pulse bg-secondary" />
                   <div className="flex-1 space-y-2">
-                    <div
-                      className="h-2.5 rounded-full animate-pulse"
-                      style={{ background: '#F1F5F9', width: '65%' }}
-                    />
-                    <div
-                      className="h-2 rounded-full animate-pulse"
-                      style={{ background: '#F1F5F9', width: '40%' }}
-                    />
+                    <div className="h-2.5 rounded-full animate-pulse bg-secondary" style={{ width: '65%' }} />
+                    <div className="h-2 rounded-full animate-pulse bg-secondary" style={{ width: '40%' }} />
                   </div>
                 </div>
               ))}
@@ -318,30 +293,23 @@ const AdminDashboard = () => {
                 return (
                   <div
                     key={log.id}
-                    className="flex items-start gap-3 px-5 py-3.5"
-                    style={{ borderBottom: '1px solid #F8FAFC' }}
+                    className="flex items-start gap-3 px-5 py-3.5 border-b border-border last:border-b-0"
                   >
                     <div
                       className="w-2 h-2 rounded-full flex-shrink-0 mt-[5px]"
                       style={{ background: dotColor }}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-medium" style={{ color: '#1E293B' }}>
+                      <p className="text-[12px] font-medium text-foreground">
                         {actionVerb(log.action)}{' '}
                         <span style={{ color: dotColor }}>{log.entityType}</span>
                       </p>
                       {log.details && (
-                        <p
-                          className="text-[10.5px] truncate mt-0.5"
-                          style={{ color: '#94A3B8' }}
-                        >
+                        <p className="text-[10.5px] truncate mt-0.5 text-muted-foreground/70">
                           {log.details}
                         </p>
                       )}
-                      <p
-                        className="text-[10px] mt-0.5 flex items-center gap-1"
-                        style={{ color: '#CBD5E1' }}
-                      >
+                      <p className="text-[10px] mt-0.5 flex items-center gap-1 text-muted-foreground/40">
                         <Clock className="w-2.5 h-2.5" />
                         {formatDistanceToNow(ts, { addSuffix: true })}
                       </p>
@@ -352,7 +320,7 @@ const AdminDashboard = () => {
             </div>
           ) : (
             <div className="py-12 text-center">
-              <p className="text-sm" style={{ color: '#94A3B8' }}>No activity yet.</p>
+              <p className="text-sm text-muted-foreground/70">No activity yet.</p>
             </div>
           )}
         </div>

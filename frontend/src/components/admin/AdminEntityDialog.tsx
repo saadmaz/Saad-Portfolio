@@ -81,9 +81,9 @@ const AdminEntityDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-white border-[#E2E8F0] text-[#0F172A]">
+      <DialogContent className="sm:max-w-[500px] bg-card border-border text-foreground">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-[#0F172A]">{title}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-foreground">{title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
@@ -94,23 +94,23 @@ const AdminEntityDialog = ({
                 name={field.name}
                 render={({ field: formField }) => (
                   <FormItem>
-                    <FormLabel className="text-[#374151] font-medium">{field.label}</FormLabel>
+                    <FormLabel className="text-muted-foreground font-medium">{field.label}</FormLabel>
                     <FormControl>
                       {field.type === 'textarea' ? (
                         <Textarea
                           {...formField}
                           placeholder={field.placeholder}
-                          className="bg-white border-[#E2E8F0] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-accent/50 min-h-[100px]"
+                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50 min-h-[100px]"
                         />
                       ) : field.type === 'select' ? (
                         <Select
                           onValueChange={formField.onChange}
                           defaultValue={formField.value}
                         >
-                          <SelectTrigger className="bg-white border-[#E2E8F0] text-[#0F172A] focus:border-accent/50">
+                          <SelectTrigger className="bg-secondary border-border text-foreground focus:border-accent/50">
                             <SelectValue placeholder={field.placeholder} />
                           </SelectTrigger>
-                          <SelectContent className="bg-white border-[#E2E8F0] text-[#0F172A]">
+                          <SelectContent className="bg-card border-border text-foreground">
                             {field.options?.map((opt) => (
                               <SelectItem key={opt.value} value={opt.value}>
                                 {opt.label}
@@ -134,7 +134,7 @@ const AdminEntityDialog = ({
                           {...formField}
                           type={field.type}
                           placeholder={field.placeholder}
-                          className="bg-white border-[#E2E8F0] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-accent/50"
+                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50"
                           onChange={(e) => {
                             const val = field.type === 'number' ? parseFloat(e.target.value) : e.target.value;
                             formField.onChange(val);
@@ -152,7 +152,7 @@ const AdminEntityDialog = ({
                 type="button"
                 variant="ghost"
                 onClick={onClose}
-                className="hover:bg-[#F1F5F9] text-[#64748B]"
+                className="hover:bg-secondary text-muted-foreground"
               >
                 Cancel
               </Button>

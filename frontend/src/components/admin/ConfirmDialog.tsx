@@ -30,15 +30,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
 }) => (
   <AlertDialog open={open} onOpenChange={(o) => !isLoading && onOpenChange(o)}>
-    <AlertDialogContent className="bg-white border-[#E5E7EB] text-[#0F172A] rounded-2xl shadow-2xl">
+    <AlertDialogContent className="bg-card border-border text-foreground rounded-2xl shadow-2xl">
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-lg font-black text-[#0F172A]">{title}</AlertDialogTitle>
-        <AlertDialogDescription className="text-[#64748B] text-sm">{description}</AlertDialogDescription>
+        <AlertDialogTitle className="text-lg font-black text-foreground">{title}</AlertDialogTitle>
+        <AlertDialogDescription className="text-muted-foreground text-sm">{description}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter className="gap-2">
         <AlertDialogCancel
           disabled={isLoading}
-          className="bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9] rounded-xl font-bold"
+          className="bg-secondary border-border text-muted-foreground hover:bg-secondary/80 rounded-xl font-bold"
         >
           Cancel
         </AlertDialogCancel>

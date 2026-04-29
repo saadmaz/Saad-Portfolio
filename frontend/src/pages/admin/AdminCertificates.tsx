@@ -177,8 +177,8 @@ const AdminCertificates = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">CREDENTIALS</p>
-          <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Certificates</h1>
-          <p className="text-sm text-[#64748B] font-medium">Showcase your verified achievements and professional learning.</p>
+          <h1 className="text-4xl font-black tracking-tight mb-1 text-foreground" style={{ fontFamily: 'DM Sans' }}>Certificates</h1>
+          <p className="text-sm text-muted-foreground font-medium">Showcase your verified achievements and professional learning.</p>
         </div>
         <div className="flex gap-3">
           {!isLoading && certificates.length === 0 && (
@@ -202,18 +202,18 @@ const AdminCertificates = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          [1, 2, 3].map(i => <div key={i} className="h-64 bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />)
+          [1, 2, 3].map(i => <div key={i} className="h-64 bg-secondary border border-border rounded-2xl animate-pulse" />)
         ) : certificates.length > 0 ? (
           certificates.map((cert) => (
-            <Card key={cert.id} className="bg-white border-[#E5E7EB] shadow-sm hover:border-accent/30 transition-all group relative rounded-2xl overflow-hidden">
+            <Card key={cert.id} className="bg-card border-border shadow-sm hover:border-accent/30 transition-all group relative rounded-2xl overflow-hidden">
                 <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl bg-white/90 backdrop-blur-md border-[#E2E8F0] hover:bg-[#F1F5F9]">
-                                <MoreVertical className="w-4 h-4 text-[#0F172A]" />
+                            <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl bg-card/90 backdrop-blur-md border-border hover:bg-secondary">
+                                <MoreVertical className="w-4 h-4 text-foreground" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white border-[#E2E8F0] text-[#0F172A] rounded-xl shadow-xl p-1">
+                        <DropdownMenuContent align="end" className="bg-card border-border text-foreground rounded-xl shadow-xl p-1">
                             <DropdownMenuItem
                                 className="hover:bg-accent hover:text-black cursor-pointer rounded-lg m-1 py-1.5 font-semibold"
                                 onClick={() => navigate(`/admin/certificates/${cert.id}`)}
@@ -221,7 +221,7 @@ const AdminCertificates = () => {
                                 <Edit2 className="w-4 h-4 mr-2" /> Edit Details
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                className="hover:bg-red-50 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-1.5 font-semibold"
+                                className="hover:bg-red-500/10 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-1.5 font-semibold"
                                 onClick={() => handleDelete(cert.id, cert.title)}
                             >
                                 <Trash2 className="w-4 h-4 mr-2" /> Delete
@@ -230,7 +230,7 @@ const AdminCertificates = () => {
                     </DropdownMenu>
                 </div>
 
-                <div className="aspect-[16/9] bg-[#F8FAFC] border-b border-[#E5E7EB] flex items-center justify-center p-10 overflow-hidden relative">
+                <div className="aspect-[16/9] bg-secondary border-b border-border flex items-center justify-center p-10 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     {cert.issuer_logo ? (
                         <img
@@ -244,17 +244,17 @@ const AdminCertificates = () => {
                 </div>
 
                 <CardContent className="p-5 flex flex-col h-full">
-                  <h3 className="font-bold text-[#0F172A] text-lg line-clamp-1 mb-1 group-hover:text-accent transition-colors">{cert.title}</h3>
-                  <p className="text-sm font-medium text-[#64748B] mb-4">{cert.issuer}</p>
+                  <h3 className="font-bold text-foreground text-lg line-clamp-1 mb-1 group-hover:text-accent transition-colors">{cert.title}</h3>
+                  <p className="text-sm font-medium text-muted-foreground mb-4">{cert.issuer}</p>
 
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#E5E7EB]">
-                    <span className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest flex items-center gap-2">
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
+                    <span className="text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest flex items-center gap-2">
                         <Calendar className="w-3.5 h-3.5 text-accent" /> {cert.issue_date}
                     </span>
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 text-[11px] font-black uppercase tracking-wider hover:text-accent p-2 rounded-lg hover:bg-[#F1F5F9] group-hover:translate-x-1 transition-all text-[#64748B]"
+                        className="h-8 text-[11px] font-black uppercase tracking-wider hover:text-accent p-2 rounded-lg hover:bg-secondary group-hover:translate-x-1 transition-all text-muted-foreground"
                         onClick={() => window.open(cert.credential_url, '_blank')}
                     >
                         Verify <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
@@ -264,8 +264,8 @@ const AdminCertificates = () => {
             </Card>
           ))
         ) : (
-          <div className="col-span-full p-12 text-center border-2 border-dashed border-[#E5E7EB] rounded-2xl bg-white shadow-sm">
-            <p className="text-[#64748B] font-medium">No certificates added yet.</p>
+          <div className="col-span-full p-12 text-center border-2 border-dashed border-border rounded-2xl bg-card shadow-sm">
+            <p className="text-muted-foreground font-medium">No certificates added yet.</p>
           </div>
         )}
       </div>

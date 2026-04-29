@@ -97,10 +97,10 @@ const AdminOrganizations = () => {
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">PROFILE</p>
-            <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-foreground" style={{ fontFamily: 'DM Sans' }}>
               Organizations
             </h1>
-            <p className="text-sm text-[#64748B] font-medium">
+            <p className="text-sm text-muted-foreground font-medium">
               Professional associations, clubs, and memberships.
             </p>
           </div>
@@ -110,13 +110,13 @@ const AdminOrganizations = () => {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4 bg-white p-4 rounded-lg border border-[#E5E7EB] shadow-sm">
+      <div className="flex items-center gap-4 bg-card p-4 rounded-lg border border-border shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
           <input
             type="text"
             placeholder="Search organizations..."
-            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-[#0F172A] placeholder:text-[#94A3B8] font-medium"
+            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-foreground placeholder:text-muted-foreground/70 font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -126,11 +126,11 @@ const AdminOrganizations = () => {
       <div className="grid gap-3">
         {isLoading && !isDialogOpen ? (
           [1, 2, 3].map(i => (
-            <div key={i} className="h-24 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-lg animate-pulse" />
+            <div key={i} className="h-24 w-full bg-secondary border border-border rounded-lg animate-pulse" />
           ))
         ) : filtered.length > 0 ? (
           filtered.map((org) => (
-            <Card key={org.id} className="bg-white border-[#E5E7EB] hover:border-accent/30 hover:bg-[#F8FAFC] transition-all group rounded-lg overflow-hidden shadow-sm">
+            <Card key={org.id} className="bg-card border-border hover:border-accent/30 hover:bg-secondary transition-all group rounded-lg overflow-hidden shadow-sm">
               <CardContent className="p-0">
                 <div className="flex">
                   {org.image && (
@@ -146,10 +146,10 @@ const AdminOrganizations = () => {
                         </div>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-black text-[#0F172A] text-sm" style={{ fontFamily: 'DM Sans' }}>{org.name}</h3>
+                        <h3 className="font-black text-foreground text-sm" style={{ fontFamily: 'DM Sans' }}>{org.name}</h3>
                         {org.position && <p className="text-xs text-accent font-medium">{org.position}</p>}
                         {(org.startDate || org.endDate) && (
-                          <p className="text-xs text-[#94A3B8] flex items-center gap-1 mt-0.5">
+                          <p className="text-xs text-muted-foreground/70 flex items-center gap-1 mt-0.5">
                             <Calendar className="w-3 h-3" />
                             {org.startDate}{org.isCurrent ? ' – Present' : org.endDate ? ` – ${org.endDate}` : ''}
                           </p>
@@ -158,11 +158,11 @@ const AdminOrganizations = () => {
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {org.link && (
-                        <a href={org.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] transition-all">
+                        <a href={org.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-secondary text-muted-foreground/70 hover:text-foreground transition-all">
                           <ExternalLink className="w-4 h-4" />
                         </a>
                       )}
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(org)} className="h-9 w-9 hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] rounded-lg">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(org)} className="h-9 w-9 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-lg">
                         <Edit2 className="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(org.id, org.name)} className="h-9 w-9 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-lg">
@@ -175,9 +175,9 @@ const AdminOrganizations = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-lg border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
-            <h3 className="text-lg font-black text-[#64748B]" style={{ fontFamily: 'DM Sans' }}>No organizations found</h3>
-            <p className="text-sm text-[#94A3B8] mt-1 font-medium">
+          <div className="rounded-lg border border-border bg-card p-12 text-center shadow-sm">
+            <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No organizations found</h3>
+            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Add professional associations and memberships.'}
             </p>
           </div>

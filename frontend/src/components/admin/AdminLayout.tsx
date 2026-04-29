@@ -479,8 +479,7 @@ const AdminLayout = () => {
 
           {/* Page content */}
           <div
-            className="flex-1 overflow-y-auto custom-scrollbar"
-            style={{ background: '#F0F4F8' }}
+            className="flex-1 overflow-y-auto custom-scrollbar bg-background"
           >
             <div className="p-5 md:p-7 max-w-[1400px] mx-auto">
               <Outlet />

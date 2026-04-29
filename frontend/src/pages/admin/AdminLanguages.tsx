@@ -20,10 +20,10 @@ type LanguageFormData = z.infer<typeof languageSchema>;
 
 const languageFields = [
   { name: 'name', label: 'Language Name', type: 'text', placeholder: 'e.g. English' },
-  { 
-    name: 'level', 
-    label: 'Proficiency Level', 
-    type: 'select', 
+  {
+    name: 'level',
+    label: 'Proficiency Level',
+    type: 'select',
     placeholder: 'Select level',
     options: [
       { label: 'Native / Bilingual', value: 'Native / Bilingual' },
@@ -102,8 +102,8 @@ const AdminLanguages = () => {
           <BackButton to="/admin/dashboard" className="flex-shrink-0" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">COMMUNICATION</p>
-            <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Languages</h1>
-            <p className="text-sm text-[#64748B] font-medium">Manage the languages you speak and your proficiency levels.</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-foreground" style={{ fontFamily: 'DM Sans' }}>Languages</h1>
+            <p className="text-sm text-muted-foreground font-medium">Manage the languages you speak and your proficiency levels.</p>
           </div>
         </div>
         <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold h-11 px-6 rounded-lg">
@@ -114,37 +114,37 @@ const AdminLanguages = () => {
       <div className="grid gap-4 md:grid-cols-2">
         {isLoading && !isDialogOpen ? (
           [1, 2, 3, 4].map(i => (
-            <div key={i} className="h-32 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />
+            <div key={i} className="h-32 w-full bg-secondary border border-border rounded-2xl animate-pulse" />
           ))
         ) : languages.length > 0 ? (
           languages.map((lang) => (
-            <Card key={lang.id} className="bg-white border-[#E5E7EB] shadow-sm hover:bg-[#F8FAFC] hover:border-accent/30 transition-all overflow-hidden group">
+            <Card key={lang.id} className="bg-card border-border shadow-sm hover:bg-secondary hover:border-accent/30 transition-all overflow-hidden group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#0F172A] text-lg">{lang.name}</h3>
+                      <h3 className="font-bold text-foreground text-lg">{lang.name}</h3>
                       <p className="text-sm text-accent">{lang.level}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(lang)} className="h-8 w-8 hover:bg-[#F1F5F9]">
-                      <Edit2 className="w-4 h-4 text-[#94A3B8]" />
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(lang)} className="h-8 w-8 hover:bg-secondary">
+                      <Edit2 className="w-4 h-4 text-muted-foreground/70" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id, lang.name)} className="h-8 w-8 hover:bg-red-50 text-red-400 hover:text-red-500">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id, lang.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400 hover:text-red-500">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs text-[#64748B]">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Proficiency</span>
                     <span>{lang.percentage}%</span>
                   </div>
-                  <div className="h-2 w-full bg-[#F1F5F9] rounded-full overflow-hidden border border-[#E2E8F0]">
+                  <div className="h-2 w-full bg-secondary rounded-full overflow-hidden border border-border">
                     <div
                       className="h-full bg-accent transition-all duration-1000 ease-out"
                       style={{ width: `${lang.percentage}%` }}
@@ -155,9 +155,9 @@ const AdminLanguages = () => {
             </Card>
           ))
         ) : (
-          <div className="md:col-span-2 rounded-2xl border border-[#E5E7EB] bg-white shadow-sm p-12 text-center">
-            <h3 className="text-lg font-medium text-[#64748B] mb-1">No languages added</h3>
-            <p className="text-sm text-[#94A3B8]">Add languages to showcase your communication skills.</p>
+          <div className="md:col-span-2 rounded-2xl border border-border bg-card shadow-sm p-12 text-center">
+            <h3 className="text-lg font-medium text-muted-foreground mb-1">No languages added</h3>
+            <p className="text-sm text-muted-foreground/70">Add languages to showcase your communication skills.</p>
           </div>
         )}
       </div>

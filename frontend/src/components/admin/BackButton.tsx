@@ -15,7 +15,7 @@ const BackButton: React.FC<BackButtonProps> = ({ to, label, className }) => {
     <Button
       variant="ghost"
       size={label ? 'sm' : 'icon'}
-      className={`rounded-xl hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] transition-colors ${label ? 'gap-1.5 px-3 h-9' : 'w-9 h-9'} ${className ?? ''}`}
+      className={`rounded-xl hover:bg-secondary text-muted-foreground/70 hover:text-foreground transition-colors ${label ? 'gap-1.5 px-3 h-9' : 'w-9 h-9'} ${className ?? ''}`}
       onClick={() => (to ? navigate(to) : navigate(-1))}
       aria-label="Go back"
     >
