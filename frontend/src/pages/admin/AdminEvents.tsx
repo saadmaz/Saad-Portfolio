@@ -36,9 +36,9 @@ const ROLE_OPTIONS = ['Speaker', 'Host', 'Compere', 'Organizer', 'Panelist', 'At
 const TYPE_OPTIONS = ['Conference', 'Summit', 'Workshop', 'Hackathon', 'Networking', 'Seminar', 'Webinar', 'Other'];
 
 // shared input class helper
-const inp = 'bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none w-full';
-const sel = 'bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-accent/40 outline-none w-full';
-const lbl = 'text-[10px] font-black uppercase tracking-widest text-white/40';
+const inp = 'bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none w-full';
+const sel = 'bg-white border border-[#E2E8F0] rounded-lg px-3 py-2 text-sm text-[#0F172A] focus:ring-2 focus:ring-accent/40 outline-none w-full';
+const lbl = 'text-[10px] font-black uppercase tracking-widest text-[#94A3B8]';
 
 // ─── Event Form Dialog ────────────────────────────────────────────────────────
 interface EventFormDialogProps {
@@ -90,9 +90,9 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[680px] bg-[#0A0A0B] border-white/10 text-white max-h-[92vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[680px] bg-white border-[#E2E8F0] text-[#0F172A] max-h-[92vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-black" style={{ fontFamily: 'DM Sans' }}>{title}</DialogTitle>
+          <DialogTitle className="text-xl font-black text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>{title}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 py-2">
@@ -185,10 +185,10 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
             {highlights.length > 0 && (
               <ul className="space-y-1.5">
                 {highlights.map((h, i) => (
-                  <li key={i} className="flex items-center gap-2 bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm text-white/80">
+                  <li key={i} className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-sm text-[#64748B]">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
                     <span className="flex-1">{h}</span>
-                    <button type="button" onClick={() => removeHighlight(i)} className="text-white/30 hover:text-red-400 transition-colors">
+                    <button type="button" onClick={() => removeHighlight(i)} className="text-[#94A3B8] hover:text-red-400 transition-colors">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </li>
@@ -221,7 +221,7 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="ghost" onClick={onClose} className="hover:bg-white/5 text-white/60">
+            <Button type="button" variant="ghost" onClick={onClose} className="hover:bg-[#F1F5F9] text-[#64748B]">
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting} className="bg-accent hover:bg-accent/90 text-black font-black px-8">
@@ -324,10 +324,10 @@ const AdminEvents = () => {
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">SCHEDULE</p>
-            <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
               Events
             </h1>
-            <p className="text-sm text-white/50 font-medium">
+            <p className="text-sm text-[#64748B] font-medium">
               Manage past and upcoming events, workshops, and speaking engagements.
             </p>
           </div>
@@ -338,13 +338,13 @@ const AdminEvents = () => {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-4 bg-white/[0.03] p-4 rounded-lg border border-white/10">
+      <div className="flex items-center gap-4 bg-white p-4 rounded-lg border border-[#E5E7EB] shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search events..."
-            className="w-full bg-white/[0.04] border border-white/10 rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-white placeholder:text-white/25 font-medium"
+            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-[#0F172A] placeholder:text-[#94A3B8] font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -355,13 +355,13 @@ const AdminEvents = () => {
       <div className="grid gap-3">
         {isLoading && !isDialogOpen ? (
           [1, 2].map(i => (
-            <div key={i} className="h-28 w-full bg-white/[0.02] border border-white/5 rounded-lg animate-pulse" />
+            <div key={i} className="h-28 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-lg animate-pulse" />
           ))
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event) => {
             const imgCount = (event.images?.length ?? 0) || (event.image ? 1 : 0);
             return (
-              <Card key={event.id} className="bg-white/[0.02] border-white/5 hover:border-accent/30 hover:bg-white/[0.04] transition-all group rounded-lg overflow-hidden">
+              <Card key={event.id} className="bg-white border-[#E5E7EB] shadow-sm hover:border-accent/30 hover:bg-[#F8FAFC] transition-all group rounded-lg overflow-hidden">
                 <CardContent className="p-0">
                   <div className="flex items-stretch">
                     {/* Thumbnail */}
@@ -378,7 +378,7 @@ const AdminEvents = () => {
                     <div className="flex-1 p-5 flex items-center gap-5 min-w-0">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-black text-white text-base group-hover:text-accent transition-colors truncate" style={{ fontFamily: 'DM Sans' }}>
+                          <h3 className="font-black text-[#0F172A] text-base group-hover:text-accent transition-colors truncate" style={{ fontFamily: 'DM Sans' }}>
                             {event.title}
                           </h3>
                           {event.role && (
@@ -387,13 +387,13 @@ const AdminEvents = () => {
                             </span>
                           )}
                           {imgCount > 0 && (
-                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-white/30 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
+                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-[#94A3B8] bg-[#F1F5F9] border border-[#E2E8F0] px-1.5 py-0.5 rounded">
                               <Images className="w-3 h-3" />{imgCount}
                             </span>
                           )}
                         </div>
-                        <p className="text-white/60 font-semibold text-sm">{event.organizer} • {event.type}</p>
-                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-white/40 font-medium mt-1.5">
+                        <p className="text-[#64748B] font-semibold text-sm">{event.organizer} • {event.type}</p>
+                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-[#94A3B8] font-medium mt-1.5">
                           <span className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 text-accent/60" /> {event.date}
                           </span>
@@ -401,15 +401,15 @@ const AdminEvents = () => {
                             <MapPin className="w-3.5 h-3.5 text-accent/60" /> {event.location}
                           </span>
                           {event.attendees && (
-                            <span className="text-white/30">{event.attendees} attendees</span>
+                            <span className="text-[#94A3B8]">{event.attendees} attendees</span>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 ml-2 shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="h-9 w-9 hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] rounded-lg">
                           <Edit2 className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(event.id, event.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(event.id, event.title)} className="h-9 w-9 hover:bg-red-50 text-red-400 hover:text-red-500 rounded-lg">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -420,9 +420,9 @@ const AdminEvents = () => {
             );
           })
         ) : (
-          <div className="rounded-lg border border-white/5 bg-white/[0.02] p-12 text-center">
-            <h3 className="text-lg font-black text-white/70" style={{ fontFamily: 'DM Sans' }}>No events found</h3>
-            <p className="text-sm text-white/40 mt-1 font-medium">
+          <div className="rounded-lg border border-[#E5E7EB] bg-white shadow-sm p-12 text-center">
+            <h3 className="text-lg font-black text-[#64748B]" style={{ fontFamily: 'DM Sans' }}>No events found</h3>
+            <p className="text-sm text-[#94A3B8] mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Add your first event to get started.'}
             </p>
           </div>

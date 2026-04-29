@@ -94,11 +94,12 @@ const AdminTestimonials = () => {
         <div className="flex items-center gap-3">
           <BackButton to="/admin/dashboard" className="flex-shrink-0" />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1">Testimonials</h1>
-            <p className="text-muted-foreground">Manage recommendations from colleagues and clients.</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">SOCIAL PROOF</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Testimonials</h1>
+            <p className="text-sm text-[#64748B] font-medium">Manage recommendations from colleagues and clients.</p>
           </div>
         </div>
-        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold h-11 px-6 rounded-lg">
           <Plus className="w-4 h-4 mr-2" /> Add Testimonial
         </Button>
       </div>
@@ -106,15 +107,15 @@ const AdminTestimonials = () => {
       <div className="grid gap-6 md:grid-cols-2">
         {isLoading && !isDialogOpen ? (
           [1, 2].map(i => (
-            <div key={i} className="h-48 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-48 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />
           ))
         ) : testimonials.length > 0 ? (
           testimonials.map((test) => (
-            <Card key={test.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden relative group">
+            <Card key={test.id} className="bg-white border-[#E5E7EB] shadow-sm hover:bg-[#F8FAFC] hover:border-accent/30 transition-all overflow-hidden relative group">
               <CardContent className="p-6">
-                <Quote className="absolute top-4 right-4 w-10 h-10 text-white/5 group-hover:text-accent/10 transition-colors" />
+                <Quote className="absolute top-4 right-4 w-10 h-10 text-[#E5E7EB] group-hover:text-accent/10 transition-colors" />
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-accent/10 border border-white/10 flex items-center justify-center text-accent overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 border border-[#E5E7EB] flex items-center justify-center text-accent overflow-hidden">
                     {test.avatar ? (
                       <img src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
                     ) : (
@@ -122,18 +123,18 @@ const AdminTestimonials = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-white">{test.name}</h3>
-                    <p className="text-xs text-muted-foreground">{test.position} at {test.company}</p>
+                    <h3 className="font-bold text-[#0F172A]">{test.name}</h3>
+                    <p className="text-xs text-[#64748B]">{test.position} at {test.company}</p>
                   </div>
                 </div>
-                <p className="text-sm text-white/70 leading-relaxed line-clamp-4 mb-4">
+                <p className="text-sm text-[#475569] leading-relaxed line-clamp-4 mb-4">
                   "{test.content}"
                 </p>
                 <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button variant="ghost" size="icon" onClick={() => handleEdit(test)} className="h-8 w-8 hover:bg-white/10">
-                    <Edit2 className="w-4 h-4 text-muted-foreground" />
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(test)} className="h-8 w-8 hover:bg-[#F1F5F9]">
+                    <Edit2 className="w-4 h-4 text-[#94A3B8]" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id, test.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400">
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id, test.name)} className="h-8 w-8 hover:bg-red-50 text-red-400 hover:text-red-500">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -141,9 +142,9 @@ const AdminTestimonials = () => {
             </Card>
           ))
         ) : (
-          <div className="md:col-span-2 rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
-            <h3 className="text-lg font-medium text-white mb-1">No testimonials yet</h3>
-            <p className="text-muted-foreground">Showcase what people are saying about your work.</p>
+          <div className="md:col-span-2 rounded-2xl border border-[#E5E7EB] bg-white shadow-sm p-12 text-center">
+            <h3 className="text-lg font-medium text-[#64748B] mb-1">No testimonials yet</h3>
+            <p className="text-sm text-[#94A3B8]">Showcase what people are saying about your work.</p>
           </div>
         )}
       </div>

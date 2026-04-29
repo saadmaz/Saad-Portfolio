@@ -94,15 +94,16 @@ const AdminSkills = () => {
         <div className="flex items-center gap-3">
           <BackButton to="/admin/dashboard" className="flex-shrink-0" />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Skills & Tools</h1>
-            <p className="text-muted-foreground">Manage your technical expertise and group them by category.</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">EXPERTISE</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Skills & Tools</h1>
+            <p className="text-sm text-[#64748B] font-medium">Manage your technical expertise and group them by category.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
             <Button
               variant="outline"
               onClick={addCategory}
-              className="border-white/10 hover:bg-white/5 rounded-xl px-4 py-2 text-white/80 hover:text-white transition-all shadow-lg"
+              className="border-[#E2E8F0] hover:bg-[#F1F5F9] rounded-xl px-4 py-2 text-[#64748B] hover:text-[#0F172A] transition-all shadow-sm"
             >
                 <Plus className="w-4 h-4 mr-2" /> Add Category
             </Button>
@@ -118,31 +119,31 @@ const AdminSkills = () => {
 
       <div className="space-y-8">
         {isLoading ? (
-            <div className="h-40 bg-white/5 rounded-2xl animate-pulse" />
+            <div className="h-40 bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />
         ) : skillSets.map((set, catIndex) => (
-          <Card key={catIndex} className="bg-white/5 border-white/10 overflow-hidden rounded-2xl shadow-xl shadow-black/20 group/card transition-all hover:border-white/20">
-            <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-white/5 bg-white/[0.03]">
+          <Card key={catIndex} className="bg-white border-[#E5E7EB] overflow-hidden rounded-2xl shadow-sm group/card transition-all hover:border-accent/30">
+            <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-[#E5E7EB] bg-[#F8FAFC]">
               <div className="flex items-center gap-4 flex-1">
-                <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab active:cursor-grabbing hover:text-accent transition-colors" />
+                <GripVertical className="w-4 h-4 text-[#CBD5E1] cursor-grab active:cursor-grabbing hover:text-accent transition-colors" />
                 <div className="relative group/input flex-1 max-w-sm">
-                  <Input 
-                    value={set.category} 
+                  <Input
+                    value={set.category}
                     onChange={(e) => {
                       const next = [...skillSets];
                       next[catIndex].category = e.target.value;
                       setSkillSets(next);
                     }}
-                    className="bg-transparent border-none text-xl font-bold p-0 h-auto focus-visible:ring-0 text-white placeholder:text-white/20"
+                    className="bg-transparent border-none text-xl font-bold p-0 h-auto focus-visible:ring-0 text-[#0F172A] placeholder:text-[#CBD5E1]"
                     placeholder="Enter category name..."
                   />
                   <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-accent transition-all duration-300 group-focus-within/input:w-full" />
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-white/10" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A]" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
                     <ChevronUp className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-white/10" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A]" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
                     <ChevronDown className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg ml-1" onClick={() => removeCategory(catIndex)}>
@@ -153,12 +154,12 @@ const AdminSkills = () => {
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {set.skills.map((skill, skillIndex) => (
-                  <div key={skillIndex} className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-4 relative group transition-all hover:bg-white/[0.05] hover:border-white/10 shadow-lg">
+                  <div key={skillIndex} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E5E7EB] space-y-4 relative group transition-all hover:bg-[#F1F5F9] hover:border-[#D1D5DB] shadow-sm">
                     <div className="flex items-center justify-between gap-2">
-                        <Input 
-                            value={skill.name} 
+                        <Input
+                            value={skill.name}
                             onChange={(e) => updateSkill(catIndex, skillIndex, 'name', e.target.value)}
-                            className="bg-transparent border-none font-bold p-0 h-auto focus-visible:ring-0 text-sm text-white/90 group-hover:text-white transition-colors"
+                            className="bg-transparent border-none font-bold p-0 h-auto focus-visible:ring-0 text-sm text-[#0F172A]"
                             placeholder="Skill name"
                         />
                         <button 
@@ -172,7 +173,7 @@ const AdminSkills = () => {
                         <select
                             value={skill.level}
                             onChange={(e) => updateSkill(catIndex, skillIndex, 'level', e.target.value)}
-                            className="bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] font-bold text-white/70 outline-none focus:border-accent/50 cursor-pointer"
+                            className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1.5 text-[10px] font-bold text-[#64748B] outline-none focus:border-accent/50 cursor-pointer"
                         >
                             <option value="Beginner">Beginner</option>
                             <option value="Intermediate">Intermediate</option>
@@ -184,7 +185,7 @@ const AdminSkills = () => {
                               type="number"
                               value={skill.startYear}
                               onChange={(e) => updateSkill(catIndex, skillIndex, 'startYear', parseInt(e.target.value))}
-                              className="bg-black/40 border-white/10 h-8 text-[11px] py-0 px-3 pl-7 rounded-lg font-mono focus:border-accent/50 ring-0"
+                              className="bg-white border-[#E2E8F0] h-8 text-[11px] py-0 px-3 pl-7 rounded-lg font-mono text-[#0F172A] focus:border-accent/50 ring-0"
                               placeholder="Year"
                               min={1990}
                               max={new Date().getFullYear()}
@@ -199,9 +200,9 @@ const AdminSkills = () => {
                     </div>
                   </div>
                 ))}
-                <button 
+                <button
                   onClick={() => addSkill(catIndex)}
-                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-white/10 hover:border-accent hover:text-accent transition-all text-sm text-muted-foreground gap-1 min-h-[82px]"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-[#E2E8F0] hover:border-accent hover:text-accent transition-all text-sm text-[#94A3B8] gap-1 min-h-[82px]"
                 >
                   <Plus className="w-4 h-4" />
                   Add Skill
