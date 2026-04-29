@@ -1,7 +1,3 @@
-/**
- * Shared delete-confirmation dialog used across all admin pages.
- * Replaces all window.confirm() calls with a styled AlertDialog.
- */
 import React from 'react';
 import {
   AlertDialog,
@@ -34,15 +30,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
 }) => (
   <AlertDialog open={open} onOpenChange={(o) => !isLoading && onOpenChange(o)}>
-    <AlertDialogContent className="bg-[#111] border-white/10 text-white rounded-2xl shadow-2xl">
+    <AlertDialogContent className="bg-white border-[#E5E7EB] text-[#0F172A] rounded-2xl shadow-2xl">
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-lg font-black">{title}</AlertDialogTitle>
-        <AlertDialogDescription className="text-white/50 text-sm">{description}</AlertDialogDescription>
+        <AlertDialogTitle className="text-lg font-black text-[#0F172A]">{title}</AlertDialogTitle>
+        <AlertDialogDescription className="text-[#64748B] text-sm">{description}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter className="gap-2">
         <AlertDialogCancel
           disabled={isLoading}
-          className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl font-bold"
+          className="bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9] rounded-xl font-bold"
         >
           Cancel
         </AlertDialogCancel>

@@ -94,11 +94,12 @@ const AdminEducation = () => {
         <div className="flex items-center gap-3">
           <BackButton to="/admin/dashboard" className="flex-shrink-0" />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1">Education</h1>
-            <p className="text-muted-foreground">Manage your academic background and degrees.</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">ACADEMIC</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Education</h1>
+            <p className="text-sm text-[#64748B] font-medium">Manage your academic background and degrees.</p>
           </div>
         </div>
-        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold h-11 px-6 rounded-lg">
           <Plus className="w-4 h-4 mr-2" /> Add Education
         </Button>
       </div>
@@ -106,36 +107,35 @@ const AdminEducation = () => {
       <div className="grid gap-4">
         {isLoading && !isDialogOpen ? (
           [1, 2].map(i => (
-            <div key={i} className="h-32 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-32 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />
           ))
         ) : education.length > 0 ? (
           education.map((edu) => (
-            <Card key={edu.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden group">
+            <Card key={edu.id} className="bg-white border-[#E5E7EB] hover:bg-[#F8FAFC] hover:border-accent/30 transition-all overflow-hidden group shadow-sm">
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    {/* Logo - clickable lightbox */}
                     <button
                       type="button"
                       onClick={() => edu.logo && setLightbox(edu.logo)}
-                      className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0 hover:border-accent/40 transition-all focus:outline-none"
+                      className="w-14 h-14 rounded-xl bg-[#F8FAFC] border border-[#E5E7EB] flex items-center justify-center overflow-hidden flex-shrink-0 hover:border-accent/40 transition-all focus:outline-none"
                       title={edu.logo ? 'View logo' : undefined}
                     >
                       {edu.logo ? (
                         <img src={edu.logo} alt={`${edu.institution} logo`} className="w-full h-full object-contain p-1" />
                       ) : (
-                        <GraduationCap className="w-6 h-6 text-purple-500" />
+                        <GraduationCap className="w-6 h-6 text-purple-400" />
                       )}
                     </button>
                     <div>
-                      <h3 className="font-bold text-white text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
+                      <h3 className="font-bold text-[#0F172A] text-lg">{edu.degree} in {edu.fieldOfStudy}</h3>
                       <p className="text-accent font-medium">{edu.institution}</p>
-                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#64748B]">
                         <span className="flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5" /> {edu.startDate} - {edu.isCurrent ? 'Present' : edu.endDate}
+                          <Calendar className="w-3.5 h-3.5 text-accent" /> {edu.startDate} - {edu.isCurrent ? 'Present' : edu.endDate}
                         </span>
                         {edu.grade && (
-                          <span className="text-white/80 font-mono bg-white/5 px-2 py-0.5 rounded border border-white/5">
+                          <span className="text-[#0F172A] font-mono bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
                             Grade: {edu.grade}
                           </span>
                         )}
@@ -143,10 +143,10 @@ const AdminEducation = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 self-end md:self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(edu)} className="hover:bg-white/10">
-                      <Edit2 className="w-4 h-4 text-muted-foreground" />
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(edu)} className="hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A]">
+                      <Edit2 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(edu.id, edu.degree)} className="hover:bg-red-500/10 text-red-400">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(edu.id, edu.degree)} className="hover:bg-red-50 text-red-400 hover:text-red-500">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -155,9 +155,9 @@ const AdminEducation = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
-            <h3 className="text-lg font-medium text-white mb-1">No education history</h3>
-            <p className="text-muted-foreground">Add your degrees and institutions to complete your profile.</p>
+          <div className="rounded-2xl border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
+            <h3 className="text-lg font-medium text-[#64748B] mb-1">No education history</h3>
+            <p className="text-sm text-[#94A3B8]">Add your degrees and institutions to complete your profile.</p>
           </div>
         )}
       </div>

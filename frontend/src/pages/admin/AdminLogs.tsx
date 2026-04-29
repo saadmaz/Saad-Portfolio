@@ -45,11 +45,11 @@ const AdminLogs = () => {
 
   const getActionColor = (action: string) => {
     switch (action.toUpperCase()) {
-      case 'CREATE': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-      case 'UPDATE': return 'text-sky-400 bg-sky-500/10 border-sky-500/20';
-      case 'DELETE': return 'text-rose-400 bg-rose-500/10 border-rose-500/20';
-      case 'LOGIN': return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
-      default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+      case 'CREATE': return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+      case 'UPDATE': return 'text-sky-600 bg-sky-50 border-sky-200';
+      case 'DELETE': return 'text-rose-600 bg-rose-50 border-rose-200';
+      case 'LOGIN': return 'text-amber-600 bg-amber-50 border-amber-200';
+      default: return 'text-slate-500 bg-slate-50 border-slate-200';
     }
   };
 
@@ -71,10 +71,10 @@ const AdminLogs = () => {
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
           <div>
           <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">LOG HISTORY</p>
-          <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+          <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
             Activity Logs
           </h1>
-          <p className="text-sm text-white/50 font-medium max-w-md">
+          <p className="text-sm text-[#64748B] font-medium max-w-md">
             Monitor administrative actions and security events across your portfolio platform.
           </p>
           </div>
@@ -83,23 +83,23 @@ const AdminLogs = () => {
 
       {/* Search Section */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
         <Input
           placeholder="Search by admin email, action, or entity type..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-11 h-11 bg-white/[0.04] border border-white/10 focus:border-accent/50 transition-all rounded-xl text-white placeholder:text-white/25 font-medium"
+          className="pl-11 h-11 bg-white border border-[#E2E8F0] focus:border-accent/50 transition-all rounded-xl text-[#0F172A] placeholder:text-[#94A3B8] font-medium"
         />
       </div>
 
       <div className="grid gap-3">
         {isLoading ? (
           [1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="h-20 w-full bg-white/[0.02] border border-white/5 rounded-xl animate-pulse" />
+            <div key={i} className="h-20 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-xl animate-pulse" />
           ))
         ) : filteredLogs.length > 0 ? (
           filteredLogs.map((log) => (
-            <Card key={log.id} className="bg-white/[0.02] border border-white/5 hover:border-accent/30 hover:bg-white/[0.04] transition-all overflow-hidden group rounded-xl">
+            <Card key={log.id} className="bg-white border border-[#E5E7EB] shadow-sm hover:border-accent/30 hover:bg-[#F8FAFC] transition-all overflow-hidden group rounded-xl">
               <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
                   {/* Icon */}
@@ -110,7 +110,7 @@ const AdminLogs = () => {
                   <div className="flex-1 min-w-0">
                     {/* Top row: Admin + Action Type + Entity */}
                     <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
-                      <span className="font-semibold text-white text-sm truncate">{log.adminEmail}</span>
+                      <span className="font-semibold text-[#0F172A] text-sm truncate">{log.adminEmail}</span>
                       <span className={`text-[9px] px-2.5 py-1 rounded-full border font-black uppercase tracking-wider ${getActionColor(log.action)}`}>
                         {log.action}
                       </span>
@@ -120,20 +120,20 @@ const AdminLogs = () => {
                     </div>
 
                     {/* Details text */}
-                    <p className="text-xs text-white/40 line-clamp-1 group-hover:text-white/50 transition-colors leading-relaxed">
+                    <p className="text-xs text-[#64748B] line-clamp-1 leading-relaxed">
                       {log.details || `Performed ${log.action?.toLowerCase() || 'action'} on ${log.entityType || 'entry'}.`}
                     </p>
                   </div>
                 </div>
 
                 {/* Right side: Timestamp + ID */}
-                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0 text-right">
-                  <div className="flex items-center gap-1.5 text-[10px] text-white/40 font-medium uppercase tracking-wider">
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 border-[#E5E7EB] pt-3 sm:pt-0 text-right">
+                  <div className="flex items-center gap-1.5 text-[10px] text-[#94A3B8] font-medium uppercase tracking-wider">
                     <Clock className="w-3 h-3 flex-shrink-0" />
                     <span className="hidden sm:inline">{getTimestamp(log.timestamp)}</span>
                     <span className="sm:hidden">{getTimestamp(log.timestamp).split(',')[0]}</span>
                   </div>
-                  <span className="text-[9px] text-white/30 font-mono bg-white/[0.03] px-2 py-1 rounded border border-white/5">
+                  <span className="text-[9px] text-[#64748B] font-mono bg-[#F1F5F9] px-2 py-1 rounded border border-[#E2E8F0]">
                     {log.entityId ? log.entityId.slice(0, 8) : 'N/A'}
                   </span>
                 </div>
@@ -141,14 +141,14 @@ const AdminLogs = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-16 text-center">
-            <div className="mx-auto w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center mb-5 border border-white/5">
-              <History className="w-8 h-8 text-white/20" />
+          <div className="rounded-xl border border-dashed border-[#E5E7EB] bg-white p-16 text-center shadow-sm">
+            <div className="mx-auto w-16 h-16 rounded-xl bg-[#F1F5F9] flex items-center justify-center mb-5 border border-[#E5E7EB]">
+              <History className="w-8 h-8 text-[#CBD5E1]" />
             </div>
-            <h3 className="text-lg font-black text-white/80 mb-2" style={{ fontFamily: 'DM Sans' }}>
+            <h3 className="text-lg font-black text-[#64748B] mb-2" style={{ fontFamily: 'DM Sans' }}>
               No logs found
             </h3>
-            <p className="text-sm text-white/40 max-w-xs mx-auto">
+            <p className="text-sm text-[#94A3B8] max-w-xs mx-auto">
               {searchQuery ? `No results for "${searchQuery}". Try a different search.` : "Administrative actions will appear here."}
             </p>
           </div>

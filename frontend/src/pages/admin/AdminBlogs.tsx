@@ -134,42 +134,39 @@ const AdminBlogs = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">CONTENT MANAGEMENT</p>
-          <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+          <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
             Blog Posts
           </h1>
-          <p className="text-xs text-white/50 font-bold uppercase tracking-widest mt-3">
-            <span className="text-emerald-400 font-black">{publishedCount} Published</span>
-            <span className="mx-2 text-white/20">·</span>
-            <span className="text-amber-400 font-black">{draftCount} Draft{draftCount !== 1 ? 's' : ''}</span>
+          <p className="text-xs text-[#64748B] font-bold uppercase tracking-widest mt-3">
+            <span className="text-emerald-500 font-black">{publishedCount} Published</span>
+            <span className="mx-2 text-[#CBD5E1]">·</span>
+            <span className="text-amber-500 font-black">{draftCount} Draft{draftCount !== 1 ? 's' : ''}</span>
           </p>
         </div>
         <Button
           onClick={() => navigate('/admin/blogs/new')}
-          className="bg-accent hover:bg-accent/90 text-black font-semibold shadow-[0_0_20px_rgba(196,168,106,0.28)] rounded-lg transition-all hover:scale-[1.02] active:scale-95 h-11 px-6 flex-shrink-0"
+          className="bg-accent hover:bg-accent/90 text-black font-semibold rounded-lg transition-all hover:scale-[1.02] active:scale-95 h-11 px-6 flex-shrink-0"
         >
           <Plus className="w-4 h-4 mr-2" /> New Post
         </Button>
       </div>
 
-      {/* Search + Filter row */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search posts by title or excerpt..."
-            className="w-full bg-white/[0.04] border border-white/10 rounded-lg pl-11 pr-4 py-2.5 text-sm text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none transition-all font-medium"
+            className="w-full bg-white border border-[#E2E8F0] rounded-lg pl-11 pr-4 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none transition-all font-medium shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Filter pills */}
-        <div className="flex items-center gap-1.5 bg-white/[0.03] border border-white/10 rounded-lg p-1">
+        <div className="flex items-center gap-1.5 bg-white border border-[#E2E8F0] rounded-lg p-1 shadow-sm">
           {filterPills.map(pill => (
             <button
               key={pill.key}
@@ -178,7 +175,7 @@ const AdminBlogs = () => {
                 "px-4 py-2 rounded-md text-[10px] font-black uppercase tracking-[0.12em] transition-all",
                 filterStatus === pill.key
                   ? "bg-accent text-black shadow-sm"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                  : "text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
               )}
             >
               {pill.label}
@@ -186,21 +183,20 @@ const AdminBlogs = () => {
           ))}
         </div>
 
-        {/* Sort dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="border-white/10 bg-white/[0.03] hover:bg-white/[0.06] rounded-lg text-white/60 text-[10px] font-black uppercase tracking-[0.12em] gap-2 h-10 px-4">
+            <Button variant="outline" className="border-[#E2E8F0] bg-white hover:bg-[#F1F5F9] rounded-lg text-[#64748B] text-[10px] font-black uppercase tracking-[0.12em] gap-2 h-10 px-4 shadow-sm">
               {sortLabels[sortKey]} <ChevronDown className="w-3.5 h-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="border-white/10 text-white rounded-lg shadow-2xl p-1 min-w-[140px]">
+          <DropdownMenuContent align="end" className="border-[#E2E8F0] bg-white text-[#0F172A] rounded-lg shadow-xl p-1 min-w-[140px]">
             {(Object.keys(sortLabels) as SortKey[]).map(k => (
               <DropdownMenuItem
                 key={k}
                 onClick={() => setSortKey(k)}
                 className={cn(
                   "rounded-md m-1 py-2 px-3 text-xs font-bold uppercase tracking-wider cursor-pointer",
-                  sortKey === k ? "bg-accent/10 text-accent" : "hover:bg-white/5"
+                  sortKey === k ? "bg-accent/10 text-accent" : "hover:bg-[#F1F5F9] text-[#0F172A]"
                 )}
               >
                 {sortLabels[k]}
@@ -210,26 +206,23 @@ const AdminBlogs = () => {
         </DropdownMenu>
       </div>
 
-      {/* Count */}
       {!isLoading && (
-        <p className="text-[9px] text-white/30 font-black uppercase tracking-[0.15em]">
+        <p className="text-[9px] text-[#94A3B8] font-black uppercase tracking-[0.15em]">
           {filtered.length} post{filtered.length !== 1 ? 's' : ''} shown
         </p>
       )}
 
-      {/* List */}
       <div className="grid gap-3">
         {isLoading ? (
           [1, 2, 3].map(i => (
-            <div key={i} className="h-24 w-full bg-white/[0.02] border border-white/5 rounded-lg animate-pulse" />
+            <div key={i} className="h-24 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-lg animate-pulse" />
           ))
         ) : filtered.length > 0 ? (
           filtered.map((post) => (
-            <Card key={post.id} className="bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-accent/30 transition-all group overflow-hidden rounded-lg">
+            <Card key={post.id} className="bg-white border-[#E5E7EB] hover:bg-[#F8FAFC] hover:border-accent/30 transition-all group overflow-hidden rounded-lg shadow-sm">
               <CardContent className="p-0">
                 <div className="flex items-center p-4 gap-4">
-                  {/* Thumbnail */}
-                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/10 bg-white/5 flex-shrink-0 shadow-md">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-[#E5E7EB] bg-[#F8FAFC] flex-shrink-0 shadow-sm">
                     {post.image ? (
                       <img
                         src={post.image}
@@ -243,13 +236,11 @@ const AdminBlogs = () => {
                     )}
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-black text-white text-sm truncate group-hover:text-accent transition-colors" style={{ fontFamily: 'DM Sans' }}>
+                      <h3 className="font-black text-[#0F172A] text-sm truncate group-hover:text-accent transition-colors" style={{ fontFamily: 'DM Sans' }}>
                         {post.title}
                       </h3>
-                      {/* Publish status badge */}
                       <button
                         onClick={() => handleTogglePublish(post)}
                         disabled={togglingId === post.id}
@@ -258,8 +249,8 @@ const AdminBlogs = () => {
                           "flex items-center gap-1 px-2.5 py-1 rounded-md text-[8px] font-black uppercase tracking-wider border flex-shrink-0 transition-all hover:scale-105 active:scale-95",
                           togglingId === post.id ? "opacity-50 cursor-not-allowed" :
                             post.published
-                              ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25"
-                              : "bg-amber-500/15 text-amber-400 border-amber-500/30 hover:bg-amber-500/25"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100"
+                              : "bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100"
                         )}
                       >
                         {post.published
@@ -268,20 +259,19 @@ const AdminBlogs = () => {
                         }
                       </button>
                     </div>
-                    <div className="flex items-center gap-3 text-[9px] text-white/30 mb-1.5 font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-3 text-[9px] text-[#94A3B8] mb-1.5 font-bold uppercase tracking-wider">
                       <Calendar className="w-3 h-3 text-accent/50 flex-shrink-0" />{format(new Date(post.date), 'MMM d, yyyy')}
                       <span>·</span>
                       <UserIcon className="w-3 h-3 text-accent/50 flex-shrink-0" />{post.author}
                     </div>
-                    <p className="text-[11px] text-white/35 line-clamp-1 max-w-lg leading-relaxed">{post.excerpt}</p>
+                    <p className="text-[11px] text-[#94A3B8] line-clamp-1 max-w-lg leading-relaxed">{post.excerpt}</p>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex items-center gap-1.5 ml-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded-lg hover:bg-white/10 text-white/30 hover:text-white transition-all"
+                      className="h-9 w-9 rounded-lg hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] transition-all"
                       title="Preview"
                       onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
                     >
@@ -290,11 +280,11 @@ const AdminBlogs = () => {
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-white/10 active:scale-90">
-                          <MoreVertical className="w-4 h-4 text-white/30" />
+                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-[#F1F5F9] active:scale-90">
+                          <MoreVertical className="w-4 h-4 text-[#94A3B8]" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="border-white/10 text-white rounded-lg shadow-2xl p-1">
+                      <DropdownMenuContent align="end" className="border-[#E2E8F0] bg-white text-[#0F172A] rounded-lg shadow-xl p-1">
                         <DropdownMenuItem
                           className="hover:bg-accent/10 hover:text-accent cursor-pointer rounded-md m-1 py-2 px-3 text-xs font-bold"
                           onClick={() => navigate(`/admin/blogs/${post.id}`)}
@@ -302,7 +292,7 @@ const AdminBlogs = () => {
                           <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          className="hover:bg-white/5 cursor-pointer rounded-md m-1 py-2 px-3 text-xs font-bold text-white/60"
+                          className="hover:bg-[#F1F5F9] cursor-pointer rounded-md m-1 py-2 px-3 text-xs font-bold text-[#64748B]"
                           onClick={() => handleTogglePublish(post)}
                         >
                           {post.published
@@ -311,7 +301,7 @@ const AdminBlogs = () => {
                           }
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          className="hover:bg-red-500/15 hover:text-red-400 cursor-pointer text-red-500/70 rounded-md m-1 py-2 px-3 text-xs font-bold"
+                          className="hover:bg-red-50 hover:text-red-500 cursor-pointer text-red-400 rounded-md m-1 py-2 px-3 text-xs font-bold"
                           onClick={() => setDeleteDialog({ open: true, id: post.id, title: post.title })}
                         >
                           <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
@@ -324,33 +314,32 @@ const AdminBlogs = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-lg border border-white/5 bg-white/[0.02] py-16 text-center">
-            <div className="mx-auto w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center mb-4 border border-white/5">
-              <FileText className="w-7 h-7 text-white/20" />
+          <div className="rounded-lg border border-[#E5E7EB] bg-white py-16 text-center shadow-sm">
+            <div className="mx-auto w-14 h-14 rounded-lg bg-[#F1F5F9] flex items-center justify-center mb-4 border border-[#E5E7EB]">
+              <FileText className="w-7 h-7 text-[#94A3B8]" />
             </div>
-            <h3 className="text-base font-black text-white/70" style={{ fontFamily: 'DM Sans' }}>No posts found</h3>
-            <p className="text-[11px] text-white/40 mt-1 uppercase tracking-wider font-medium">
+            <h3 className="text-base font-black text-[#64748B]" style={{ fontFamily: 'DM Sans' }}>No posts found</h3>
+            <p className="text-[11px] text-[#94A3B8] mt-1 uppercase tracking-wider font-medium">
               {searchQuery || filterStatus !== 'all' ? 'Try adjusting your filters.' : 'Write your first blog post to get started.'}
             </p>
           </div>
         )}
       </div>
 
-      {/* Delete confirmation dialog */}
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => !isDeleting && setDeleteDialog(d => ({ ...d, open }))}>
-        <AlertDialogContent className="border-white/10 text-white rounded-lg shadow-2xl">
+        <AlertDialogContent className="bg-white border-[#E5E7EB] text-[#0F172A] rounded-lg shadow-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-lg font-black" style={{ fontFamily: 'DM Sans' }}>
+            <AlertDialogTitle className="text-lg font-black text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
               Delete Post?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-white/50 text-sm">
-              Deleting <span className="text-white/80 font-bold">"{deleteDialog.title}"</span> cannot be undone.
+            <AlertDialogDescription className="text-[#64748B] text-sm">
+              Deleting <span className="text-[#0F172A] font-bold">"{deleteDialog.title}"</span> cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
             <AlertDialogCancel
               disabled={isDeleting}
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-lg font-black"
+              className="bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9] rounded-lg font-black"
             >
               Cancel
             </AlertDialogCancel>

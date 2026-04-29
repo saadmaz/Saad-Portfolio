@@ -68,7 +68,6 @@ const AdminEntityDialog = ({
     defaultValues: defaultValues || {},
   });
 
-  // Reset form when defaultValues change or dialog opens
   React.useEffect(() => {
     if (isOpen) {
       form.reset(defaultValues || {});
@@ -82,9 +81,9 @@ const AdminEntityDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-[#0A0A0B] border-white/10 text-white">
+      <DialogContent className="sm:max-w-[500px] bg-white border-[#E2E8F0] text-[#0F172A]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">{title}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-[#0F172A]">{title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
@@ -95,23 +94,23 @@ const AdminEntityDialog = ({
                 name={field.name}
                 render={({ field: formField }) => (
                   <FormItem>
-                    <FormLabel className="text-white/80">{field.label}</FormLabel>
+                    <FormLabel className="text-[#374151] font-medium">{field.label}</FormLabel>
                     <FormControl>
                       {field.type === 'textarea' ? (
                         <Textarea
                           {...formField}
                           placeholder={field.placeholder}
-                          className="bg-white/5 border-white/10 focus:border-accent/50 min-h-[100px]"
+                          className="bg-white border-[#E2E8F0] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-accent/50 min-h-[100px]"
                         />
                       ) : field.type === 'select' ? (
                         <Select
                           onValueChange={formField.onChange}
                           defaultValue={formField.value}
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 focus:border-accent/50">
+                          <SelectTrigger className="bg-white border-[#E2E8F0] text-[#0F172A] focus:border-accent/50">
                             <SelectValue placeholder={field.placeholder} />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#0A0A0B] border-white/10 text-white">
+                          <SelectContent className="bg-white border-[#E2E8F0] text-[#0F172A]">
                             {field.options?.map((opt) => (
                               <SelectItem key={opt.value} value={opt.value}>
                                 {opt.label}
@@ -135,8 +134,7 @@ const AdminEntityDialog = ({
                           {...formField}
                           type={field.type}
                           placeholder={field.placeholder}
-                          className="bg-white/5 border-white/10 focus:border-accent/50"
-                          // For number inputs, ensure value is treated as a number
+                          className="bg-white border-[#E2E8F0] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-accent/50"
                           onChange={(e) => {
                             const val = field.type === 'number' ? parseFloat(e.target.value) : e.target.value;
                             formField.onChange(val);
@@ -144,22 +142,22 @@ const AdminEntityDialog = ({
                         />
                       )}
                     </FormControl>
-                    <FormMessage className="text-red-400" />
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
             ))}
             <DialogFooter className="pt-4">
-              <Button 
-                type="button" 
-                variant="ghost" 
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={onClose}
-                className="hover:bg-white/5 text-white/70"
+                className="hover:bg-[#F1F5F9] text-[#64748B]"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isLoading}
                 className="bg-accent hover:bg-accent/90 text-black font-bold px-8"
               >

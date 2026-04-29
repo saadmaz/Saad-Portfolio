@@ -35,13 +35,13 @@ const patentFields = [
 ] as const;
 
 const STATUS_COLORS: Record<string, string> = {
-  issued: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  pending: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  abandoned: 'bg-red-500/10 text-red-400 border-red-500/20',
+  issued: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  pending: 'bg-amber-50 text-amber-600 border-amber-200',
+  abandoned: 'bg-red-50 text-red-500 border-red-200',
 };
 
 const getStatusColor = (status: string) =>
-  STATUS_COLORS[status.toLowerCase()] ?? 'bg-white/10 text-white/50 border-white/10';
+  STATUS_COLORS[status.toLowerCase()] ?? 'bg-[#F1F5F9] text-[#64748B] border-[#E2E8F0]';
 
 const AdminPatents = () => {
   const [patents, setPatents] = useState<Patent[]>([]);
@@ -107,10 +107,10 @@ const AdminPatents = () => {
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
           <div>
             <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">METADATA</p>
-            <h1 className="text-4xl font-black tracking-tight mb-2 text-white" style={{ fontFamily: 'DM Sans' }}>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>
               Patents
             </h1>
-            <p className="text-sm text-white/50 font-medium">
+            <p className="text-sm text-[#64748B] font-medium">
               Inventions and intellectual property filings.
             </p>
           </div>
@@ -120,13 +120,13 @@ const AdminPatents = () => {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4 bg-white/[0.03] p-4 rounded-lg border border-white/10">
+      <div className="flex items-center gap-4 bg-white p-4 rounded-lg border border-[#E5E7EB] shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search patents..."
-            className="w-full bg-white/[0.04] border border-white/10 rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-white placeholder:text-white/25 font-medium"
+            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-[#0F172A] placeholder:text-[#94A3B8] font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -136,11 +136,11 @@ const AdminPatents = () => {
       <div className="grid gap-3">
         {isLoading && !isDialogOpen ? (
           [1, 2].map(i => (
-            <div key={i} className="h-24 w-full bg-white/[0.02] border border-white/5 rounded-lg animate-pulse" />
+            <div key={i} className="h-24 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-lg animate-pulse" />
           ))
         ) : filtered.length > 0 ? (
           filtered.map((patent) => (
-            <Card key={patent.id} className="bg-white/[0.02] border-white/5 hover:border-accent/30 hover:bg-white/[0.04] transition-all group rounded-lg">
+            <Card key={patent.id} className="bg-white border-[#E5E7EB] hover:border-accent/30 hover:bg-[#F8FAFC] transition-all group rounded-lg shadow-sm">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 min-w-0">
@@ -149,18 +149,18 @@ const AdminPatents = () => {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-black text-white text-sm" style={{ fontFamily: 'DM Sans' }}>
+                        <h3 className="font-black text-[#0F172A] text-sm" style={{ fontFamily: 'DM Sans' }}>
                           {patent.title}
                         </h3>
                         <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${getStatusColor(patent.status)}`}>
                           {patent.status}
                         </span>
                       </div>
-                      <p className="text-xs text-white/40 font-medium mt-0.5">
+                      <p className="text-xs text-[#64748B] font-medium mt-0.5">
                         {patent.patentOffice}{patent.patentNumber ? ` · ${patent.patentNumber}` : ''}
                       </p>
                       {(patent.filingDate || patent.issueDate) && (
-                        <p className="text-xs text-white/30 mt-0.5">
+                        <p className="text-xs text-[#94A3B8] mt-0.5">
                           {patent.filingDate ? `Filed: ${patent.filingDate}` : ''}
                           {patent.filingDate && patent.issueDate ? ' · ' : ''}
                           {patent.issueDate ? `Issued: ${patent.issueDate}` : ''}
@@ -170,14 +170,14 @@ const AdminPatents = () => {
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     {patent.link && (
-                      <a href={patent.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-white/10 text-white/30 hover:text-white transition-all">
+                      <a href={patent.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] transition-all">
                         <ExternalLink className="w-4 h-4" />
                       </a>
                     )}
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(patent)} className="h-9 w-9 hover:bg-white/10 text-white/30 hover:text-white rounded-lg">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(patent)} className="h-9 w-9 hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A] rounded-lg">
                       <Edit2 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(patent.id, patent.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-500/70 hover:text-red-400 rounded-lg">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(patent.id, patent.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-lg">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -186,9 +186,9 @@ const AdminPatents = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-lg border border-white/5 bg-white/[0.02] p-12 text-center">
-            <h3 className="text-lg font-black text-white/70" style={{ fontFamily: 'DM Sans' }}>No patents found</h3>
-            <p className="text-sm text-white/40 mt-1 font-medium">
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
+            <h3 className="text-lg font-black text-[#64748B]" style={{ fontFamily: 'DM Sans' }}>No patents found</h3>
+            <p className="text-sm text-[#94A3B8] mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Add your patent filings and inventions.'}
             </p>
           </div>

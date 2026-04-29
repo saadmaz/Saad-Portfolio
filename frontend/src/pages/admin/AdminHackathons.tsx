@@ -95,11 +95,12 @@ const AdminHackathons = () => {
         <div className="flex items-center gap-3">
           <BackButton to="/admin/dashboard" className="flex-shrink-0" />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1">Hackathons</h1>
-            <p className="text-muted-foreground">Manage your hackathon participations and achievements.</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">COMPETITIONS</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-[#0F172A]" style={{ fontFamily: 'DM Sans' }}>Hackathons</h1>
+            <p className="text-sm text-[#64748B] font-medium">Manage your hackathon participations and achievements.</p>
           </div>
         </div>
-        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold">
+        <Button onClick={handleAdd} className="bg-accent hover:bg-accent/90 text-black font-semibold h-11 px-6 rounded-lg">
           <Plus className="w-4 h-4 mr-2" /> Add Hackathon
         </Button>
       </div>
@@ -107,14 +108,13 @@ const AdminHackathons = () => {
       <div className="grid gap-4">
         {isLoading && !isDialogOpen ? (
           [1, 2].map(i => (
-            <div key={i} className="h-32 w-full bg-white/5 border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-32 w-full bg-[#F1F5F9] border border-[#E5E7EB] rounded-2xl animate-pulse" />
           ))
         ) : hackathons.length > 0 ? (
           hackathons.map((hack) => (
-            <Card key={hack.id} className="bg-white/5 border-white/10 hover:bg-white/[0.07] transition-all overflow-hidden group">
+            <Card key={hack.id} className="bg-white border-[#E5E7EB] hover:bg-[#F8FAFC] hover:border-accent/30 transition-all overflow-hidden group shadow-sm">
               <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row">
-                  {/* Thumbnail */}
                   {hack.image && (
                     <button
                       type="button"
@@ -131,36 +131,36 @@ const AdminHackathons = () => {
                   <div className="flex-1 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       {!hack.image && (
-                        <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-500 flex-shrink-0">
                           <Trophy className="w-6 h-6" />
                         </div>
                       )}
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-white text-lg">{hack.name}</h3>
+                          <h3 className="font-bold text-[#0F172A] text-lg">{hack.name}</h3>
                           {hack.achievement && (
-                            <span className="px-2 py-0.5 rounded bg-accent/20 text-accent text-[10px] font-bold uppercase tracking-wider border border-accent/20">
+                            <span className="px-2 py-0.5 rounded bg-accent/15 text-accent text-[10px] font-bold uppercase tracking-wider border border-accent/20">
                               {hack.achievement}
                             </span>
                           )}
                         </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1.5"><Layout className="w-3.5 h-3.5" /> {hack.role}</span>
-                          <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {hack.date}</span>
-                          <span className="text-accent/80">{hack.organizer}</span>
+                        <div className="flex flex-wrap gap-4 text-sm text-[#64748B]">
+                          <span className="flex items-center gap-1.5"><Layout className="w-3.5 h-3.5 text-accent" /> {hack.role}</span>
+                          <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-accent" /> {hack.date}</span>
+                          <span className="text-accent font-medium">{hack.organizer}</span>
                         </div>
                         {hack.projectTitle && (
-                          <p className="mt-2 text-sm text-white/80 font-medium">
-                            Project: <span className="text-white">{hack.projectTitle}</span>
+                          <p className="mt-2 text-sm text-[#64748B] font-medium">
+                            Project: <span className="text-[#0F172A] font-semibold">{hack.projectTitle}</span>
                           </p>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 self-end md:self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(hack)} className="hover:bg-white/10">
-                        <Edit2 className="w-4 h-4 text-muted-foreground" />
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(hack)} className="hover:bg-[#F1F5F9] text-[#94A3B8] hover:text-[#0F172A]">
+                        <Edit2 className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(hack.id, hack.name)} className="hover:bg-red-500/10 text-red-400">
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(hack.id, hack.name)} className="hover:bg-red-50 text-red-400 hover:text-red-500">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
@@ -170,9 +170,9 @@ const AdminHackathons = () => {
             </Card>
           ))
         ) : (
-          <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center">
-            <h3 className="text-lg font-medium text-white mb-1">No hackathons listed</h3>
-            <p className="text-muted-foreground">Add your hackathon experiences to highlight your rapid prototyping skills.</p>
+          <div className="rounded-2xl border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
+            <h3 className="text-lg font-medium text-[#64748B] mb-1">No hackathons listed</h3>
+            <p className="text-sm text-[#94A3B8]">Add your hackathon experiences to highlight your rapid prototyping skills.</p>
           </div>
         )}
       </div>
