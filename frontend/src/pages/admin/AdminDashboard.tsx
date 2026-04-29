@@ -1,95 +1,151 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Code, BookOpen, Zap, Award,
-  Mail, FileCheck, Shield, Clock, ArrowUpRight,
+  Code, CalendarDays, Trophy, Briefcase, Heart,
+  Clock, ArrowRight, BookOpen, GraduationCap,
 } from 'lucide-react';
 import { ProjectService } from '@/services/project-service';
-import { BlogService } from '@/services/blog-service';
 import { CommonService } from '@/shared/services/common-service';
-import { ActivityLog } from '@/types';
+import type { ActivityLog } from '@/types';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 
-/* ─── Palette ────────────────────────────────────────────────── */
-const IV85  = 'rgba(237,233,227,0.85)';
-const IV55  = 'rgba(237,233,227,0.55)';
-const IV35  = 'rgba(237,233,227,0.35)';
-const IV22  = 'rgba(237,233,227,0.22)';
-const EM    = '#10b981';
-const SURF  = '#101726';
-const SURFH = '#151F2E';
-const BDR   = 'rgba(255,255,255,0.055)';
-const BDRH  = 'rgba(255,255,255,0.10)';
+/* ── Stat card config ──────────────────────────────────────────── */
+const STAT_CARDS = [
+  {
+    key: 'projects',
+    label: 'Total Projects',
+    icon: Code,
+    gradient: 'linear-gradient(135deg, #1D4ED8 0%, #60A5FA 100%)',
+    path: '/admin/projects',
+  },
+  {
+    key: 'hackathons',
+    label: 'Hackathons',
+    icon: Trophy,
+    gradient: 'linear-gradient(135deg, #B45309 0%, #FCD34D 100%)',
+    path: '/admin/hackathons',
+  },
+  {
+    key: 'events',
+    label: 'Events',
+    icon: CalendarDays,
+    gradient: 'linear-gradient(135deg, #065F46 0%, #34D399 100%)',
+    path: '/admin/events',
+  },
+  {
+    key: 'experience',
+    label: 'Work Experience',
+    icon: Briefcase,
+    gradient: 'linear-gradient(135deg, #5B21B6 0%, #C4B5FD 100%)',
+    path: '/admin/experience',
+  },
+  {
+    key: 'volunteers',
+    label: 'Volunteers',
+    icon: Heart,
+    gradient: 'linear-gradient(135deg, #0F766E 0%, #5EEAD4 100%)',
+    path: '/admin/volunteer',
+  },
+] as const;
 
-/* ─── Helpers ────────────────────────────────────────────────── */
-const Card = ({ children, style = {}, className = '' }: {
-  children: React.ReactNode; style?: React.CSSProperties; className?: string;
-}) => (
-  <div
-    className={`rounded-xl overflow-hidden ${className}`}
-    style={{ background: SURF, border: `1px solid ${BDR}`, ...style }}
-  >
-    {children}
-  </div>
-);
+/* ── Quick action config ───────────────────────────────────────── */
+const QUICK_ACTIONS = [
+  {
+    label: 'Add Project',
+    sub: 'Upload a new project entry',
+    icon: Code,
+    color: '#2563EB',
+    bg: '#EFF6FF',
+    path: '/admin/projects/new',
+  },
+  {
+    label: 'Write Blog',
+    sub: 'Publish an article',
+    icon: BookOpen,
+    color: '#D97706',
+    bg: '#FFFBEB',
+    path: '/admin/blogs/new',
+  },
+  {
+    label: 'Add Event',
+    sub: 'Log a speaking or attended event',
+    icon: CalendarDays,
+    color: '#059669',
+    bg: '#ECFDF5',
+    path: '/admin/events',
+  },
+  {
+    label: 'Add Hackathon',
+    sub: 'Record a hackathon entry',
+    icon: Trophy,
+    color: '#7C3AED',
+    bg: '#F5F3FF',
+    path: '/admin/hackathons',
+  },
+  {
+    label: 'Add Experience',
+    sub: 'Add a work experience entry',
+    icon: Briefcase,
+    color: '#0D9488',
+    bg: '#F0FDFA',
+    path: '/admin/experience/new',
+  },
+  {
+    label: 'Manage Education',
+    sub: 'Edit your academic background',
+    icon: GraduationCap,
+    color: '#E11D48',
+    bg: '#FFF1F2',
+    path: '/admin/education',
+  },
+];
 
-const actionStyle = (action: string) => {
-  switch (action) {
-    case 'CREATE': return { text: '#6DB88A', bg: 'rgba(109,184,138,0.08)' };
-    case 'UPDATE': return { text: '#6B8ED6', bg: 'rgba(107,142,214,0.08)' };
-    case 'DELETE': return { text: '#D06B6B', bg: 'rgba(208,107,107,0.08)' };
-    default:       return { text: EM,        bg: 'rgba(16,185,129,0.08)' };
-  }
+/* ── Helpers ───────────────────────────────────────────────────── */
+const actionDotColor = (action: string) => {
+  if (action === 'CREATE') return '#10B981';
+  if (action === 'UPDATE') return '#3B82F6';
+  if (action === 'DELETE') return '#EF4444';
+  return '#8B5CF6';
 };
 
-/* ─── Stat config ────────────────────────────────────────────── */
-interface Stat {
-  key: string; label: string; value: string;
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  color: string; path: string; alert?: boolean;
-}
+const actionVerb = (action: string) => {
+  if (action === 'CREATE') return 'Added';
+  if (action === 'UPDATE') return 'Updated';
+  if (action === 'DELETE') return 'Deleted';
+  return action;
+};
 
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════
    DASHBOARD
-   ══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════════════ */
 const AdminDashboard = () => {
-  const [stats, setStats] = useState<Stat[]>([
-    { key: 'projects',  label: 'Projects',       value: '-', icon: Code,      color: '#6B8ED6', path: '/admin/projects' },
-    { key: 'blogs',     label: 'Blog Posts',      value: '-', icon: BookOpen,  color: '#9B7FD4', path: '/admin/blogs' },
-    { key: 'skills',    label: 'Skills',          value: '-', icon: Zap,       color: EM,        path: '/admin/skills' },
-    { key: 'certs',     label: 'Certificates',    value: '-', icon: FileCheck, color: '#6DB88A', path: '/admin/certificates' },
-    { key: 'awards',    label: 'Awards',          value: '-', icon: Award,     color: '#D4956A', path: '/admin/awards' },
-    { key: 'messages',  label: 'Unread Messages', value: '-', icon: Mail,      color: '#D06B6B', path: '/admin/messages', alert: false },
-  ]);
+  const [counts, setCounts] = useState<Record<string, number>>({
+    projects: 0, hackathons: 0, events: 0, experience: 0, volunteers: 0,
+  });
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [projects, blogs, awards, logs, messages, skills, certs] =
+        const [projects, hackathons, events, experience, volunteers, activityLogs] =
           await Promise.all([
             ProjectService.getAll(),
-            BlogService.getAll(),
-            CommonService.getAwards(),
+            CommonService.getHackathons(),
+            CommonService.getEvents(),
+            CommonService.getWorkExperience(),
+            CommonService.getVolunteerExperience(),
             CommonService.getActivityLogs(),
-            CommonService.getMessages(),
-            CommonService.getSkills(),
-            CommonService.getCertificates(),
           ]);
-
-        const unread = messages.filter(m => !m.read).length;
-
-        setStats([
-          { key: 'projects', label: 'Projects',       value: String(projects.length), icon: Code,      color: '#6B8ED6', path: '/admin/projects' },
-          { key: 'blogs',    label: 'Blog Posts',      value: String(blogs.length),    icon: BookOpen,  color: '#9B7FD4', path: '/admin/blogs' },
-          { key: 'skills',   label: 'Skills',          value: String(skills.length),   icon: Zap,       color: EM,        path: '/admin/skills' },
-          { key: 'certs',    label: 'Certificates',    value: String(certs.length),    icon: FileCheck, color: '#6DB88A', path: '/admin/certificates' },
-          { key: 'awards',   label: 'Awards',          value: String(awards.length),   icon: Award,     color: '#D4956A', path: '/admin/awards' },
-          { key: 'messages', label: 'Unread Messages', value: String(unread),          icon: Mail,      color: '#D06B6B', path: '/admin/messages', alert: unread > 0 },
-        ]);
-        setLogs(logs.slice(0, 8));
+        setCounts({
+          projects: projects.length,
+          hackathons: hackathons.length,
+          events: events.length,
+          experience: experience.length,
+          volunteers: volunteers.length,
+        });
+        setLogs([...activityLogs].reverse().slice(0, 8));
       } catch {
         toast.error('Failed to load dashboard data');
       } finally {
@@ -99,154 +155,237 @@ const AdminDashboard = () => {
     load();
   }, []);
 
-  const now      = new Date();
-  const hour     = now.getHours();
+  const now = new Date();
+  const hour = now.getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  const dateStr  = format(now, 'EEEE, d MMMM yyyy');
+  const dateStr = format(now, 'EEEE, MMMM d').toUpperCase();
 
   return (
-    <div className="space-y-7 animate-in fade-in duration-400">
+    <div className="space-y-6">
 
-      {/* Greeting */}
-      <div className="flex items-start justify-between gap-4">
+      {/* ── Greeting ───────────────────────────────────────────── */}
+      <div className="flex items-start justify-between gap-4 pt-0.5">
         <div>
-          <p className="text-[10px] font-medium tracking-[0.2em] uppercase mb-2" style={{ color: IV22 }}>
+          <p
+            className="text-[10px] font-semibold tracking-[0.18em] uppercase mb-1.5"
+            style={{ color: '#94A3B8' }}
+          >
             {dateStr}
           </p>
-          <h1 className="text-3xl font-semibold leading-tight" style={{ color: IV85 }}>
+          <h1 className="text-[27px] font-bold leading-tight" style={{ color: '#0F172A' }}>
             {greeting}, Saad.
           </h1>
+          <p className="text-[13px] mt-1" style={{ color: '#64748B' }}>
+            Here's an overview of your portfolio content.
+          </p>
         </div>
-        <Link
-          to="/admin/projects/new"
-          className="flex items-center gap-1.5 text-[11.5px] font-semibold px-4 py-1.5 rounded-lg flex-shrink-0 transition-all"
-          style={{ background: EM, color: '#080C18' }}
+        <div
+          className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 mt-1"
+          style={{ background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }}
         >
-          + New Project
-        </Link>
+          <span
+            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            style={{ background: '#10B981' }}
+          />
+          Portfolio Live
+        </div>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-        {stats.map((stat) => (
-          <Link key={stat.key} to={stat.path}>
+      {/* ── Stat cards ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        {STAT_CARDS.map((card) => (
+          <Link key={card.key} to={card.path}>
             <div
-              className="rounded-xl p-4 transition-all duration-150 cursor-pointer"
+              className="relative rounded-2xl p-5 overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl select-none"
               style={{
-                background: stat.alert ? 'rgba(208,107,107,0.05)' : SURF,
-                border: `1px solid ${stat.alert ? 'rgba(208,107,107,0.20)' : BDR}`,
+                background: card.gradient,
+                boxShadow: '0 4px 22px rgba(0,0,0,0.15)',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = SURFH; (e.currentTarget as HTMLDivElement).style.borderColor = BDRH; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = stat.alert ? 'rgba(208,107,107,0.05)' : SURF; (e.currentTarget as HTMLDivElement).style.borderColor = stat.alert ? 'rgba(208,107,107,0.20)' : BDR; }}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-1.5 rounded-lg" style={{ background: `${stat.color}14` }}>
-                  <stat.icon className="w-3.5 h-3.5" style={{ color: stat.color }} />
+              {/* Decorative blobs */}
+              <div
+                className="absolute -right-5 -top-5 w-24 h-24 rounded-full pointer-events-none"
+                style={{ background: 'rgba(255,255,255,0.18)' }}
+              />
+              <div
+                className="absolute right-3 -bottom-4 w-12 h-12 rounded-full pointer-events-none"
+                style={{ background: 'rgba(255,255,255,0.10)' }}
+              />
+
+              {/* Icon */}
+              <div
+                className="relative z-10 w-9 h-9 rounded-xl flex items-center justify-center mb-4"
+                style={{ background: 'rgba(255,255,255,0.22)' }}
+              >
+                <card.icon className="w-4 h-4 text-white" />
+              </div>
+
+              {/* Label + count + arrow */}
+              <div className="relative z-10 flex items-end justify-between">
+                <div>
+                  <p
+                    className="text-[10.5px] font-medium mb-0.5"
+                    style={{ color: 'rgba(255,255,255,0.72)' }}
+                  >
+                    {card.label}
+                  </p>
+                  <p className="text-[30px] font-bold text-white leading-none tabular-nums">
+                    {loading ? (
+                      <span
+                        className="inline-block w-8 h-7 rounded-lg animate-pulse align-middle"
+                        style={{ background: 'rgba(255,255,255,0.25)' }}
+                      />
+                    ) : (
+                      counts[card.key] ?? 0
+                    )}
+                  </p>
                 </div>
-                {stat.alert && (
-                  <span className="text-[8.5px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full"
-                    style={{ background: 'rgba(208,107,107,0.12)', color: '#D06B6B' }}>
-                    NEW
-                  </span>
-                )}
+                <ArrowRight
+                  className="w-4 h-4 mb-0.5 flex-shrink-0"
+                  style={{ color: 'rgba(255,255,255,0.55)' }}
+                />
               </div>
-              <div className="text-2xl font-semibold mb-0.5 tabular-nums" style={{ color: IV85 }}>
-                {loading
-                  ? <span className="inline-block w-8 h-5 rounded animate-pulse" style={{ background: 'rgba(255,255,255,0.08)' }} />
-                  : stat.value}
-              </div>
-              <p className="text-[9px] font-semibold uppercase tracking-[0.12em]" style={{ color: IV22 }}>
-                {stat.label}
-              </p>
             </div>
           </Link>
         ))}
       </div>
 
-      {/* Recent activity */}
-      <Card>
-        <div className="flex items-center justify-between py-3.5 px-5" style={{ borderBottom: `1px solid ${BDR}` }}>
-          <div className="flex items-center gap-2">
-            <Shield className="w-3.5 h-3.5" style={{ color: EM }} />
-            <span className="text-[13px] font-semibold" style={{ color: IV55 }}>
-              Recent Activity
-            </span>
-          </div>
-        </div>
-        {loading ? (
-          <div className="p-5 space-y-3">
-            {[1,2,3].map(i => (
-              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
-            ))}
-          </div>
-        ) : logs.length > 0 ? (
-          <div>
-            {logs.map((log) => {
-              const s  = actionStyle(log.action);
-              const ts = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
-              return (
+      {/* ── Bottom row ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
+
+        {/* Quick Actions */}
+        <div
+          className="rounded-2xl p-6"
+          style={{ background: '#FFFFFF', boxShadow: '0 1px 10px rgba(0,0,0,0.06)' }}
+        >
+          <h2 className="text-[15px] font-bold mb-0.5" style={{ color: '#0F172A' }}>
+            Quick Actions
+          </h2>
+          <p className="text-[12px] mb-5" style={{ color: '#94A3B8' }}>
+            Jump to the most common tasks
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            {QUICK_ACTIONS.map((action) => (
+              <Link key={action.path} to={action.path}>
                 <div
-                  key={log.id}
-                  className="flex items-center gap-3.5 px-5 py-3 border-l-2 transition-colors"
-                  style={{ borderLeftColor: s.text, borderBottom: '1px solid rgba(255,255,255,0.028)' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.015)'}
-                  onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = ''}
+                  className="flex items-center gap-3 p-3.5 rounded-xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
+                  style={{ background: action.bg }}
                 >
-                  <div className="p-1.5 rounded-lg flex-shrink-0" style={{ background: s.bg }}>
-                    <Shield className="w-3 h-3" style={{ color: s.text }} />
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${action.color}1A` }}
+                  >
+                    <action.icon className="w-4 h-4" style={{ color: action.color }} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12.5px] font-medium" style={{ color: IV85 }}>{log.entityType}</span>
-                      <span
-                        className="text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase"
-                        style={{ color: s.text, background: s.bg, border: '1px solid rgba(255,255,255,0.05)' }}
-                      >
-                        {log.action}
-                      </span>
-                    </div>
-                    <p className="text-[10.5px] truncate max-w-sm" style={{ color: IV22 }}>
-                      {log.details || log.adminEmail}
+                  <div className="min-w-0">
+                    <p className="text-[12.5px] font-semibold" style={{ color: '#0F172A' }}>
+                      {action.label}
+                    </p>
+                    <p className="text-[10.5px] truncate" style={{ color: '#94A3B8' }}>
+                      {action.sub}
                     </p>
                   </div>
-                  <div className="text-[10px] flex-shrink-0 text-right" style={{ color: IV22 }}>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-2.5 h-2.5" />
-                      {format(ts, 'h:mm a')}
-                    </div>
-                    <div style={{ color: 'rgba(237,233,227,0.12)' }}>{format(ts, 'MMM d')}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ background: '#FFFFFF', boxShadow: '0 1px 10px rgba(0,0,0,0.06)' }}
+        >
+          <div
+            className="flex items-center justify-between px-5 py-4"
+            style={{ borderBottom: '1px solid #F1F5F9' }}
+          >
+            <div>
+              <h2 className="text-[15px] font-bold" style={{ color: '#0F172A' }}>
+                Recent Activity
+              </h2>
+              <p className="text-[11px]" style={{ color: '#94A3B8' }}>
+                Latest events across the platform
+              </p>
+            </div>
+            <Link
+              to="/admin/messages"
+              className="text-[11px] font-semibold flex items-center gap-0.5 transition-opacity hover:opacity-70"
+              style={{ color: '#3B82F6' }}
+            >
+              View all <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="p-4 space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-lg flex-shrink-0 animate-pulse"
+                    style={{ background: '#F1F5F9' }}
+                  />
+                  <div className="flex-1 space-y-2">
+                    <div
+                      className="h-2.5 rounded-full animate-pulse"
+                      style={{ background: '#F1F5F9', width: '65%' }}
+                    />
+                    <div
+                      className="h-2 rounded-full animate-pulse"
+                      style={{ background: '#F1F5F9', width: '40%' }}
+                    />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="py-12 text-center">
-            <p className="text-sm" style={{ color: IV22 }}>No activity yet.</p>
-          </div>
-        )}
-      </Card>
-
-      {/* Quick links */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: 'New Blog Post',     path: '/admin/blogs/new' },
-          { label: 'Add Certificate',   path: '/admin/certificates/new' },
-          { label: 'Add Experience',    path: '/admin/experience/new' },
-          { label: 'View Messages',     path: '/admin/messages' },
-        ].map(item => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-[12px] font-medium transition-all"
-            style={{ background: SURF, border: `1px solid ${BDR}`, color: IV35 }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = SURFH; (e.currentTarget as HTMLAnchorElement).style.color = IV55; (e.currentTarget as HTMLAnchorElement).style.borderColor = BDRH; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = SURF; (e.currentTarget as HTMLAnchorElement).style.color = IV35; (e.currentTarget as HTMLAnchorElement).style.borderColor = BDR; }}
-          >
-            {item.label}
-            <ArrowUpRight className="w-3.5 h-3.5 flex-shrink-0" />
-          </Link>
-        ))}
+              ))}
+            </div>
+          ) : logs.length > 0 ? (
+            <div>
+              {logs.map((log) => {
+                const dotColor = actionDotColor(log.action);
+                const ts = (log.timestamp as any)?.toDate
+                  ? (log.timestamp as any).toDate()
+                  : new Date(log.timestamp as any);
+                return (
+                  <div
+                    key={log.id}
+                    className="flex items-start gap-3 px-5 py-3.5"
+                    style={{ borderBottom: '1px solid #F8FAFC' }}
+                  >
+                    <div
+                      className="w-2 h-2 rounded-full flex-shrink-0 mt-[5px]"
+                      style={{ background: dotColor }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-medium" style={{ color: '#1E293B' }}>
+                        {actionVerb(log.action)}{' '}
+                        <span style={{ color: dotColor }}>{log.entityType}</span>
+                      </p>
+                      {log.details && (
+                        <p
+                          className="text-[10.5px] truncate mt-0.5"
+                          style={{ color: '#94A3B8' }}
+                        >
+                          {log.details}
+                        </p>
+                      )}
+                      <p
+                        className="text-[10px] mt-0.5 flex items-center gap-1"
+                        style={{ color: '#CBD5E1' }}
+                      >
+                        <Clock className="w-2.5 h-2.5" />
+                        {formatDistanceToNow(ts, { addSuffix: true })}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-sm" style={{ color: '#94A3B8' }}>No activity yet.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

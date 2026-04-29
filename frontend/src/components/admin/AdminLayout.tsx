@@ -478,7 +478,15 @@ const AdminLayout = () => {
           </header>
 
           {/* Page content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div
+            className="flex-1 overflow-y-auto custom-scrollbar"
+            style={{
+              background:
+                location.pathname === '/admin' || location.pathname === '/admin/dashboard'
+                  ? '#F0F4F8'
+                  : undefined,
+            }}
+          >
             <div className="p-5 md:p-7 max-w-[1400px] mx-auto">
               <Outlet />
             </div>
