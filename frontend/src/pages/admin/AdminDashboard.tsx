@@ -1,104 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Code, CalendarDays, Trophy, Briefcase, Heart,
-  Clock, ArrowRight, BookOpen, GraduationCap,
+  Code, BookOpen, Briefcase, Zap, FileCheck, Award,
+  CalendarDays, Newspaper, Globe, Trophy, Quote,
+  BookMarked, FileText, Lightbulb, Building2, Heart,
+  GraduationCap, Mail, Clock, ArrowRight,
 } from 'lucide-react';
 import { ProjectService } from '@/services/project-service';
+import { BlogService } from '@/services/blog-service';
 import { CommonService } from '@/shared/services/common-service';
 import type { ActivityLog } from '@/types';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 
-/* ── Stat card config ──────────────────────────────────────────── */
+/* ── All 18 stat cards ─────────────────────────────────────────── */
 const STAT_CARDS = [
-  {
-    key: 'projects',
-    label: 'Total Projects',
-    icon: Code,
-    gradient: 'linear-gradient(135deg, #1D4ED8 0%, #60A5FA 100%)',
-    path: '/admin/projects',
-  },
-  {
-    key: 'hackathons',
-    label: 'Hackathons',
-    icon: Trophy,
-    gradient: 'linear-gradient(135deg, #B45309 0%, #FCD34D 100%)',
-    path: '/admin/hackathons',
-  },
-  {
-    key: 'events',
-    label: 'Events',
-    icon: CalendarDays,
-    gradient: 'linear-gradient(135deg, #065F46 0%, #34D399 100%)',
-    path: '/admin/events',
-  },
-  {
-    key: 'experience',
-    label: 'Work Experience',
-    icon: Briefcase,
-    gradient: 'linear-gradient(135deg, #5B21B6 0%, #C4B5FD 100%)',
-    path: '/admin/experience',
-  },
-  {
-    key: 'volunteers',
-    label: 'Volunteers',
-    icon: Heart,
-    gradient: 'linear-gradient(135deg, #0F766E 0%, #5EEAD4 100%)',
-    path: '/admin/volunteer',
-  },
+  { key: 'projects',      label: 'Projects',        icon: Code,         path: '/admin/projects',      gradient: 'linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%)' },
+  { key: 'blogs',         label: 'Blog Posts',       icon: BookOpen,     path: '/admin/blogs',         gradient: 'linear-gradient(135deg, #B45309 0%, #F59E0B 100%)' },
+  { key: 'experience',    label: 'Experience',       icon: Briefcase,    path: '/admin/experience',    gradient: 'linear-gradient(135deg, #065F46 0%, #10B981 100%)' },
+  { key: 'skills',        label: 'Skills & Tools',   icon: Zap,          path: '/admin/skills',        gradient: 'linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%)' },
+  { key: 'certs',         label: 'Certifications',   icon: FileCheck,    path: '/admin/certificates',  gradient: 'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)' },
+  { key: 'awards',        label: 'Awards',           icon: Award,        path: '/admin/awards',        gradient: 'linear-gradient(135deg, #C2410C 0%, #F97316 100%)' },
+  { key: 'events',        label: 'Events',           icon: CalendarDays, path: '/admin/events',        gradient: 'linear-gradient(135deg, #9F1239 0%, #F43F5E 100%)' },
+  { key: 'newsletters',   label: 'Newsletters',      icon: Newspaper,    path: '/admin/newsletters',   gradient: 'linear-gradient(135deg, #3730A3 0%, #6366F1 100%)' },
+  { key: 'languages',     label: 'Languages',        icon: Globe,        path: '/admin/languages',     gradient: 'linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%)' },
+  { key: 'hackathons',    label: 'Hackathons',       icon: Trophy,       path: '/admin/hackathons',    gradient: 'linear-gradient(135deg, #78350F 0%, #EAB308 100%)' },
+  { key: 'testimonials',  label: 'Testimonials',     icon: Quote,        path: '/admin/testimonials',  gradient: 'linear-gradient(135deg, #9D174D 0%, #EC4899 100%)' },
+  { key: 'courses',       label: 'Courses',          icon: BookMarked,   path: '/admin/courses',       gradient: 'linear-gradient(135deg, #14532D 0%, #22C55E 100%)' },
+  { key: 'publications',  label: 'Publications',     icon: FileText,     path: '/admin/publications',  gradient: 'linear-gradient(135deg, #164E63 0%, #06B6D4 100%)' },
+  { key: 'patents',       label: 'Patents',          icon: Lightbulb,    path: '/admin/patents',       gradient: 'linear-gradient(135deg, #4C1D95 0%, #A855F7 100%)' },
+  { key: 'organizations', label: 'Organizations',    icon: Building2,    path: '/admin/organizations', gradient: 'linear-gradient(135deg, #3F6212 0%, #84CC16 100%)' },
+  { key: 'volunteer',     label: 'Volunteer',        icon: Heart,        path: '/admin/volunteer',     gradient: 'linear-gradient(135deg, #7F1D1D 0%, #EF4444 100%)' },
+  { key: 'education',     label: 'Education',        icon: GraduationCap,path: '/admin/education',     gradient: 'linear-gradient(135deg, #1E3A5F 0%, #60A5FA 100%)' },
+  { key: 'messages',      label: 'Unread Messages',  icon: Mail,         path: '/admin/messages',      gradient: 'linear-gradient(135deg, #450A0A 0%, #DC2626 100%)' },
 ] as const;
 
-/* ── Quick action config ───────────────────────────────────────── */
+/* ── Quick actions ─────────────────────────────────────────────── */
 const QUICK_ACTIONS = [
-  {
-    label: 'Add Project',
-    sub: 'Upload a new project entry',
-    icon: Code,
-    color: '#2563EB',
-    bg: '#EFF6FF',
-    path: '/admin/projects/new',
-  },
-  {
-    label: 'Write Blog',
-    sub: 'Publish an article',
-    icon: BookOpen,
-    color: '#D97706',
-    bg: '#FFFBEB',
-    path: '/admin/blogs/new',
-  },
-  {
-    label: 'Add Event',
-    sub: 'Log a speaking or attended event',
-    icon: CalendarDays,
-    color: '#059669',
-    bg: '#ECFDF5',
-    path: '/admin/events',
-  },
-  {
-    label: 'Add Hackathon',
-    sub: 'Record a hackathon entry',
-    icon: Trophy,
-    color: '#7C3AED',
-    bg: '#F5F3FF',
-    path: '/admin/hackathons',
-  },
-  {
-    label: 'Add Experience',
-    sub: 'Add a work experience entry',
-    icon: Briefcase,
-    color: '#0D9488',
-    bg: '#F0FDFA',
-    path: '/admin/experience/new',
-  },
-  {
-    label: 'Manage Education',
-    sub: 'Edit your academic background',
-    icon: GraduationCap,
-    color: '#E11D48',
-    bg: '#FFF1F2',
-    path: '/admin/education',
-  },
+  { label: 'Add Project',      sub: 'Upload a new project entry',        icon: Code,         color: '#2563EB', bg: '#EFF6FF',  path: '/admin/projects/new' },
+  { label: 'Write Blog',       sub: 'Publish an article',                 icon: BookOpen,     color: '#D97706', bg: '#FFFBEB',  path: '/admin/blogs/new' },
+  { label: 'Add Event',        sub: 'Log a speaking or attended event',   icon: CalendarDays, color: '#059669', bg: '#ECFDF5',  path: '/admin/events' },
+  { label: 'Add Hackathon',    sub: 'Record a hackathon entry',           icon: Trophy,       color: '#7C3AED', bg: '#F5F3FF',  path: '/admin/hackathons' },
+  { label: 'Add Experience',   sub: 'Add a work experience entry',        icon: Briefcase,    color: '#0D9488', bg: '#F0FDFA',  path: '/admin/experience/new' },
+  { label: 'Manage Education', sub: 'Edit your academic background',      icon: GraduationCap,color: '#E11D48', bg: '#FFF1F2',  path: '/admin/education' },
 ];
 
 /* ── Helpers ───────────────────────────────────────────────────── */
@@ -120,30 +64,59 @@ const actionVerb = (action: string) => {
    DASHBOARD
    ══════════════════════════════════════════════════════════════════ */
 const AdminDashboard = () => {
-  const [counts, setCounts] = useState<Record<string, number>>({
-    projects: 0, hackathons: 0, events: 0, experience: 0, volunteers: 0,
-  });
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [projects, hackathons, events, experience, volunteers, activityLogs] =
-          await Promise.all([
-            ProjectService.getAll(),
-            CommonService.getHackathons(),
-            CommonService.getEvents(),
-            CommonService.getWorkExperience(),
-            CommonService.getVolunteerExperience(),
-            CommonService.getActivityLogs(),
-          ]);
+        const [
+          projects, blogs, experience, skills, certs, awards,
+          events, newsletters, languages, hackathons, testimonials,
+          courses, publications, patents, organizations, volunteer,
+          education, messages, activityLogs,
+        ] = await Promise.all([
+          ProjectService.getAll(),
+          BlogService.getAll(),
+          CommonService.getWorkExperience(),
+          CommonService.getSkills(),
+          CommonService.getCertificates(),
+          CommonService.getAwards(),
+          CommonService.getEvents(),
+          CommonService.getNewsletters(),
+          CommonService.getLanguages(),
+          CommonService.getHackathons(),
+          CommonService.getTestimonials(),
+          CommonService.getCourses(),
+          CommonService.getPublications(),
+          CommonService.getPatents(),
+          CommonService.getOrganizations(),
+          CommonService.getVolunteerExperience(),
+          CommonService.getEducation(),
+          CommonService.getMessages(),
+          CommonService.getActivityLogs(),
+        ]);
+
         setCounts({
-          projects: projects.length,
-          hackathons: hackathons.length,
-          events: events.length,
-          experience: experience.length,
-          volunteers: volunteers.length,
+          projects:      projects.length,
+          blogs:         blogs.length,
+          experience:    experience.length,
+          skills:        skills.length,
+          certs:         certs.length,
+          awards:        awards.length,
+          events:        events.length,
+          newsletters:   newsletters.length,
+          languages:     languages.length,
+          hackathons:    hackathons.length,
+          testimonials:  testimonials.length,
+          courses:       courses.length,
+          publications:  publications.length,
+          patents:       patents.length,
+          organizations: organizations.length,
+          volunteer:     volunteer.length,
+          education:     education.length,
+          messages:      messages.filter((m) => !(m as any).read).length,
         });
         setLogs([...activityLogs].reverse().slice(0, 8));
       } catch {
@@ -183,56 +156,53 @@ const AdminDashboard = () => {
           className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 mt-1"
           style={{ background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }}
         >
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: '#10B981' }}
-          />
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#10B981' }} />
           Portfolio Live
         </div>
       </div>
 
-      {/* ── Stat cards ─────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* ── Stat cards (all 18) ────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
         {STAT_CARDS.map((card) => (
           <Link key={card.key} to={card.path}>
             <div
-              className="relative rounded-2xl p-5 overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl select-none"
+              className="relative rounded-2xl p-4 overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl select-none h-full"
               style={{
                 background: card.gradient,
-                boxShadow: '0 4px 22px rgba(0,0,0,0.15)',
+                boxShadow: '0 4px 18px rgba(0,0,0,0.14)',
               }}
             >
               {/* Decorative blobs */}
               <div
-                className="absolute -right-5 -top-5 w-24 h-24 rounded-full pointer-events-none"
+                className="absolute -right-4 -top-4 w-20 h-20 rounded-full pointer-events-none"
                 style={{ background: 'rgba(255,255,255,0.18)' }}
               />
               <div
-                className="absolute right-3 -bottom-4 w-12 h-12 rounded-full pointer-events-none"
+                className="absolute right-2 -bottom-3 w-10 h-10 rounded-full pointer-events-none"
                 style={{ background: 'rgba(255,255,255,0.10)' }}
               />
 
               {/* Icon */}
               <div
-                className="relative z-10 w-9 h-9 rounded-xl flex items-center justify-center mb-4"
+                className="relative z-10 w-8 h-8 rounded-xl flex items-center justify-center mb-3"
                 style={{ background: 'rgba(255,255,255,0.22)' }}
               >
-                <card.icon className="w-4 h-4 text-white" />
+                <card.icon className="w-3.5 h-3.5 text-white" />
               </div>
 
               {/* Label + count + arrow */}
               <div className="relative z-10 flex items-end justify-between">
                 <div>
                   <p
-                    className="text-[10.5px] font-medium mb-0.5"
+                    className="text-[9.5px] font-medium mb-0.5 leading-tight"
                     style={{ color: 'rgba(255,255,255,0.72)' }}
                   >
                     {card.label}
                   </p>
-                  <p className="text-[30px] font-bold text-white leading-none tabular-nums">
+                  <p className="text-[26px] font-bold text-white leading-none tabular-nums">
                     {loading ? (
                       <span
-                        className="inline-block w-8 h-7 rounded-lg animate-pulse align-middle"
+                        className="inline-block w-7 h-6 rounded-md animate-pulse align-middle"
                         style={{ background: 'rgba(255,255,255,0.25)' }}
                       />
                     ) : (
@@ -241,8 +211,8 @@ const AdminDashboard = () => {
                   </p>
                 </div>
                 <ArrowRight
-                  className="w-4 h-4 mb-0.5 flex-shrink-0"
-                  style={{ color: 'rgba(255,255,255,0.55)' }}
+                  className="w-3.5 h-3.5 mb-0.5 flex-shrink-0"
+                  style={{ color: 'rgba(255,255,255,0.50)' }}
                 />
               </div>
             </div>
