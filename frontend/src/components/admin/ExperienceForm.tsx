@@ -8,9 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import {
   ArrowLeft, Save, Trash2, Briefcase, MapPin, Calendar, Building2,
-  Sparkles, Plus, ChevronDown, ChevronUp, Trophy, Image as ImageIcon,
-  Link as LinkIcon, FileText, Presentation, X, Star, GripVertical,
+  Sparkles, Plus, ChevronDown, ChevronUp, Trophy,
+  Image as ImageIcon, Link as LinkIcon, FileText, Presentation, X, Star, GripVertical,
 } from 'lucide-react';
 import LogoUpload from './LogoUpload';
 import { CommonService } from '@/shared/services/common-service';
@@ -30,8 +33,10 @@ const EMPLOYMENT_TYPES = [
 ];
 
 const LOCATION_TYPES = ['On-site', 'Remote', 'Hybrid'] as const;
-
 const MEDIA_TYPES = ['Image', 'Document', 'Link', 'Presentation'] as const;
+
+// "none" sentinel for optional month selects
+const NONE = '__none__';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -42,7 +47,7 @@ function calcDuration(
 ): string {
   if (!startYear) return '';
   const sIdx = startMonth ? MONTHS.indexOf(startMonth) : 0;
-  const s = new Date(startYear, sIdx, 1);
+  const s = new Date(startYear, sIdx < 0 ? 0 : sIdx, 1);
   const e = isCurrent
     ? new Date()
     : endYear ? new Date(endYear, endMonth ? MONTHS.indexOf(endMonth) : 11, 1) : new Date();
@@ -60,9 +65,7 @@ function parseLegacyDateStr(dateStr?: string): { month?: string; year?: number }
   if (parts.length >= 2) {
     const monthStr = parts[0];
     const yearNum = parseInt(parts[parts.length - 1]);
-    if (MONTHS.includes(monthStr) && !isNaN(yearNum)) {
-      return { month: monthStr, year: yearNum };
-    }
+    if (MONTHS.includes(monthStr) && !isNaN(yearNum)) return { month: monthStr, year: yearNum };
   }
   const yearOnly = parseInt(dateStr);
   if (!isNaN(yearOnly)) return { year: yearOnly };
@@ -75,6 +78,69 @@ function makeEmptyRole(): ExperienceRole {
 
 function makeEmptyMedia(): ExperienceMedia {
   return { media_type: 'Link', media_url: '', media_caption: '' };
+}
+
+// ─── Shared styled Select sub-components ─────────────────────────────────────
+
+/** A full-width Select that matches the admin dark card style. */
+function AdminSelect({
+  value, onValueChange, placeholder, children, disabled, className = '',
+}: {
+  value?: string;
+  onValueChange: (v: string) => void;
+  placeholder?: string;
+  children: React.ReactNode;
+  disabled?: boolean;
+  className?: string;
+}) {
+  return (
+    <Select value={value ?? ''} onValueChange={onValueChange} disabled={disabled}>
+      <SelectTrigger
+        className={`bg-white/5 border-white/10 text-foreground focus:ring-accent/40 focus:border-accent/40 ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
+      >
+        <SelectValue placeholder={placeholder ?? 'Select…'} />
+      </SelectTrigger>
+      <SelectContent className="bg-card border-white/10 shadow-xl">
+        {children}
+      </SelectContent>
+    </Select>
+  );
+}
+
+/** Reusable month+year picker pair. */
+function MonthYearPicker({
+  month, year, onMonthChange, onYearChange, disabled = false,
+}: {
+  month?: string;
+  year?: number;
+  onMonthChange: (v?: string) => void;
+  onYearChange: (v?: number) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex gap-2">
+      <div className="flex-1">
+        <AdminSelect
+          value={month ?? NONE}
+          onValueChange={(v) => onMonthChange(v === NONE ? undefined : v)}
+          disabled={disabled}
+        >
+          <SelectItem value={NONE} className="text-muted-foreground">Month</SelectItem>
+          {MONTHS.map(m => (
+            <SelectItem key={m} value={m}>{m.slice(0, 3)}</SelectItem>
+          ))}
+        </AdminSelect>
+      </div>
+      <Input
+        type="number"
+        value={year ?? ''}
+        onChange={(e) => onYearChange(e.target.value ? parseInt(e.target.value) : undefined)}
+        placeholder="Year"
+        disabled={disabled}
+        className={`w-24 bg-white/5 border-white/10 text-sm ${disabled ? 'opacity-40' : ''}`}
+      />
+    </div>
+  );
 }
 
 // ─── Zod schema ───────────────────────────────────────────────────────────────
@@ -116,10 +182,7 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
   const addSkill = () => {
     const s = newSkill.trim();
     if (!s || (role.skills ?? []).includes(s)) return;
-    if ((role.skills ?? []).length >= 20) {
-      toast.warning('Maximum 20 skills per role');
-      return;
-    }
+    if ((role.skills ?? []).length >= 20) { toast.warning('Maximum 20 skills per role'); return; }
     onUpdate({ ...role, skills: [...(role.skills ?? []), s] });
     setNewSkill('');
   };
@@ -142,16 +205,16 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
     role.role_is_current,
   );
 
-  const mediaIcon = (type: ExperienceMedia['media_type']) => {
-    if (type === 'Image') return <ImageIcon className="w-3 h-3" />;
-    if (type === 'Document') return <FileText className="w-3 h-3" />;
-    if (type === 'Presentation') return <Presentation className="w-3 h-3" />;
-    return <LinkIcon className="w-3 h-3" />;
-  };
+  const mediaIcon = (type: ExperienceMedia['media_type']) => ({
+    Image: <ImageIcon className="w-3 h-3" />,
+    Document: <FileText className="w-3 h-3" />,
+    Presentation: <Presentation className="w-3 h-3" />,
+    Link: <LinkIcon className="w-3 h-3" />,
+  }[type]);
 
   return (
     <div className="border border-white/10 rounded-xl overflow-hidden">
-      {/* Role header / collapse toggle */}
+      {/* Collapse header */}
       <div
         className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors"
         onClick={onToggle}
@@ -159,11 +222,9 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
         <GripVertical className="w-4 h-4 text-white/20 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">
-            {role.role_title || <span className="text-white/30">Role {index + 1}</span>}
+            {role.role_title || <span className="text-white/30 font-normal">Role {index + 1}</span>}
           </p>
-          {duration && (
-            <p className="text-[10px] text-muted-foreground">{duration}</p>
-          )}
+          {duration && <p className="text-[10px] text-muted-foreground">{duration}</p>}
         </div>
         <div className="flex items-center gap-2">
           {total > 1 && (
@@ -175,7 +236,9 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           )}
-          {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
+          {collapsed
+            ? <ChevronDown className="w-4 h-4 text-white/40" />
+            : <ChevronUp className="w-4 h-4 text-white/40" />}
         </div>
       </div>
 
@@ -196,52 +259,29 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-[10px] uppercase font-bold text-muted-foreground">Start</label>
-              <div className="flex gap-1.5">
-                <select
-                  value={role.role_start_month ?? ''}
-                  onChange={(e) => onUpdate({ ...role, role_start_month: e.target.value || undefined })}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-foreground"
-                >
-                  <option value="">Month</option>
-                  {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
-                </select>
-                <Input
-                  type="number"
-                  value={role.role_start_year ?? ''}
-                  onChange={(e) => onUpdate({ ...role, role_start_year: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Year"
-                  className="w-20 bg-white/5 border-white/10 text-xs"
-                />
-              </div>
+              <MonthYearPicker
+                month={role.role_start_month}
+                year={role.role_start_year}
+                onMonthChange={(v) => onUpdate({ ...role, role_start_month: v })}
+                onYearChange={(v) => onUpdate({ ...role, role_start_year: v })}
+              />
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] uppercase font-bold text-muted-foreground">End</label>
-              <div className="flex gap-1.5">
-                <select
-                  value={role.role_end_month ?? ''}
-                  onChange={(e) => onUpdate({ ...role, role_end_month: e.target.value || undefined })}
-                  disabled={role.role_is_current}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-foreground disabled:opacity-40"
-                >
-                  <option value="">Month</option>
-                  {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
-                </select>
-                <Input
-                  type="number"
-                  value={role.role_end_year ?? ''}
-                  onChange={(e) => onUpdate({ ...role, role_end_year: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Year"
-                  disabled={role.role_is_current}
-                  className="w-20 bg-white/5 border-white/10 text-xs disabled:opacity-40"
-                />
-              </div>
+              <MonthYearPicker
+                month={role.role_end_month}
+                year={role.role_end_year}
+                onMonthChange={(v) => onUpdate({ ...role, role_end_month: v })}
+                onYearChange={(v) => onUpdate({ ...role, role_end_year: v })}
+                disabled={role.role_is_current}
+              />
             </div>
           </div>
 
-          {/* Currently in this role toggle */}
+          {/* Currently in this role */}
           <label className="flex items-center gap-2.5 cursor-pointer group w-fit">
             <div
-              className={`relative w-9 h-5 rounded-full transition-colors ${role.role_is_current ? 'bg-accent' : 'bg-white/10'}`}
+              className={`relative w-9 h-5 rounded-full transition-colors cursor-pointer ${role.role_is_current ? 'bg-accent' : 'bg-white/10'}`}
               onClick={() => onUpdate({ ...role, role_is_current: !role.role_is_current })}
             >
               <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${role.role_is_current ? 'translate-x-4' : ''}`} />
@@ -307,15 +347,15 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
               <div className="space-y-2">
                 {(role.media ?? []).map((m, mi) => (
                   <div key={mi} className="flex gap-2 items-start p-2 rounded-lg bg-white/[0.03] border border-white/5">
-                    <span className="mt-2 text-accent">{mediaIcon(m.media_type)}</span>
-                    <div className="flex-1 space-y-1.5">
-                      <select
+                    <span className="mt-2 text-accent flex-shrink-0">{mediaIcon(m.media_type)}</span>
+                    <div className="flex-1 space-y-1.5 min-w-0">
+                      <AdminSelect
                         value={m.media_type}
-                        onChange={(e) => updateMedia(mi, { media_type: e.target.value as ExperienceMedia['media_type'] })}
-                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-foreground"
+                        onValueChange={(v) => updateMedia(mi, { media_type: v as ExperienceMedia['media_type'] })}
+                        className="h-7 text-xs"
                       >
-                        {MEDIA_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
+                        {MEDIA_TYPES.map(t => <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>)}
+                      </AdminSelect>
                       <Input
                         value={m.media_url}
                         onChange={(e) => updateMedia(mi, { media_url: e.target.value })}
@@ -329,7 +369,7 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
                         className="bg-white/5 border-white/10 text-xs h-7"
                       />
                     </div>
-                    <button type="button" onClick={() => removeMedia(mi)} className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors">
+                    <button type="button" onClick={() => removeMedia(mi)} className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors flex-shrink-0">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -356,11 +396,8 @@ const ExperienceForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!id && id !== 'new';
 
-  // Roles managed as local state (complex nested objects)
   const [roles, setRoles] = useState<ExperienceRole[]>([makeEmptyRole()]);
   const [collapsedRoles, setCollapsedRoles] = useState<Set<number>>(new Set());
-
-  // Top-level skills and media
   const [topSkills, setTopSkills] = useState<string[]>([]);
   const [topMedia, setTopMedia] = useState<ExperienceMedia[]>([]);
   const [newTopSkill, setNewTopSkill] = useState('');
@@ -375,14 +412,15 @@ const ExperienceForm = () => {
     },
   });
 
-  const isCurrent = watch('is_current');
-  const startMonth = watch('start_month');
-  const startYear = watch('start_year');
-  const endMonth = watch('end_month');
-  const endYear = watch('end_year');
-  const companyLogo = watch('company_logo');
-  const locationType = watch('location_type');
-  const isFeatured = watch('is_featured');
+  const isCurrent     = watch('is_current');
+  const startMonth    = watch('start_month');
+  const startYear     = watch('start_year');
+  const endMonth      = watch('end_month');
+  const endYear       = watch('end_year');
+  const companyLogo   = watch('company_logo');
+  const locationType  = watch('location_type');
+  const isFeatured    = watch('is_featured');
+  const employmentType = watch('employment_type');
 
   const companyDuration = calcDuration(startMonth, startYear, endMonth, endYear, isCurrent);
 
@@ -393,48 +431,45 @@ const ExperienceForm = () => {
       const item = data.find(exp => exp.id.toString() === id);
       if (!item) return;
 
-      // Parse roles — handle both new schema (roles[]) and old schema (single position)
       if (item.roles && item.roles.length > 0) {
         setRoles(item.roles);
       } else {
         const startParsed = parseLegacyDateStr(item.startDate);
-        const endParsed = parseLegacyDateStr(item.endDate);
+        const endParsed   = parseLegacyDateStr(item.endDate);
         setRoles([{
-          role_title: item.position ?? '',
-          role_is_current: item.is_current ?? item.isCurrent ?? false,
-          role_start_month: startParsed.month,
-          role_start_year: startParsed.year,
-          role_end_month: endParsed.month,
-          role_end_year: endParsed.year,
-          description: item.description ?? '',
-          skills: item.skills ?? item.technologies ?? [],
-          media: item.media ?? [],
+          role_title:        item.position ?? '',
+          role_is_current:   item.is_current ?? item.isCurrent ?? false,
+          role_start_month:  startParsed.month,
+          role_start_year:   startParsed.year,
+          role_end_month:    endParsed.month,
+          role_end_year:     endParsed.year,
+          description:       item.description ?? '',
+          skills:            item.skills ?? item.technologies ?? [],
+          media:             item.media ?? [],
         }]);
       }
 
-      // Top-level skills / media
       setTopSkills(item.skills ?? item.technologies ?? []);
       setTopMedia(item.media ?? []);
 
-      // Parse company-level dates
       const cStart = parseLegacyDateStr(item.startDate);
-      const cEnd = parseLegacyDateStr(item.endDate);
+      const cEnd   = parseLegacyDateStr(item.endDate);
 
       reset({
-        company_name: item.company_name ?? item.company ?? '',
-        company_logo: item.company_logo ?? item.companyLogo ?? '',
+        company_name:    item.company_name ?? item.company ?? '',
+        company_logo:    item.company_logo ?? item.companyLogo ?? '',
         employment_type: item.employment_type ?? item.employmentType ?? 'Full-time',
-        location: item.location ?? '',
-        location_type: (item.location_type ?? item.workMode ?? 'On-site') as FormValues['location_type'],
-        is_current: item.is_current ?? item.isCurrent ?? false,
-        start_month: item.start_month ?? cStart.month,
-        start_year: item.start_year ?? cStart.year,
-        end_month: item.end_month ?? cEnd.month,
-        end_year: item.end_year ?? cEnd.year,
-        description: item.description ?? '',
-        achievements: item.achievements ?? item.impact ?? '',
-        is_featured: item.is_featured ?? false,
-        display_order: item.display_order ?? item.order_index,
+        location:        item.location ?? '',
+        location_type:   (item.location_type ?? item.workMode ?? 'On-site') as FormValues['location_type'],
+        is_current:      item.is_current ?? item.isCurrent ?? false,
+        start_month:     item.start_month ?? cStart.month,
+        start_year:      item.start_year ?? cStart.year,
+        end_month:       item.end_month ?? cEnd.month,
+        end_year:        item.end_year ?? cEnd.year,
+        description:     item.description ?? '',
+        achievements:    item.achievements ?? item.impact ?? '',
+        is_featured:     item.is_featured ?? false,
+        display_order:   item.display_order ?? item.order_index,
       });
     } catch {
       toast.error('Failed to load experience');
@@ -443,59 +478,33 @@ const ExperienceForm = () => {
     }
   }, [id, reset]);
 
-  useEffect(() => {
-    if (isEditMode) loadExperience();
-  }, [isEditMode, loadExperience]);
+  useEffect(() => { if (isEditMode) loadExperience(); }, [isEditMode, loadExperience]);
 
   const onSubmit = async (data: FormValues) => {
-    if (!data.company_logo) {
-      toast.error('Company logo is required');
-      return;
-    }
-    const emptyRoles = roles.filter(r => !r.role_title.trim());
-    if (emptyRoles.length > 0) {
-      toast.error('All roles must have a title');
-      return;
-    }
+    if (!data.company_logo) { toast.error('Company logo is required'); return; }
+    if (roles.some(r => !r.role_title.trim())) { toast.error('All roles must have a title'); return; }
 
-    const startDateStr = data.start_month && data.start_year
-      ? `${data.start_month} ${data.start_year}` : '';
-    const endDateStr = !data.is_current && data.end_month && data.end_year
-      ? `${data.end_month} ${data.end_year}` : '';
-    const firstRole = roles[0];
+    const startDateStr = data.start_month && data.start_year ? `${data.start_month} ${data.start_year}` : '';
+    const endDateStr   = !data.is_current && data.end_month && data.end_year ? `${data.end_month} ${data.end_year}` : '';
+    const firstRole    = roles[0];
 
     const saveData: Partial<Experience> = {
-      // New schema
-      company_name: data.company_name,
-      company_logo: data.company_logo,
-      employment_type: data.employment_type,
-      location: data.location,
+      company_name: data.company_name,  company_logo: data.company_logo,
+      employment_type: data.employment_type, location: data.location,
       location_type: data.location_type as Experience['location_type'],
       is_current: data.is_current,
-      start_month: data.start_month,
-      start_year: data.start_year,
-      end_month: data.end_month,
-      end_year: data.end_year,
-      roles,
-      description: data.description,
-      achievements: data.achievements,
-      skills: topSkills,
-      media: topMedia,
-      is_featured: data.is_featured,
-      display_order: data.display_order,
-      // Backward-compat aliases so old rendering code still works
-      company: data.company_name,
-      companyLogo: data.company_logo,
-      employmentType: data.employment_type,
-      workMode: data.location_type,
-      isCurrent: data.is_current,
-      startDate: startDateStr,
-      endDate: endDateStr,
+      start_month: data.start_month, start_year: data.start_year,
+      end_month: data.end_month,     end_year: data.end_year,
+      roles, description: data.description, achievements: data.achievements,
+      skills: topSkills, media: topMedia,
+      is_featured: data.is_featured, display_order: data.display_order,
+      // Backward-compat aliases
+      company: data.company_name, companyLogo: data.company_logo,
+      employmentType: data.employment_type, workMode: data.location_type,
+      isCurrent: data.is_current, startDate: startDateStr, endDate: endDateStr,
       position: firstRole?.role_title ?? '',
       technologies: topSkills.length > 0 ? topSkills : (firstRole?.skills ?? []),
-      responsibilities: [],
-      impact: data.achievements,
-      order_index: data.display_order,
+      responsibilities: [], impact: data.achievements, order_index: data.display_order,
     };
 
     try {
@@ -516,21 +525,7 @@ const ExperienceForm = () => {
   };
 
   const toggleRoleCollapse = (i: number) =>
-    setCollapsedRoles(prev => {
-      const s = new Set(prev);
-      s.has(i) ? s.delete(i) : s.add(i);
-      return s;
-    });
-
-  const addRole = () => {
-    setRoles(r => [...r, makeEmptyRole()]);
-  };
-
-  const addTopMedia = () => setTopMedia(m => [...m, makeEmptyMedia()]);
-  const updateTopMedia = (i: number, patch: Partial<ExperienceMedia>) =>
-    setTopMedia(m => m.map((item, idx) => idx === i ? { ...item, ...patch } : item));
-  const removeTopMedia = (i: number) =>
-    setTopMedia(m => m.filter((_, idx) => idx !== i));
+    setCollapsedRoles(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; });
 
   const addTopSkill = () => {
     const s = newTopSkill.trim();
@@ -540,21 +535,23 @@ const ExperienceForm = () => {
     setNewTopSkill('');
   };
 
-  const mediaIcon = (type: ExperienceMedia['media_type']) => {
-    if (type === 'Image') return <ImageIcon className="w-3 h-3" />;
-    if (type === 'Document') return <FileText className="w-3 h-3" />;
-    if (type === 'Presentation') return <Presentation className="w-3 h-3" />;
-    return <LinkIcon className="w-3 h-3" />;
-  };
+  const updateTopMedia = (i: number, patch: Partial<ExperienceMedia>) =>
+    setTopMedia(m => m.map((item, idx) => idx === i ? { ...item, ...patch } : item));
+
+  const mediaIcon = (type: ExperienceMedia['media_type']) => ({
+    Image: <ImageIcon className="w-3 h-3" />,
+    Document: <FileText className="w-3 h-3" />,
+    Presentation: <Presentation className="w-3 h-3" />,
+    Link: <LinkIcon className="w-3 h-3" />,
+  }[type]);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
+
       {/* ── Header ── */}
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost" size="icon" className="rounded-full hover:bg-white/10"
-          onClick={() => navigate('/admin/experience')}
-        >
+        <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10"
+          onClick={() => navigate('/admin/experience')}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
@@ -563,17 +560,16 @@ const ExperienceForm = () => {
           </h1>
           <p className="text-muted-foreground text-sm">Fill in the company details and roles below.</p>
         </div>
-        <Button
-          onClick={handleSubmit(onSubmit)}
+        <Button onClick={handleSubmit(onSubmit)}
           className="ml-auto bg-accent hover:bg-accent/90 text-black font-bold px-8"
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           <Save className="w-4 h-4 mr-2" />
           {isLoading ? 'Saving…' : 'Save'}
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
         {/* ── LEFT (main) ── */}
         <div className="lg:col-span-2 space-y-6">
 
@@ -585,22 +581,27 @@ const ExperienceForm = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-5 space-y-4">
+              {/* Company name */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Company / Organization *</label>
                 <Input {...register('company_name')} placeholder="e.g. Google" className="bg-white/5 border-white/10" />
                 {errors.company_name && <p className="text-xs text-red-400">{errors.company_name.message}</p>}
               </div>
 
+              {/* Employment Type */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Employment Type</label>
-                <select
-                  {...register('employment_type')}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground"
+                <AdminSelect
+                  value={employmentType}
+                  onValueChange={(v) => setValue('employment_type', v)}
                 >
-                  {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
+                  {EMPLOYMENT_TYPES.map(t => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </AdminSelect>
               </div>
 
+              {/* Location */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Location *</label>
                 <Input
@@ -611,17 +612,17 @@ const ExperienceForm = () => {
                 {errors.location && <p className="text-xs text-red-400">{errors.location.message}</p>}
               </div>
 
+              {/* Location Type — pill toggle */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Location Type</label>
                 <div className="flex gap-2">
                   {LOCATION_TYPES.map(lt => (
-                    <button
-                      key={lt} type="button"
+                    <button key={lt} type="button"
                       onClick={() => setValue('location_type', lt)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                         locationType === lt
                           ? 'bg-accent text-black border-accent'
-                          : 'bg-white/5 border-white/10 text-muted-foreground hover:border-white/20'
+                          : 'bg-white/5 border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground'
                       }`}
                     >
                       {lt}
@@ -641,51 +642,31 @@ const ExperienceForm = () => {
             </CardHeader>
             <CardContent className="p-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {/* Start */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground">Start Date</label>
-                  <div className="flex gap-2">
-                    <select
-                      {...register('start_month')}
-                      className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-sm text-foreground"
-                    >
-                      <option value="">Month</option>
-                      {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
-                    </select>
-                    <Input
-                      {...register('start_year')}
-                      type="number" placeholder="Year"
-                      className="w-24 bg-white/5 border-white/10 text-sm"
-                    />
-                  </div>
+                  <MonthYearPicker
+                    month={startMonth}
+                    year={startYear}
+                    onMonthChange={(v) => setValue('start_month', v)}
+                    onYearChange={(v) => setValue('start_year', v)}
+                  />
                 </div>
-
-                {/* End */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground">End Date</label>
-                  <div className="flex gap-2">
-                    <select
-                      {...register('end_month')}
-                      disabled={isCurrent}
-                      className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-sm text-foreground disabled:opacity-40"
-                    >
-                      <option value="">Month</option>
-                      {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
-                    </select>
-                    <Input
-                      {...register('end_year')}
-                      type="number" placeholder="Year"
-                      disabled={isCurrent}
-                      className="w-24 bg-white/5 border-white/10 text-sm disabled:opacity-40"
-                    />
-                  </div>
+                  <MonthYearPicker
+                    month={endMonth}
+                    year={endYear}
+                    onMonthChange={(v) => setValue('end_month', v)}
+                    onYearChange={(v) => setValue('end_year', v)}
+                    disabled={isCurrent}
+                  />
                 </div>
               </div>
 
               {/* Currently working toggle */}
               <label className="flex items-center gap-3 cursor-pointer group w-fit">
                 <div
-                  className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${isCurrent ? 'bg-accent' : 'bg-white/10'}`}
+                  className={`relative w-10 h-5 rounded-full cursor-pointer transition-colors ${isCurrent ? 'bg-accent' : 'bg-white/10'}`}
                   onClick={() => setValue('is_current', !isCurrent)}
                 >
                   <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isCurrent ? 'translate-x-5' : ''}`} />
@@ -695,7 +676,6 @@ const ExperienceForm = () => {
                 </span>
               </label>
 
-              {/* Auto duration */}
               {companyDuration && (
                 <p className="text-xs text-accent font-semibold bg-accent/5 border border-accent/20 rounded-lg px-3 py-2 w-fit">
                   {companyDuration}
@@ -714,21 +694,16 @@ const ExperienceForm = () => {
             <CardContent className="p-5 space-y-3">
               {roles.map((role, i) => (
                 <RoleSubForm
-                  key={i}
-                  role={role}
-                  index={i}
-                  total={roles.length}
+                  key={i} role={role} index={i} total={roles.length}
                   collapsed={collapsedRoles.has(i)}
                   onToggle={() => toggleRoleCollapse(i)}
                   onUpdate={(updated) => setRoles(r => r.map((x, idx) => idx === i ? updated : x))}
                   onRemove={() => setRoles(r => r.filter((_, idx) => idx !== i))}
                 />
               ))}
-              <Button
-                type="button" variant="outline"
+              <Button type="button" variant="outline"
                 className="w-full border-dashed border-white/20 text-muted-foreground hover:text-foreground text-sm"
-                onClick={addRole}
-              >
+                onClick={() => setRoles(r => [...r, makeEmptyRole()])}>
                 <Plus className="w-4 h-4 mr-2" /> Add Another Role
               </Button>
             </CardContent>
@@ -743,16 +718,12 @@ const ExperienceForm = () => {
             </CardHeader>
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-muted-foreground">Company-level summary (optional if roles have descriptions)</p>
+                <p className="text-xs text-muted-foreground">Company-level summary</p>
                 <span className="text-[10px] text-muted-foreground/50">{(watch('description') ?? '').length}/2000</span>
               </div>
-              <Textarea
-                {...register('description')}
+              <Textarea {...register('description')}
                 placeholder="Describe your overall responsibilities, what you worked on, and your impact..."
-                maxLength={2000}
-                rows={5}
-                className="bg-white/5 border-white/10 resize-none"
-              />
+                maxLength={2000} rows={5} className="bg-white/5 border-white/10 resize-none" />
             </CardContent>
           </Card>
 
@@ -768,17 +739,13 @@ const ExperienceForm = () => {
                 <p className="text-xs text-muted-foreground">Metrics, wins, and impact highlights</p>
                 <span className="text-[10px] text-muted-foreground/50">{(watch('achievements') ?? '').length}/2000</span>
               </div>
-              <Textarea
-                {...register('achievements')}
+              <Textarea {...register('achievements')}
                 placeholder="e.g. Grew user base by 40%, Led a team of 8, Shipped 3 major features..."
-                maxLength={2000}
-                rows={4}
-                className="bg-white/5 border-white/10 resize-none"
-              />
+                maxLength={2000} rows={4} className="bg-white/5 border-white/10 resize-none" />
             </CardContent>
           </Card>
 
-          {/* Section 6 — Top-Level Skills */}
+          {/* Section 6 — Skills */}
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-3">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -787,10 +754,9 @@ const ExperienceForm = () => {
             </CardHeader>
             <CardContent className="p-5 space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">Skills used across all roles (optional — each role also has its own skills)</p>
+                <p className="text-xs text-muted-foreground">Skills across all roles (optional)</p>
                 <span className={`text-[10px] ${topSkills.length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
-                  {topSkills.length}/20
-                  {topSkills.length > 5 && ' · LinkedIn recommends top 5'}
+                  {topSkills.length}/20{topSkills.length > 5 && ' · LinkedIn recommends top 5'}
                 </span>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -804,13 +770,10 @@ const ExperienceForm = () => {
                 ))}
               </div>
               <div className="flex gap-1.5">
-                <Input
-                  value={newTopSkill}
-                  onChange={(e) => setNewTopSkill(e.target.value)}
+                <Input value={newTopSkill} onChange={(e) => setNewTopSkill(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTopSkill(); } }}
                   placeholder="Type a skill and press Enter…"
-                  className="bg-white/5 border-white/10 text-sm h-9"
-                />
+                  className="bg-white/5 border-white/10 text-sm h-9" />
                 <Button type="button" variant="outline" size="sm" className="h-9 border-white/10 bg-white/5" onClick={addTopSkill}>
                   <Plus className="w-3 h-3" />
                 </Button>
@@ -818,7 +781,7 @@ const ExperienceForm = () => {
             </CardContent>
           </Card>
 
-          {/* Section 7 — Top-Level Media */}
+          {/* Section 7 — Media */}
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-3">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -829,35 +792,30 @@ const ExperienceForm = () => {
               <p className="text-xs text-muted-foreground">Images, documents, links, or presentations — up to 10 items</p>
               {topMedia.map((m, i) => (
                 <div key={i} className="flex gap-2 items-start p-3 rounded-lg bg-white/[0.03] border border-white/5">
-                  <span className="mt-2 text-accent">{mediaIcon(m.media_type)}</span>
-                  <div className="flex-1 space-y-1.5">
-                    <select
+                  <span className="mt-2 text-accent flex-shrink-0">{mediaIcon(m.media_type)}</span>
+                  <div className="flex-1 space-y-1.5 min-w-0">
+                    <AdminSelect
                       value={m.media_type}
-                      onChange={(e) => updateTopMedia(i, { media_type: e.target.value as ExperienceMedia['media_type'] })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-foreground"
+                      onValueChange={(v) => updateTopMedia(i, { media_type: v as ExperienceMedia['media_type'] })}
+                      className="h-8 text-xs"
                     >
-                      {MEDIA_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                    <Input
-                      value={m.media_url}
-                      onChange={(e) => updateTopMedia(i, { media_url: e.target.value })}
-                      placeholder="URL"
-                      className="bg-white/5 border-white/10 text-xs h-7"
-                    />
-                    <Input
-                      value={m.media_caption ?? ''}
-                      onChange={(e) => updateTopMedia(i, { media_caption: e.target.value })}
-                      placeholder="Caption (optional)"
-                      className="bg-white/5 border-white/10 text-xs h-7"
-                    />
+                      {MEDIA_TYPES.map(t => <SelectItem key={t} value={t} className="text-sm">{t}</SelectItem>)}
+                    </AdminSelect>
+                    <Input value={m.media_url} onChange={(e) => updateTopMedia(i, { media_url: e.target.value })}
+                      placeholder="URL" className="bg-white/5 border-white/10 text-xs h-7" />
+                    <Input value={m.media_caption ?? ''} onChange={(e) => updateTopMedia(i, { media_caption: e.target.value })}
+                      placeholder="Caption (optional)" className="bg-white/5 border-white/10 text-xs h-7" />
                   </div>
-                  <button type="button" onClick={() => removeTopMedia(i)} className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors">
+                  <button type="button" onClick={() => setTopMedia(m => m.filter((_, idx) => idx !== i))}
+                    className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors flex-shrink-0">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
               {topMedia.length < 10 && (
-                <Button type="button" variant="outline" className="w-full border-dashed border-white/20 text-sm" onClick={addTopMedia}>
+                <Button type="button" variant="outline"
+                  className="w-full border-dashed border-white/20 text-sm"
+                  onClick={() => setTopMedia(m => [...m, makeEmptyMedia()])}>
                   <Plus className="w-4 h-4 mr-2" /> Add Media
                 </Button>
               )}
@@ -867,6 +825,7 @@ const ExperienceForm = () => {
 
         {/* ── RIGHT (sidebar) ── */}
         <div className="space-y-6">
+
           {/* Company Logo */}
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-3">
@@ -879,9 +838,7 @@ const ExperienceForm = () => {
               <LogoUpload
                 value={companyLogo ?? ''}
                 onChange={(url) => setValue('company_logo', url)}
-                required
-                label="Company Logo"
-                size={80}
+                required label="Company Logo" size={80}
               />
             </CardContent>
           </Card>
@@ -911,21 +868,17 @@ const ExperienceForm = () => {
               {/* Display Order */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Display Order</label>
-                <Input
-                  {...register('display_order')}
-                  type="number"
-                  placeholder="e.g. 1"
-                  className="bg-white/5 border-white/10 text-sm"
-                />
+                <Input {...register('display_order')} type="number" placeholder="e.g. 1"
+                  className="bg-white/5 border-white/10 text-sm" />
                 <p className="text-[10px] text-muted-foreground/50">Lower = appears first</p>
               </div>
             </CardContent>
           </Card>
 
-          {/* LinkedIn Import Hint */}
+          {/* LinkedIn hint */}
           <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02]">
             <p className="text-[11px] text-muted-foreground/60 leading-relaxed">
-              <span className="font-semibold text-muted-foreground">Tip:</span> Structure your entries the same way as your LinkedIn profile for consistency — company name, roles, and dates should match exactly.
+              <span className="font-semibold text-muted-foreground">Tip:</span> Structure your entries the same way as your LinkedIn profile — company name, roles, and dates should match exactly.
             </p>
           </div>
         </div>
