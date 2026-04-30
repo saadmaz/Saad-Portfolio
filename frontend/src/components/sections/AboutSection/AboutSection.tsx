@@ -1,7 +1,7 @@
 import { m } from "framer-motion";
-import { GraduationCap, MapPin, Calendar, Trophy, Users, Dumbbell, Globe, Heart, ArrowRight } from "lucide-react";
+import { GraduationCap, MapPin, Calendar, Trophy, Globe, ArrowRight } from "lucide-react";
 import { educationList } from "@/data/personal/education";
-import { events, volunteer, sports, languages, awards } from "@/data/personal/about";
+import { languages, awards } from "@/data/personal/about";
 import { EducationDialog } from "@/components/education/EducationDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export function AboutSection() {
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             I believe in being well-rounded. Here's a glimpse into my education,
-            community involvement, and personal interests.
+            languages, and recognition.
           </p>
         </m.div>
 
@@ -92,85 +92,13 @@ export function AboutSection() {
           </div>
         </m.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Languages */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            id="events"
-          >
-            <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Users className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-semibold text-foreground">Events</h3>
-              </div>
-              <ul className="space-y-4">
-                {events.map((event) => (
-                  <li key={event.title} className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{event.title}</p>
-                      <p className="text-xs text-muted-foreground">{event.type}</p>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{event.year}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </m.div>
-
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            id="volunteer"
-          >
-            <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-semibold text-foreground">Volunteer</h3>
-              </div>
-              <ul className="space-y-4">
-                {volunteer.map((vol) => (
-                  <li key={vol.org}>
-                    <p className="text-sm font-medium text-foreground">{vol.org}</p>
-                    <p className="text-xs text-muted-foreground">{vol.role}</p>
-                    <p className="text-xs text-accent mt-1">{vol.impact}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </m.div>
-
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            id="sports"
-          >
-            <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Dumbbell className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-semibold text-foreground">Sports</h3>
-              </div>
-              <ul className="space-y-4">
-                {sports.map((sport) => (
-                  <li key={sport.name} className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-foreground">{sport.name}</span>
-                    <span className="text-xs text-muted-foreground">{sport.skill}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </m.div>
-
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
             id="languages"
           >
             <div className="bg-card rounded-xl border border-border p-6 h-full">
@@ -191,12 +119,12 @@ export function AboutSection() {
             </div>
           </m.div>
 
+          {/* Awards */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="md:col-span-2 lg:col-span-2"
+            transition={{ duration: 0.5, delay: 0.2 }}
             id="awards"
           >
             <div className="bg-card rounded-xl border border-border p-6 h-full">
