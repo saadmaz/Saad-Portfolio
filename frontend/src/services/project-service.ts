@@ -60,10 +60,11 @@ export class ProjectService {
    */
   static async getFeatured(): Promise<Project[]> {
     try {
+      // No orderBy — avoids requiring a composite index on (featured, order_index).
+      // Sorting is done client-side in useFeaturedProjects / FeaturedProjects.tsx.
       const q = query(
         collection(db, COL),
-        where("featured", "==", true),
-        orderBy("order_index", "asc")
+        where("featured", "==", true)
       );
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project));

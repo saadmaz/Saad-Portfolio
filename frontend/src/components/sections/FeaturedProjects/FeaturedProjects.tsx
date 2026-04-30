@@ -40,6 +40,8 @@ export function FeaturedProjects() {
     );
   }
 
+  if (gridProjects.length === 0) return null;
+
   return (
     <section className="py-16 bg-secondary/30 overflow-hidden">
       <div className="section-container">
