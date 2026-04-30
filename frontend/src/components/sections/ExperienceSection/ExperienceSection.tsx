@@ -236,7 +236,7 @@ export function ExperienceSection() {
         </m.div>
 
         {/* Timeline */}
-        <div className="max-w-3xl">
+        <div>
           {groups.map(([company, { roles, logo, companyUrl }], i) => (
             <CompanyGroup
               key={company}

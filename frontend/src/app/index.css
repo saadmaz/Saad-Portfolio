@@ -204,21 +204,12 @@
 @layer components {
   /* LAYOUT CONTAINERS */
   .section-container {
-      @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  @media (min-width: 1536px) {
-    .section-container {
-      max-width: 1600px;
-    }
+      @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .section-padding {
     @apply py-20 md:py-24 lg:py-32;
   }
-
-  @screen xl { .section-container { @apply px-12; } }
-  @screen 2xl { .section-container { @apply px-20; } }
 
   /* CARD EFFECTS */
   .card-hover {

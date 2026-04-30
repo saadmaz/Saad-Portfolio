@@ -173,7 +173,7 @@ export function HeroSection() {
       </div>
 
       <div className="section-container w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-5xl mx-auto justify-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
           {/* ── LEFT COLUMN: Text ───────────────────────────────────────────── */}
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">

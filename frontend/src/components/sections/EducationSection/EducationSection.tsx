@@ -135,7 +135,7 @@ export function EducationSection() {
         </m.div>
 
         {/* Timeline */}
-        <div className="max-w-3xl">
+        <div>
           {sorted.map((edu, i) => (
             <EducationEntry key={edu.id} edu={edu} index={i} />
           ))}
