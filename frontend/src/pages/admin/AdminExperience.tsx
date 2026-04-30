@@ -58,12 +58,13 @@ const AdminExperience = () => {
     try {
       const { id: _id, ...rest } = exp;
       const companyName = exp.company_name ?? exp.company ?? 'Company';
-      await CommonService.createExperience({
+      const payload = JSON.parse(JSON.stringify({
         ...rest,
         company_name: `${companyName} (copy)`,
         company: `${companyName} (copy)`,
         is_featured: false,
-      });
+      }));
+      await CommonService.createExperience(payload);
       toast.success('Duplicated — edit the copy to update details');
       fetchExperience();
     } catch {

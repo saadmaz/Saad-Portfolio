@@ -68,23 +68,30 @@ async function fetchAll<T>(col: string, sortField?: string): Promise<T[]> {
   }
 }
 
+/** Recursively strip undefined values — Firestore rejects them, null is fine. */
+function stripUndefined<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj)) as T;
+}
+
 /** Generic add-document helper. Returns the new item with its generated ID. */
 async function createDoc<T>(col: string, data: Partial<T>): Promise<T> {
+  const clean = stripUndefined(data);
   const ref = await addDoc(collection(db, col), {
-    ...data,
+    ...clean,
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   });
-  return { id: ref.id, ...data } as T;
+  return { id: ref.id, ...clean } as T;
 }
 
 /** Generic merge-update helper. */
 async function updateDoc_<T>(col: string, id: string | number, data: Partial<T>): Promise<T> {
+  const clean = stripUndefined(data);
   await updateDoc(doc(db, col, String(id)), {
-    ...data,
+    ...clean,
     updated_at: serverTimestamp(),
   });
-  return { id, ...data } as T;
+  return { id, ...clean } as T;
 }
 
 /** Generic delete helper. */
