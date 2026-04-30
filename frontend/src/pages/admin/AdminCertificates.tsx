@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
+import BackButton from '@/components/admin/BackButton';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -174,11 +175,14 @@ const AdminCertificates = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">CREDENTIALS</p>
-          <h1 className="text-4xl font-black tracking-tight mb-1 text-foreground" style={{ fontFamily: 'DM Sans' }}>Certificates</h1>
-          <p className="text-sm text-muted-foreground font-medium">Showcase your verified achievements and professional learning.</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex items-start gap-3">
+          <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-2">CREDENTIALS</p>
+            <h1 className="text-4xl font-black tracking-tight mb-1 text-foreground" style={{ fontFamily: 'DM Sans' }}>Certificates</h1>
+            <p className="text-sm text-muted-foreground font-medium">Showcase your verified achievements and professional learning.</p>
+          </div>
         </div>
         <div className="flex gap-3">
           {!isLoading && certificates.length === 0 && (

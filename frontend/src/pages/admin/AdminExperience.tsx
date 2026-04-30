@@ -20,10 +20,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
+import BackButton from '@/components/admin/BackButton';
 
 const AdminExperience = () => {
   const [experience, setExperience] = useState<Experience[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string | number; label: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,24 +44,31 @@ const AdminExperience = () => {
     }
   };
 
-  const handleDelete = async (id: string | number) => {
-    if (!window.confirm('Delete this experience?')) return;
+  const handleDelete = (id: string | number, label: string) => setDeleteTarget({ id, label });
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await CommonService.deleteExperience(id);
+      await CommonService.deleteExperience(deleteTarget.id);
       toast.success('Experience deleted');
       fetchExperience();
-    } catch (error) {
+    } catch {
       toast.error('Delete failed');
+    } finally {
+      setDeleteTarget(null);
     }
   };
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">CAREER</p>
-          <h1 className="text-4xl font-black tracking-tight mb-2 text-foreground" style={{ fontFamily: 'DM Sans' }}>Experience</h1>
-          <p className="text-sm text-muted-foreground font-medium">Manage your professional career timeline and roles.</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex items-start gap-3">
+          <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-accent mb-3">CAREER</p>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-foreground" style={{ fontFamily: 'DM Sans' }}>Experience</h1>
+            <p className="text-sm text-muted-foreground font-medium">Manage your professional career timeline and roles.</p>
+          </div>
         </div>
         <Button
           onClick={() => navigate('/admin/experience/new')}
@@ -108,7 +118,7 @@ const AdminExperience = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="hover:bg-red-500/10 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-2 font-semibold"
-                        onClick={() => handleDelete(exp.id)}
+                        onClick={() => handleDelete(exp.id, exp.position)}
                       >
                         <Trash2 className="w-4 h-4 mr-2" /> Delete
                       </DropdownMenuItem>
@@ -124,6 +134,15 @@ const AdminExperience = () => {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Delete Experience?"
+        description={`"${deleteTarget?.label}" will be permanently deleted.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
