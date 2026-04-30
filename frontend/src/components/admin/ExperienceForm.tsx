@@ -1,91 +1,442 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  ArrowLeft,
-  Save,
-  Trash2,
-  Briefcase,
-  MapPin,
-  Calendar,
-  Building2,
-  Sparkles,
-  Plus
+  ArrowLeft, Save, Trash2, Briefcase, MapPin, Calendar, Building2,
+  Sparkles, Plus, ChevronDown, ChevronUp, Trophy, Image as ImageIcon,
+  Link as LinkIcon, FileText, Presentation, X, Star, GripVertical,
 } from 'lucide-react';
 import LogoUpload from './LogoUpload';
 import { CommonService } from '@/shared/services/common-service';
-import { Experience } from '@/types';
-import { toast } from "sonner";
+import { Experience, ExperienceRole, ExperienceMedia } from '@/types';
+import { toast } from 'sonner';
 
-const experienceSchema = z.object({
-  company: z.string().min(2, 'Company is required'),
-  position: z.string().min(2, 'Position is required'),
-  employmentType: z.string().default('Full-time'),
-  startDate: z.string().min(4, 'Start date is required'),
-  endDate: z.string().optional().or(z.literal('')),
-  isCurrent: z.boolean().default(false),
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const MONTHS = [
+  'January','February','March','April','May','June',
+  'July','August','September','October','November','December',
+];
+
+const EMPLOYMENT_TYPES = [
+  'Full-time','Part-time','Self-employed','Freelance',
+  'Contract','Internship','Apprenticeship','Seasonal',
+];
+
+const LOCATION_TYPES = ['On-site', 'Remote', 'Hybrid'] as const;
+
+const MEDIA_TYPES = ['Image', 'Document', 'Link', 'Presentation'] as const;
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function calcDuration(
+  startMonth?: string, startYear?: number,
+  endMonth?: string, endYear?: number,
+  isCurrent?: boolean,
+): string {
+  if (!startYear) return '';
+  const sIdx = startMonth ? MONTHS.indexOf(startMonth) : 0;
+  const s = new Date(startYear, sIdx, 1);
+  const e = isCurrent
+    ? new Date()
+    : endYear ? new Date(endYear, endMonth ? MONTHS.indexOf(endMonth) : 11, 1) : new Date();
+  let m = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+  if (m < 1) m = 1;
+  const yrs = Math.floor(m / 12);
+  const mos = m % 12;
+  return [yrs > 0 && `${yrs} yr${yrs > 1 ? 's' : ''}`, mos > 0 && `${mos} mo${mos > 1 ? 's' : ''}`]
+    .filter(Boolean).join(' ');
+}
+
+function parseLegacyDateStr(dateStr?: string): { month?: string; year?: number } {
+  if (!dateStr || dateStr === 'Present') return {};
+  const parts = dateStr.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    const monthStr = parts[0];
+    const yearNum = parseInt(parts[parts.length - 1]);
+    if (MONTHS.includes(monthStr) && !isNaN(yearNum)) {
+      return { month: monthStr, year: yearNum };
+    }
+  }
+  const yearOnly = parseInt(dateStr);
+  if (!isNaN(yearOnly)) return { year: yearOnly };
+  return {};
+}
+
+function makeEmptyRole(): ExperienceRole {
+  return { role_title: '', role_is_current: false, description: '', skills: [], media: [] };
+}
+
+function makeEmptyMedia(): ExperienceMedia {
+  return { media_type: 'Link', media_url: '', media_caption: '' };
+}
+
+// ─── Zod schema ───────────────────────────────────────────────────────────────
+
+const schema = z.object({
+  company_name: z.string().min(2, 'Company name is required'),
+  company_logo: z.string().optional(),
+  employment_type: z.string().default('Full-time'),
   location: z.string().min(2, 'Location is required'),
-  workMode: z.string().default('Remote'),
-  description: z.string().min(10, 'Description is too short'),
-  responsibilities: z.array(z.string()).min(1, 'Add at least one responsibility'),
-  technologies: z.array(z.string()).min(1, 'Add at least one technology'),
-  companyLogo: z.string().optional(),
+  location_type: z.string().default('On-site'),
+  is_current: z.boolean().default(false),
+  start_month: z.string().optional(),
+  start_year: z.coerce.number().min(1950).max(2100).optional(),
+  end_month: z.string().optional(),
+  end_year: z.coerce.number().min(1950).max(2100).optional(),
+  description: z.string().optional(),
+  achievements: z.string().optional(),
+  is_featured: z.boolean().default(false),
+  display_order: z.coerce.number().optional(),
 });
 
-type ExperienceFormValues = z.infer<typeof experienceSchema>;
+type FormValues = z.infer<typeof schema>;
+
+// ─── Role Sub-Form ────────────────────────────────────────────────────────────
+
+interface RoleSubFormProps {
+  role: ExperienceRole;
+  index: number;
+  total: number;
+  collapsed: boolean;
+  onToggle: () => void;
+  onUpdate: (r: ExperienceRole) => void;
+  onRemove: () => void;
+}
+
+function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemove }: RoleSubFormProps) {
+  const [newSkill, setNewSkill] = useState('');
+
+  const addSkill = () => {
+    const s = newSkill.trim();
+    if (!s || (role.skills ?? []).includes(s)) return;
+    if ((role.skills ?? []).length >= 20) {
+      toast.warning('Maximum 20 skills per role');
+      return;
+    }
+    onUpdate({ ...role, skills: [...(role.skills ?? []), s] });
+    setNewSkill('');
+  };
+
+  const removeSkill = (i: number) =>
+    onUpdate({ ...role, skills: (role.skills ?? []).filter((_, idx) => idx !== i) });
+
+  const addMedia = () =>
+    onUpdate({ ...role, media: [...(role.media ?? []), makeEmptyMedia()] });
+
+  const updateMedia = (mi: number, patch: Partial<ExperienceMedia>) =>
+    onUpdate({ ...role, media: (role.media ?? []).map((m, i) => i === mi ? { ...m, ...patch } : m) });
+
+  const removeMedia = (mi: number) =>
+    onUpdate({ ...role, media: (role.media ?? []).filter((_, i) => i !== mi) });
+
+  const duration = calcDuration(
+    role.role_start_month, role.role_start_year,
+    role.role_end_month, role.role_end_year,
+    role.role_is_current,
+  );
+
+  const mediaIcon = (type: ExperienceMedia['media_type']) => {
+    if (type === 'Image') return <ImageIcon className="w-3 h-3" />;
+    if (type === 'Document') return <FileText className="w-3 h-3" />;
+    if (type === 'Presentation') return <Presentation className="w-3 h-3" />;
+    return <LinkIcon className="w-3 h-3" />;
+  };
+
+  return (
+    <div className="border border-white/10 rounded-xl overflow-hidden">
+      {/* Role header / collapse toggle */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors"
+        onClick={onToggle}
+      >
+        <GripVertical className="w-4 h-4 text-white/20 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground truncate">
+            {role.role_title || <span className="text-white/30">Role {index + 1}</span>}
+          </p>
+          {duration && (
+            <p className="text-[10px] text-muted-foreground">{duration}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {total > 1 && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onRemove(); }}
+              className="p-1 rounded hover:bg-red-500/10 text-red-400 hover:text-red-300 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
+        </div>
+      </div>
+
+      {!collapsed && (
+        <div className="p-4 space-y-4 border-t border-white/10">
+          {/* Role Title */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-muted-foreground">Role Title *</label>
+            <Input
+              value={role.role_title}
+              onChange={(e) => onUpdate({ ...role, role_title: e.target.value })}
+              placeholder="e.g. Senior Frontend Engineer"
+              className="bg-white/5 border-white/10"
+            />
+          </div>
+
+          {/* Role dates */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold text-muted-foreground">Start</label>
+              <div className="flex gap-1.5">
+                <select
+                  value={role.role_start_month ?? ''}
+                  onChange={(e) => onUpdate({ ...role, role_start_month: e.target.value || undefined })}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-foreground"
+                >
+                  <option value="">Month</option>
+                  {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
+                </select>
+                <Input
+                  type="number"
+                  value={role.role_start_year ?? ''}
+                  onChange={(e) => onUpdate({ ...role, role_start_year: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Year"
+                  className="w-20 bg-white/5 border-white/10 text-xs"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold text-muted-foreground">End</label>
+              <div className="flex gap-1.5">
+                <select
+                  value={role.role_end_month ?? ''}
+                  onChange={(e) => onUpdate({ ...role, role_end_month: e.target.value || undefined })}
+                  disabled={role.role_is_current}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-foreground disabled:opacity-40"
+                >
+                  <option value="">Month</option>
+                  {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
+                </select>
+                <Input
+                  type="number"
+                  value={role.role_end_year ?? ''}
+                  onChange={(e) => onUpdate({ ...role, role_end_year: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Year"
+                  disabled={role.role_is_current}
+                  className="w-20 bg-white/5 border-white/10 text-xs disabled:opacity-40"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Currently in this role toggle */}
+          <label className="flex items-center gap-2.5 cursor-pointer group w-fit">
+            <div
+              className={`relative w-9 h-5 rounded-full transition-colors ${role.role_is_current ? 'bg-accent' : 'bg-white/10'}`}
+              onClick={() => onUpdate({ ...role, role_is_current: !role.role_is_current })}
+            >
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${role.role_is_current ? 'translate-x-4' : ''}`} />
+            </div>
+            <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+              Currently in this role
+            </span>
+          </label>
+
+          {/* Description */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] uppercase font-bold text-muted-foreground">Description</label>
+              <span className="text-[10px] text-muted-foreground/50">{(role.description ?? '').length}/2000</span>
+            </div>
+            <Textarea
+              value={role.description ?? ''}
+              onChange={(e) => onUpdate({ ...role, description: e.target.value })}
+              placeholder="Describe your responsibilities, what you worked on, and your impact..."
+              maxLength={2000}
+              rows={4}
+              className="bg-white/5 border-white/10 text-sm resize-none"
+            />
+          </div>
+
+          {/* Skills */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] uppercase font-bold text-muted-foreground">Skills</label>
+              <span className={`text-[10px] ${(role.skills ?? []).length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
+                {(role.skills ?? []).length}/20
+                {(role.skills ?? []).length > 5 && ' · LinkedIn recommends top 5'}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {(role.skills ?? []).map((s, i) => (
+                <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-medium">
+                  {s}
+                  <button type="button" onClick={() => removeSkill(i)} className="hover:text-red-400 transition-colors">
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-1.5">
+              <Input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill(); } }}
+                placeholder="Type a skill and press Enter…"
+                className="bg-white/5 border-white/10 text-xs h-8"
+              />
+              <Button type="button" variant="outline" size="sm" className="h-8 border-white/10 bg-white/5 text-xs" onClick={addSkill}>
+                <Plus className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Media */}
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase font-bold text-muted-foreground">Media</label>
+            {(role.media ?? []).length > 0 && (
+              <div className="space-y-2">
+                {(role.media ?? []).map((m, mi) => (
+                  <div key={mi} className="flex gap-2 items-start p-2 rounded-lg bg-white/[0.03] border border-white/5">
+                    <span className="mt-2 text-accent">{mediaIcon(m.media_type)}</span>
+                    <div className="flex-1 space-y-1.5">
+                      <select
+                        value={m.media_type}
+                        onChange={(e) => updateMedia(mi, { media_type: e.target.value as ExperienceMedia['media_type'] })}
+                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-foreground"
+                      >
+                        {MEDIA_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                      <Input
+                        value={m.media_url}
+                        onChange={(e) => updateMedia(mi, { media_url: e.target.value })}
+                        placeholder="URL"
+                        className="bg-white/5 border-white/10 text-xs h-7"
+                      />
+                      <Input
+                        value={m.media_caption ?? ''}
+                        onChange={(e) => updateMedia(mi, { media_caption: e.target.value })}
+                        placeholder="Caption (optional)"
+                        className="bg-white/5 border-white/10 text-xs h-7"
+                      />
+                    </div>
+                    <button type="button" onClick={() => removeMedia(mi)} className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(role.media ?? []).length < 10 && (
+              <Button type="button" variant="outline" size="sm" className="w-full border-dashed border-white/20 text-xs h-8" onClick={addMedia}>
+                <Plus className="w-3 h-3 mr-1.5" /> Add Media
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Form ────────────────────────────────────────────────────────────────
 
 const ExperienceForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [newTech, setNewTech] = useState('');
   const isEditMode = !!id && id !== 'new';
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ExperienceFormValues>({
-    resolver: zodResolver(experienceSchema),
+  // Roles managed as local state (complex nested objects)
+  const [roles, setRoles] = useState<ExperienceRole[]>([makeEmptyRole()]);
+  const [collapsedRoles, setCollapsedRoles] = useState<Set<number>>(new Set());
+
+  // Top-level skills and media
+  const [topSkills, setTopSkills] = useState<string[]>([]);
+  const [topMedia, setTopMedia] = useState<ExperienceMedia[]>([]);
+  const [newTopSkill, setNewTopSkill] = useState('');
+
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
-      employmentType: 'Full-time',
-      workMode: 'Remote',
-      isCurrent: false,
-      responsibilities: [''],
-      technologies: [],
-      companyLogo: '',
-    }
+      employment_type: 'Full-time',
+      location_type: 'On-site',
+      is_current: false,
+      is_featured: false,
+    },
   });
 
-  const companyLogo = watch('companyLogo');
+  const isCurrent = watch('is_current');
+  const startMonth = watch('start_month');
+  const startYear = watch('start_year');
+  const endMonth = watch('end_month');
+  const endYear = watch('end_year');
+  const companyLogo = watch('company_logo');
+  const locationType = watch('location_type');
+  const isFeatured = watch('is_featured');
 
-  const responsibilities = watch('responsibilities') || [];
-  const technologies = watch('technologies') || [];
+  const companyDuration = calcDuration(startMonth, startYear, endMonth, endYear, isCurrent);
 
-  const loadExperience = React.useCallback(async () => {
+  const loadExperience = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await CommonService.getWorkExperience();
       const item = data.find(exp => exp.id.toString() === id);
-      if (item) {
-        reset({
-          company: item.company,
-          position: item.position,
-          employmentType: item.employmentType,
-          startDate: item.startDate,
-          endDate: item.endDate || '',
-          isCurrent: item.isCurrent,
-          location: item.location,
-          workMode: item.workMode,
-          description: item.description,
-          responsibilities: item.responsibilities ?? [''],
-          technologies: item.technologies ?? [],
-          companyLogo: item.companyLogo ?? '',
-        });
+      if (!item) return;
+
+      // Parse roles — handle both new schema (roles[]) and old schema (single position)
+      if (item.roles && item.roles.length > 0) {
+        setRoles(item.roles);
+      } else {
+        const startParsed = parseLegacyDateStr(item.startDate);
+        const endParsed = parseLegacyDateStr(item.endDate);
+        setRoles([{
+          role_title: item.position ?? '',
+          role_is_current: item.is_current ?? item.isCurrent ?? false,
+          role_start_month: startParsed.month,
+          role_start_year: startParsed.year,
+          role_end_month: endParsed.month,
+          role_end_year: endParsed.year,
+          description: item.description ?? '',
+          skills: item.skills ?? item.technologies ?? [],
+          media: item.media ?? [],
+        }]);
       }
-    } catch (error) {
+
+      // Top-level skills / media
+      setTopSkills(item.skills ?? item.technologies ?? []);
+      setTopMedia(item.media ?? []);
+
+      // Parse company-level dates
+      const cStart = parseLegacyDateStr(item.startDate);
+      const cEnd = parseLegacyDateStr(item.endDate);
+
+      reset({
+        company_name: item.company_name ?? item.company ?? '',
+        company_logo: item.company_logo ?? item.companyLogo ?? '',
+        employment_type: item.employment_type ?? item.employmentType ?? 'Full-time',
+        location: item.location ?? '',
+        location_type: (item.location_type ?? item.workMode ?? 'On-site') as FormValues['location_type'],
+        is_current: item.is_current ?? item.isCurrent ?? false,
+        start_month: item.start_month ?? cStart.month,
+        start_year: item.start_year ?? cStart.year,
+        end_month: item.end_month ?? cEnd.month,
+        end_year: item.end_year ?? cEnd.year,
+        description: item.description ?? '',
+        achievements: item.achievements ?? item.impact ?? '',
+        is_featured: item.is_featured ?? false,
+        display_order: item.display_order ?? item.order_index,
+      });
+    } catch {
       toast.error('Failed to load experience');
     } finally {
       setIsLoading(false);
@@ -93,238 +444,490 @@ const ExperienceForm = () => {
   }, [id, reset]);
 
   useEffect(() => {
-    if (isEditMode) {
-      loadExperience();
-    }
+    if (isEditMode) loadExperience();
   }, [isEditMode, loadExperience]);
 
-  const onSubmit = async (data: ExperienceFormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    if (!data.company_logo) {
+      toast.error('Company logo is required');
+      return;
+    }
+    const emptyRoles = roles.filter(r => !r.role_title.trim());
+    if (emptyRoles.length > 0) {
+      toast.error('All roles must have a title');
+      return;
+    }
+
+    const startDateStr = data.start_month && data.start_year
+      ? `${data.start_month} ${data.start_year}` : '';
+    const endDateStr = !data.is_current && data.end_month && data.end_year
+      ? `${data.end_month} ${data.end_year}` : '';
+    const firstRole = roles[0];
+
+    const saveData: Partial<Experience> = {
+      // New schema
+      company_name: data.company_name,
+      company_logo: data.company_logo,
+      employment_type: data.employment_type,
+      location: data.location,
+      location_type: data.location_type as Experience['location_type'],
+      is_current: data.is_current,
+      start_month: data.start_month,
+      start_year: data.start_year,
+      end_month: data.end_month,
+      end_year: data.end_year,
+      roles,
+      description: data.description,
+      achievements: data.achievements,
+      skills: topSkills,
+      media: topMedia,
+      is_featured: data.is_featured,
+      display_order: data.display_order,
+      // Backward-compat aliases so old rendering code still works
+      company: data.company_name,
+      companyLogo: data.company_logo,
+      employmentType: data.employment_type,
+      workMode: data.location_type,
+      isCurrent: data.is_current,
+      startDate: startDateStr,
+      endDate: endDateStr,
+      position: firstRole?.role_title ?? '',
+      technologies: topSkills.length > 0 ? topSkills : (firstRole?.skills ?? []),
+      responsibilities: [],
+      impact: data.achievements,
+      order_index: data.display_order,
+    };
+
     try {
       setIsLoading(true);
       if (isEditMode) {
-        await CommonService.updateExperience(id!, data);
+        await CommonService.updateExperience(id!, saveData);
         toast.success('Experience updated');
       } else {
-        await CommonService.createExperience(data);
+        await CommonService.createExperience(saveData);
         toast.success('Experience added');
       }
       navigate('/admin/experience');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Operation failed';
-      toast.error(message);
+      toast.error(error instanceof Error ? error.message : 'Operation failed');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const toggleRoleCollapse = (i: number) =>
+    setCollapsedRoles(prev => {
+      const s = new Set(prev);
+      s.has(i) ? s.delete(i) : s.add(i);
+      return s;
+    });
+
+  const addRole = () => {
+    setRoles(r => [...r, makeEmptyRole()]);
+  };
+
+  const addTopMedia = () => setTopMedia(m => [...m, makeEmptyMedia()]);
+  const updateTopMedia = (i: number, patch: Partial<ExperienceMedia>) =>
+    setTopMedia(m => m.map((item, idx) => idx === i ? { ...item, ...patch } : item));
+  const removeTopMedia = (i: number) =>
+    setTopMedia(m => m.filter((_, idx) => idx !== i));
+
+  const addTopSkill = () => {
+    const s = newTopSkill.trim();
+    if (!s || topSkills.includes(s)) return;
+    if (topSkills.length >= 20) { toast.warning('Maximum 20 skills'); return; }
+    setTopSkills(prev => [...prev, s]);
+    setNewTopSkill('');
+  };
+
+  const mediaIcon = (type: ExperienceMedia['media_type']) => {
+    if (type === 'Image') return <ImageIcon className="w-3 h-3" />;
+    if (type === 'Document') return <FileText className="w-3 h-3" />;
+    if (type === 'Presentation') return <Presentation className="w-3 h-3" />;
+    return <LinkIcon className="w-3 h-3" />;
+  };
+
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
+      {/* ── Header ── */}
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full hover:bg-white/10"
+        <Button
+          variant="ghost" size="icon" className="rounded-full hover:bg-white/10"
           onClick={() => navigate('/admin/experience')}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {isEditMode ? 'Edit Experience' : 'New Role'}
+          <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'DM Sans' }}>
+            {isEditMode ? 'Edit Experience' : 'New Experience'}
           </h1>
-          <p className="text-muted-foreground">
-            "Your journey is a testament to your growth."
-          </p>
+          <p className="text-muted-foreground text-sm">Fill in the company details and roles below.</p>
         </div>
-        <Button 
-          onClick={handleSubmit(onSubmit)} 
+        <Button
+          onClick={handleSubmit(onSubmit)}
           className="ml-auto bg-accent hover:bg-accent/90 text-black font-bold px-8"
           disabled={isLoading}
         >
           <Save className="w-4 h-4 mr-2" />
-          Save Experience
+          {isLoading ? 'Saving…' : 'Save'}
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ── LEFT (main) ── */}
         <div className="lg:col-span-2 space-y-6">
+
+          {/* Section 1 — Company Info */}
           <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5">
-                <CardTitle className="text-lg flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-accent" />
-                    Role Details
-                </CardTitle>
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-accent" /> Company Info
+              </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">Position</label>
-                  <Input {...register('position')} placeholder="e.g. Senior Frontend Engineer" className="bg-white/5 border-white/10" />
-                  {errors.position && <p className="text-xs text-red-500">{errors.position.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">Company</label>
-                  <Input {...register('company')} placeholder="e.g. Google" className="bg-white/5 border-white/10" />
-                  {errors.company && <p className="text-xs text-red-500">{errors.company.message}</p>}
-                </div>
+            <CardContent className="p-5 space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-muted-foreground">Company / Organization *</label>
+                <Input {...register('company_name')} placeholder="e.g. Google" className="bg-white/5 border-white/10" />
+                {errors.company_name && <p className="text-xs text-red-400">{errors.company_name.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">Start Date</label>
-                  <Input {...register('startDate')} placeholder="e.g. June 2021" className="bg-white/5 border-white/10" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">End Date</label>
-                  <Input 
-                    {...register('endDate')} 
-                    placeholder="e.g. Present" 
-                    disabled={watch('isCurrent')}
-                    className="bg-white/5 border-white/10" 
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-muted-foreground">Employment Type</label>
+                <select
+                  {...register('employment_type')}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground"
+                >
+                  {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
               </div>
 
-              <div className="flex items-center gap-2 py-2">
-                <input type="checkbox" {...register('isCurrent')} className="w-4 h-4 accent-accent" />
-                <label className="text-sm">I currently work here</label>
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-muted-foreground">Location *</label>
+                <Input
+                  {...register('location')}
+                  placeholder="e.g. Colombo, Western Province, Sri Lanka"
+                  className="bg-white/5 border-white/10"
+                />
+                {errors.location && <p className="text-xs text-red-400">{errors.location.message}</p>}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">Overview Description</label>
-                <Textarea {...register('description')} className="bg-white/5 border-white/10" />
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-muted-foreground">Location Type</label>
+                <div className="flex gap-2">
+                  {LOCATION_TYPES.map(lt => (
+                    <button
+                      key={lt} type="button"
+                      onClick={() => setValue('location_type', lt)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                        locationType === lt
+                          ? 'bg-accent text-black border-accent'
+                          : 'bg-white/5 border-white/10 text-muted-foreground hover:border-white/20'
+                      }`}
+                    >
+                      {lt}
+                    </button>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Section 2 — Duration */}
           <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5">
-                <CardTitle className="text-lg flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-accent" />
-                    Responsibilities
-                </CardTitle>
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-accent" /> Company Duration
+              </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              {responsibilities.map((_, index) => (
-                <div key={index} className="flex gap-2">
-                  <Input 
-                    placeholder={`Responsibility ${index + 1}`} 
-                    className="bg-white/5 border-white/10"
-                    {...register(`responsibilities.${index}`)}
-                  />
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-red-500"
-                    onClick={() => setValue('responsibilities', responsibilities.filter((_, i) => i !== index))}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+            <CardContent className="p-5 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Start */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase font-bold text-muted-foreground">Start Date</label>
+                  <div className="flex gap-2">
+                    <select
+                      {...register('start_month')}
+                      className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-sm text-foreground"
+                    >
+                      <option value="">Month</option>
+                      {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
+                    </select>
+                    <Input
+                      {...register('start_year')}
+                      type="number" placeholder="Year"
+                      className="w-24 bg-white/5 border-white/10 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* End */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase font-bold text-muted-foreground">End Date</label>
+                  <div className="flex gap-2">
+                    <select
+                      {...register('end_month')}
+                      disabled={isCurrent}
+                      className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-sm text-foreground disabled:opacity-40"
+                    >
+                      <option value="">Month</option>
+                      {MONTHS.map(m => <option key={m} value={m}>{m.slice(0, 3)}</option>)}
+                    </select>
+                    <Input
+                      {...register('end_year')}
+                      type="number" placeholder="Year"
+                      disabled={isCurrent}
+                      className="w-24 bg-white/5 border-white/10 text-sm disabled:opacity-40"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Currently working toggle */}
+              <label className="flex items-center gap-3 cursor-pointer group w-fit">
+                <div
+                  className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${isCurrent ? 'bg-accent' : 'bg-white/10'}`}
+                  onClick={() => setValue('is_current', !isCurrent)}
+                >
+                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isCurrent ? 'translate-x-5' : ''}`} />
+                </div>
+                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                  Currently working here
+                </span>
+              </label>
+
+              {/* Auto duration */}
+              {companyDuration && (
+                <p className="text-xs text-accent font-semibold bg-accent/5 border border-accent/20 rounded-lg px-3 py-2 w-fit">
+                  {companyDuration}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Section 3 — Roles */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-accent" /> Roles at this Company
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5 space-y-3">
+              {roles.map((role, i) => (
+                <RoleSubForm
+                  key={i}
+                  role={role}
+                  index={i}
+                  total={roles.length}
+                  collapsed={collapsedRoles.has(i)}
+                  onToggle={() => toggleRoleCollapse(i)}
+                  onUpdate={(updated) => setRoles(r => r.map((x, idx) => idx === i ? updated : x))}
+                  onRemove={() => setRoles(r => r.filter((_, idx) => idx !== i))}
+                />
+              ))}
+              <Button
+                type="button" variant="outline"
+                className="w-full border-dashed border-white/20 text-muted-foreground hover:text-foreground text-sm"
+                onClick={addRole}
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add Another Role
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Section 4 — Description */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-accent" /> Overview Description
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs text-muted-foreground">Company-level summary (optional if roles have descriptions)</p>
+                <span className="text-[10px] text-muted-foreground/50">{(watch('description') ?? '').length}/2000</span>
+              </div>
+              <Textarea
+                {...register('description')}
+                placeholder="Describe your overall responsibilities, what you worked on, and your impact..."
+                maxLength={2000}
+                rows={5}
+                className="bg-white/5 border-white/10 resize-none"
+              />
+            </CardContent>
+          </Card>
+
+          {/* Section 5 — Achievements */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-accent" /> Key Achievements
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs text-muted-foreground">Metrics, wins, and impact highlights</p>
+                <span className="text-[10px] text-muted-foreground/50">{(watch('achievements') ?? '').length}/2000</span>
+              </div>
+              <Textarea
+                {...register('achievements')}
+                placeholder="e.g. Grew user base by 40%, Led a team of 8, Shipped 3 major features..."
+                maxLength={2000}
+                rows={4}
+                className="bg-white/5 border-white/10 resize-none"
+              />
+            </CardContent>
+          </Card>
+
+          {/* Section 6 — Top-Level Skills */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Star className="w-4 h-4 text-accent" /> Company-Level Skills
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">Skills used across all roles (optional — each role also has its own skills)</p>
+                <span className={`text-[10px] ${topSkills.length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
+                  {topSkills.length}/20
+                  {topSkills.length > 5 && ' · LinkedIn recommends top 5'}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {topSkills.map((s, i) => (
+                  <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-medium">
+                    {s}
+                    <button type="button" onClick={() => setTopSkills(prev => prev.filter((_, idx) => idx !== i))}>
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-1.5">
+                <Input
+                  value={newTopSkill}
+                  onChange={(e) => setNewTopSkill(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTopSkill(); } }}
+                  placeholder="Type a skill and press Enter…"
+                  className="bg-white/5 border-white/10 text-sm h-9"
+                />
+                <Button type="button" variant="outline" size="sm" className="h-9 border-white/10 bg-white/5" onClick={addTopSkill}>
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Section 7 — Top-Level Media */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-accent" /> Media
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5 space-y-3">
+              <p className="text-xs text-muted-foreground">Images, documents, links, or presentations — up to 10 items</p>
+              {topMedia.map((m, i) => (
+                <div key={i} className="flex gap-2 items-start p-3 rounded-lg bg-white/[0.03] border border-white/5">
+                  <span className="mt-2 text-accent">{mediaIcon(m.media_type)}</span>
+                  <div className="flex-1 space-y-1.5">
+                    <select
+                      value={m.media_type}
+                      onChange={(e) => updateTopMedia(i, { media_type: e.target.value as ExperienceMedia['media_type'] })}
+                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-foreground"
+                    >
+                      {MEDIA_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <Input
+                      value={m.media_url}
+                      onChange={(e) => updateTopMedia(i, { media_url: e.target.value })}
+                      placeholder="URL"
+                      className="bg-white/5 border-white/10 text-xs h-7"
+                    />
+                    <Input
+                      value={m.media_caption ?? ''}
+                      onChange={(e) => updateTopMedia(i, { media_caption: e.target.value })}
+                      placeholder="Caption (optional)"
+                      className="bg-white/5 border-white/10 text-xs h-7"
+                    />
+                  </div>
+                  <button type="button" onClick={() => removeTopMedia(i)} className="mt-1 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ))}
-              <Button 
-                variant="outline" 
-                className="w-full border-dashed border-white/20"
-                onClick={() => setValue('responsibilities', [...responsibilities, ''])}
-              >
-                <Plus className="w-4 h-4 mr-2" /> Add Responsibility
-              </Button>
+              {topMedia.length < 10 && (
+                <Button type="button" variant="outline" className="w-full border-dashed border-white/20 text-sm" onClick={addTopMedia}>
+                  <Plus className="w-4 h-4 mr-2" /> Add Media
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
 
+        {/* ── RIGHT (sidebar) ── */}
         <div className="space-y-6">
           {/* Company Logo */}
           <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-accent" />
-                Company Logo <span className="text-red-400 text-xs font-normal">(required)</span>
+                Company Logo <span className="text-red-400 text-[10px] font-normal">(required)</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
               <LogoUpload
                 value={companyLogo ?? ''}
-                onChange={(url) => setValue('companyLogo', url)}
+                onChange={(url) => setValue('company_logo', url)}
                 required
                 label="Company Logo"
+                size={80}
               />
             </CardContent>
           </Card>
 
+          {/* Section 8 — Settings */}
           <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-accent" />
-                    Location & Mode
-                </CardTitle>
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-accent" /> Settings
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-               <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-bold text-muted-foreground">Location</label>
-                  <Input {...register('location')} className="bg-white/5 border-white/10 h-8" />
-               </div>
-               <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-bold text-muted-foreground">Work Mode</label>
-                  <select {...register('workMode')} className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-sm">
-                    <option value="Remote">Remote</option>
-                    <option value="In-Office">In-Office</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-               </div>
+              {/* Featured toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Featured</p>
+                  <p className="text-[10px] text-muted-foreground">Pin at top of Experience section</p>
+                </div>
+                <div
+                  className={`relative w-10 h-5 rounded-full cursor-pointer transition-colors ${isFeatured ? 'bg-accent' : 'bg-white/10'}`}
+                  onClick={() => setValue('is_featured', !isFeatured)}
+                >
+                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isFeatured ? 'translate-x-5' : ''}`} />
+                </div>
+              </div>
+
+              {/* Display Order */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-muted-foreground">Display Order</label>
+                <Input
+                  {...register('display_order')}
+                  type="number"
+                  placeholder="e.g. 1"
+                  className="bg-white/5 border-white/10 text-sm"
+                />
+                <p className="text-[10px] text-muted-foreground/50">Lower = appears first</p>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-accent" />
-                    Technologies
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-               <div className="flex flex-wrap gap-2">
-                  {technologies.map((tech, i) => (
-                    <span key={i} className="px-2 py-1 rounded bg-white/10 text-xs border border-white/10 flex items-center gap-1">
-                        {tech}
-                        <button onClick={() => setValue('technologies', technologies.filter((_, idx) => idx !== i))}><Trash2 className="w-2 h-2" /></button>
-                    </span>
-                  ))}
-                  <div className="flex gap-1.5 w-full mt-1">
-                    <input
-                      value={newTech}
-                      onChange={(e) => setNewTech(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const t = newTech.trim();
-                          if (t && !technologies.includes(t)) {
-                            setValue('technologies', [...technologies, t]);
-                            setNewTech('');
-                          }
-                        }
-                      }}
-                      placeholder="e.g. React, Node.js…"
-                      className="flex-1 bg-white/[0.04] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none min-w-0"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-white/50 hover:text-white rounded-lg h-8 px-2.5 text-xs font-bold flex-shrink-0"
-                      onClick={() => {
-                        const t = newTech.trim();
-                        if (t && !technologies.includes(t)) {
-                          setValue('technologies', [...technologies, t]);
-                          setNewTech('');
-                        }
-                      }}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </div>
-               </div>
-            </CardContent>
-          </Card>
+          {/* LinkedIn Import Hint */}
+          <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+            <p className="text-[11px] text-muted-foreground/60 leading-relaxed">
+              <span className="font-semibold text-muted-foreground">Tip:</span> Structure your entries the same way as your LinkedIn profile for consistency — company name, roles, and dates should match exactly.
+            </p>
+          </div>
         </div>
       </div>
     </div>

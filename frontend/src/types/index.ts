@@ -62,23 +62,63 @@ export interface SkillSet {
   skills: Skill[];
 }
 
+export interface ExperienceMedia {
+  media_type: 'Image' | 'Document' | 'Link' | 'Presentation';
+  media_url: string;
+  media_caption?: string;
+}
+
+export interface ExperienceRole {
+  role_title: string;
+  role_start_month?: string;
+  role_start_year?: number;
+  role_end_month?: string;
+  role_end_year?: number;
+  role_is_current: boolean;
+  description?: string;
+  skills?: string[];
+  media?: ExperienceMedia[];
+}
+
 export interface Experience {
   id: number | string;
-  company: string;
-  position: string;
-  employmentType: string;
-  startDate: string;
-  endDate: string;
-  isCurrent: boolean;
-  location: string;
-  workMode: string;
-  department?: string;
-  description: string;
-  responsibilities: string[];
-  technologies: string[];
-  achievements: string[];
-  companyUrl?: string;
+
+  // ── New schema fields ──────────────────────────────────────────
+  company_name?: string;
+  company_logo?: string;
+  employment_type?: string;
+  location_type?: 'On-site' | 'Remote' | 'Hybrid';
+  is_current?: boolean;
+  start_month?: string;
+  start_year?: number;
+  end_month?: string;
+  end_year?: number;
+  roles?: ExperienceRole[];
+  achievements?: string;
+  skills?: string[];
+  media?: ExperienceMedia[];
+  display_order?: number;
+  is_featured?: boolean;
+
+  // ── Legacy / backward-compat fields ───────────────────────────
+  company?: string;
   companyLogo?: string;
+  companyUrl?: string;
+  employmentType?: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  location?: string;
+  workMode?: string;
+  department?: string;
+  description?: string;
+  responsibilities?: string[];
+  technologies?: string[];
+  position?: string;
+  impact?: string;
+  order_index?: number;
+
+  // ── Deprecated (kept for Firestore type-safety) ───────────────
   companyIndustry?: string;
   companySize?: string;
   teamSize?: number;
@@ -88,7 +128,6 @@ export interface Experience {
   referenceAvailable?: boolean;
   linkedinUrl?: string;
   mediaLinks?: string[];
-  impact?: string;
 }
 
 export interface Certificate {
