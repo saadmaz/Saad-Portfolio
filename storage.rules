@@ -7,7 +7,7 @@ service firebase.storage {
     // Replace YOUR_ADMIN_EMAIL_HERE with your actual admin email.
     function isAdmin() {
       return request.auth != null
-          && request.auth.token.email == "humayrashajahan@gmail.com";
+          && request.auth.token.email == "saadmazaa@gmail.com";
     }
 
     // Anyone can read public assets (logos, certificates, images).
