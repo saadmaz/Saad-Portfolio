@@ -1,7 +1,6 @@
 import {
   getStorage,
   ref,
-  refFromURL,
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
@@ -76,7 +75,14 @@ export const uploadImage = (
 };
 
 export const deleteImage = async (url: string): Promise<void> => {
-  // Download URLs need refFromURL; storage paths use ref directly
-  const fileRef = url.startsWith("https://") ? refFromURL(storage, url) : ref(storage, url);
-  await deleteObject(fileRef);
+  let storagePath: string;
+  if (url.startsWith("https://")) {
+    // Extract encoded path from download URL: .../o/<path>?alt=media&token=...
+    const match = url.match(/\/o\/(.+?)(?:\?|$)/);
+    if (!match) throw new Error("Invalid Firebase Storage URL");
+    storagePath = decodeURIComponent(match[1]);
+  } else {
+    storagePath = url;
+  }
+  await deleteObject(ref(storage, storagePath));
 };
