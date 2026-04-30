@@ -9,7 +9,7 @@
  * Security is enforced by Firestore Security Rules:
  *   match /blog_posts/{id} {
  *     allow read: if true;
- *     allow write: if request.auth != null;
+ *     allow write: if isAdmin();  // saadmazaa@gmail.com only
  *   }
  *
  * Public class API is kept identical - all hooks/pages stay unchanged.

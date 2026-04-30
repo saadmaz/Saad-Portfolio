@@ -8,8 +8,8 @@
  *
  * Security is enforced by Firestore Security Rules:
  *   match /projects/{id} {
- *     allow read: if true;                   // public - anyone can view projects
- *     allow write: if request.auth != null;  // admin only - must be signed in
+ *     allow read: if true;
+ *     allow write: if isAdmin();  // saadmazaa@gmail.com only
  *   }
  *
  * The public class API is kept identical so every admin page

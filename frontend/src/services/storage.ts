@@ -1,6 +1,7 @@
 import {
   getStorage,
   ref,
+  refFromURL,
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
@@ -75,6 +76,7 @@ export const uploadImage = (
 };
 
 export const deleteImage = async (url: string): Promise<void> => {
-  const fileRef = ref(storage, url);
+  // Download URLs need refFromURL; storage paths use ref directly
+  const fileRef = url.startsWith("https://") ? refFromURL(storage, url) : ref(storage, url);
   await deleteObject(fileRef);
 };

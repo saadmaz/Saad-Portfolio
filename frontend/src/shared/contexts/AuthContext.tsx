@@ -28,7 +28,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Safety check: if auth is not initialized, don't try to listen for state changes
     if (!auth || typeof auth.onAuthStateChanged !== 'function') {
       console.error("AuthContext: Firebase Auth is not initialized correctly.");
       setLoading(false);
@@ -41,17 +40,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     // Timeout to prevent white screen if Firebase hangs
-    const timeout = setTimeout(() => {
-      if (loading) {
-        setLoading(false);
-      }
-    }, 3000);
+    const timeout = setTimeout(() => setLoading(false), 3000);
 
     return () => {
       unsubscribe();
       clearTimeout(timeout);
     };
-  }, [loading]);
+  }, []);
 
   const logout = async () => {
     try {
