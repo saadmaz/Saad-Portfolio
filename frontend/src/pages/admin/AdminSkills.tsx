@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Calendar,
   Plus,
   Trash2,
@@ -170,16 +177,19 @@ const AdminSkills = () => {
                       </button>
                     </div>
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                      <select
+                      <Select
                         value={skill.level}
-                        onChange={(e) => updateSkill(catIndex, skillIndex, 'level', e.target.value)}
-                        className="bg-card border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-muted-foreground outline-none focus:border-accent/50 cursor-pointer"
+                        onValueChange={(v) => updateSkill(catIndex, skillIndex, 'level', v)}
                       >
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advance">Advance</option>
-                        <option value="Expert">Expert</option>
-                      </select>
+                        <SelectTrigger className="bg-card border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-muted-foreground h-auto focus:ring-accent/50">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border text-foreground">
+                          {(['Beginner', 'Intermediate', 'Advance', 'Expert'] as const).map(lvl => (
+                            <SelectItem key={lvl} value={lvl} className="text-xs">{lvl}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <div className="relative">
                         <Input
                           type="number"

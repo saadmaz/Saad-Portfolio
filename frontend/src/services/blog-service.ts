@@ -58,11 +58,13 @@ export class BlogService {
    * Used on the public /blog page.
    */
   static async getPublished(): Promise<BlogPost[]> {
-    const q = query(collection(db, COL), orderBy("date", "desc"));
+    const q = query(
+      collection(db, COL),
+      where("published", "==", true),
+      orderBy("date", "desc"),
+    );
     const snap = await getDocs(q);
-    return snap.docs
-      .map((d) => ({ id: d.id, ...d.data() } as BlogPost))
-      .filter((p) => p.published === true);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogPost));
   }
 
   /**

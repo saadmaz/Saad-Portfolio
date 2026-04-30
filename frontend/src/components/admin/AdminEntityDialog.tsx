@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -65,6 +65,8 @@ const AdminEntityDialog = ({
   isLoading,
   onDelete,
 }: AdminEntityDialogProps) => {
+  const [isSaving, setIsSaving] = useState(false);
+
   const form = useForm<EntityFormValues>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues || {},
@@ -77,8 +79,13 @@ const AdminEntityDialog = ({
   }, [isOpen, defaultValues, form]);
 
   const handleSubmit = async (data: EntityFormValues) => {
-    await onSubmit(data);
-    onClose();
+    setIsSaving(true);
+    try {
+      await onSubmit(data);
+      onClose();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -107,7 +114,7 @@ const AdminEntityDialog = ({
                       ) : field.type === 'select' ? (
                         <Select
                           onValueChange={formField.onChange}
-                          defaultValue={formField.value}
+                          value={(formField.value as string) ?? ''}
                         >
                           <SelectTrigger className="bg-secondary border-border text-foreground focus:border-accent/50">
                             <SelectValue placeholder={field.placeholder} />
@@ -138,8 +145,12 @@ const AdminEntityDialog = ({
                           placeholder={field.placeholder}
                           className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50"
                           onChange={(e) => {
-                            const val = field.type === 'number' ? parseFloat(e.target.value) : e.target.value;
-                            formField.onChange(val);
+                            if (field.type === 'number') {
+                              const raw = e.target.value;
+                              formField.onChange(raw === '' ? undefined : Number(raw));
+                            } else {
+                              formField.onChange(e.target.value);
+                            }
                           }}
                         />
                       )}
@@ -171,10 +182,10 @@ const AdminEntityDialog = ({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isSaving}
                   className="bg-accent hover:bg-accent/90 text-black font-bold px-8"
                 >
-                  {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                   Save Changes
                 </Button>
               </div>

@@ -27,6 +27,13 @@ import { toast } from "sonner";
 import ImageUpload from './ImageUpload';
 import MultiImageUpload from './MultiImageUpload';
 import { cn } from "@/shared/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // ── Schema ────────────────────────────────────────────────────────
 const projectSchema = z.object({
@@ -324,16 +331,16 @@ const ProjectForm = () => {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className={LABEL_CLS}>Type</label>
-                <select {...register('type')}
-                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
-                  <option value="">Select…</option>
-                  <option>Web Application</option>
-                  <option>Mobile App</option>
-                  <option>API / Backend</option>
-                  <option>Open Source</option>
-                  <option>Design</option>
-                  <option>Other</option>
-                </select>
+                <Select value={(watch('type') as string) ?? ''} onValueChange={(v) => setValue('type', v)}>
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                    <SelectValue placeholder="Select…" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border text-foreground">
+                    {['Web Application', 'Mobile App', 'API / Backend', 'Open Source', 'Design', 'Other'].map(t => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className={LABEL_CLS}>Category</label>
@@ -341,14 +348,16 @@ const ProjectForm = () => {
               </div>
               <div>
                 <label className={LABEL_CLS}>Stage</label>
-                <select {...register('stage')}
-                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
-                  <option value="">Select…</option>
-                  <option>Production</option>
-                  <option>Development</option>
-                  <option>Beta</option>
-                  <option>Archived</option>
-                </select>
+                <Select value={(watch('stage') as string) ?? ''} onValueChange={(v) => setValue('stage', v)}>
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                    <SelectValue placeholder="Select…" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border text-foreground">
+                    {['Production', 'Development', 'Beta', 'Archived'].map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </Section>
@@ -483,12 +492,16 @@ const ProjectForm = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={LABEL_CLS}>Status</label>
-                <select {...register('status')}
-                  className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
-                  <option>Completed</option>
-                  <option>In Progress</option>
-                  <option>Exploration</option>
-                </select>
+                <Select value={(watch('status') as string) ?? ''} onValueChange={(v) => setValue('status', v)}>
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                    <SelectValue placeholder="Select…" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border text-foreground">
+                    {['Completed', 'In Progress', 'Exploration'].map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className={LABEL_CLS}>Order Index</label>

@@ -14,6 +14,13 @@ import { Plus, Search, Calendar, MapPin, Edit2, Trash2, Globe, Loader2, Images, 
 import { toast } from "sonner";
 import BackButton from '@/components/admin/BackButton';
 import MultiImageUpload from '@/components/admin/MultiImageUpload';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 const eventSchema = z.object({
@@ -124,18 +131,26 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className={lbl}>Your Role * <span className="text-white/20 normal-case font-normal">(how you participated)</span></label>
-              <select {...register('role')} className={sel}>
-                <option value="">Select role…</option>
-                {ROLE_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
+              <Select value={watch('role')} onValueChange={(v) => setValue('role', v, { shouldValidate: true })}>
+                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/40 outline-none w-full h-auto">
+                  <SelectValue placeholder="Select role…" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border text-foreground">
+                  {ROLE_OPTIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                </SelectContent>
+              </Select>
               {errors.role && <p className="text-[11px] text-red-400">{errors.role.message}</p>}
             </div>
             <div className="space-y-1">
               <label className={lbl}>Event Type * <span className="text-white/20 normal-case font-normal">(category)</span></label>
-              <select {...register('type')} className={sel}>
-                <option value="">Select type…</option>
-                {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
+              <Select value={watch('type')} onValueChange={(v) => setValue('type', v, { shouldValidate: true })}>
+                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/40 outline-none w-full h-auto">
+                  <SelectValue placeholder="Select type…" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border text-foreground">
+                  {TYPE_OPTIONS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                </SelectContent>
+              </Select>
               {errors.type && <p className="text-[11px] text-red-400">{errors.type.message}</p>}
             </div>
           </div>
