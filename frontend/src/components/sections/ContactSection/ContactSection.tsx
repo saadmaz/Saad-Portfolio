@@ -1,13 +1,14 @@
+import React from "react";
 import { m } from "framer-motion";
 import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin, X, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const socialLinks = [
-  { Icon: Linkedin, href: "https://linkedin.com/in/saadmaz" },
-  { Icon: Github, href: "https://github.com/saadmaz" },
-  { Icon: Instagram, href: "https://instagram.com/saadmazhar_" },
-  { Icon: Facebook, href: "https://facebook.com/saadmazhar" },
-  { Icon: X, href: "https://x.com/SaadMazhar_" },
+  { Icon: Linkedin,  href: "https://linkedin.com/in/saadmaz",      label: "LinkedIn",  brandColor: "#0A66C2", glowColor: "rgba(10,102,194,0.40)" },
+  { Icon: Github,    href: "https://github.com/saadmaz",            label: "GitHub",    brandColor: "#a78bfa", glowColor: "rgba(167,139,250,0.40)" },
+  { Icon: Instagram, href: "https://instagram.com/saaadmaz/",       label: "Instagram", brandColor: "#E1306C", glowColor: "rgba(225,48,108,0.40)" },
+  { Icon: Facebook,  href: "https://facebook.com/saadmazhar03",     label: "Facebook",  brandColor: "#1877F2", glowColor: "rgba(24,119,242,0.40)" },
+  { Icon: X,         href: "https://x.com/SaadMazhar_",             label: "X",         brandColor: "#a0a0a0", glowColor: "rgba(160,160,160,0.40)" },
 ];
 
 export function ContactSection() {
@@ -87,6 +88,7 @@ export function ContactSection() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={social.label}
                   variants={{
                     hidden: { opacity: 0, y: 15, scale: 0.8 },
                     visible: {
@@ -96,15 +98,18 @@ export function ContactSection() {
                       transition: { type: "spring", stiffness: 400, damping: 15 },
                     },
                   }}
-                  whileHover={{
-                    y: -4,
-                    scale: 1.2,
-                    transition: { type: "spring", stiffness: 400, damping: 10 },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  className="p-2.5 rounded-lg bg-white/8 border border-white/10 text-white/70 hover:text-teal-400 hover:bg-white/15 hover:border-teal-400/40 transition-colors duration-200"
+                  whileHover={{ y: -4, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } }}
+                  whileTap={{ y: 0 }}
+                  className="social-icon-branded group"
+                  style={
+                    {
+                      "--brand-color": social.brandColor,
+                      "--glow-color": social.glowColor,
+                    } as React.CSSProperties
+                  }
                 >
-                  <social.Icon className="w-5 h-5" />
+                  <span className="social-icon-ring" />
+                  <social.Icon className="w-5 h-5 relative z-10 text-white/70 transition-colors duration-[250ms] group-hover:text-[var(--brand-color)]" />
                 </m.a>
               ))}
             </m.div>

@@ -1,35 +1,34 @@
 import { m } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useFeaturedProjects } from "@/shared/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 }
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export function FeaturedProjects() {
-  const { data: featuredProjects, isLoading } = useFeaturedProjects();
+  const { data: featuredProjects = [], isLoading } = useFeaturedProjects();
+
+  // Sort by most recent (order_index asc), show max 3 in grid, overflow → marquee
+  const sorted = [...featuredProjects].sort(
+    (a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)
+  );
+  const gridProjects = sorted.slice(0, 3);
+  const marqueeProjects = sorted.length > 3 ? sorted.slice(3) : [];
+  // Duplicate for seamless loop
+  const marqueeItems = [...marqueeProjects, ...marqueeProjects];
 
   if (isLoading) {
     return (
-      <section className="py-12 bg-secondary/30">
+      <section className="py-16 bg-secondary/30">
         <div className="section-container">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {[1, 2, 3].map(i => (
@@ -42,10 +41,10 @@ export function FeaturedProjects() {
   }
 
   return (
-    <section className="py-12 bg-secondary/30">
+    <section className="py-16 bg-secondary/30 overflow-hidden">
       <div className="section-container">
-        
-        {/* --- SECTION HEADER --- */}
+
+        {/* Section header */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,47 +57,55 @@ export function FeaturedProjects() {
             Projects I'm Proud Of
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            A selection of my most impactful work. Each project represents a unique challenge 
+            A selection of my most impactful work. Each project represents a unique challenge
             solved with thoughtful design and robust engineering.
           </p>
         </m.div>
 
-        {/* --- PROJECTS GRID --- */}
+        {/* Marquee strip — shown when >3 featured projects */}
+        {marqueeProjects.length > 0 && (
+          <div className="relative mb-10 overflow-hidden">
+            {/* Fade masks on edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 z-10 bg-gradient-to-r from-secondary/30 to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 z-10 bg-gradient-to-l from-secondary/30 to-transparent pointer-events-none" />
+
+            <div className="marquee-track gap-4 px-2">
+              {marqueeItems.map((project, i) => (
+                <div key={`${project.id}-${i}`} className="px-2">
+                  <ProjectCard project={project} compact />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Main 3-column grid */}
         <m.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-center"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
-          {featuredProjects?.map((project) => (
-            <m.div
-              key={project.id}
-              variants={itemVariants}
-              whileHover={{
-                y: -6,
-                rotateY: 2,
-                transition: { type: "spring", stiffness: 300, damping: 20 },
-              }}
-              style={{ perspective: 800 }}
-              className="group"
-            >
+          {gridProjects.map((project) => (
+            <m.div key={project.id} variants={itemVariants}>
               <ProjectCard project={project} />
             </m.div>
           ))}
         </m.div>
 
-        {/* --- VIEW ALL BUTTON --- */}
+        {/* View All — centered below, fill-left on hover */}
         <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-10"
+          transition={{ delay: 0.4 }}
+          className="text-center mt-12"
         >
-          <Button asChild variant="outline" className="btn-outline gap-2">
-            <Link to="/projects">View All Projects<ArrowUpRight className="w-4 h-4" /></Link>
-          </Button>
+          <Link to="/projects" className="btn-view-all">
+            View All Projects
+            <ArrowRight className="w-4 h-4 btn-arrow" />
+          </Link>
         </m.div>
       </div>
     </section>

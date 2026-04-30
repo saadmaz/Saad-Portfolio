@@ -91,3 +91,21 @@ export const useNewsletters = () =>
     queryKey: ['newsletters'],
     queryFn:  () => CommonService.getNewsletters(),
   });
+
+export const useTestimonials = () =>
+  useQuery({
+    queryKey: ['testimonials'],
+    queryFn:  () => CommonService.getTestimonials(),
+  });
+
+export const useLanguages = () =>
+  useQuery({
+    queryKey: ['languages'],
+    queryFn:  () => CommonService.getLanguages(),
+  });
+
+export const useAwards = () =>
+  useQuery({
+    queryKey: ['awards'],
+    queryFn:  () => CommonService.getAwards(),
+  });

@@ -1,10 +1,64 @@
+import React from "react";
 import { m, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X, Briefcase } from "lucide-react";
+import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import profilePhoto from "@/assets/profile-photo.webp";
 import { useRef } from "react";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
+
+// ─── Brand colors per social platform ────────────────────────────────────────
+const socials = [
+  {
+    icon: Phone,
+    href: "tel:+94720135801",
+    label: "Phone",
+    brandColor: "#25D366",
+    glowColor: "rgba(37,211,102,0.35)",
+  },
+  {
+    icon: Mail,
+    href: "mailto:saadmazaa@gmail.com",
+    label: "Email",
+    brandColor: "#EA4335",
+    glowColor: "rgba(234,67,53,0.35)",
+  },
+  {
+    icon: Linkedin,
+    href: "https://linkedin.com/in/saadmaz/",
+    label: "LinkedIn",
+    brandColor: "#0A66C2",
+    glowColor: "rgba(10,102,194,0.35)",
+  },
+  {
+    icon: Github,
+    href: "https://github.com/saadmaz/",
+    label: "GitHub",
+    brandColor: "#6e40c9",
+    glowColor: "rgba(110,64,201,0.35)",
+  },
+  {
+    icon: Instagram,
+    href: "https://instagram.com/saaadmaz/",
+    label: "Instagram",
+    brandColor: "#E1306C",
+    glowColor: "rgba(225,48,108,0.35)",
+  },
+  {
+    icon: Facebook,
+    href: "https://facebook.com/saadmazhar03",
+    label: "Facebook",
+    brandColor: "#1877F2",
+    glowColor: "rgba(24,119,242,0.35)",
+  },
+  {
+    icon: X,
+    href: "https://x.com/SaadMazhar_",
+    label: "X",
+    brandColor: "#000000",
+    glowColor: "rgba(80,80,80,0.40)",
+  },
+];
 
 // ─── Letter-by-letter span builder ───────────────────────────────────────────
 function AnimatedName({ name }: { name: string }) {
@@ -36,7 +90,6 @@ function AnimatedName({ name }: { name: string }) {
           {char}
         </m.span>
       ))}
-      {/* Teal underline accent */}
       <m.span
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
@@ -44,6 +97,45 @@ function AnimatedName({ name }: { name: string }) {
         className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-2 bg-accent/25 origin-left -z-0"
       />
     </m.span>
+  );
+}
+
+// ─── Social Icon with brand glow + pulse ring ─────────────────────────────────
+function SocialIcon({
+  icon: Icon,
+  href,
+  label,
+  brandColor,
+  glowColor,
+  index,
+}: (typeof socials)[0] & { index: number }) {
+  return (
+    <m.a
+      href={href}
+      target={href.startsWith("tel:") || href.startsWith("mailto:") ? undefined : "_blank"}
+      rel="noopener noreferrer"
+      aria-label={label}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.45,
+        delay: 1.15 + index * 0.08,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      whileHover={{ y: -4, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } }}
+      whileTap={{ y: 0 }}
+      className="social-icon-branded group relative"
+      style={
+        {
+          "--brand-color": brandColor,
+          "--glow-color": glowColor,
+        } as React.CSSProperties
+      }
+    >
+      {/* Pulse ring */}
+      <span className="social-icon-ring" />
+      <Icon className="w-5 h-5 relative z-10 transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] text-muted-foreground group-hover:text-[var(--brand-color)]" />
+    </m.a>
   );
 }
 
@@ -59,36 +151,16 @@ export function HeroSection() {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  const socials = [
-    { icon: Phone,     href: "tel:+94720135801",                     label: "Phone" },
-    { icon: Mail,      href: "mailto:saadmazaa@gmail.com",           label: "Email" },
-    { icon: Linkedin,  href: "https://linkedin.com/in/saadmaz/",     label: "LinkedIn" },
-    { icon: Github,    href: "https://github.com/saadmaz/",          label: "GitHub" },
-    { icon: Instagram, href: "https://instagram.com/saaadmaz/",      label: "Instagram" },
-    { icon: Facebook,  href: "https://facebook.com/saadmazhar03",    label: "Facebook" },
-    { icon: X,         href: "https://x.com/SaadMazhar_",            label: "X" },
-  ];
 
   return (
     <section className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
       {/* ── Background ─────────────────────────────────────────────────────── */}
       <div className="absolute inset-0 -z-10">
-        {/* Base gradient: uses the CSS var so it adapts to light/dark */}
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-        {/* Teal radial bloom on the right */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/10 via-accent/5 to-transparent" />
-        {/* Subtle dot-grid texture */}
         <div
           className="absolute inset-0 opacity-[0.025]"
           style={{
@@ -96,7 +168,6 @@ export function HeroSection() {
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Dark-mode only: ambient teal particle shimmer blobs */}
         <div className="hidden dark:block absolute top-1/4 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="hidden dark:block absolute bottom-1/4 right-1/4 w-72 h-72 bg-accent/8 rounded-full blur-[100px] pointer-events-none" />
       </div>
@@ -107,26 +178,20 @@ export function HeroSection() {
           {/* ── LEFT COLUMN: Text ───────────────────────────────────────────── */}
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
 
-            {/* Status badges row */}
+            {/* Status badge */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="flex flex-wrap justify-center lg:justify-start gap-2"
             >
-              {/* Currently building badge */}
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-xs md:text-sm font-medium border border-accent/20">
                 <span className="w-2 h-2 rounded-full bg-success animate-status-pulse" />
                 Currently building Tank Sudda &amp; Stopwash
               </span>
-              {/* Open to Work badge */}
-              {/* <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-xs md:text-sm font-semibold border border-emerald-500/25">
-                <Briefcase className="w-3.5 h-3.5" />
-                Open to Opportunities
-              </span> */}
             </m.div>
 
-            {/* Heading: "Hi, I'm" fades, then name tracks in letter-by-letter */}
+            {/* Heading */}
             <div className="space-y-4">
               <h1 className="font-display whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
                 <m.span
@@ -168,67 +233,50 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 1.0 }}
               className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3"
             >
-              {/* Primary: See My Work */}
-              <Button asChild className="btn-primary gap-2 w-full sm:w-auto">
-                <Link to="/projects">
-                  See My Work
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
-
-              {/* Secondary: Get in Touch */}
-              <Button
-                asChild
-                variant="outline"
-                className="btn-outline gap-2 w-full sm:w-auto"
+              {/* Primary — shimmer sweep on hover */}
+              <Link
+                to="/projects"
+                className="hero-btn-primary group inline-flex items-center justify-center gap-2 w-full sm:w-auto"
               >
-                <Link to="/contact">
-                  Get in Touch
-                </Link>
-              </Button>
+                See My Work
+                <ArrowRight className="w-4 h-4 transition-transform duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1" />
+              </Link>
 
-              {/* Tertiary: Resume download - icon-only on small screens */}
-              <Button
-                asChild
-                variant="ghost"
-                className="gap-2 w-full sm:w-auto text-muted-foreground hover:text-foreground"
+              {/* Secondary — fill from left on hover */}
+              <Link
+                to="/contact"
+                className="hero-btn-outline group inline-flex items-center justify-center gap-2 w-full sm:w-auto"
               >
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
-                  <Download className="w-4 h-4" />
-                  <span>Resume</span>
-                </a>
-              </Button>
+                Get in Touch
+              </Link>
+
+              {/* Ghost — resume download */}
+              <a
+                href={myResume}
+                download="Saad_Mazhar_Resume.pdf"
+                className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              >
+                <Download className="w-4 h-4" />
+                Resume
+              </a>
             </m.div>
 
-            {/* Social Icons with custom bounce effect */}
-            <m.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.15 }}
-              className="flex flex-col items-center lg:items-start gap-4 pt-4"
-            >
-              <span className="text-sm text-muted-foreground">Connect with me:</span>
+            {/* Social Icons */}
+            <div className="flex flex-col items-center lg:items-start gap-4 pt-4">
+              <m.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1 }}
+                className="text-sm text-muted-foreground"
+              >
+                Connect with me:
+              </m.span>
               <div className="flex flex-wrap justify-center gap-2">
                 {socials.map((social, i) => (
-                  <m.a
-                    key={i}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="social-icon"
-                    whileHover={{
-                      y: -5,
-                      scale: 1.15,
-                      transition: { type: "spring", stiffness: 400, damping: 10 },
-                    }}
-                    whileTap={{ scale: 0.92 }}
-                  >
-                    <social.icon className="w-5 h-5" />
-                  </m.a>
+                  <SocialIcon key={i} {...social} index={i} />
                 ))}
               </div>
-            </m.div>
+            </div>
           </div>
 
           {/* ── RIGHT COLUMN: Photo ─────────────────────────────────────────── */}
@@ -241,17 +289,16 @@ export function HeroSection() {
             <div
               ref={ref}
               onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={() => { x.set(0); y.set(0); }}
               className="relative"
               style={{ perspective: "1000px" }}
             >
-              {/* Teal ambient blobs behind photo */}
               <div className="absolute -top-8 -left-8 w-48 h-48 md:w-72 md:h-72 bg-accent/15 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-64 md:h-64 bg-accent/10 rounded-full blur-2xl" />
 
               <m.div style={{ rotateX, rotateY }} className="relative">
-                {/* Main photo card */}
-                <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border border-accent/20 group"
+                <div
+                  className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border border-accent/20 group"
                   style={{ boxShadow: "0 0 0 1px hsl(174 72% 44% / 0.15), 0 20px 40px -10px hsl(196 60% 4% / 0.4)" }}
                 >
                   <m.img
@@ -262,11 +309,9 @@ export function HeroSection() {
                     decoding="sync"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Teal overlay gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-accent/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
 
-                {/* Stats card (bottom-left) */}
                 <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -287,7 +332,6 @@ export function HeroSection() {
                   </div>
                 </m.div>
 
-                {/* Innovation card (top-right) */}
                 <m.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -296,7 +340,8 @@ export function HeroSection() {
                   style={{ boxShadow: "var(--shadow-card)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="hidden xs:flex w-8 h-8 rounded-lg items-center justify-center text-white font-bold text-sm"
+                    <div
+                      className="hidden xs:flex w-8 h-8 rounded-lg items-center justify-center text-white font-bold text-sm"
                       style={{ background: "var(--gradient-accent)" }}
                     >
                       S
