@@ -1,28 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import BackButton from '@/components/admin/BackButton';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Plus,
-  MoreVertical,
   Edit2,
   Trash2,
   Award,
   ExternalLink,
   Calendar,
   DatabaseZap,
+  Loader2,
+  Save,
 } from 'lucide-react';
 import { CommonService } from '@/shared/services/common-service';
 import { Certificate } from '@/types';
 import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import LogoUpload from '@/components/admin/LogoUpload';
 
 type SeedCert = Omit<Certificate, 'id'>;
 const SEED_DATA: SeedCert[] = [
@@ -127,12 +149,49 @@ const SEED_DATA: SeedCert[] = [
   { title: "Social Media Marketing: Strategy and Optimization", issuer: "LinkedIn Learning", platform: "LinkedIn Learning", issuer_logo: "/Logo/linkedin.svg", issue_date: "2026-02-12", expiry_date: null, does_not_expire: true, credential_id: "2e56fa98b6b17512399c58a14e842bac5dc3b5b050007d46d547c5bc5c6a0016", credential_url: "https://www.linkedin.com/learning/certificates/2e56fa98b6b17512399c58a14e842bac5dc3b5b050007d46d547c5bc5c6a0016", description: "Successfully completed 'Social Media Marketing: Strategy and Optimization' by Martin Waxman.", skills: ["Social Media Marketing", "Social Media Optimization (SMO)"], category: "Marketing & Communication", type: "course", tags: ["Social Media Strategy", "SMO", "Digital Marketing", "Content Optimization", "Marketing Analytics"], pdf_document_link: "/Certificates/99 - CertificateOfCompletion_Social Media Marketing Strategy and Optimization.pdf", is_verifiable: true, is_featured: false },
 ];
 
+const certEditSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  issuer: z.string().min(1, 'Issuer is required'),
+  platform: z.string().min(1, 'Platform is required'),
+  issuer_logo: z.string().optional().or(z.literal('')),
+  issue_date: z.string().min(1, 'Issue date is required'),
+  credential_url: z.string().url('Invalid URL').optional().or(z.literal('')),
+  description: z.string().optional(),
+  category: z.string().default('Technology & Web Development'),
+  type: z.string().default('course'),
+  is_featured: z.boolean().default(false),
+  pdf_document_link: z.string().optional().or(z.literal('')),
+});
+
+type CertEditFormData = z.infer<typeof certEditSchema>;
+
+const CERT_CATEGORIES = [
+  'AI/ML', 'Business & Strategy', 'Cloud & DevOps', 'Cybersecurity',
+  'Data Science & Analytics', 'Marketing & Communication',
+  'Software Development', 'Soft Skills', 'Technology & Web Development',
+];
+const CERT_TYPES = ['course', 'certification', 'professional certificate', 'bootcamp'];
+
+const defaultCertValues: CertEditFormData = {
+  title: '', issuer: '', platform: '', issuer_logo: '',
+  issue_date: '', credential_url: '', description: '',
+  category: 'Technology & Web Development', type: 'course',
+  is_featured: false, pdf_document_link: '',
+};
+
 const AdminCertificates = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSeedLoading, setIsSeedLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editCert, setEditCert] = useState<Certificate | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string | number; label: string } | null>(null);
-  const navigate = useNavigate();
+
+  const form = useForm<CertEditFormData>({
+    resolver: zodResolver(certEditSchema),
+    defaultValues: defaultCertValues,
+  });
 
   useEffect(() => {
     fetchCertificates();
@@ -162,7 +221,59 @@ const AdminCertificates = () => {
     }
   };
 
-  const handleDelete = (id: string | number, label: string) => setDeleteTarget({ id, label });
+  const openSheet = (cert: Certificate | null) => {
+    setEditCert(cert);
+    form.reset(cert ? {
+      title: cert.title,
+      issuer: cert.issuer,
+      platform: cert.platform,
+      issuer_logo: cert.issuer_logo ?? '',
+      issue_date: cert.issue_date,
+      credential_url: cert.credential_url ?? '',
+      description: cert.description ?? '',
+      category: cert.category,
+      type: cert.type,
+      is_featured: cert.is_featured,
+      pdf_document_link: cert.pdf_document_link ?? '',
+    } : defaultCertValues);
+    setIsSheetOpen(true);
+  };
+
+  const closeSheet = () => {
+    if (form.formState.isDirty) {
+      if (!window.confirm('You have unsaved changes. Discard them?')) return;
+    }
+    setIsSheetOpen(false);
+    setEditCert(null);
+  };
+
+  const handleSheetSave = async (data: CertEditFormData) => {
+    setIsSaving(true);
+    try {
+      if (editCert) {
+        await CommonService.updateCertificate(editCert.id, data);
+        toast.success('Certificate updated');
+      } else {
+        await CommonService.createCertificate(data);
+        toast.success('Certificate added');
+      }
+      form.reset(defaultCertValues);
+      setIsSheetOpen(false);
+      setEditCert(null);
+      fetchCertificates();
+    } catch {
+      toast.error('Failed to save certificate');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteRequest = () => {
+    if (!editCert) return;
+    setIsSheetOpen(false);
+    setDeleteTarget({ id: editCert.id, label: editCert.title });
+  };
+
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     try {
@@ -175,6 +286,7 @@ const AdminCertificates = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="flex items-start gap-3">
           <BackButton to="/admin/dashboard" className="mt-1 flex-shrink-0" />
@@ -184,96 +296,288 @@ const AdminCertificates = () => {
             <p className="text-sm text-muted-foreground font-medium">Showcase your verified achievements and professional learning.</p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-shrink-0">
           {!isLoading && certificates.length === 0 && (
             <Button
               variant="outline"
               onClick={handleSeed}
               disabled={isSeedLoading}
-              className="border-accent/30 hover:bg-accent/10 rounded-xl px-4 py-2 text-accent hover:text-accent transition-all shadow-sm"
+              className="border-accent/30 hover:bg-accent/10 rounded-lg h-11 px-5 text-accent hover:text-accent transition-all shadow-sm font-black"
             >
               <DatabaseZap className="w-4 h-4 mr-2" /> {isSeedLoading ? 'Seeding...' : 'Seed Default Data'}
             </Button>
           )}
           <Button
-            onClick={() => navigate('/admin/certificates/new')}
-            className="bg-accent hover:bg-accent/90 text-black font-bold rounded-xl transition-all hover:scale-105 active:scale-95"
+            onClick={() => openSheet(null)}
+            className="bg-accent hover:bg-accent/90 text-black font-black h-11 px-6 rounded-lg"
           >
-            <Plus className="w-5 h-5 mr-2" /> Add Certificate
+            <Plus className="w-4 h-4 mr-2" /> Add Certificate
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoading ? (
-          [1, 2, 3].map(i => <div key={i} className="h-64 bg-secondary border border-border rounded-2xl animate-pulse" />)
+          [1, 2, 3].map(i => (
+            <div key={i} className="h-[272px] w-full bg-secondary border border-border rounded-xl animate-pulse" />
+          ))
         ) : certificates.length > 0 ? (
-          certificates.map((cert) => (
-            <Card key={cert.id} className="bg-card border-border shadow-sm hover:border-accent/30 transition-all group relative rounded-2xl overflow-hidden">
-                <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl bg-card/90 backdrop-blur-md border-border hover:bg-secondary">
-                                <MoreVertical className="w-4 h-4 text-foreground" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-card border-border text-foreground rounded-xl shadow-xl p-1">
-                            <DropdownMenuItem
-                                className="hover:bg-accent hover:text-black cursor-pointer rounded-lg m-1 py-1.5 font-semibold"
-                                onClick={() => navigate(`/admin/certificates/${cert.id}`)}
-                            >
-                                <Edit2 className="w-4 h-4 mr-2" /> Edit Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="hover:bg-red-500/10 hover:text-red-500 cursor-pointer text-red-400 rounded-lg m-1 py-1.5 font-semibold"
-                                onClick={() => handleDelete(cert.id, cert.title)}
-                            >
-                                <Trash2 className="w-4 h-4 mr-2" /> Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+          certificates.map((cert, index) => (
+            <button
+              key={cert.id}
+              type="button"
+              onClick={() => openSheet(cert)}
+              className="group relative bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:border-accent/30 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 text-left h-[272px] flex flex-col cursor-pointer animate-in fade-in slide-in-from-bottom-2"
+              style={{ animationDelay: `${index * 30}ms`, animationDuration: '300ms', animationFillMode: 'both' }}
+            >
+              {/* Hover tint */}
+              <div className="absolute inset-0 bg-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10" />
+
+              {/* Edit icon badge */}
+              <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-7 h-7 rounded-lg bg-card/90 backdrop-blur-sm border border-border/80 flex items-center justify-center text-accent shadow-sm">
+                  <Edit2 className="w-3.5 h-3.5" />
                 </div>
+              </div>
 
-                <div className="aspect-[16/9] bg-secondary border-b border-border flex items-center justify-center p-10 overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    {cert.issuer_logo ? (
-                        <img
-                          src={cert.issuer_logo}
-                          alt={cert.issuer}
-                          className="w-24 h-24 object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 z-10"
-                        />
-                    ) : (
-                        <Award className="w-16 h-16 text-accent/20 group-hover:text-accent/40 transition-colors z-10" />
-                    )}
-                </div>
+              {/* Logo area — fixed 144px height */}
+              <div className="h-[144px] bg-secondary border-b border-border flex items-center justify-center p-8 flex-shrink-0 overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {cert.issuer_logo ? (
+                  <img
+                    src={cert.issuer_logo}
+                    alt={cert.issuer}
+                    className="h-16 w-24 object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300 z-10"
+                  />
+                ) : (
+                  <Award className="w-12 h-12 text-accent/20 group-hover:text-accent/50 transition-colors z-10" />
+                )}
+              </div>
 
-                <CardContent className="p-5 flex flex-col h-full">
-                  <h3 className="font-bold text-foreground text-lg line-clamp-1 mb-1 group-hover:text-accent transition-colors">{cert.title}</h3>
-                  <p className="text-sm font-medium text-muted-foreground mb-4">{cert.issuer}</p>
+              {/* Content — fills remaining height */}
+              <div className="p-4 flex flex-col flex-1 min-h-0">
+                <h3
+                  className="font-black text-foreground text-sm line-clamp-2 group-hover:text-accent transition-colors leading-snug"
+                  style={{ fontFamily: 'DM Sans' }}
+                >
+                  {cert.title}
+                </h3>
+                <p className="text-xs text-muted-foreground font-semibold mt-0.5 truncate">{cert.issuer}</p>
 
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
-                    <span className="text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-accent" /> {cert.issue_date}
-                    </span>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-[11px] font-black uppercase tracking-wider hover:text-accent p-2 rounded-lg hover:bg-secondary group-hover:translate-x-1 transition-all text-muted-foreground"
-                        onClick={() => window.open(cert.credential_url, '_blank')}
+                <div className="mt-auto flex items-center justify-between pt-2 border-t border-border">
+                  <span className="text-[10px] text-muted-foreground/70 font-medium flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-accent/70" />
+                    {cert.issue_date}
+                  </span>
+                  {cert.credential_url && (
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); window.open(cert.credential_url, '_blank'); }}
+                      className="text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors flex items-center gap-1"
                     >
-                        Verify <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                    </Button>
-                  </div>
-                </CardContent>
-            </Card>
+                      Verify <ExternalLink className="w-2.5 h-2.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </button>
           ))
         ) : (
-          <div className="col-span-full p-12 text-center border-2 border-dashed border-border rounded-2xl bg-card shadow-sm">
-            <p className="text-muted-foreground font-medium">No certificates added yet.</p>
+          <div className="col-span-full rounded-xl border border-dashed border-border bg-card p-12 text-center shadow-sm">
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-4">
+              <Award className="w-8 h-8 text-accent/50" />
+            </div>
+            <h3 className="text-base font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No certificates added</h3>
+            <p className="text-sm text-muted-foreground/60 mt-1 font-medium">Showcase your verified achievements and professional learning.</p>
+            <Button onClick={() => openSheet(null)} className="mt-4 bg-accent hover:bg-accent/90 text-black font-black h-10 px-5 rounded-lg">
+              <Plus className="w-4 h-4 mr-1.5" /> Add Certificate
+            </Button>
           </div>
         )}
       </div>
-      <ConfirmDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} title="Delete Certificate?" description={`"${deleteTarget?.label}" will be permanently deleted.`} confirmLabel="Delete" onConfirm={handleConfirmDelete} />
+
+      {/* Edit / Add Sheet */}
+      <Sheet open={isSheetOpen} onOpenChange={(o) => !o && closeSheet()}>
+        <SheetContent
+          side="right"
+          className="w-full sm:max-w-[480px] bg-card border-l border-border text-foreground flex flex-col p-0"
+        >
+          <SheetHeader className="px-6 py-4 border-b border-border flex-shrink-0">
+            <SheetTitle className="text-xl font-black text-foreground" style={{ fontFamily: 'DM Sans' }}>
+              {editCert ? 'Edit Certificate' : 'Add Certificate'}
+            </SheetTitle>
+          </SheetHeader>
+
+          <ScrollArea className="flex-1">
+            <Form {...form}>
+              <form id="cert-sheet-form" onSubmit={form.handleSubmit(handleSheetSave)} className="px-6 py-4 space-y-4">
+                <FormField control={form.control} name="issuer_logo" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">Issuer Logo</FormLabel>
+                    <FormControl>
+                      <LogoUpload value={field.value as string} onChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="title" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">Certificate Title *</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="e.g. Python Essential Training" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-xs" />
+                  </FormItem>
+                )} />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField control={form.control} name="issuer" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-muted-foreground font-medium text-sm">Issuer *</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-xs" />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="platform" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-muted-foreground font-medium text-sm">Platform *</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-xs" />
+                    </FormItem>
+                  )} />
+                </div>
+
+                <FormField control={form.control} name="issue_date" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">Issue Date *</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="YYYY-MM-DD" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-xs" />
+                  </FormItem>
+                )} />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField control={form.control} name="category" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-muted-foreground font-medium text-sm">Category</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value as string}>
+                        <FormControl>
+                          <SelectTrigger className="bg-secondary border-border text-foreground focus:border-accent/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-card border-border text-foreground">
+                          {CERT_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="type" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-muted-foreground font-medium text-sm">Type</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value as string}>
+                        <FormControl>
+                          <SelectTrigger className="bg-secondary border-border text-foreground focus:border-accent/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-card border-border text-foreground">
+                          {CERT_TYPES.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )} />
+                </div>
+
+                <FormField control={form.control} name="credential_url" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">Credential URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="https://..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-xs" />
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="pdf_document_link" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">PDF Link (Optional)</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="/Certificates/..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                    </FormControl>
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="description" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground font-medium text-sm">Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="What did you learn?"
+                        className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50 min-h-[90px]"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="is_featured" render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 py-1">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value as boolean}
+                        onCheckedChange={field.onChange}
+                        className="border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent"
+                      />
+                    </FormControl>
+                    <FormLabel className="text-sm font-medium text-muted-foreground cursor-pointer !mt-0">
+                      Feature this certificate
+                    </FormLabel>
+                  </FormItem>
+                )} />
+              </form>
+            </Form>
+          </ScrollArea>
+
+          {/* Sheet footer */}
+          <div className="px-6 py-4 border-t border-border flex-shrink-0 space-y-2">
+            <Button
+              type="submit"
+              form="cert-sheet-form"
+              disabled={isSaving}
+              className="w-full bg-accent hover:bg-accent/90 text-black font-black h-11"
+            >
+              {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              <Save className="w-4 h-4 mr-2" /> Save Changes
+            </Button>
+            {editCert && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleDeleteRequest}
+                className="w-full text-red-400 hover:bg-red-500/10 hover:text-red-500 border border-red-500/20 font-black"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete Entry
+              </Button>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Delete Certificate?"
+        description={`"${deleteTarget?.label}" will be permanently deleted.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };

@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import LogoUpload from './LogoUpload';
 
@@ -51,6 +51,7 @@ interface AdminEntityDialogProps {
   defaultValues?: EntityFormValues;
   onSubmit: (data: EntityFormValues) => Promise<void>;
   isLoading?: boolean;
+  onDelete?: () => void;
 }
 
 const AdminEntityDialog = ({
@@ -61,7 +62,8 @@ const AdminEntityDialog = ({
   schema,
   defaultValues,
   onSubmit,
-  isLoading
+  isLoading,
+  onDelete,
 }: AdminEntityDialogProps) => {
   const form = useForm<EntityFormValues>({
     resolver: zodResolver(schema),
@@ -147,23 +149,35 @@ const AdminEntityDialog = ({
                 )}
               />
             ))}
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onClose}
-                className="hover:bg-secondary text-muted-foreground"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="bg-accent hover:bg-accent/90 text-black font-bold px-8"
-              >
-                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Save Changes
-              </Button>
+            <DialogFooter className="pt-4 flex-col gap-2 sm:flex-col">
+              {onDelete && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onDelete}
+                  className="w-full text-red-400 hover:bg-red-500/10 hover:text-red-500 border border-red-500/20 justify-center"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" /> Delete Entry
+                </Button>
+              )}
+              <div className="flex gap-2 justify-end w-full">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onClose}
+                  className="hover:bg-secondary text-muted-foreground"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-accent hover:bg-accent/90 text-black font-bold px-8"
+                >
+                  {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Save Changes
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         </Form>
