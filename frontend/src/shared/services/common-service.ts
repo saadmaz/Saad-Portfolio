@@ -164,7 +164,7 @@ export class CommonService {
     const created = await Promise.all(
       data.map((skillSet) =>
         addDoc(collection(db, COLLECTIONS.skills), {
-          ...skillSet,
+          ...stripUndefined(skillSet),
           updated_at: serverTimestamp(),
         })
       )

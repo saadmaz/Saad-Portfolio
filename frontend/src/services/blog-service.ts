@@ -113,21 +113,23 @@ export class BlogService {
 
   /** Create a new blog post. Firestore auto-generates the document ID. */
   static async create(post: Partial<BlogPost>): Promise<BlogPost> {
+    const clean = JSON.parse(JSON.stringify(post));
     const ref = await addDoc(collection(db, COL), {
-      ...post,
+      ...clean,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     });
-    return { id: ref.id, ...post } as BlogPost;
+    return { id: ref.id, ...clean } as BlogPost;
   }
 
   /** Merge-update an existing post. Only changed fields are overwritten. */
   static async update(id: string | number, post: Partial<BlogPost>): Promise<BlogPost> {
+    const clean = JSON.parse(JSON.stringify(post));
     await updateDoc(doc(db, COL, String(id)), {
-      ...post,
+      ...clean,
       updated_at: serverTimestamp(),
     });
-    return { id, ...post } as BlogPost;
+    return { id, ...clean } as BlogPost;
   }
 
   /** Permanently delete a blog post by ID. */

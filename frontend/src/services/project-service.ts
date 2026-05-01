@@ -108,12 +108,13 @@ export class ProjectService {
    * Returns the saved project including the generated ID.
    */
   static async create(project: Partial<Project>): Promise<Project> {
+    const clean = JSON.parse(JSON.stringify(project));
     const ref = await addDoc(collection(db, COL), {
-      ...project,
+      ...clean,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     });
-    return { id: ref.id, ...project } as Project;
+    return { id: ref.id, ...clean } as Project;
   }
 
   /**
@@ -121,11 +122,12 @@ export class ProjectService {
    * Only the fields passed in are changed - other fields are preserved.
    */
   static async update(id: string | number, project: Partial<Project>): Promise<Project> {
+    const clean = JSON.parse(JSON.stringify(project));
     await updateDoc(doc(db, COL, String(id)), {
-      ...project,
+      ...clean,
       updated_at: serverTimestamp(),
     });
-    return { id, ...project } as Project;
+    return { id, ...clean } as Project;
   }
 
   /** Permanently delete a project document by ID. */
