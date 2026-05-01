@@ -238,16 +238,77 @@ export interface VolunteerExperience {
   link?: string;
 }
 
+export interface EducationProject {
+  project_title: string;
+  project_description?: string;
+  project_url?: string;
+  project_thumbnail?: string;
+}
+
+export interface EducationMedia {
+  media_type: 'Image' | 'Document' | 'Link' | 'Presentation';
+  media_url: string;
+  media_caption: string;
+  media_description?: string;
+  media_date_month?: string;
+  media_date_year?: number;
+  thumbnail_url?: string;
+}
+
+export interface EducationAward {
+  award_title: string;
+  award_issuer?: string;
+  award_date_month?: string;
+  award_date_year?: number;
+  award_description?: string;
+}
+
 export interface Education {
   id: string;
-  institution: string;
-  degree: string;
-  fieldOfStudy: string;
-  startDate: string;
-  endDate?: string;
-  isCurrent: boolean;
+
+  // Institution
+  school_name: string;
+  school_logo: string;
+  school_website_url?: string;
+
+  // Degree
+  degree?: string;
+  field_of_study?: string;
+
+  // Duration
+  start_month?: string;
+  start_year?: number;
+  end_month?: string;
+  end_year?: number;
+  is_current: boolean;
+
+  // Academic
   grade?: string;
+  show_grade_publicly?: boolean;
+  activities_and_societies?: string;
   description?: string;
+
+  // Arrays
+  skills?: string[];
+  projects?: EducationProject[];
+  media?: EducationMedia[];
+  honors_and_awards?: EducationAward[];
+
+  // Settings
+  is_featured?: boolean;
+  display_order?: number;
+  is_published?: boolean;
+
+  // Timestamps
+  created_at?: FirestoreLikeTimestamp;
+  updated_at?: FirestoreLikeTimestamp;
+
+  // Legacy backward-compat (old Firestore docs)
+  institution?: string;
+  fieldOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
   logo?: string;
 }
 

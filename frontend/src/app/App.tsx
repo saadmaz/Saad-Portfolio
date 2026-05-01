@@ -52,6 +52,7 @@ const AdminHackathons = React.lazy(() => import("../pages/admin/AdminHackathons"
 const AdminTestimonials = React.lazy(() => import("../pages/admin/AdminTestimonials"));
 const AdminVolunteer = React.lazy(() => import("../pages/admin/AdminVolunteer"));
 const AdminEducation = React.lazy(() => import("../pages/admin/AdminEducation"));
+const EducationForm = React.lazy(() => import("../components/admin/EducationForm"));
 const AdminEvents = React.lazy(() => import("../pages/admin/AdminEvents"));
 const AdminNewsletters = React.lazy(() => import("../pages/admin/AdminNewsletters"));
 const AdminMessages = React.lazy(() => import("../pages/admin/AdminMessages"));
@@ -140,6 +141,8 @@ const App = () => (
                         <Route path="testimonials" element={<AdminTestimonials />} />
                         <Route path="volunteer" element={<AdminVolunteer />} />
                         <Route path="education" element={<AdminEducation />} />
+                        <Route path="education/new" element={<EducationForm />} />
+                        <Route path="education/:id" element={<EducationForm />} />
                         <Route path="events" element={<AdminEvents />} />
                         <Route path="newsletters" element={<AdminNewsletters />} />
                         <Route path="messages" element={<AdminMessages />} />
