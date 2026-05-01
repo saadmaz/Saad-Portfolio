@@ -61,6 +61,7 @@ const AdminPublications = React.lazy(() => import("../pages/admin/AdminPublicati
 const AdminPatents = React.lazy(() => import("../pages/admin/AdminPatents"));
 const AdminOrganizations = React.lazy(() => import("../pages/admin/AdminOrganizations"));
 const PublicationsPage = React.lazy(() => import("../pages/PublicationsPage"));
+const EducationPage = React.lazy(() => import("../pages/EducationPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -110,6 +111,7 @@ const App = () => (
                       <Route path="/events" element={<EventsPage />} />
                       <Route path="/events/:id" element={<EventDetailPage />} />
                       <Route path="/publications" element={<PublicationsPage />} />
+                      <Route path="/education" element={<EducationPage />} />
 
                       <Route path="/admin/login" element={<AdminLoginPage />} />
                       <Route

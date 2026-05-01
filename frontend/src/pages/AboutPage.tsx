@@ -11,12 +11,11 @@ import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, Exter
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge";
-import { educationList } from "@/data/personal/education";
 import { languages, volunteer, sports, awards } from "@/data/personal/about";
-import { EducationDialog } from "@/components/education/EducationDialog";
-import { useHackathons, useVolunteer, useCourses, usePatents, useTestScores, useOrganizations, useCauses } from "@/shared/hooks/useCommon";
-import type { VolunteerExperience } from "@/types";
+import { useHackathons, useVolunteer, useEducation, useCourses, usePatents, useTestScores, useOrganizations, useCauses } from "@/shared/hooks/useCommon";
+import type { VolunteerExperience, Education } from "@/types";
 import { LightboxModal } from "@/components/ui/LightboxModal";
+import { Link } from "react-router-dom";
 
 /**
  * STAR RATING COMPONENT
@@ -40,11 +39,34 @@ const StarRating = ({ filled }: { filled: number }) => (
 const AboutPage = () => {
   const { data: hackathons = [], isLoading: hackLoading } = useHackathons();
   const { data: volunteerData = [] } = useVolunteer();
+  const { data: educationData = [], isLoading: eduLoading } = useEducation();
   const { data: courses = [] } = useCourses();
   const { data: patents = [] } = usePatents();
   const { data: testScores = [] } = useTestScores();
   const { data: organizations = [] } = useOrganizations();
   const { data: causes = [] } = useCauses();
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function formatEducationPeriod(edu: Education): string {
+    const isCurrent = edu.is_current ?? edu.isCurrent ?? false;
+    const start = edu.start_month && edu.start_year
+      ? `${edu.start_month.slice(0, 3)} ${edu.start_year}`
+      : edu.startDate ?? '';
+    const end = isCurrent ? 'Present'
+      : edu.end_month && edu.end_year
+        ? `${edu.end_month.slice(0, 3)} ${edu.end_year}`
+        : edu.endDate ?? '';
+    return start ? (end ? `${start} – ${end}` : start) : '';
+  }
+
+  const publishedEducation = [...educationData]
+    .filter(e => e.is_published !== false)
+    .sort((a, b) => {
+      const aY = a.start_year ?? (a.startDate ? parseInt(a.startDate) : 0);
+      const bY = b.start_year ?? (b.startDate ? parseInt(b.startDate) : 0);
+      return bY - aY;
+    });
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -75,83 +97,112 @@ const AboutPage = () => {
 
           {/* --- EDUCATION SECTION --- */}
           <div className="mb-16" id="education">
-            {/* Header with Icon: Uses a low-opacity background tint (accent/10) to highlight the icon */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-3 rounded-lg bg-accent/10">
-                <GraduationCap className="w-6 h-6 text-accent" />
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <GraduationCap className="w-6 h-6 text-accent" />
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Education</h2>
               </div>
-              <h2 className="font-display text-2xl font-bold text-foreground">Education</h2>
+              {publishedEducation.length > 0 && (
+                <Link
+                  to="/education"
+                  className="text-sm text-accent font-semibold flex items-center gap-1 hover:underline"
+                >
+                  View all <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
 
-            <div className="space-y-6">
-              {/* Data Processing: 
-                  1. Spreads educationList into a new array to avoid mutating the original data.
-                  2. Sorts items chronologically by startDate (descending) so the most recent education is at the top.
-              */}
-              {[...educationList]
-                .sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())
-                .map((edu, index) => (
-                  <EducationDialog key={index} education={edu}>
-                    {/* m.div: adds a micro-interaction (scale 1.01) on hover to indicate the card is clickable */}
+            {eduLoading ? (
+              <div className="space-y-4">
+                {[1, 2].map(i => (
+                  <div key={i} className="h-28 rounded-xl bg-card border border-border animate-pulse" />
+                ))}
+              </div>
+            ) : publishedEducation.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
+                <GraduationCap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">No education entries yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {publishedEducation.slice(0, 3).map((edu, index) => {
+                  const logo = edu.school_logo ?? edu.logo;
+                  const name = edu.school_name ?? edu.institution ?? '';
+                  const period = formatEducationPeriod(edu);
+                  const field = edu.field_of_study ?? edu.fieldOfStudy;
+                  const skills = edu.skills ?? [];
+
+                  return (
                     <m.div
-                      whileHover={{ scale: 1.01 }}
-                      className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md"
+                      key={edu.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.06 }}
+                      className="bg-card rounded-xl border border-border p-5 hover:border-accent/40 transition-all shadow-sm"
                     >
-                      <div className="flex flex-col md:flex-row gap-6 items-start">
-                        {/* Institution Logo - clickable lightbox */}
-                        <button
-                          type="button"
-                          className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent/50 transition-colors focus:outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (edu.institutionLogo) openLightbox([edu.institutionLogo]);
-                          }}
-                          title="View logo"
-                        >
-                          <img
-                            src={edu.institutionLogo}
-                            alt={`${edu.institution} logo`}
-                            className="w-full h-full object-contain p-1"
-                          />
-                        </button>
+                      <div className="flex gap-4 items-start">
+                        <div className="shrink-0 w-14 h-14 rounded-xl overflow-hidden bg-secondary border border-border flex items-center justify-center">
+                          {logo ? (
+                            <img src={logo} alt={name} className="w-full h-full object-contain p-1" />
+                          ) : (
+                            <GraduationCap className="w-6 h-6 text-muted-foreground/40" />
+                          )}
+                        </div>
 
-                        {/* Education Details: Main content area within the card */}
-                        <div className="flex-1 space-y-2">
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 flex-wrap">
                             <div>
-                              <h3 className="text-xl font-bold text-foreground">{edu.institution}</h3>
-                              <p className="text-accent font-medium">{edu.degree}</p>
+                              {edu.school_website_url ? (
+                                <a href={edu.school_website_url} target="_blank" rel="noopener noreferrer"
+                                  className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
+                                  {name} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
+                                </a>
+                              ) : (
+                                <h3 className="font-bold text-foreground">{name}</h3>
+                              )}
+                              {(edu.degree || field) && (
+                                <p className="text-accent text-sm font-medium">
+                                  {edu.degree}{edu.degree && field ? ' · ' : ''}{field}
+                                </p>
+                              )}
                             </div>
-                            {/* Shadcn Badge used for date range (e.g., 2018 - 2022) */}
-                            <Badge variant="secondary" className="w-fit">{edu.period}</Badge>
+                            {period && <Badge variant="secondary" className="w-fit text-xs shrink-0">{period}</Badge>}
                           </div>
 
-                          {/* Metadata: Location and GPA with corresponding Lucide icons */}
-                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{edu.location}</span>
-                            {edu.gpa && <span className="flex items-center gap-1"><Trophy className="w-4 h-4" />GPA: {edu.gpa}</span>}
-                          </div>
+                          {edu.grade && edu.show_grade_publicly !== false && (
+                            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                              <Trophy className="w-3 h-3" /> {edu.grade}
+                            </p>
+                          )}
 
-                          {/* Skill Tags: Implementation of "Progressive Disclosure"
-                              Shows only the first 4 skills; if more exist, shows a "+X more" count.
-                          */}
-                          <div className="pt-2 flex flex-wrap gap-2">
-                            {(edu.skills || []).slice(0, 4).map(skill => (
-                              <span key={skill} className="text-xs px-2 py-1 bg-secondary rounded text-muted-foreground">{skill}</span>
-                            ))}
-                            {edu.skills.length > 4 && (
-                              <span className="text-xs px-2 py-1 text-muted-foreground">+{edu.skills.length - 4} more</span>
-                            )}
-                          </div>
-
-                          {/* Call to Action: Hint for the user that clicking triggers the Dialog/Modal */}
-                          <p className="text-sm text-muted-foreground pt-2 italic">Click to view details</p>
+                          {skills.length > 0 && (
+                            <div className="pt-2 flex flex-wrap gap-1.5">
+                              {skills.slice(0, 5).map(skill => (
+                                <span key={skill} className="text-xs px-2 py-0.5 bg-secondary rounded text-muted-foreground">{skill}</span>
+                              ))}
+                              {skills.length > 5 && (
+                                <span className="text-xs px-2 py-0.5 text-muted-foreground">+{skills.length - 5} more</span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </m.div>
-                  </EducationDialog>
-                ))}
-            </div>
+                  );
+                })}
+
+                {publishedEducation.length > 3 && (
+                  <Link
+                    to="/education"
+                    className="block text-center text-sm text-accent font-semibold py-3 rounded-xl border border-accent/20 hover:bg-accent/5 transition-colors"
+                  >
+                    View all {publishedEducation.length} education entries →
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
 
           {/* --- LANGUAGES & SPORTS GRID --- */}

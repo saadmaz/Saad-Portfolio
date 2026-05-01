@@ -48,6 +48,10 @@ export interface Project {
   impact?: string;
   gradientStart?: string;
   gradientEnd?: string;
+
+  // Cross-entity linking (source of truth for education/experience associations)
+  linked_education_ids?: string[];
+  linked_experience_ids?: string[];
 }
 
 export interface Skill {

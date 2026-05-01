@@ -13,11 +13,12 @@ import {
 import {
   ArrowLeft, Save, Trash2, Briefcase, MapPin, Calendar, Building2,
   Sparkles, Plus, ChevronDown, ChevronUp, Trophy,
-  Image as ImageIcon, Link as LinkIcon, FileText, Presentation, X, Star, GripVertical,
+  Image as ImageIcon, Link as LinkIcon, FileText, Presentation, X, Star, GripVertical, Check,
 } from 'lucide-react';
 import LogoUpload from './LogoUpload';
 import { CommonService } from '@/shared/services/common-service';
-import { Experience, ExperienceRole, ExperienceMedia } from '@/types';
+import { ProjectService } from '@/services/project-service';
+import { Experience, ExperienceRole, ExperienceMedia, Project } from '@/types';
 import { toast } from 'sonner';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -401,6 +402,9 @@ const ExperienceForm = () => {
   const [topSkills, setTopSkills] = useState<string[]>([]);
   const [topMedia, setTopMedia] = useState<ExperienceMedia[]>([]);
   const [newTopSkill, setNewTopSkill] = useState('');
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [linkedProjectIds, setLinkedProjectIds] = useState<string[]>([]);
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -480,6 +484,25 @@ const ExperienceForm = () => {
 
   useEffect(() => { if (isEditMode) loadExperience(); }, [isEditMode, loadExperience]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const projs = await ProjectService.getAll();
+        setAllProjects(projs);
+        if (isEditMode && id) {
+          const preLinked = projs
+            .filter(p => (p.linked_experience_ids ?? []).includes(id))
+            .map(p => String(p.id));
+          setLinkedProjectIds(preLinked);
+        }
+      } catch {
+        // silently ignore
+      } finally {
+        setProjectsLoading(false);
+      }
+    })();
+  }, [isEditMode, id]);
+
   const onSubmit = async (data: FormValues) => {
     if (!data.company_logo) { toast.error('Company logo is required'); return; }
     if (roles.some(r => !r.role_title.trim())) { toast.error('All roles must have a title'); return; }
@@ -509,13 +532,36 @@ const ExperienceForm = () => {
 
     try {
       setIsLoading(true);
+      let experienceId: string;
       if (isEditMode) {
         await CommonService.updateExperience(id!, saveData);
+        experienceId = id!;
         toast.success('Experience updated');
       } else {
-        await CommonService.createExperience(saveData);
+        const created = await CommonService.createExperience(saveData);
+        experienceId = String(created.id);
         toast.success('Experience added');
       }
+
+      // Bidirectional project linking
+      const linkingPromises = allProjects
+        .filter(proj => {
+          const projId = String(proj.id);
+          const currentlyLinked = (proj.linked_experience_ids ?? []).includes(experienceId);
+          const shouldBeLinked = linkedProjectIds.includes(projId);
+          return currentlyLinked !== shouldBeLinked;
+        })
+        .map(proj => {
+          const projId = String(proj.id);
+          const shouldBeLinked = linkedProjectIds.includes(projId);
+          const currentIds = proj.linked_experience_ids ?? [];
+          const newIds = shouldBeLinked
+            ? [...currentIds, experienceId]
+            : currentIds.filter(eid => eid !== experienceId);
+          return ProjectService.update(projId, { linked_experience_ids: newIds });
+        });
+      await Promise.all(linkingPromises);
+
       navigate('/admin/experience');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Operation failed');
@@ -818,6 +864,67 @@ const ExperienceForm = () => {
                   onClick={() => setTopMedia(m => [...m, makeEmptyMedia()])}>
                   <Plus className="w-4 h-4 mr-2" /> Add Media
                 </Button>
+              )}
+            </CardContent>
+          </Card>
+          {/* Section 8 — Linked Projects */}
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader className="border-b border-white/5 pb-3">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Star className="w-4 h-4 text-accent" /> Linked Projects
+                {linkedProjectIds.length > 0 && (
+                  <span className="ml-auto text-[10px] font-bold text-accent">{linkedProjectIds.length} linked</span>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-5 space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Link portfolio projects to this experience. They will appear as a card strip on the public experience page.
+              </p>
+              {projectsLoading ? (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                  Loading projects…
+                </div>
+              ) : allProjects.length === 0 ? (
+                <p className="text-xs text-muted-foreground/50 py-2">
+                  No projects found. Add portfolio projects first.
+                </p>
+              ) : (
+                <div className="space-y-1.5">
+                  {allProjects.map((proj) => {
+                    const projId = String(proj.id);
+                    const isLinked = linkedProjectIds.includes(projId);
+                    return (
+                      <button
+                        key={projId}
+                        type="button"
+                        onClick={() => setLinkedProjectIds(prev =>
+                          isLinked ? prev.filter(pid => pid !== projId) : [...prev, projId]
+                        )}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left transition-all ${
+                          isLinked
+                            ? 'border-accent/40 bg-accent/10'
+                            : 'border-white/10 bg-white/[0.02] hover:border-accent/20 hover:bg-white/5'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                          isLinked ? 'bg-accent border-accent' : 'border-white/20'
+                        }`}>
+                          {isLinked && <Check className="w-2.5 h-2.5 text-black" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold truncate ${isLinked ? 'text-foreground' : 'text-muted-foreground'}`}>
+                            {proj.title}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground/60 truncate">
+                            {proj.status}{proj.techStack?.length ? ` · ${proj.techStack.slice(0, 3).join(', ')}` : ''}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               )}
             </CardContent>
           </Card>

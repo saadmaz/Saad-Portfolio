@@ -10,15 +10,15 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import {
-  ArrowLeft, Save, Trash2, GraduationCap, Calendar, Trophy,
+  Save, Trash2, GraduationCap, Calendar, Trophy,
   Image as ImageIcon, Link as LinkIcon, FileText, Presentation,
-  X, Plus, ChevronDown, ChevronUp, Star, Globe, GripVertical,
-  Sparkles, Settings2,
+  X, Plus, ChevronDown, ChevronUp, Star, Globe,
+  Sparkles, Settings2, Check,
 } from 'lucide-react';
 import LogoUpload from './LogoUpload';
-import ImageUpload from './ImageUpload';
 import { CommonService } from '@/shared/services/common-service';
-import { Education, EducationProject, EducationMedia, EducationAward } from '@/types';
+import { ProjectService } from '@/services/project-service';
+import { Education, EducationMedia, EducationAward, Project } from '@/types';
 import { toast } from 'sonner';
 import { uploadImage } from '@/services/storage';
 import BackButton from './BackButton';
@@ -185,10 +185,6 @@ type FormValues = z.infer<typeof schema>;
 
 // ─── Empty makers ─────────────────────────────────────────────────────────────
 
-const emptyProject = (): EducationProject => ({
-  project_title: '', project_description: '', project_url: '', project_thumbnail: '',
-});
-
 const emptyMedia = (): EducationMedia => ({
   media_type: 'Link', media_url: '', media_caption: '',
   media_description: '', media_date_month: undefined, media_date_year: undefined,
@@ -198,83 +194,6 @@ const emptyAward = (): EducationAward => ({
   award_title: '', award_issuer: '', award_date_month: undefined,
   award_date_year: undefined, award_description: '',
 });
-
-// ─── Project sub-form ─────────────────────────────────────────────────────────
-
-function ProjectSubForm({
-  proj, index, collapsed, onToggle, onUpdate, onRemove,
-}: {
-  proj: EducationProject;
-  index: number;
-  collapsed: boolean;
-  onToggle: () => void;
-  onUpdate: (p: EducationProject) => void;
-  onRemove: () => void;
-}) {
-  return (
-    <div className="border border-white/10 rounded-xl overflow-hidden">
-      <div
-        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors"
-        onClick={onToggle}
-      >
-        <GripVertical className="w-4 h-4 text-white/20 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-foreground truncate">
-            {proj.project_title || <span className="text-white/30 font-normal">Project {index + 1}</span>}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onRemove(); }}
-          className="p-1 rounded hover:bg-red-500/10 text-red-400 hover:text-red-300 transition-colors"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
-        {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
-      </div>
-
-      {!collapsed && (
-        <div className="p-4 space-y-3 border-t border-white/10">
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-bold text-muted-foreground">Project Title *</label>
-            <Input
-              value={proj.project_title}
-              onChange={(e) => onUpdate({ ...proj, project_title: e.target.value })}
-              placeholder="e.g. Inventory Management System"
-              className="bg-white/5 border-white/10"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-bold text-muted-foreground">Description</label>
-            <Textarea
-              value={proj.project_description ?? ''}
-              onChange={(e) => onUpdate({ ...proj, project_description: e.target.value })}
-              placeholder="Brief summary of what this project was about..."
-              rows={3}
-              className="bg-white/5 border-white/10 text-sm resize-none"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-bold text-muted-foreground">Project URL</label>
-            <Input
-              value={proj.project_url ?? ''}
-              onChange={(e) => onUpdate({ ...proj, project_url: e.target.value })}
-              placeholder="https://github.com/... or live demo URL"
-              className="bg-white/5 border-white/10"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-bold text-muted-foreground">Thumbnail (optional)</label>
-            <ImageUpload
-              value={proj.project_thumbnail ?? ''}
-              onChange={(url) => onUpdate({ ...proj, project_thumbnail: url })}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ─── Media sub-form ───────────────────────────────────────────────────────────
 
@@ -531,12 +450,15 @@ const EducationForm = () => {
   // State for nested arrays
   const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState('');
-  const [projects, setProjects] = useState<EducationProject[]>([]);
-  const [collapsedProjects, setCollapsedProjects] = useState<Set<number>>(new Set());
   const [media, setMedia] = useState<EducationMedia[]>([]);
   const [collapsedMedia, setCollapsedMedia] = useState<Set<number>>(new Set());
   const [awards, setAwards] = useState<EducationAward[]>([]);
   const [collapsedAwards, setCollapsedAwards] = useState<Set<number>>(new Set());
+
+  // Linked projects state
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [linkedProjectIds, setLinkedProjectIds] = useState<string[]>([]);
 
   // Section collapse state
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({
@@ -625,6 +547,25 @@ const EducationForm = () => {
 
   useEffect(() => { if (isEditMode) loadEducation(); }, [isEditMode, loadEducation]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const projs = await ProjectService.getAll();
+        setAllProjects(projs);
+        if (isEditMode && id) {
+          const preLinked = projs
+            .filter(p => (p.linked_education_ids ?? []).includes(id))
+            .map(p => String(p.id));
+          setLinkedProjectIds(preLinked);
+        }
+      } catch {
+        // silently ignore — projects list is optional
+      } finally {
+        setProjectsLoading(false);
+      }
+    })();
+  }, [isEditMode, id]);
+
   const addSkill = () => {
     const s = newSkill.trim();
     if (!s || skills.includes(s)) return;
@@ -638,10 +579,6 @@ const EducationForm = () => {
     if (!data.school_logo) { toast.error('School logo is required'); return; }
     if (media.some(m => !m.media_caption.trim())) {
       toast.error('All media items must have a caption');
-      return;
-    }
-    if (projects.some(p => !p.project_title.trim())) {
-      toast.error('All project entries must have a title');
       return;
     }
     if (awards.some(a => !a.award_title.trim())) {
@@ -665,7 +602,6 @@ const EducationForm = () => {
       activities_and_societies: data.activities_and_societies || undefined,
       description: data.description || undefined,
       skills: skills.length > 0 ? skills : undefined,
-      projects: projects.length > 0 ? projects : undefined,
       media: media.length > 0 ? media : undefined,
       honors_and_awards: awards.length > 0 ? awards : undefined,
       is_featured: data.is_featured,
@@ -680,13 +616,36 @@ const EducationForm = () => {
 
     try {
       setIsLoading(true);
+      let educationId: string;
       if (isEditMode) {
         await CommonService.updateEducation(id!, saveData);
+        educationId = id!;
         toast.success('Education updated');
       } else {
-        await CommonService.createEducation(saveData);
+        const created = await CommonService.createEducation(saveData);
+        educationId = created.id;
         toast.success('Education added');
       }
+
+      // Bidirectional project linking
+      const linkingPromises = allProjects
+        .filter(proj => {
+          const projId = String(proj.id);
+          const currentlyLinked = (proj.linked_education_ids ?? []).includes(educationId);
+          const shouldBeLinked = linkedProjectIds.includes(projId);
+          return currentlyLinked !== shouldBeLinked;
+        })
+        .map(proj => {
+          const projId = String(proj.id);
+          const shouldBeLinked = linkedProjectIds.includes(projId);
+          const currentIds = proj.linked_education_ids ?? [];
+          const newIds = shouldBeLinked
+            ? [...currentIds, educationId]
+            : currentIds.filter(eid => eid !== educationId);
+          return ProjectService.update(projId, { linked_education_ids: newIds });
+        });
+      await Promise.all(linkingPromises);
+
       navigate('/admin/education');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Operation failed');
@@ -1023,38 +982,68 @@ const EducationForm = () => {
           )}
         </div>
 
-        {/* ── Section 6: Projects ────────────────────────────────────── */}
+        {/* ── Section 6: Linked Projects ─────────────────────────────── */}
         <div className="border border-white/10 rounded-xl overflow-hidden">
           <SectionHeader
-            title="Projects"
+            title="Linked Projects"
             icon={<Globe className="w-4 h-4" />}
             collapsed={collapsed.projects}
             onToggle={() => toggle('projects')}
           >
-            <span className="text-[10px] text-muted-foreground/50 mr-2">{projects.length}</span>
+            {linkedProjectIds.length > 0 && (
+              <span className="text-[10px] font-bold text-accent mr-2">{linkedProjectIds.length} linked</span>
+            )}
           </SectionHeader>
           {!collapsed.projects && (
             <div className="p-5 space-y-3 border-t border-white/10">
-              {projects.map((p, i) => (
-                <ProjectSubForm
-                  key={i}
-                  proj={p}
-                  index={i}
-                  collapsed={collapsedProjects.has(i)}
-                  onToggle={() => setCollapsedProjects(s => { const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n; })}
-                  onUpdate={(updated) => setProjects(arr => arr.map((x, idx) => idx === i ? updated : x))}
-                  onRemove={() => { setProjects(arr => arr.filter((_, idx) => idx !== i)); setCollapsedProjects(s => { const n = new Set(s); n.delete(i); return n; }); }}
-                />
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-full border-dashed border-white/20 text-xs h-9"
-                onClick={() => { setProjects(p => [...p, emptyProject()]); }}
-              >
-                <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Project
-              </Button>
+              <p className="text-[10px] text-muted-foreground/50">
+                Link existing portfolio projects to this education entry. Linked projects appear as a card strip on the public education page.
+              </p>
+              {projectsLoading ? (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                  Loading projects…
+                </div>
+              ) : allProjects.length === 0 ? (
+                <p className="text-xs text-muted-foreground/50 py-2">
+                  No projects found. Add portfolio projects first, then link them here.
+                </p>
+              ) : (
+                <div className="space-y-1.5">
+                  {allProjects.map((proj) => {
+                    const projId = String(proj.id);
+                    const isLinked = linkedProjectIds.includes(projId);
+                    return (
+                      <button
+                        key={projId}
+                        type="button"
+                        onClick={() => setLinkedProjectIds(prev =>
+                          isLinked ? prev.filter(pid => pid !== projId) : [...prev, projId]
+                        )}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left transition-all ${
+                          isLinked
+                            ? 'border-accent/40 bg-accent/10'
+                            : 'border-white/10 bg-white/[0.02] hover:border-accent/20 hover:bg-white/5'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                          isLinked ? 'bg-accent border-accent' : 'border-white/20'
+                        }`}>
+                          {isLinked && <Check className="w-2.5 h-2.5 text-black" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold truncate ${isLinked ? 'text-foreground' : 'text-muted-foreground'}`}>
+                            {proj.title}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground/60 truncate">
+                            {proj.status}{proj.techStack?.length ? ` · ${proj.techStack.slice(0, 3).join(', ')}` : ''}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -46,7 +46,7 @@ const Index = () => {
       <CertificatesPreview />
       <EventsPreview />
       <ExperienceSection />
-      <EducationSection />
+      <EducationSection preview />
       <SkillsSection />
       <LanguagesSection />
       <AwardsSection />

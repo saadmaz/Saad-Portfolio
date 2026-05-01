@@ -20,10 +20,12 @@ import {
 import {
   ArrowLeft, Save, Plus, Trash2, Image as ImageIcon, Images,
   Globe, Github, Layout, Layers, Sparkles, X, Video,
-  BookOpen, Lightbulb, Tag, Star, Link2,
+  BookOpen, Lightbulb, Tag, Star, Link2, Check, GraduationCap, Briefcase,
 } from 'lucide-react';
 import { ProjectService } from '@/services/project-service';
+import { CommonService } from '@/shared/services/common-service';
 import { toast } from "sonner";
+import type { Education, Experience } from '@/types';
 import ImageUpload from './ImageUpload';
 import MultiImageUpload from './MultiImageUpload';
 import { cn } from "@/shared/lib/utils";
@@ -161,6 +163,13 @@ const ProjectForm = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const isEditMode = !!id && id !== 'new';
 
+  // Association state
+  const [allEducation, setAllEducation] = useState<Education[]>([]);
+  const [allExperiences, setAllExperiences] = useState<Experience[]>([]);
+  const [assocLoading, setAssocLoading] = useState(true);
+  const [linkedEducationIds, setLinkedEducationIds] = useState<string[]>([]);
+  const [linkedExperienceIds, setLinkedExperienceIds] = useState<string[]>([]);
+
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -221,12 +230,31 @@ const ProjectForm = () => {
           learnings:        p.learnings        ?? [],
           features:         p.features         ?? [],
         });
+        setLinkedEducationIds(p.linked_education_ids ?? []);
+        setLinkedExperienceIds(p.linked_experience_ids ?? []);
       }
     } catch { toast.error('Failed to load project'); }
     finally { setIsLoading(false); }
   }, [id, reset]);
 
   useEffect(() => { if (isEditMode) loadProject(); }, [isEditMode, loadProject]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [edu, exp] = await Promise.all([
+          CommonService.getEducation(),
+          CommonService.getWorkExperience(),
+        ]);
+        setAllEducation(edu.filter(e => e.is_published !== false));
+        setAllExperiences(exp);
+      } catch {
+        // silently ignore
+      } finally {
+        setAssocLoading(false);
+      }
+    })();
+  }, []);
 
   const onSubmit = async (data: ProjectFormValues) => {
     try {
@@ -238,6 +266,8 @@ const ProjectForm = () => {
         images:       data.screenshots?.length ? data.screenshots : data.images,
         live_preview: data.liveUrl   || data.live_preview,
         github:       data.githubUrl || data.github,
+        linked_education_ids:  linkedEducationIds.length > 0 ? linkedEducationIds : [],
+        linked_experience_ids: linkedExperienceIds.length > 0 ? linkedExperienceIds : [],
       };
       if (isEditMode) {
         await ProjectService.update(id!, payload);
@@ -413,6 +443,116 @@ const ProjectForm = () => {
             <TagListEditor label="Key Features"
               values={features} placeholder="e.g. Dark mode, Offline support…"
               onChange={v => setValue('features', v)} />
+          </Section>
+
+          {/* Associate With */}
+          <Section icon={Link2} title="Associate With"
+            badge={linkedEducationIds.length + linkedExperienceIds.length > 0
+              ? `${linkedEducationIds.length + linkedExperienceIds.length}`
+              : undefined}>
+            <p className="text-[10px] text-white/40">
+              Link this project to education entries and work experience. They will display this project as a card strip in their respective public pages.
+            </p>
+
+            {assocLoading ? (
+              <div className="flex items-center gap-2 text-xs text-white/40 py-2">
+                <div className="w-4 h-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                Loading…
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Education */}
+                {allEducation.length > 0 && (
+                  <div className="space-y-1.5">
+                    <label className={LABEL_CLS + ' flex items-center gap-1.5'}>
+                      <GraduationCap className="w-3 h-3" /> Education
+                    </label>
+                    <div className="space-y-1">
+                      {allEducation.map(edu => {
+                        const eduId = edu.id;
+                        const isLinked = linkedEducationIds.includes(eduId);
+                        return (
+                          <button
+                            key={eduId}
+                            type="button"
+                            onClick={() => setLinkedEducationIds(prev =>
+                              isLinked ? prev.filter(i => i !== eduId) : [...prev, eduId]
+                            )}
+                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg border text-left transition-all ${
+                              isLinked
+                                ? 'border-accent/40 bg-accent/10'
+                                : 'border-white/10 bg-white/[0.02] hover:border-accent/20 hover:bg-white/5'
+                            }`}
+                          >
+                            <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                              isLinked ? 'bg-accent border-accent' : 'border-white/20'
+                            }`}>
+                              {isLinked && <Check className="w-2.5 h-2.5 text-black" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-xs font-semibold truncate ${isLinked ? 'text-white' : 'text-white/50'}`}>
+                                {edu.school_name ?? edu.institution}
+                              </p>
+                              <p className="text-[10px] text-white/30 truncate">
+                                {edu.degree}{edu.field_of_study ? ` · ${edu.field_of_study}` : ''}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Experience */}
+                {allExperiences.length > 0 && (
+                  <div className="space-y-1.5">
+                    <label className={LABEL_CLS + ' flex items-center gap-1.5'}>
+                      <Briefcase className="w-3 h-3" /> Work Experience
+                    </label>
+                    <div className="space-y-1">
+                      {allExperiences.map(exp => {
+                        const expId = String(exp.id);
+                        const isLinked = linkedExperienceIds.includes(expId);
+                        return (
+                          <button
+                            key={expId}
+                            type="button"
+                            onClick={() => setLinkedExperienceIds(prev =>
+                              isLinked ? prev.filter(i => i !== expId) : [...prev, expId]
+                            )}
+                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg border text-left transition-all ${
+                              isLinked
+                                ? 'border-accent/40 bg-accent/10'
+                                : 'border-white/10 bg-white/[0.02] hover:border-accent/20 hover:bg-white/5'
+                            }`}
+                          >
+                            <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${
+                              isLinked ? 'bg-accent border-accent' : 'border-white/20'
+                            }`}>
+                              {isLinked && <Check className="w-2.5 h-2.5 text-black" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-xs font-semibold truncate ${isLinked ? 'text-white' : 'text-white/50'}`}>
+                                {exp.company_name ?? exp.company}
+                              </p>
+                              <p className="text-[10px] text-white/30 truncate">
+                                {exp.employment_type ?? exp.employmentType}
+                                {exp.location ? ` · ${exp.location}` : ''}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {allEducation.length === 0 && allExperiences.length === 0 && (
+                  <p className="text-xs text-white/30 py-1">No education or experience entries found.</p>
+                )}
+              </div>
+            )}
           </Section>
         </div>
 
