@@ -97,7 +97,7 @@ function MediaLightbox({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <button onClick={onClose}
@@ -145,11 +145,17 @@ function MediaLightbox({
   );
 }
 
-// ─── Card entry (full detail) ─────────────────────────────────────────────────
+// ─── Detail modal ─────────────────────────────────────────────────────────────
 
-function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: number; linkedProjects: Project[] }) {
-  const [expanded, setExpanded] = useState(false);
+function EducationDetailModal({
+  edu, linkedProjects, onClose,
+}: {
+  edu: Education;
+  linkedProjects: Project[];
+  onClose: () => void;
+}) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [descExpanded, setDescExpanded] = useState(false);
 
   const logo = getLogo(edu);
   const schoolName = getSchoolName(edu);
@@ -168,40 +174,60 @@ function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: 
     ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}` : null;
 
   return (
-    <>
+    <m.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <m.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.5, delay: index * 0.08 }}
-        className="bg-card border border-border rounded-2xl overflow-hidden"
+        initial={{ opacity: 0, y: 60, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 60, scale: 0.97 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+        className="relative w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[85vh] bg-card border border-border rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+        onClick={e => e.stopPropagation()}
       >
-        {edu.is_featured && <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0" />}
-        <div className="p-5 sm:p-6 space-y-4">
+        {/* Accent bar for featured */}
+        {edu.is_featured && <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0 flex-shrink-0" />}
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-secondary hover:bg-secondary/80 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Scrollable content */}
+        <div className="overflow-y-auto flex-1 p-5 sm:p-6 space-y-5">
+
           {/* Header */}
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
+          <div className="flex items-start gap-4 pr-10">
+            <div className="w-14 h-14 shrink-0 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
               {logo ? (
                 websiteUrl ? (
-                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center p-1">
-                    <img src={logo} alt={schoolName} loading="lazy" className="w-full h-full object-contain" />
+                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center p-1.5">
+                    <img src={logo} alt={schoolName} className="w-full h-full object-contain" />
                   </a>
                 ) : (
-                  <img src={logo} alt={schoolName} loading="lazy" className="w-8 h-8 object-contain" />
+                  <img src={logo} alt={schoolName} className="w-10 h-10 object-contain" />
                 )
               ) : (
-                <GraduationCap className="w-5 h-5 text-muted-foreground" />
+                <GraduationCap className="w-6 h-6 text-muted-foreground" />
               )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 {websiteUrl ? (
                   <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-                    className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
-                    {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
+                    className="font-bold text-lg text-foreground hover:text-accent transition-colors flex items-center gap-1">
+                    {schoolName} <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50" />
                   </a>
                 ) : (
-                  <span className="font-bold text-foreground">{schoolName}</span>
+                  <span className="font-bold text-lg text-foreground">{schoolName}</span>
                 )}
                 {edu.is_featured && (
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">Featured</span>
@@ -227,48 +253,56 @@ function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: 
             </div>
           </div>
 
+          {/* Grade */}
           {edu.grade && edu.show_grade_publicly !== false && (
-            <p className="text-xs text-muted-foreground">
-              Grade: <span className="font-medium text-foreground">{edu.grade}</span>
-            </p>
-          )}
-
-          {activities && (
-            <div className="flex items-start gap-1.5">
-              <Users className="w-3.5 h-3.5 text-muted-foreground/60 mt-0.5 shrink-0" />
-              <p className="text-xs text-muted-foreground leading-relaxed">{activities}</p>
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent/5 border border-accent/15 w-fit">
+              <Trophy className="w-4 h-4 text-accent" />
+              <p className="text-sm font-medium text-foreground">{edu.grade}</p>
             </div>
           )}
 
+          {/* Activities */}
+          {activities && (
+            <div className="flex items-start gap-2 p-3.5 rounded-xl bg-secondary/50 border border-border">
+              <Users className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
+              <p className="text-sm text-muted-foreground leading-relaxed">{activities}</p>
+            </div>
+          )}
+
+          {/* Description */}
           {edu.description && (
             <div>
-              <p className={`text-sm text-muted-foreground leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+              <p className={`text-sm text-muted-foreground leading-relaxed ${descExpanded ? '' : 'line-clamp-4'}`}>
                 {edu.description}
               </p>
-              {edu.description.length > 180 && (
-                <button onClick={() => setExpanded(v => !v)}
-                  className="mt-1 flex items-center gap-1 text-xs text-accent font-medium hover:underline">
-                  {expanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
+              {edu.description.length > 220 && (
+                <button onClick={() => setDescExpanded(v => !v)}
+                  className="mt-1.5 flex items-center gap-1 text-xs text-accent font-medium hover:underline">
+                  {descExpanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
                 </button>
               )}
             </div>
           )}
 
+          {/* Skills */}
           {skills.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {skills.map((s, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium">{s}</span>
-              ))}
+            <div className="space-y-1.5">
+              <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide">Skills</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skills.map((s, i) => (
+                  <span key={i} className="px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium">{s}</span>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Linked projects from Projects collection */}
+          {/* Linked projects */}
           {linkedProjects.length > 0 && (
             <div className="space-y-2">
               <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide">Projects</p>
               <div className="flex gap-2.5 overflow-x-auto pb-1">
                 {linkedProjects.map(p => (
-                  <Link key={p.id} to={`/projects/${p.slug}`}
+                  <Link key={p.id} to={`/projects/${p.slug}`} onClick={onClose}
                     className="flex-shrink-0 w-44 rounded-xl border border-border bg-secondary/50 overflow-hidden hover:border-accent/40 transition-colors">
                     {(p.heroImage || p.image) && (
                       <div className="aspect-video w-full overflow-hidden">
@@ -288,18 +322,24 @@ function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: 
             </div>
           )}
 
+          {/* Honors & Awards */}
           {awards.length > 0 && (
             <div className="space-y-2">
               <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide flex items-center gap-1.5">
                 <Trophy className="w-3 h-3 text-accent" /> Honors & Awards
               </p>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {awards.map((a, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
+                  <li key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-secondary/50 border border-border text-sm">
                     <Trophy className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
                     <div>
                       <span className="font-medium text-foreground">{a.award_title}</span>
                       {a.award_issuer && <span className="text-muted-foreground"> · {a.award_issuer}</span>}
+                      {(a.award_date_month || a.award_date_year) && (
+                        <span className="text-muted-foreground/60 text-xs ml-1">
+                          ({[a.award_date_month?.slice(0, 3), a.award_date_year].filter(Boolean).join(' ')})
+                        </span>
+                      )}
                       {a.award_description && <p className="text-xs text-muted-foreground mt-0.5">{a.award_description}</p>}
                     </div>
                   </li>
@@ -308,19 +348,20 @@ function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: 
             </div>
           )}
 
+          {/* Media strip */}
           {media.length > 0 && (
             <div className="space-y-2">
               <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide">Media</p>
               <div className="flex gap-2.5 overflow-x-auto pb-1">
                 {media.map((m, i) => (
                   <button key={i} type="button" onClick={() => setLightboxIndex(i)}
-                    className="flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border border-border hover:border-accent/50 transition-all bg-secondary"
+                    className="flex-shrink-0 w-28 h-20 rounded-xl overflow-hidden border border-border hover:border-accent/50 transition-all bg-secondary"
                     title={m.media_caption}>
                     {m.media_type === 'Image' && m.media_url ? (
                       <img src={m.media_url} alt={m.media_caption} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
-                        <span className="text-xl">{({ Document: '📄', Presentation: '📊', Link: '🔗' } as Record<string, string>)[m.media_type] ?? '📎'}</span>
+                        <span className="text-2xl">{({ Document: '📄', Presentation: '📊', Link: '🔗' } as Record<string, string>)[m.media_type] ?? '📎'}</span>
                         <span className="text-[9px] text-muted-foreground">{m.media_type}</span>
                       </div>
                     )}
@@ -329,34 +370,155 @@ function EducationCard({ edu, index, linkedProjects }: { edu: Education; index: 
               </div>
             </div>
           )}
+
+          {/* Full page link */}
+          <Link
+            to="/education"
+            onClick={onClose}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl border border-accent/20 text-accent font-semibold text-sm hover:bg-accent/5 transition-colors"
+          >
+            View full education history <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </m.div>
 
       <AnimatePresence>
         {lightboxIndex !== null && (
-          <MediaLightbox items={edu.media ?? []} index={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+          <MediaLightbox items={media} index={lightboxIndex} onClose={() => setLightboxIndex(null)} />
         )}
       </AnimatePresence>
-    </>
+    </m.div>
+  );
+}
+
+// ─── Card entry ───────────────────────────────────────────────────────────────
+
+function EducationCard({
+  edu, index, linkedProjects, onSelect,
+}: {
+  edu: Education;
+  index: number;
+  linkedProjects: Project[];
+  onSelect: () => void;
+}) {
+  const logo = getLogo(edu);
+  const schoolName = getSchoolName(edu);
+  const fieldOfStudy = getFieldOfStudy(edu);
+  const isCurrent = getIsCurrent(edu);
+  const duration = formatDuration(edu);
+  const durationStr = calcDurationStr(edu);
+  const expectedGrad = isExpectedGrad(edu);
+  const websiteUrl = edu.school_website_url;
+  const skills = edu.skills ?? [];
+  const expectedLabel = expectedGrad && edu.end_month && edu.end_year
+    ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}` : null;
+
+  return (
+    <m.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="bg-card border border-border rounded-2xl overflow-hidden cursor-pointer hover:border-accent/40 hover:shadow-md transition-all group"
+      onClick={onSelect}
+    >
+      {edu.is_featured && <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0" />}
+      <div className="p-5 sm:p-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
+            {logo ? (
+              <img src={logo} alt={schoolName} loading="lazy" className="w-full h-full object-contain p-1" />
+            ) : (
+              <GraduationCap className="w-5 h-5 text-muted-foreground" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-bold text-foreground group-hover:text-accent transition-colors">
+                {schoolName}
+              </span>
+              {websiteUrl && <ExternalLink className="w-3 h-3 text-muted-foreground/40" />}
+              {edu.is_featured && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">Featured</span>
+              )}
+            </div>
+            {(edu.degree || fieldOfStudy) && (
+              <p className="text-sm font-medium text-foreground/90 mt-0.5">
+                {edu.degree}{edu.degree && fieldOfStudy ? ' · ' : ''}{fieldOfStudy}
+              </p>
+            )}
+            <div className="flex items-center gap-2 flex-wrap mt-1">
+              <p className="text-xs text-muted-foreground">
+                {duration}
+                {durationStr && <span className="ml-1 text-muted-foreground/60">· {durationStr}</span>}
+              </p>
+              {expectedLabel && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{expectedLabel}</span>
+              )}
+              {isCurrent && !expectedLabel && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Present</span>
+              )}
+            </div>
+          </div>
+          <span className="text-xs text-accent font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 whitespace-nowrap">
+            Details <ChevronDown className="w-3 h-3" />
+          </span>
+        </div>
+
+        {edu.grade && edu.show_grade_publicly !== false && (
+          <p className="text-xs text-muted-foreground mt-3">
+            Grade: <span className="font-medium text-foreground">{edu.grade}</span>
+          </p>
+        )}
+
+        {edu.description && (
+          <p className="text-sm text-muted-foreground leading-relaxed mt-3 line-clamp-2">{edu.description}</p>
+        )}
+
+        {skills.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {skills.slice(0, 5).map((s, i) => (
+              <span key={i} className="px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium">{s}</span>
+            ))}
+            {skills.length > 5 && (
+              <span className="px-2.5 py-1 rounded-full bg-secondary text-muted-foreground text-xs">+{skills.length - 5}</span>
+            )}
+          </div>
+        )}
+
+        {linkedProjects.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {linkedProjects.map(p => (
+              <span key={p.id}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border bg-secondary/50 text-[10px] font-medium text-foreground">
+                {p.title} <ArrowRight className="w-2.5 h-2.5 text-accent" />
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </m.div>
   );
 }
 
 // ─── Condensed preview card (for homepage preview mode) ───────────────────────
 
-function PreviewCard({ edu, index }: { edu: Education; index: number }) {
+function PreviewCard({ edu, index, onSelect }: { edu: Education; index: number; onSelect: () => void }) {
   const logo = getLogo(edu);
   const schoolName = getSchoolName(edu);
   const fieldOfStudy = getFieldOfStudy(edu);
   const duration = formatDuration(edu);
-  const websiteUrl = edu.school_website_url;
+  const isCurrent = getIsCurrent(edu);
 
   return (
-    <m.div
+    <m.button
+      type="button"
+      onClick={onSelect}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45, delay: index * 0.07 }}
-      className="flex items-center gap-3 p-4 bg-card border border-border rounded-xl hover:border-accent/30 transition-colors"
+      className="w-full flex items-center gap-3 p-4 bg-card border border-border rounded-xl hover:border-accent/40 hover:shadow-sm transition-all group text-left"
     >
       <div className="w-10 h-10 shrink-0 rounded-lg bg-secondary border border-border flex items-center justify-center overflow-hidden">
         {logo ? (
@@ -365,32 +527,29 @@ function PreviewCard({ edu, index }: { edu: Education; index: number }) {
           <GraduationCap className="w-4 h-4 text-muted-foreground" />
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1">
-          {websiteUrl ? (
-            <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-              className="font-semibold text-sm text-foreground hover:text-accent transition-colors truncate flex items-center gap-0.5">
-              {schoolName} <ExternalLink className="w-2.5 h-2.5 text-muted-foreground/40 inline-block flex-shrink-0" />
-            </a>
-          ) : (
-            <span className="font-semibold text-sm text-foreground truncate">{schoolName}</span>
-          )}
-        </div>
+      <div className="flex-1 min-w-0 text-left">
+        <p className="font-semibold text-sm text-foreground group-hover:text-accent transition-colors truncate">{schoolName}</p>
         {(edu.degree || fieldOfStudy) && (
           <p className="text-xs text-muted-foreground truncate">
             {edu.degree}{edu.degree && fieldOfStudy ? ' · ' : ''}{fieldOfStudy}
           </p>
         )}
       </div>
-      {duration && <span className="text-[10px] text-muted-foreground whitespace-nowrap flex-shrink-0">{duration}</span>}
-    </m.div>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {isCurrent && (
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Current</span>
+        )}
+        {duration && <span className="text-[10px] text-muted-foreground whitespace-nowrap">{duration}</span>}
+        <ChevronDown className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-accent transition-colors" />
+      </div>
+    </m.button>
   );
 }
 
 // ─── Timeline entry ───────────────────────────────────────────────────────────
 
-function EducationTimelineEntry({ edu, index, isLast, linkedProjects }: {
-  edu: Education; index: number; isLast: boolean; linkedProjects: Project[];
+function EducationTimelineEntry({ edu, index, isLast, linkedProjects, onSelect }: {
+  edu: Education; index: number; isLast: boolean; linkedProjects: Project[]; onSelect: () => void;
 }) {
   const logo = getLogo(edu);
   const schoolName = getSchoolName(edu);
@@ -410,26 +569,27 @@ function EducationTimelineEntry({ edu, index, isLast, linkedProjects }: {
       className="relative flex gap-4"
     >
       <div className="relative flex flex-col items-center">
-        <div className="w-[48px] h-[48px] shrink-0 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden z-10">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="w-[48px] h-[48px] shrink-0 rounded-xl bg-card border border-border hover:border-accent/50 flex items-center justify-center overflow-hidden z-10 transition-colors"
+        >
           {logo ? (
             <img src={logo} alt={schoolName} loading="lazy" className="w-8 h-8 object-contain" />
           ) : (
             <GraduationCap className="w-5 h-5 text-muted-foreground" />
           )}
-        </div>
+        </button>
         {!isLast && <div className="w-0.5 flex-1 bg-border mt-2 min-h-[24px]" />}
       </div>
 
       <div className="flex-1 pb-8 min-w-0">
         <div className="flex items-center gap-1.5 h-[48px]">
-          {websiteUrl ? (
-            <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-              className="font-semibold text-foreground hover:text-accent transition-colors flex items-center gap-1 text-base">
-              {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
-            </a>
-          ) : (
-            <span className="font-semibold text-foreground text-base">{schoolName}</span>
-          )}
+          <button type="button" onClick={onSelect}
+            className="font-semibold text-foreground hover:text-accent transition-colors text-base text-left">
+            {schoolName}
+          </button>
+          {websiteUrl && <ExternalLink className="w-3 h-3 text-muted-foreground/50" />}
           {edu.is_featured && (
             <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">Featured</span>
           )}
@@ -472,13 +632,18 @@ function EducationTimelineEntry({ edu, index, isLast, linkedProjects }: {
         {linkedProjects.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {linkedProjects.map(p => (
-              <Link key={p.id} to={`/projects/${p.slug}`}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border bg-secondary/50 hover:border-accent/30 text-[10px] font-medium text-foreground transition-colors">
+              <span key={p.id}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border bg-secondary/50 text-[10px] font-medium text-foreground">
                 {p.title} <ArrowRight className="w-2.5 h-2.5 text-accent" />
-              </Link>
+              </span>
             ))}
           </div>
         )}
+
+        <button type="button" onClick={onSelect}
+          className="mt-2 flex items-center gap-1 text-xs text-accent font-medium hover:underline">
+          View details <ArrowRight className="w-3 h-3" />
+        </button>
       </div>
     </m.div>
   );
@@ -516,9 +681,14 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
   const { data: allEducation = [], isLoading } = useEducation();
   const { data: allProjects = [] } = useProjects();
   const [view, setView] = useState<'card' | 'timeline'>('card');
+  const [selectedEdu, setSelectedEdu] = useState<Education | null>(null);
 
-  // Only show published entries (or all if is_published isn't set)
-  const education = allEducation.filter(e => e.is_published !== false);
+  // Only show published entries
+  const education = allEducation.filter(e => e && e.is_published !== false);
+
+  function getLinkedProjects(edu: Education): Project[] {
+    return allProjects.filter(p => (p.linked_education_ids ?? []).includes(edu.id));
+  }
 
   if (isLoading) {
     return (
@@ -543,10 +713,6 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
     if (a.display_order !== undefined && b.display_order !== undefined) return a.display_order - b.display_order;
     return (getStartYear(b) ?? 0) - (getStartYear(a) ?? 0);
   });
-
-  function getLinkedProjects(edu: Education): Project[] {
-    return allProjects.filter(p => (p.linked_education_ids ?? []).includes(edu.id));
-  }
 
   // ── Preview mode (homepage) ──
   if (preview) {
@@ -575,7 +741,7 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
 
           <div className="space-y-2">
             {preview3.map((edu, i) => (
-              <PreviewCard key={edu.id} edu={edu} index={i} />
+              <PreviewCard key={edu.id} edu={edu} index={i} onSelect={() => setSelectedEdu(edu)} />
             ))}
           </div>
 
@@ -598,6 +764,16 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
             </Link>
           </m.div>
         </div>
+
+        <AnimatePresence>
+          {selectedEdu && (
+            <EducationDetailModal
+              edu={selectedEdu}
+              linkedProjects={getLinkedProjects(selectedEdu)}
+              onClose={() => setSelectedEdu(null)}
+            />
+          )}
+        </AnimatePresence>
       </section>
     );
   }
@@ -642,7 +818,9 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
               exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}
               className="space-y-4">
               {sorted.map((edu, i) => (
-                <EducationCard key={edu.id} edu={edu} index={i} linkedProjects={getLinkedProjects(edu)} />
+                <EducationCard key={edu.id} edu={edu} index={i}
+                  linkedProjects={getLinkedProjects(edu)}
+                  onSelect={() => setSelectedEdu(edu)} />
               ))}
             </m.div>
           ) : (
@@ -651,12 +829,24 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
               exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
               {sorted.map((edu, i) => (
                 <EducationTimelineEntry key={edu.id} edu={edu} index={i}
-                  isLast={i === sorted.length - 1} linkedProjects={getLinkedProjects(edu)} />
+                  isLast={i === sorted.length - 1}
+                  linkedProjects={getLinkedProjects(edu)}
+                  onSelect={() => setSelectedEdu(edu)} />
               ))}
             </m.div>
           )}
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {selectedEdu && (
+          <EducationDetailModal
+            edu={selectedEdu}
+            linkedProjects={getLinkedProjects(selectedEdu)}
+            onClose={() => setSelectedEdu(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

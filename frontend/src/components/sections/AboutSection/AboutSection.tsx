@@ -1,14 +1,45 @@
 import { m } from "framer-motion";
-import { GraduationCap, MapPin, Calendar, Trophy, Globe, ArrowRight } from "lucide-react";
-import { educationList } from "@/data/personal/education";
+import { GraduationCap, MapPin, Calendar, Trophy, Globe, ArrowRight, ExternalLink } from "lucide-react";
 import { languages, awards } from "@/data/personal/about";
-import { EducationDialog } from "@/components/education/EducationDialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useEducation } from "@/shared/hooks/useCommon";
 
 export function AboutSection() {
-  const latestEducation = [...educationList].sort((a, b) => new Date(b.startDate || "").getTime() - new Date(a.startDate || "").getTime())[0];
+  const { data: educationData = [], isLoading: eduLoading } = useEducation();
+
+  const latestEducation = [...educationData]
+    .filter(e => e.is_published !== false)
+    .sort((a, b) => {
+      const aY = a.start_year ?? (a.startDate ? parseInt(a.startDate) : 0);
+      const bY = b.start_year ?? (b.startDate ? parseInt(b.startDate) : 0);
+      return bY - aY;
+    })[0] ?? null;
+
+  const schoolName = latestEducation
+    ? (latestEducation.school_name ?? latestEducation.institution ?? '')
+    : '';
+  const logo = latestEducation
+    ? (latestEducation.school_logo ?? latestEducation.logo)
+    : undefined;
+  const field = latestEducation
+    ? (latestEducation.field_of_study ?? latestEducation.fieldOfStudy)
+    : undefined;
+  const isCurrent = latestEducation
+    ? (latestEducation.is_current ?? latestEducation.isCurrent ?? false)
+    : false;
+  const period = latestEducation
+    ? (() => {
+        const start = latestEducation.start_month && latestEducation.start_year
+          ? `${latestEducation.start_month.slice(0, 3)} ${latestEducation.start_year}`
+          : latestEducation.startDate ?? '';
+        const end = isCurrent ? 'Present'
+          : latestEducation.end_month && latestEducation.end_year
+            ? `${latestEducation.end_month.slice(0, 3)} ${latestEducation.end_year}`
+            : latestEducation.endDate ?? '';
+        return start ? (end ? `${start} – ${end}` : start) : '';
+      })()
+    : '';
 
   return (
     <section className="section-padding">
@@ -38,53 +69,74 @@ export function AboutSection() {
           className="mb-12"
           id="education"
         >
-          <EducationDialog education={latestEducation}>
-            <div className="bg-card rounded-xl border border-border p-8 cursor-pointer hover:border-accent/50 transition-all shadow-sm hover:shadow-md group">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-lg bg-accent/10">
-                    <GraduationCap className="w-6 h-6 text-accent" />
+          {eduLoading ? (
+            <div className="h-44 rounded-xl bg-card border border-border animate-pulse" />
+          ) : !latestEducation ? (
+            <div className="bg-card rounded-xl border border-dashed border-border p-8 text-center">
+              <GraduationCap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No education entries yet.</p>
+            </div>
+          ) : (
+            <Link to="/education" className="block group">
+              <div className="bg-card rounded-xl border border-border p-8 hover:border-accent/50 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-accent/10">
+                      <GraduationCap className="w-6 h-6 text-accent" />
+                    </div>
+                    <h3 className="font-display text-2xl font-bold text-foreground">Education</h3>
                   </div>
-                  <h3 className="font-display text-2xl font-bold text-foreground">Education</h3>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-secondary text-muted-foreground group-hover:bg-accent group-hover:text-black transition-colors">
+                    Latest
+                  </span>
                 </div>
-                <Badge variant="secondary" className="group-hover:bg-accent group-hover:text-accent-foreground transition-colors">Latest</Badge>
-              </div>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-xl font-semibold text-foreground mb-2">{latestEducation.institution}</h4>
-                  <p className="text-muted-foreground mb-4">{latestEducation.degree}</p>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {latestEducation.period}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {latestEducation.location}
-                    </span>
-                    {latestEducation.gpa && (
-                      <span className="flex items-center gap-1">
-                        <Trophy className="w-4 h-4" />
-                        GPA: {latestEducation.gpa}
-                      </span>
+                <div className="flex gap-5 items-start">
+                  {logo && (
+                    <div className="shrink-0 w-16 h-16 rounded-xl border border-border bg-secondary overflow-hidden flex items-center justify-center p-1.5">
+                      <img src={logo} alt={schoolName} className="w-full h-full object-contain" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <h4 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
+                        {schoolName}
+                      </h4>
+                      {latestEducation.school_website_url && (
+                        <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/40" />
+                      )}
+                    </div>
+                    {(latestEducation.degree || field) && (
+                      <p className="text-muted-foreground mb-3">
+                        {latestEducation.degree}{latestEducation.degree && field ? ' · ' : ''}{field}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      {period && (
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" /> {period}
+                        </span>
+                      )}
+                      {latestEducation.grade && latestEducation.show_grade_publicly !== false && (
+                        <span className="flex items-center gap-1">
+                          <Trophy className="w-4 h-4" /> {latestEducation.grade}
+                        </span>
+                      )}
+                    </div>
+                    {(latestEducation.skills ?? []).length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {(latestEducation.skills ?? []).slice(0, 5).map(s => (
+                          <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent font-medium">{s}</span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-3">Relevant Coursework:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {latestEducation.courses.map((course) => (
-                      <span key={course} className="tech-chip">{course}</span>
-                    ))}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-4 text-right">Click for details</p>
-                </div>
               </div>
-            </div>
-          </EducationDialog>
+            </Link>
+          )}
 
           <div className="flex justify-center mt-6">
-            <Link to="/about#education">
+            <Link to="/education">
               <Button variant="outline" className="gap-2">
                 See All Education <ArrowRight className="w-4 h-4" />
               </Button>
