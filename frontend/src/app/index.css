@@ -822,6 +822,22 @@
     --sidebar-border:           222 32% 14%;
     --sidebar-ring:             160 84% 39%;
 
+    /* ── Admin surface/border overlay tokens (always-dark context) ── */
+    --admin-border:     rgba(255,255,255,0.055);
+    --admin-border-md:  rgba(255,255,255,0.08);
+    --admin-border-lg:  rgba(255,255,255,0.10);
+    --admin-surface-xs: rgba(255,255,255,0.03);
+    --admin-surface-sm: rgba(255,255,255,0.04);
+    --admin-surface-md: rgba(255,255,255,0.05);
+    --admin-surface-lg: rgba(255,255,255,0.06);
+    --admin-surface-xl: rgba(255,255,255,0.09);
+
+    /* ── Admin semantic status indicator colors ──────────────── */
+    --status-create:   160 84% 39%;   /* emerald = accent */
+    --status-update:   217 91% 60%;   /* blue-400 */
+    --status-delete:     0 72% 58%;   /* red-400 */
+    --status-default:  262 83% 58%;   /* violet-400 */
+
     /* ── Shadows with gold glow ──────────────────────────────── */
     --shadow-sm:          0 1px 3px rgba(0,0,0,0.35);
     --shadow-md:          0 4px 10px rgba(0,0,0,0.40);
