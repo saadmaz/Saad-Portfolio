@@ -15,42 +15,42 @@ import { format, formatDistanceToNow } from 'date-fns';
 
 /* ── All 18 stat cards ─────────────────────────────────────────── */
 const STAT_CARDS = [
-  { key: 'projects',      label: 'Projects',        icon: Code,         path: '/admin/projects',      gradient: 'linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%)' },
-  { key: 'blogs',         label: 'Blog Posts',       icon: BookOpen,     path: '/admin/blogs',         gradient: 'linear-gradient(135deg, #B45309 0%, #F59E0B 100%)' },
-  { key: 'experience',    label: 'Experience',       icon: Briefcase,    path: '/admin/experience',    gradient: 'linear-gradient(135deg, #065F46 0%, #10B981 100%)' },
-  { key: 'skills',        label: 'Skills & Tools',   icon: Zap,          path: '/admin/skills',        gradient: 'linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%)' },
-  { key: 'certs',         label: 'Certifications',   icon: FileCheck,    path: '/admin/certificates',  gradient: 'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)' },
-  { key: 'awards',        label: 'Awards',           icon: Award,        path: '/admin/awards',        gradient: 'linear-gradient(135deg, #C2410C 0%, #F97316 100%)' },
-  { key: 'events',        label: 'Events',           icon: CalendarDays, path: '/admin/events',        gradient: 'linear-gradient(135deg, #9F1239 0%, #F43F5E 100%)' },
-  { key: 'newsletters',   label: 'Newsletters',      icon: Newspaper,    path: '/admin/newsletters',   gradient: 'linear-gradient(135deg, #3730A3 0%, #6366F1 100%)' },
-  { key: 'languages',     label: 'Languages',        icon: Globe,        path: '/admin/languages',     gradient: 'linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%)' },
-  { key: 'hackathons',    label: 'Hackathons',       icon: Trophy,       path: '/admin/hackathons',    gradient: 'linear-gradient(135deg, #78350F 0%, #EAB308 100%)' },
-  { key: 'testimonials',  label: 'Testimonials',     icon: Quote,        path: '/admin/testimonials',  gradient: 'linear-gradient(135deg, #9D174D 0%, #EC4899 100%)' },
-  { key: 'courses',       label: 'Courses',          icon: BookMarked,   path: '/admin/courses',       gradient: 'linear-gradient(135deg, #14532D 0%, #22C55E 100%)' },
-  { key: 'publications',  label: 'Publications',     icon: FileText,     path: '/admin/publications',  gradient: 'linear-gradient(135deg, #164E63 0%, #06B6D4 100%)' },
-  { key: 'patents',       label: 'Patents',          icon: Lightbulb,    path: '/admin/patents',       gradient: 'linear-gradient(135deg, #4C1D95 0%, #A855F7 100%)' },
-  { key: 'organizations', label: 'Organizations',    icon: Building2,    path: '/admin/organizations', gradient: 'linear-gradient(135deg, #3F6212 0%, #84CC16 100%)' },
-  { key: 'volunteer',     label: 'Volunteer',        icon: Heart,        path: '/admin/volunteer',     gradient: 'linear-gradient(135deg, #7F1D1D 0%, #EF4444 100%)' },
-  { key: 'education',     label: 'Education',        icon: GraduationCap,path: '/admin/education',     gradient: 'linear-gradient(135deg, #1E3A5F 0%, #60A5FA 100%)' },
-  { key: 'messages',      label: 'Unread Messages',  icon: Mail,         path: '/admin/messages',      gradient: 'linear-gradient(135deg, #450A0A 0%, #DC2626 100%)' },
+  { key: 'projects',      label: 'Projects',        icon: Code,         path: '/admin/projects',      gradient: 'var(--grad-projects)' },
+  { key: 'blogs',         label: 'Blog Posts',       icon: BookOpen,     path: '/admin/blogs',         gradient: 'var(--grad-blogs)' },
+  { key: 'experience',    label: 'Experience',       icon: Briefcase,    path: '/admin/experience',    gradient: 'var(--grad-experience)' },
+  { key: 'skills',        label: 'Skills & Tools',   icon: Zap,          path: '/admin/skills',        gradient: 'var(--grad-skills)' },
+  { key: 'certs',         label: 'Certifications',   icon: FileCheck,    path: '/admin/certificates',  gradient: 'var(--grad-certs)' },
+  { key: 'awards',        label: 'Awards',           icon: Award,        path: '/admin/awards',        gradient: 'var(--grad-awards)' },
+  { key: 'events',        label: 'Events',           icon: CalendarDays, path: '/admin/events',        gradient: 'var(--grad-events)' },
+  { key: 'newsletters',   label: 'Newsletters',      icon: Newspaper,    path: '/admin/newsletters',   gradient: 'var(--grad-newsletters)' },
+  { key: 'languages',     label: 'Languages',        icon: Globe,        path: '/admin/languages',     gradient: 'var(--grad-languages)' },
+  { key: 'hackathons',    label: 'Hackathons',       icon: Trophy,       path: '/admin/hackathons',    gradient: 'var(--grad-hackathons)' },
+  { key: 'testimonials',  label: 'Testimonials',     icon: Quote,        path: '/admin/testimonials',  gradient: 'var(--grad-testimonials)' },
+  { key: 'courses',       label: 'Courses',          icon: BookMarked,   path: '/admin/courses',       gradient: 'var(--grad-courses)' },
+  { key: 'publications',  label: 'Publications',     icon: FileText,     path: '/admin/publications',  gradient: 'var(--grad-publications)' },
+  { key: 'patents',       label: 'Patents',          icon: Lightbulb,    path: '/admin/patents',       gradient: 'var(--grad-patents)' },
+  { key: 'organizations', label: 'Organizations',    icon: Building2,    path: '/admin/organizations', gradient: 'var(--grad-organizations)' },
+  { key: 'volunteer',     label: 'Volunteer',        icon: Heart,        path: '/admin/volunteer',     gradient: 'var(--grad-volunteer)' },
+  { key: 'education',     label: 'Education',        icon: GraduationCap,path: '/admin/education',     gradient: 'var(--grad-education)' },
+  { key: 'messages',      label: 'Unread Messages',  icon: Mail,         path: '/admin/messages',      gradient: 'var(--grad-messages)' },
 ] as const;
 
 /* ── Quick actions ─────────────────────────────────────────────── */
 const QUICK_ACTIONS = [
-  { label: 'Add Project',      sub: 'Upload a new project entry',        icon: Code,         color: '#2563EB', bg: 'rgba(37,99,235,0.12)',   path: '/admin/projects/new' },
-  { label: 'Write Blog',       sub: 'Publish an article',                 icon: BookOpen,     color: '#D97706', bg: 'rgba(217,119,6,0.12)',   path: '/admin/blogs/new' },
-  { label: 'Add Event',        sub: 'Log a speaking or attended event',   icon: CalendarDays, color: '#059669', bg: 'rgba(5,150,105,0.12)',   path: '/admin/events' },
-  { label: 'Add Hackathon',    sub: 'Record a hackathon entry',           icon: Trophy,       color: '#7C3AED', bg: 'rgba(124,58,237,0.12)',  path: '/admin/hackathons' },
-  { label: 'Add Experience',   sub: 'Add a work experience entry',        icon: Briefcase,    color: '#0D9488', bg: 'rgba(13,148,136,0.12)',  path: '/admin/experience/new' },
-  { label: 'Manage Education', sub: 'Edit your academic background',      icon: GraduationCap,color: '#E11D48', bg: 'rgba(225,29,72,0.12)',   path: '/admin/education' },
+  { label: 'Add Project',      sub: 'Upload a new project entry',        icon: Code,         color: 'hsl(221 83% 60%)', iconBg: 'hsl(221 83% 60% / 0.12)', bg: 'hsl(221 83% 60% / 0.08)', path: '/admin/projects/new' },
+  { label: 'Write Blog',       sub: 'Publish an article',                 icon: BookOpen,     color: 'hsl(37 96% 44%)',  iconBg: 'hsl(37 96% 44% / 0.12)',  bg: 'hsl(37 96% 44% / 0.08)',  path: '/admin/blogs/new' },
+  { label: 'Add Event',        sub: 'Log a speaking or attended event',   icon: CalendarDays, color: 'hsl(162 94% 30%)', iconBg: 'hsl(162 94% 30% / 0.12)', bg: 'hsl(162 94% 30% / 0.08)', path: '/admin/events' },
+  { label: 'Add Hackathon',    sub: 'Record a hackathon entry',           icon: Trophy,       color: 'hsl(262 84% 58%)', iconBg: 'hsl(262 84% 58% / 0.12)', bg: 'hsl(262 84% 58% / 0.08)', path: '/admin/hackathons' },
+  { label: 'Add Experience',   sub: 'Add a work experience entry',        icon: Briefcase,    color: 'hsl(177 84% 31%)', iconBg: 'hsl(177 84% 31% / 0.12)', bg: 'hsl(177 84% 31% / 0.08)', path: '/admin/experience/new' },
+  { label: 'Manage Education', sub: 'Edit your academic background',      icon: GraduationCap,color: 'hsl(344 79% 51%)', iconBg: 'hsl(344 79% 51% / 0.12)', bg: 'hsl(344 79% 51% / 0.08)', path: '/admin/education' },
 ];
 
 /* ── Helpers ───────────────────────────────────────────────────── */
 const actionDotColor = (action: string) => {
-  if (action === 'CREATE') return '#10B981';
-  if (action === 'UPDATE') return '#3B82F6';
-  if (action === 'DELETE') return '#EF4444';
-  return '#8B5CF6';
+  if (action === 'CREATE') return 'hsl(var(--status-create))';
+  if (action === 'UPDATE') return 'hsl(var(--status-update))';
+  if (action === 'DELETE') return 'hsl(var(--status-delete))';
+  return 'hsl(var(--status-default))';
 };
 
 const actionVerb = (action: string) => {
@@ -169,17 +169,17 @@ const AdminDashboard = () => {
               {/* Decorative blobs */}
               <div
                 className="absolute -right-4 -top-4 w-20 h-20 rounded-full pointer-events-none"
-                style={{ background: 'rgba(255,255,255,0.18)' }}
+                style={{ background: 'var(--admin-border-lg)' }}
               />
               <div
                 className="absolute right-2 -bottom-3 w-10 h-10 rounded-full pointer-events-none"
-                style={{ background: 'rgba(255,255,255,0.10)' }}
+                style={{ background: 'var(--admin-surface-xl)' }}
               />
 
               {/* Icon */}
               <div
                 className="relative z-10 w-8 h-8 rounded-xl flex items-center justify-center mb-3"
-                style={{ background: 'rgba(255,255,255,0.22)' }}
+                style={{ background: 'hsl(0 0% 100% / 0.22)' }}
               >
                 <card.icon className="w-3.5 h-3.5 text-white" />
               </div>
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
                 <div>
                   <p
                     className="text-[9.5px] font-medium mb-0.5 leading-tight"
-                    style={{ color: 'rgba(255,255,255,0.72)' }}
+                    style={{ color: 'hsl(0 0% 100% / 0.72)' }}
                   >
                     {card.label}
                   </p>
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
                     {loading ? (
                       <span
                         className="inline-block w-7 h-6 rounded-md animate-pulse align-middle"
-                        style={{ background: 'rgba(255,255,255,0.25)' }}
+                        style={{ background: 'hsl(0 0% 100% / 0.25)' }}
                       />
                     ) : (
                       counts[card.key] ?? 0
@@ -206,7 +206,7 @@ const AdminDashboard = () => {
                 </div>
                 <ArrowRight
                   className="w-3.5 h-3.5 mb-0.5 flex-shrink-0"
-                  style={{ color: 'rgba(255,255,255,0.50)' }}
+                  style={{ color: 'hsl(0 0% 100% / 0.50)' }}
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ const AdminDashboard = () => {
                 >
                   <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${action.color}1A` }}
+                    style={{ background: action.iconBg }}
                   >
                     <action.icon className="w-4 h-4" style={{ color: action.color }} />
                   </div>

@@ -309,7 +309,7 @@ const ProjectForm = () => {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}
-            className="bg-accent hover:bg-accent/90 text-black font-black rounded-xl h-10 px-6 shadow-[0_0_20px_rgba(196,168,106,0.28)]">
+            className="bg-accent hover:bg-accent/90 text-accent-foreground font-black rounded-xl h-10 px-6 shadow-[0_0_20px_hsl(var(--accent)/0.28)]">
             <Save className="w-3.5 h-3.5 mr-2" />
             {isLoading ? 'Saving…' : 'Save Project'}
           </Button>
@@ -665,7 +665,7 @@ const ProjectForm = () => {
 
       {/* Delete dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={o => !isLoading && setDeleteDialogOpen(o)}>
-        <AlertDialogContent className="bg-[#111] border-white/10 text-white rounded-2xl shadow-2xl">
+        <AlertDialogContent className="bg-card border-[var(--admin-border-lg)] text-foreground rounded-2xl shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-black">Delete Project?</AlertDialogTitle>
             <AlertDialogDescription className="text-white/50 text-sm">

@@ -117,7 +117,7 @@ const AdminSkills = () => {
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-accent hover:bg-accent/90 text-black font-bold shadow-[0_0_20px_rgba(16,185,129,0.2)] rounded-xl transition-all hover:scale-105 active:scale-95"
+            className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold shadow-[0_0_20px_hsl(var(--accent)/0.2)] rounded-xl transition-all hover:scale-105 active:scale-95"
           >
             <Save className="w-4 h-4 mr-2" /> {isSaving ? 'Saving...' : 'Save All Changes'}
           </Button>

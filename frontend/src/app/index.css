@@ -85,6 +85,7 @@
     /* Main Teal Gradient: Rich teal → deeper teal-green */
     --gradient-accent: linear-gradient(135deg, hsl(174 72% 38%) 0%, hsl(180 65% 26%) 100%);
     --gradient-accent-hover: linear-gradient(135deg, hsl(174 72% 44%) 0%, hsl(180 65% 32%) 100%);
+    --gradient-contact: linear-gradient(135deg, hsl(196 55% 8%) 0%, hsl(180 50% 12%) 100%);
 
     /* --- REFINED SHADOWS --- */
     --shadow-sm: 0 1px 2px 0 hsl(200 40% 10% / 0.05);
@@ -151,6 +152,7 @@
     --gradient-card: linear-gradient(180deg, hsl(196 55% 7%) 0%, hsl(196 55% 9%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(174 72% 44%) 0%, hsl(180 65% 32%) 100%);
     --gradient-accent-hover: linear-gradient(135deg, hsl(174 72% 52%) 0%, hsl(180 65% 38%) 100%);
+    --gradient-contact: linear-gradient(135deg, hsl(196 55% 8%) 0%, hsl(180 50% 12%) 100%);
 
     --shadow-card: 0 0 0 1px hsl(196 50% 15%), 0 4px 6px -1px hsl(0 0% 0% / 0.25);
     --shadow-card-hover: 0 0 0 1px hsl(174 72% 44% / 0.4), 0 10px 20px -5px hsl(174 72% 32% / 0.3);
@@ -824,6 +826,7 @@
 
     /* ── Admin surface/border overlay tokens (always-dark context) ── */
     --admin-border:     rgba(255,255,255,0.055);
+    --admin-border-sm:  rgba(255,255,255,0.07);
     --admin-border-md:  rgba(255,255,255,0.08);
     --admin-border-lg:  rgba(255,255,255,0.10);
     --admin-surface-xs: rgba(255,255,255,0.03);
@@ -832,11 +835,36 @@
     --admin-surface-lg: rgba(255,255,255,0.06);
     --admin-surface-xl: rgba(255,255,255,0.09);
 
+    /* ── Admin foreground opacity tokens (for Tailwind arbitrary values) */
+    --admin-fg-22:  hsl(36 22% 91% / 0.22);
+    --admin-fg-35:  hsl(36 22% 91% / 0.35);
+    --admin-fg-60:  hsl(36 22% 91% / 0.60);
+
     /* ── Admin semantic status indicator colors ──────────────── */
     --status-create:   160 84% 39%;   /* emerald = accent */
     --status-update:   217 91% 60%;   /* blue-400 */
     --status-delete:     0 72% 58%;   /* red-400 */
     --status-default:  262 83% 58%;   /* violet-400 */
+
+    /* ── Admin stat-card categorical gradients ────────────────── */
+    --grad-projects:      linear-gradient(135deg, hsl(224 76% 40%) 0%, hsl(217 91% 60%) 100%);
+    --grad-blogs:         linear-gradient(135deg, hsl(32 95% 37%)  0%, hsl(38 92% 50%)  100%);
+    --grad-experience:    linear-gradient(135deg, hsl(162 96% 19%) 0%, hsl(160 84% 39%) 100%);
+    --grad-skills:        linear-gradient(135deg, hsl(262 72% 42%) 0%, hsl(262 83% 65%) 100%);
+    --grad-certs:         linear-gradient(135deg, hsl(176 77% 26%) 0%, hsl(174 72% 40%) 100%);
+    --grad-awards:        linear-gradient(135deg, hsl(21 90% 40%)  0%, hsl(24 94% 53%)  100%);
+    --grad-events:        linear-gradient(135deg, hsl(343 88% 36%) 0%, hsl(351 95% 60%) 100%);
+    --grad-newsletters:   linear-gradient(135deg, hsl(244 62% 41%) 0%, hsl(239 84% 67%) 100%);
+    --grad-languages:     linear-gradient(135deg, hsl(201 96% 32%) 0%, hsl(199 89% 48%) 100%);
+    --grad-hackathons:    linear-gradient(135deg, hsl(24 95% 26%)  0%, hsl(45 93% 47%)  100%);
+    --grad-testimonials:  linear-gradient(135deg, hsl(330 81% 36%) 0%, hsl(330 81% 60%) 100%);
+    --grad-courses:       linear-gradient(135deg, hsl(144 74% 20%) 0%, hsl(142 71% 45%) 100%);
+    --grad-publications:  linear-gradient(135deg, hsl(196 60% 24%) 0%, hsl(189 94% 43%) 100%);
+    --grad-patents:       linear-gradient(135deg, hsl(262 72% 35%) 0%, hsl(270 91% 65%) 100%);
+    --grad-organizations: linear-gradient(135deg, hsl(85 70% 23%)  0%, hsl(83 78% 45%)  100%);
+    --grad-volunteer:     linear-gradient(135deg, hsl(0 75% 30%)   0%, hsl(0 84% 60%)   100%);
+    --grad-education:     linear-gradient(135deg, hsl(212 55% 24%) 0%, hsl(213 97% 68%) 100%);
+    --grad-messages:      linear-gradient(135deg, hsl(0 75% 15%)   0%, hsl(0 72% 51%)   100%);
 
     /* ── Shadows with gold glow ──────────────────────────────── */
     --shadow-sm:          0 1px 3px rgba(0,0,0,0.35);
@@ -844,8 +872,8 @@
     --shadow-lg:          0 10px 24px rgba(0,0,0,0.45);
     --shadow-xl:          0 20px 40px rgba(0,0,0,0.50);
     --shadow-card:        0 0 0 1px rgba(255,255,255,0.055), 0 2px 8px rgba(0,0,0,0.30);
-    --shadow-card-hover:  0 0 0 1px rgba(16,185,129,0.28), 0 8px 24px rgba(0,0,0,0.35);
-    --shadow-glow:        0 0 22px rgba(16,185,129,0.32), 0 0 44px rgba(16,185,129,0.10);
+    --shadow-card-hover:  0 0 0 1px hsl(var(--accent) / 0.28), 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-glow:        0 0 22px hsl(var(--accent) / 0.32), 0 0 44px hsl(var(--accent) / 0.10);
 
     /* ── Emerald gradients ────────────────────────────────────── */
     --gradient-accent:       linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(161 72% 28%) 100%);
@@ -859,11 +887,11 @@
 
   /* ── Text selection (site-wide emerald) ─────────────────────── */
   ::selection {
-    background-color: rgba(16,185,129,0.28);
+    background-color: hsl(var(--accent) / 0.28);
     color: inherit;
   }
   .admin-panel ::selection {
-    background-color: rgba(16,185,129,0.25);
+    background-color: hsl(var(--accent) / 0.25);
     color: inherit;
   }
 
@@ -900,18 +928,18 @@
   }
 
   /* ── text-white → warm ivory (stops the cold-white look) ───── */
-  .admin-panel .text-white          { color: hsl(36 22% 91%)           !important; }
-  .admin-panel .text-white\/90      { color: rgba(237,233,227,0.90)    !important; }
-  .admin-panel .text-white\/80      { color: rgba(237,233,227,0.80)    !important; }
-  .admin-panel .text-white\/70      { color: rgba(237,233,227,0.70)    !important; }
-  .admin-panel .text-white\/60      { color: rgba(237,233,227,0.60)    !important; }
-  .admin-panel .text-white\/50      { color: rgba(237,233,227,0.50)    !important; }
-  .admin-panel .text-white\/40      { color: rgba(237,233,227,0.40)    !important; }
-  .admin-panel .text-white\/30      { color: rgba(237,233,227,0.30)    !important; }
-  .admin-panel .text-white\/25      { color: rgba(237,233,227,0.25)    !important; }
-  .admin-panel .text-white\/20      { color: rgba(237,233,227,0.20)    !important; }
-  .admin-panel .text-white\/15      { color: rgba(237,233,227,0.15)    !important; }
-  .admin-panel .text-white\/10      { color: rgba(237,233,227,0.10)    !important; }
+  .admin-panel .text-white          { color: hsl(var(--foreground))          !important; }
+  .admin-panel .text-white\/90      { color: hsl(var(--foreground) / 0.90)   !important; }
+  .admin-panel .text-white\/80      { color: hsl(var(--foreground) / 0.80)   !important; }
+  .admin-panel .text-white\/70      { color: hsl(var(--foreground) / 0.70)   !important; }
+  .admin-panel .text-white\/60      { color: hsl(var(--foreground) / 0.60)   !important; }
+  .admin-panel .text-white\/50      { color: hsl(var(--foreground) / 0.50)   !important; }
+  .admin-panel .text-white\/40      { color: hsl(var(--foreground) / 0.40)   !important; }
+  .admin-panel .text-white\/30      { color: hsl(var(--foreground) / 0.30)   !important; }
+  .admin-panel .text-white\/25      { color: hsl(var(--foreground) / 0.25)   !important; }
+  .admin-panel .text-white\/20      { color: hsl(var(--foreground) / 0.20)   !important; }
+  .admin-panel .text-white\/15      { color: hsl(var(--foreground) / 0.15)   !important; }
+  .admin-panel .text-white\/10      { color: hsl(var(--foreground) / 0.10)   !important; }
 
   /* ── bg-white/* → card surface (stops transparent-glass floats) */
   .admin-panel .bg-white\/\[0\.03\],
@@ -922,7 +950,7 @@
 
   /* ── Hardcoded teal shadow → gold glow on accent buttons ────── */
   .admin-panel .shadow-\[0_0_20px_rgba\(45\,212\,191\,0\.2\)\] {
-    box-shadow: 0 0 20px rgba(16,185,129,0.25) !important;
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.25) !important;
   }
 
   /* ── Dropdown / Popover dark bg fix ─────────────────────────── */
@@ -937,7 +965,7 @@
     border-radius: 3px;
   }
   .admin-panel ::-webkit-scrollbar-thumb:hover {
-    background: rgba(16,185,129,0.30);
+    background: hsl(var(--accent) / 0.30);
   }
 
   /* ── TipTap rich-text editor ────────────────────────────────── */
@@ -951,13 +979,13 @@
   .admin-panel .ProseMirror h3 { @apply text-lg  font-semibold mt-5 mb-2; }
   .admin-panel .ProseMirror p,
   .admin-panel .ProseMirror ul,
-  .admin-panel .ProseMirror ol  { @apply mb-3 leading-relaxed; color: rgba(237,233,227,0.60); }
+  .admin-panel .ProseMirror ol  { @apply mb-3 leading-relaxed; color: hsl(var(--foreground) / 0.60); }
   .admin-panel .ProseMirror ul,
   .admin-panel .ProseMirror ol  { @apply pl-5; }
-  .admin-panel .ProseMirror hr  { border-color: rgba(255,255,255,0.06); @apply my-5; }
+  .admin-panel .ProseMirror hr  { border-color: var(--admin-surface-lg); @apply my-5; }
   .admin-panel .ProseMirror .is-editor-empty::before {
     content: attr(data-placeholder);
-    color: rgba(237,233,227,0.22);
+    color: hsl(var(--foreground) / 0.22);
     @apply pointer-events-none float-left h-0;
   }
 }

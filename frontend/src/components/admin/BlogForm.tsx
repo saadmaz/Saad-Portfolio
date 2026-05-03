@@ -50,7 +50,7 @@ const toSlug = (s: string) =>
 /* ── Shared label style ──────────────────────────────────────────── */
 const Label = ({ children }: { children: React.ReactNode }) => (
   <span className="block text-[11px] font-semibold uppercase tracking-widest mb-1.5"
-        style={{ color: 'rgba(237,233,227,0.40)' }}>
+        style={{ color: 'hsl(var(--foreground) / 0.40)' }}>
     {children}
   </span>
 );
@@ -76,13 +76,13 @@ const StyledInput = React.forwardRef<
       props.className,
     )}
     style={{
-      background: 'rgba(255,255,255,0.05)',
-      border:     '1px solid rgba(255,255,255,0.09)',
-      color:      'rgba(237,233,227,0.85)',
+      background: 'var(--admin-surface-md)',
+      border:     '1px solid var(--admin-surface-xl)',
+      color:      'hsl(var(--foreground) / 0.85)',
       ...props.style,
     }}
-    onFocus={e => { e.currentTarget.style.borderColor = 'rgba(16,185,129,0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.08)'; }}
-    onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.boxShadow = 'none'; }}
+    onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent) / 0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.08)'; }}
+    onBlur={e  => { e.currentTarget.style.borderColor = 'var(--admin-surface-xl)'; e.currentTarget.style.boxShadow = 'none'; }}
   />
 ));
 StyledInput.displayName = 'StyledInput';
@@ -97,13 +97,13 @@ const StyledTextarea = React.forwardRef<
     {...props}
     className={cn('w-full px-3 py-2.5 rounded-lg text-[13px] outline-none transition-all duration-150 resize-none', props.className)}
     style={{
-      background: 'rgba(255,255,255,0.05)',
-      border:     '1px solid rgba(255,255,255,0.09)',
-      color:      'rgba(237,233,227,0.85)',
+      background: 'var(--admin-surface-md)',
+      border:     '1px solid var(--admin-surface-xl)',
+      color:      'hsl(var(--foreground) / 0.85)',
       ...props.style,
     }}
-    onFocus={e => { e.currentTarget.style.borderColor = 'rgba(16,185,129,0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.08)'; }}
-    onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.boxShadow = 'none'; }}
+    onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent) / 0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.08)'; }}
+    onBlur={e  => { e.currentTarget.style.borderColor = 'var(--admin-surface-xl)'; e.currentTarget.style.boxShadow = 'none'; }}
   />
 ));
 StyledTextarea.displayName = 'StyledTextarea';
@@ -115,12 +115,12 @@ const Toggle = ({
   label,
 }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
   <div className="flex items-center justify-between py-1">
-    <span className="text-[13px] font-medium" style={{ color: 'rgba(237,233,227,0.65)' }}>{label}</span>
+    <span className="text-[13px] font-medium" style={{ color: 'hsl(var(--foreground) / 0.65)' }}>{label}</span>
     <button
       type="button"
       onClick={() => onChange(!checked)}
       className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 flex-shrink-0"
-      style={{ background: checked ? '#10b981' : 'rgba(255,255,255,0.12)' }}
+      style={{ background: checked ? 'hsl(var(--accent))' : 'var(--admin-border-lg)' }}
     >
       <span
         className="inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transform transition-transform duration-200"
@@ -138,15 +138,15 @@ const SectionCard = ({
 }: { title: string; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) => (
   <div
     className="rounded-xl overflow-hidden"
-    style={{ background: 'hsl(222 45% 12%)', border: '1px solid rgba(255,255,255,0.07)' }}
+    style={{ background: 'hsl(var(--card))', border: '1px solid var(--admin-border-sm)' }}
   >
     <div
       className="flex items-center gap-2 px-4 py-3"
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ borderBottom: '1px solid var(--admin-border-sm)' }}
     >
       <Icon className="w-3.5 h-3.5 text-emerald-400" />
       <span className="text-[11px] font-semibold uppercase tracking-widest"
-            style={{ color: 'rgba(237,233,227,0.40)' }}>
+            style={{ color: 'hsl(var(--foreground) / 0.40)' }}>
         {title}
       </span>
     </div>
@@ -166,7 +166,7 @@ const ToolbarBtn = ({
       'p-1.5 rounded-md transition-all flex items-center justify-center',
       active ? 'bg-emerald-500/20 text-emerald-400' : 'hover:bg-white/[0.06]',
     )}
-    style={{ color: active ? '#34d399' : 'rgba(237,233,227,0.45)' }}
+    style={{ color: active ? 'hsl(var(--accent-bright))' : 'hsl(var(--foreground) / 0.45)' }}
   >
     {children}
   </button>
@@ -174,7 +174,7 @@ const ToolbarBtn = ({
 
 /* ── Divider ─────────────────────────────────────────────────────── */
 const ToolbarDivider = () => (
-  <div className="w-px h-4 mx-0.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.09)' }} />
+  <div className="w-px h-4 mx-0.5 flex-shrink-0" style={{ background: 'var(--admin-surface-xl)' }} />
 );
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -403,24 +403,24 @@ const BlogForm = () => {
       {/* ── Top bar ────────────────────────────────────────────── */}
       <div
         className="sticky top-0 z-30 flex flex-wrap items-center gap-3 px-0 py-4 mb-6"
-        style={{ background: 'hsl(228 52% 6%)' }}
+        style={{ background: 'hsl(var(--background))' }}
       >
         <button
           type="button"
           onClick={() => navigate('/admin/blogs')}
           className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}
-          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'}
-          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'}
+          style={{ background: 'var(--admin-surface-md)', border: '1px solid var(--admin-surface-xl)' }}
+          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-xl)'}
+          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-md)'}
         >
-          <ArrowLeft className="w-4 h-4" style={{ color: 'rgba(237,233,227,0.60)' }} />
+          <ArrowLeft className="w-4 h-4" style={{ color: 'hsl(var(--foreground) / 0.60)' }} />
         </button>
 
         <div>
-          <h1 className="text-xl font-bold" style={{ color: 'rgba(237,233,227,0.90)', letterSpacing: '-0.02em' }}>
+          <h1 className="text-xl font-bold" style={{ color: 'hsl(var(--foreground) / 0.90)', letterSpacing: '-0.02em' }}>
             {isEditMode ? 'Edit Post' : 'New Blog Post'}
           </h1>
-          <p className="text-[11px] mt-0.5" style={{ color: 'rgba(237,233,227,0.35)' }}>
+          <p className="text-[11px] mt-0.5" style={{ color: 'hsl(var(--foreground) / 0.35)' }}>
             {isEditMode ? 'Update content and metadata.' : 'Write something worth reading.'}
           </p>
         </div>
@@ -430,9 +430,9 @@ const BlogForm = () => {
             type="button"
             onClick={handlePreview}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-all"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(237,233,227,0.55)' }}
-            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'}
-            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'}
+            style={{ background: 'var(--admin-surface-md)', border: '1px solid var(--admin-surface-xl)', color: 'hsl(var(--foreground) / 0.55)' }}
+            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-xl)'}
+            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-md)'}
           >
             <Eye className="w-3.5 h-3.5" /> Preview
           </button>
@@ -442,9 +442,9 @@ const BlogForm = () => {
             onClick={handleSubmit(d => onSubmit(d, false))}
             disabled={isLoading}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-50"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(237,233,227,0.65)' }}
-            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'}
-            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'}
+            style={{ background: 'var(--admin-surface-md)', border: '1px solid var(--admin-surface-xl)', color: 'hsl(var(--foreground) / 0.65)' }}
+            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-xl)'}
+            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--admin-surface-md)'}
           >
             <Save className="w-3.5 h-3.5" /> Save Draft
           </button>
@@ -455,12 +455,12 @@ const BlogForm = () => {
             disabled={isLoading}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all disabled:opacity-50"
             style={{
-              background: '#10b981',
-              color: '#fff',
-              boxShadow: '0 0 18px rgba(16,185,129,0.28)',
+              background: 'hsl(var(--accent))',
+              color: 'hsl(var(--accent-foreground))',
+              boxShadow: '0 0 18px hsl(var(--accent) / 0.28)',
             }}
-            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#059669'}
-            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = '#10b981'}
+            onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--accent-bright))'}
+            onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--accent))'}
           >
             <Send className="w-3.5 h-3.5" />
             {isLoading ? 'Saving…' : isEditMode ? 'Update' : publishMode === 'publish' ? 'Publish' : 'Save'}
@@ -471,9 +471,9 @@ const BlogForm = () => {
               type="button"
               onClick={() => setShowDeleteModal(true)}
               className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
-              style={{ color: 'rgba(239,68,68,0.60)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgb(248,113,113)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(239,68,68,0.60)'; }}
+              style={{ color: 'hsl(var(--destructive) / 0.60)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--destructive) / 0.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive))'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive) / 0.60)'; }}
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -490,7 +490,7 @@ const BlogForm = () => {
           {/* Title + slug + excerpt */}
           <div
             className="rounded-xl overflow-hidden"
-            style={{ background: 'hsl(222 45% 12%)', border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ background: 'hsl(var(--card))', border: '1px solid var(--admin-border-sm)' }}
           >
             <div className="p-5 space-y-4">
               {/* Title */}
@@ -499,23 +499,23 @@ const BlogForm = () => {
                   {...register('title')}
                   placeholder="Post title…"
                   className="w-full bg-transparent border-none text-[22px] font-bold placeholder:opacity-20 focus:outline-none leading-snug"
-                  style={{ color: 'rgba(237,233,227,0.92)', letterSpacing: '-0.02em' }}
+                  style={{ color: 'hsl(var(--foreground) / 0.92)', letterSpacing: '-0.02em' }}
                 />
               </Field>
 
               {/* Slug */}
               <div
                 className="flex items-center gap-2 pt-3"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                style={{ borderTop: '1px solid var(--admin-surface-lg)' }}
               >
-                <span className="text-[11px] font-medium flex-shrink-0" style={{ color: 'rgba(237,233,227,0.30)' }}>
+                <span className="text-[11px] font-medium flex-shrink-0" style={{ color: 'hsl(var(--foreground) / 0.30)' }}>
                   /blog/
                 </span>
                 <input
                   {...register('slug')}
                   placeholder="url-slug"
                   className="flex-1 bg-transparent border-none text-[12px] font-mono focus:outline-none"
-                  style={{ color: 'rgba(237,233,227,0.55)' }}
+                  style={{ color: 'hsl(var(--foreground) / 0.55)' }}
                 />
                 {errors.slug && <p className="text-xs text-red-400 flex-shrink-0">{errors.slug.message}</p>}
               </div>
@@ -524,11 +524,11 @@ const BlogForm = () => {
             {/* Excerpt */}
             <div
               className="px-5 pb-5"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ borderTop: '1px solid var(--admin-surface-lg)' }}
             >
               <div className="flex items-center justify-between pt-4 mb-2">
                 <Label>Excerpt</Label>
-                <span className="text-[10px]" style={{ color: excerptLen > 280 ? '#f87171' : 'rgba(237,233,227,0.25)' }}>
+                <span className="text-[10px]" style={{ color: excerptLen > 280 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.25)' }}>
                   {excerptLen}/300
                 </span>
               </div>
@@ -546,13 +546,13 @@ const BlogForm = () => {
           {/* Rich text editor */}
           <div
             className="rounded-xl overflow-hidden"
-            style={{ background: 'hsl(222 45% 12%)', border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ background: 'hsl(var(--card))', border: '1px solid var(--admin-border-sm)' }}
           >
             {/* Toolbar */}
             {editor && (
               <div
                 className="flex flex-wrap items-center gap-0.5 p-2"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                style={{ borderBottom: '1px solid var(--admin-border-sm)' }}
               >
                 <ToolbarBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold">
                   <Bold className="w-3.5 h-3.5" />
@@ -630,7 +630,7 @@ const BlogForm = () => {
             {/* Publish mode selector */}
             <div
               className="grid grid-cols-3 gap-1 p-1 rounded-lg"
-              style={{ background: 'rgba(255,255,255,0.04)' }}
+              style={{ background: 'var(--admin-surface-sm)' }}
             >
               {(['draft', 'publish', 'schedule'] as const).map(mode => (
                 <button
@@ -642,9 +642,9 @@ const BlogForm = () => {
                   }}
                   className="py-1.5 rounded-md text-[11px] font-semibold capitalize transition-all"
                   style={{
-                    background:   publishMode === mode ? '#10b981' : 'transparent',
-                    color:        publishMode === mode ? '#fff' : 'rgba(237,233,227,0.45)',
-                    boxShadow:    publishMode === mode ? '0 2px 8px rgba(16,185,129,0.25)' : 'none',
+                    background:   publishMode === mode ? 'hsl(var(--accent))' : 'transparent',
+                    color:        publishMode === mode ? 'hsl(var(--accent-foreground))' : 'hsl(var(--foreground) / 0.45)',
+                    boxShadow:    publishMode === mode ? '0 2px 8px hsl(var(--accent) / 0.25)' : 'none',
                   }}
                 >
                   {mode === 'publish' ? 'Live' : mode === 'schedule' ? 'Schedule' : 'Draft'}
@@ -667,17 +667,17 @@ const BlogForm = () => {
             {/* Status indicator */}
             <div
               className="flex items-center gap-2 px-3 py-2 rounded-lg"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ background: 'var(--admin-surface-sm)', border: '1px solid var(--admin-border-sm)' }}
             >
               <span
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{
-                  background: publishMode === 'publish' ? '#10b981'
-                    : publishMode === 'schedule' ? '#f59e0b'
-                    : 'rgba(237,233,227,0.25)',
+                  background: publishMode === 'publish' ? 'hsl(var(--accent))'
+                    : publishMode === 'schedule' ? 'hsl(var(--warning))'
+                    : 'hsl(var(--foreground) / 0.25)',
                 }}
               />
-              <span className="text-[11px] font-medium" style={{ color: 'rgba(237,233,227,0.55)' }}>
+              <span className="text-[11px] font-medium" style={{ color: 'hsl(var(--foreground) / 0.55)' }}>
                 {publishMode === 'publish' ? 'Will go live immediately'
                   : publishMode === 'schedule' ? (schedDate ? `Scheduled for ${new Date(schedDate).toLocaleDateString()}` : 'Pick a date above')
                   : 'Saved as draft'}
@@ -699,7 +699,7 @@ const BlogForm = () => {
             <Field error={errors.metaDescription?.message}>
               <div className="flex items-center justify-between mb-1.5">
                 <Label>Meta Description</Label>
-                <span className="text-[10px]" style={{ color: metaLen > 150 ? '#f87171' : 'rgba(237,233,227,0.25)' }}>
+                <span className="text-[10px]" style={{ color: metaLen > 150 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.25)' }}>
                   {metaLen}/160
                 </span>
               </div>
@@ -716,7 +716,7 @@ const BlogForm = () => {
                 {...register('keywords')}
                 placeholder="react, typescript, web dev"
               />
-              <p className="text-[10px] mt-1" style={{ color: 'rgba(237,233,227,0.25)' }}>
+              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.25)' }}>
                 Comma-separated primary &amp; secondary keywords
               </p>
             </Field>
@@ -734,13 +734,13 @@ const BlogForm = () => {
               <Label>Tags</Label>
               <div
                 className="flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-2 rounded-lg"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}
+                style={{ background: 'var(--admin-surface-md)', border: '1px solid var(--admin-surface-xl)' }}
               >
                 {tags.map(tag => (
                   <span
                     key={tag}
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium"
-                    style={{ background: 'rgba(16,185,129,0.12)', color: '#34d399', border: '1px solid rgba(16,185,129,0.20)' }}
+                    style={{ background: 'hsl(var(--accent) / 0.12)', color: 'hsl(var(--accent-bright))', border: '1px solid hsl(var(--accent) / 0.20)' }}
                   >
                     {tag}
                     <button type="button" onClick={() => removeTag(tag)} className="opacity-60 hover:opacity-100">
@@ -755,10 +755,10 @@ const BlogForm = () => {
                   onBlur={() => tagInput && addTag(tagInput)}
                   placeholder={tags.length ? '' : 'Add tags, press Enter'}
                   className="flex-1 min-w-[80px] bg-transparent border-none outline-none text-[12px]"
-                  style={{ color: 'rgba(237,233,227,0.75)', minWidth: 80 }}
+                  style={{ color: 'hsl(var(--foreground) / 0.75)', minWidth: 80 }}
                 />
               </div>
-              <p className="text-[10px] mt-1" style={{ color: 'rgba(237,233,227,0.22)' }}>
+              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.22)' }}>
                 Press Enter or comma to add
               </p>
             </div>
@@ -776,17 +776,17 @@ const BlogForm = () => {
       {showDeleteModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(7,11,23,0.80)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'hsl(var(--background) / 0.80)', backdropFilter: 'blur(4px)' }}
           onClick={() => !isLoading && setShowDeleteModal(false)}
         >
           <div
             className="w-full max-w-sm rounded-2xl p-6 space-y-4"
-            style={{ background: 'hsl(222 45% 12%)', border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}
+            style={{ background: 'hsl(var(--card))', border: '1px solid var(--admin-surface-xl)', boxShadow: 'var(--shadow-xl)' }}
             onClick={e => e.stopPropagation()}
           >
             <div>
-              <h3 className="text-base font-bold mb-1" style={{ color: 'rgba(237,233,227,0.90)' }}>Delete Post?</h3>
-              <p className="text-[13px]" style={{ color: 'rgba(237,233,227,0.45)' }}>
+              <h3 className="text-base font-bold mb-1" style={{ color: 'hsl(var(--foreground) / 0.90)' }}>Delete Post?</h3>
+              <p className="text-[13px]" style={{ color: 'hsl(var(--foreground) / 0.45)' }}>
                 This post will be permanently deleted and cannot be recovered.
               </p>
             </div>
@@ -796,7 +796,7 @@ const BlogForm = () => {
                 disabled={isLoading}
                 onClick={() => setShowDeleteModal(false)}
                 className="flex-1 py-2.5 rounded-xl text-[13px] font-medium transition-all"
-                style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(237,233,227,0.65)', border: '1px solid rgba(255,255,255,0.09)' }}
+                style={{ background: 'var(--admin-surface-lg)', color: 'hsl(var(--foreground) / 0.65)', border: '1px solid var(--admin-surface-xl)' }}
               >
                 Cancel
               </button>
@@ -805,7 +805,7 @@ const BlogForm = () => {
                 disabled={isLoading}
                 onClick={onDelete}
                 className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all disabled:opacity-50"
-                style={{ background: '#ef4444', color: '#fff', boxShadow: '0 4px 12px rgba(239,68,68,0.25)' }}
+                style={{ background: 'hsl(var(--destructive))', color: 'hsl(var(--destructive-foreground))', boxShadow: '0 4px 12px hsl(var(--destructive) / 0.25)' }}
               >
                 {isLoading ? 'Deleting…' : 'Delete Post'}
               </button>

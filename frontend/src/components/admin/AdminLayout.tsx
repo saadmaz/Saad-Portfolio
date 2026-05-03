@@ -152,7 +152,7 @@ const AdminLayout = () => {
       {/* Logo / brand */}
       <div className={cn(
         "flex items-center h-14 border-b flex-shrink-0 transition-all duration-300",
-        "border-[rgba(255,255,255,0.055)]",
+        "border-[var(--admin-border)]",
         collapsed ? "justify-center px-0" : "justify-between px-4"
       )}>
         {!collapsed && (
@@ -183,7 +183,7 @@ const AdminLayout = () => {
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
             "hidden md:flex items-center justify-center w-5 h-5 rounded-md transition-all duration-200 flex-shrink-0",
-            "text-[rgba(237,233,227,0.22)] hover:text-[rgba(237,233,227,0.60)] hover:bg-white/[0.06]",
+            "text-[var(--admin-fg-22)] hover:text-[var(--admin-fg-60)] hover:bg-white/[0.06]",
             collapsed && "absolute left-[52px] top-[20px] z-10 border shadow-xl rounded-full"
           )}
           style={collapsed ? { background: 'hsl(var(--card))', borderColor: 'var(--admin-border-md)' } : {}}
@@ -206,7 +206,7 @@ const AdminLayout = () => {
                 </p>
               )}
               {collapsed && (
-                <div className="my-2 mx-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }} />
+                <div className="my-2 mx-2" style={{ borderTop: '1px solid var(--admin-surface-md)' }} />
               )}
 
               {group.items.map((item) => {
@@ -227,7 +227,7 @@ const AdminLayout = () => {
                       color: isActive ? 'hsl(var(--accent))' : 'hsl(var(--foreground) / 0.40)',
                     }}
                     onMouseEnter={e => {
-                      if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.03)';
+                      if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'var(--admin-surface-xs)';
                     }}
                     onMouseLeave={e => {
                       if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = '';
@@ -285,7 +285,7 @@ const AdminLayout = () => {
                       >
                         {item.label}
                         {count !== undefined && (
-                          <span style={{ color: 'rgba(237,233,227,0.35)' }}>{count}</span>
+                          <span style={{ color: 'hsl(var(--foreground) / 0.35)' }}>{count}</span>
                         )}
                       </TooltipContent>
                     </Tooltip>
@@ -301,7 +301,7 @@ const AdminLayout = () => {
       {/* User profile + sign out */}
       <div
         className="flex-shrink-0"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.055)' }}
+        style={{ borderTop: '1px solid var(--admin-border)' }}
       >
         {/* User row */}
         {!collapsed && (
@@ -467,7 +467,7 @@ const AdminLayout = () => {
                 {unreadCount > 0 && (
                   <span
                     className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[7px] font-bold flex items-center justify-center"
-                    style={{ border: '1.5px solid #080C18' }}
+                    style={{ border: '1.5px solid hsl(var(--background))' }}
                   >
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>

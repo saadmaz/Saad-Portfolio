@@ -156,7 +156,7 @@ const ProjectDetailPage = () => {
                 {project.status && (
                   <div className="shrink-0">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border shadow-sm">
-                      <div className={`w-2 h-2 rounded-full animate-pulse ${project.status.toLowerCase() === 'live' ? 'bg-success shadow-[0_0_8px_rgba(34,197,94,0.45)]' : 'bg-warning shadow-[0_0_8px_rgba(245,158,11,0.45)]'}`} />
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${project.status.toLowerCase() === 'live' ? 'bg-success shadow-[0_0_8px_hsl(var(--success)/0.45)]' : 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.45)]'}`} />
                       <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{project.status}</span>
                     </div>
                   </div>

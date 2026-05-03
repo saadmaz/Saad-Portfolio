@@ -4,11 +4,11 @@ import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Github, Linkedin,
 import { Link } from "react-router-dom";
 
 const socialLinks = [
-  { Icon: Linkedin,  href: "https://linkedin.com/in/saadmaz",      label: "LinkedIn",  brandColor: "#0A66C2", glowColor: "rgba(10,102,194,0.40)" },
-  { Icon: Github,    href: "https://github.com/saadmaz",            label: "GitHub",    brandColor: "#a78bfa", glowColor: "rgba(167,139,250,0.40)" },
-  { Icon: Instagram, href: "https://instagram.com/saaadmaz/",       label: "Instagram", brandColor: "#E1306C", glowColor: "rgba(225,48,108,0.40)" },
-  { Icon: Facebook,  href: "https://facebook.com/saadmazhar03",     label: "Facebook",  brandColor: "#1877F2", glowColor: "rgba(24,119,242,0.40)" },
-  { Icon: X,         href: "https://x.com/SaadMazhar_",             label: "X",         brandColor: "#a0a0a0", glowColor: "rgba(160,160,160,0.40)" },
+  { Icon: Linkedin,  href: "https://linkedin.com/in/saadmaz",      label: "LinkedIn",  brandColor: "hsl(210 91% 40%)", glowColor: "hsl(210 91% 40% / 0.40)" },
+  { Icon: Github,    href: "https://github.com/saadmaz",            label: "GitHub",    brandColor: "hsl(262 93% 76%)", glowColor: "hsl(262 93% 76% / 0.40)" },
+  { Icon: Instagram, href: "https://instagram.com/saaadmaz/",       label: "Instagram", brandColor: "hsl(340 74% 54%)", glowColor: "hsl(340 74% 54% / 0.40)" },
+  { Icon: Facebook,  href: "https://facebook.com/saadmazhar03",     label: "Facebook",  brandColor: "hsl(214 94% 52%)", glowColor: "hsl(214 94% 52% / 0.40)" },
+  { Icon: X,         href: "https://x.com/SaadMazhar_",             label: "X",         brandColor: "hsl(0 0% 63%)",   glowColor: "hsl(0 0% 63% / 0.40)" },
 ];
 
 export function ContactSection() {
@@ -16,12 +16,12 @@ export function ContactSection() {
     <section
       className="py-16 relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, hsl(196 55% 8%) 0%, hsl(180 50% 12%) 100%)",
+        background: "var(--gradient-contact)",
       }}
     >
       {/* Ambient teal glow blobs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/8 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-400/6 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[140px] pointer-events-none" style={{ background: "hsl(var(--accent) / 0.08)" }} />
+      <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full blur-[120px] pointer-events-none" style={{ background: "hsl(var(--accent) / 0.06)" }} />
 
       <div className="section-container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -33,13 +33,13 @@ export function ContactSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="inline-block text-sm font-bold uppercase tracking-[0.2em] text-teal-400 mb-3">
+            <span className="inline-block text-sm font-bold uppercase tracking-[0.2em] text-accent mb-3">
               Get in Touch
             </span>
 
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 leading-tight text-white">
               Let's Build Something{" "}
-              <span className="text-teal-400">Great</span> Together
+              <span className="text-accent">Great</span> Together
             </h2>
 
             <p className="text-white/60 mb-8 max-w-md text-sm leading-relaxed">
@@ -51,22 +51,22 @@ export function ContactSection() {
             <div className="space-y-3 mb-8">
               <a
                 href="mailto:saadmazaa@gmail.com"
-                className="flex items-center gap-3 text-white/70 hover:text-teal-400 transition-colors group text-sm"
+                className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm"
               >
-                <Mail className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
+                <Mail className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" />
                 <span>saadmazaa@gmail.com</span>
               </a>
 
               <a
                 href="tel:+94720135801"
-                className="flex items-center gap-3 text-white/70 hover:text-teal-400 transition-colors group text-sm"
+                className="flex items-center gap-3 text-white/70 hover:text-accent transition-colors group text-sm"
               >
-                <Phone className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
+                <Phone className="w-4 h-4 text-accent group-hover:scale-110 transition-transform" />
                 <span>+94 72 01 358 01</span>
               </a>
 
               <div className="flex items-center gap-3 text-white/50 text-sm">
-                <MapPin className="w-4 h-4 text-teal-400/70" />
+                <MapPin className="w-4 h-4 text-accent opacity-70" />
                 <span>Colombo, Sri Lanka</span>
               </div>
             </div>
@@ -129,20 +129,20 @@ export function ContactSection() {
               <m.div whileHover={{ scale: 1.02, y: -3 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                 <Link
                   to="/contact"
-                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-teal-400/40 transition-all duration-300 group h-full"
+                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-[hsl(var(--accent)/0.40)] transition-all duration-300 group h-full"
                   style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-teal-400 transition-colors">
-                        <Mail className="w-4 h-4 text-teal-400" />
+                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                        <Mail className="w-4 h-4 text-accent" />
                         Send a Message
                       </h3>
                       <p className="text-white/50 text-xs group-hover:text-white/70 transition-colors">
                         Get a response within 24 hours.
                       </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
+                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </Link>
               </m.div>
@@ -153,20 +153,20 @@ export function ContactSection() {
                   href="https://cal.com/saad-mazhar"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-teal-400/40 transition-all duration-300 group h-full"
+                  className="block p-6 rounded-xl backdrop-blur-md bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.12] hover:border-[hsl(var(--accent)/0.40)] transition-all duration-300 group h-full"
                   style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-teal-400 transition-colors">
-                        <Calendar className="w-4 h-4 text-teal-400" />
+                      <h3 className="font-display text-lg font-semibold mb-1.5 flex items-center gap-2 text-white group-hover:text-accent transition-colors">
+                        <Calendar className="w-4 h-4 text-accent" />
                         Schedule a Call
                       </h3>
                       <p className="text-white/50 text-xs group-hover:text-white/70 transition-colors">
                         Book a 30-minute chat via Cal.com
                       </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-teal-400 group-hover:translate-x-2 transition-all duration-300 mt-1" />
+                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </a>
               </m.div>
