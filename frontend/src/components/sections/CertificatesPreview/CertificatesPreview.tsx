@@ -41,7 +41,7 @@ function hashId(id: string | number): number {
   return Math.abs(h);
 }
 
-function CertCard({ cert }: { cert: Certificate }) {
+export function CertCard({ cert }: { cert: Certificate }) {
   const [copied, setCopied] = useState(false);
   const accent = ACCENT_VARIANTS[hashId(cert.id) % ACCENT_VARIANTS.length];
   const tags = cert.tags?.length ? cert.tags : cert.skills || [];
