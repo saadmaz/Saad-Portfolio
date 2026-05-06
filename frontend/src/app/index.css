@@ -213,6 +213,9 @@
     @apply py-20 md:py-24 lg:py-32;
   }
 
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
   /* CARD EFFECTS */
   .card-hover {
     @apply transition-all duration-300 ease-out;
