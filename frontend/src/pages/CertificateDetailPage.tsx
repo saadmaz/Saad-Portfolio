@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
 import {
   ArrowLeft,
   ExternalLink,
@@ -44,9 +45,16 @@ const CertificateDetailPage = () => {
     });
   };
 
+  const canonicalUrl = `https://saadmaz.com/certifications/${id}`;
+
   if (loading) {
     return (
       <Layout>
+        <SEO
+          title="Loading Certification"
+          url={canonicalUrl}
+          noIndex={true}
+        />
         <div className="section-container py-32 text-center">
           <div className="animate-spin h-12 w-12 border-4 border-accent border-t-transparent rounded-full mx-auto" />
           <p className="mt-4 text-muted-foreground animate-pulse">Loading credential details...</p>
@@ -58,6 +66,11 @@ const CertificateDetailPage = () => {
   if (!cert) {
     return (
       <Layout>
+        <SEO
+          title="Certification Not Found"
+          url={canonicalUrl}
+          noIndex={true}
+        />
         <div className="section-container py-32 text-center">
           <Award className="w-20 h-20 text-muted-foreground mx-auto mb-6 opacity-20" />
           <h2 className="text-2xl font-bold mb-2">Credential Not Found</h2>
@@ -74,6 +87,17 @@ const CertificateDetailPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title={cert.title}
+        description={cert.description || `${cert.title} — issued by ${cert.issuer} on ${cert.platform}. Verified professional credential.`}
+        url={canonicalUrl}
+        image={cert.issuer_logo || undefined}
+        type="article"
+        breadcrumbs={[
+          { name: "Certifications", url: "https://saadmaz.com/certifications" },
+          { name: cert.title, url: canonicalUrl },
+        ]}
+      />
       <section className="section-padding min-h-screen overflow-x-hidden">
         <div className="section-container">
 

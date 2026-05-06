@@ -49,9 +49,10 @@ const CertificationsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Certifications | Saad Mazhar's Professional Credentials"
-        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more - earned from Microsoft, LinkedIn Learning, Google, and ISACA."
+        title="Certifications & Professional Credentials"
+        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA."
         url="https://saadmaz.com/certifications"
+        breadcrumbs={[{ name: "Certifications", url: "https://saadmaz.com/certifications" }]}
       />
       <section className="pt-10 pb-20 md:pb-24">
         <div className="section-container">
