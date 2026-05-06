@@ -15,14 +15,35 @@ const fmt = (d: string | null | undefined) => {
 };
 
 const ACCENT_VARIANTS = [
-  { border: "#22d3ee", glow: "rgba(34,211,238,0.12)", tag: "rgba(34,211,238,0.15)", tagBorder: "rgba(34,211,238,0.3)", tagText: "#22d3ee" },
-  { border: "#a78bfa", glow: "rgba(167,139,250,0.12)", tag: "rgba(167,139,250,0.15)", tagBorder: "rgba(167,139,250,0.3)", tagText: "#a78bfa" },
-  { border: "#fb923c", glow: "rgba(251,146,60,0.12)",  tag: "rgba(251,146,60,0.15)",  tagBorder: "rgba(251,146,60,0.3)",  tagText: "#fb923c" },
+  { border: "#22d3ee", glow: "rgba(34,211,238,0.12)",   tag: "rgba(34,211,238,0.15)",   tagBorder: "rgba(34,211,238,0.3)",   tagText: "#22d3ee"  }, // cyan
+  { border: "#a78bfa", glow: "rgba(167,139,250,0.12)",  tag: "rgba(167,139,250,0.15)",  tagBorder: "rgba(167,139,250,0.3)",  tagText: "#a78bfa"  }, // violet
+  { border: "#fb923c", glow: "rgba(251,146,60,0.12)",   tag: "rgba(251,146,60,0.15)",   tagBorder: "rgba(251,146,60,0.3)",   tagText: "#fb923c"  }, // orange
+  { border: "#34d399", glow: "rgba(52,211,153,0.12)",   tag: "rgba(52,211,153,0.15)",   tagBorder: "rgba(52,211,153,0.3)",   tagText: "#34d399"  }, // emerald
+  { border: "#f472b6", glow: "rgba(244,114,182,0.12)",  tag: "rgba(244,114,182,0.15)",  tagBorder: "rgba(244,114,182,0.3)",  tagText: "#f472b6"  }, // pink
+  { border: "#facc15", glow: "rgba(250,204,21,0.12)",   tag: "rgba(250,204,21,0.15)",   tagBorder: "rgba(250,204,21,0.3)",   tagText: "#facc15"  }, // yellow
+  { border: "#60a5fa", glow: "rgba(96,165,250,0.12)",   tag: "rgba(96,165,250,0.15)",   tagBorder: "rgba(96,165,250,0.3)",   tagText: "#60a5fa"  }, // blue
+  { border: "#f87171", glow: "rgba(248,113,113,0.12)",  tag: "rgba(248,113,113,0.15)",  tagBorder: "rgba(248,113,113,0.3)",  tagText: "#f87171"  }, // red
+  { border: "#4ade80", glow: "rgba(74,222,128,0.12)",   tag: "rgba(74,222,128,0.15)",   tagBorder: "rgba(74,222,128,0.3)",   tagText: "#4ade80"  }, // green
+  { border: "#e879f9", glow: "rgba(232,121,249,0.12)",  tag: "rgba(232,121,249,0.15)",  tagBorder: "rgba(232,121,249,0.3)",  tagText: "#e879f9"  }, // fuchsia
+  { border: "#38bdf8", glow: "rgba(56,189,248,0.12)",   tag: "rgba(56,189,248,0.15)",   tagBorder: "rgba(56,189,248,0.3)",   tagText: "#38bdf8"  }, // sky
+  { border: "#fb7185", glow: "rgba(251,113,133,0.12)",  tag: "rgba(251,113,133,0.15)",  tagBorder: "rgba(251,113,133,0.3)",  tagText: "#fb7185"  }, // rose
+  { border: "#a3e635", glow: "rgba(163,230,53,0.12)",   tag: "rgba(163,230,53,0.15)",   tagBorder: "rgba(163,230,53,0.3)",   tagText: "#a3e635"  }, // lime
+  { border: "#2dd4bf", glow: "rgba(45,212,191,0.12)",   tag: "rgba(45,212,191,0.15)",   tagBorder: "rgba(45,212,191,0.3)",   tagText: "#2dd4bf"  }, // teal
+  { border: "#818cf8", glow: "rgba(129,140,248,0.12)",  tag: "rgba(129,140,248,0.15)",  tagBorder: "rgba(129,140,248,0.3)",  tagText: "#818cf8"  }, // indigo
+  { border: "#fda4af", glow: "rgba(253,164,175,0.12)",  tag: "rgba(253,164,175,0.15)",  tagBorder: "rgba(253,164,175,0.3)",  tagText: "#fda4af"  }, // light rose
 ];
 
-function CertCard({ cert, index }: { cert: Certificate; index: number }) {
+// Hash the cert id to a stable index so colours don't shift on re-render
+function hashId(id: string | number): number {
+  const s = String(id);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function CertCard({ cert }: { cert: Certificate }) {
   const [copied, setCopied] = useState(false);
-  const accent = ACCENT_VARIANTS[index % ACCENT_VARIANTS.length];
+  const accent = ACCENT_VARIANTS[hashId(cert.id) % ACCENT_VARIANTS.length];
   const tags = cert.tags?.length ? cert.tags : cert.skills || [];
 
   const handleCopyId = useCallback((e: React.MouseEvent) => {
@@ -255,7 +276,7 @@ export function CertificatesPreview() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08, duration: 0.35 }}
               >
-                <CertCard cert={cert} index={i} />
+                <CertCard cert={cert} />
               </m.div>
             ))}
             {Array.from({ length: PER_PAGE - visible.length }).map((_, i) => (
