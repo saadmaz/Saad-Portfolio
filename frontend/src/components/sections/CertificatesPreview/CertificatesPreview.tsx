@@ -14,8 +14,16 @@ const fmt = (d: string | null | undefined) => {
   } catch { return d; }
 };
 
+const ACCENT_VARIANTS = [
+  { border: "#22d3ee", glow: "rgba(34,211,238,0.12)", tag: "rgba(34,211,238,0.15)", tagBorder: "rgba(34,211,238,0.3)", tagText: "#22d3ee" },
+  { border: "#a78bfa", glow: "rgba(167,139,250,0.12)", tag: "rgba(167,139,250,0.15)", tagBorder: "rgba(167,139,250,0.3)", tagText: "#a78bfa" },
+  { border: "#fb923c", glow: "rgba(251,146,60,0.12)",  tag: "rgba(251,146,60,0.15)",  tagBorder: "rgba(251,146,60,0.3)",  tagText: "#fb923c" },
+];
+
 function CertCard({ cert, index }: { cert: Certificate; index: number }) {
   const [copied, setCopied] = useState(false);
+  const accent = ACCENT_VARIANTS[index % ACCENT_VARIANTS.length];
+  const tags = cert.tags?.length ? cert.tags : cert.skills || [];
 
   const handleCopyId = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,128 +35,118 @@ function CertCard({ cert, index }: { cert: Certificate; index: number }) {
     });
   }, [cert.credential_id]);
 
-  const tags = cert.tags?.length ? cert.tags : cert.skills || [];
-
-  const accentColors = [
-    "from-cyan-500/20 to-teal-500/10",
-    "from-violet-500/20 to-purple-500/10",
-    "from-amber-500/20 to-orange-500/10",
-  ];
-  const accentBorder = [
-    "border-t-cyan-500/60",
-    "border-t-violet-500/60",
-    "border-t-amber-500/60",
-  ];
-  const gradient = accentColors[index % accentColors.length];
-  const topBorder = accentBorder[index % accentBorder.length];
-
   return (
-    <Link to={`/certifications/${cert.id}`} className="group block h-full">
+    <Link to={`/certifications/${cert.id}`} className="group block">
+      {/* Certificate aspect ratio: 3/2 (landscape) */}
       <div
-        className={`relative h-full flex flex-col rounded-2xl border border-border/70 bg-card overflow-hidden transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:shadow-2xl group-hover:border-border border-t-2 ${topBorder}`}
-        style={{ minHeight: 280 }}
+        className="relative w-full overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-2xl"
+        style={{
+          aspectRatio: "3 / 2",
+          borderTop: `2px solid ${accent.border}`,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLDivElement).style.boxShadow =
-            "0 0 0 1px hsl(var(--accent) / 0.3), 0 20px 50px rgba(0,0,0,0.18)";
+            `0 0 0 1px ${accent.border}55, 0 20px 50px rgba(0,0,0,0.2)`;
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow = "";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.08)";
         }}
       >
-        {/* Gradient glow at top */}
-        <div className={`absolute top-0 left-0 right-0 h-24 bg-gradient-to-b ${gradient} pointer-events-none`} />
+        {/* Top glow */}
+        <div
+          className="absolute top-0 left-0 right-0 h-20 pointer-events-none"
+          style={{ background: `linear-gradient(to bottom, ${accent.glow}, transparent)` }}
+        />
 
-        {/* Header */}
-        <div className="relative flex items-center gap-3 p-5 pb-4">
-          <div className="shrink-0 w-11 h-11 rounded-xl bg-background/60 border border-border/80 flex items-center justify-center overflow-hidden shadow-sm">
-            {cert.issuer_logo ? (
-              <img
-                src={cert.issuer_logo}
-                alt={cert.issuer}
-                loading="lazy"
-                decoding="async"
-                className="w-7 h-7 object-contain"
-              />
-            ) : (
-              <Award className="w-5 h-5 text-accent" />
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-foreground/70 truncate">{cert.issuer}</p>
-            {cert.is_verifiable && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 mt-0.5">
-                <BadgeCheck className="w-3 h-3" />
-                Verified
-              </span>
-            )}
-          </div>
-        </div>
+        {/* Inner layout — flex column filling the card */}
+        <div className="absolute inset-0 flex flex-col p-5">
 
-        {/* Body */}
-        <div className="relative flex-1 flex flex-col px-5 pb-5 gap-4">
-          {/* Title */}
-          <h4 className="font-display font-bold text-foreground text-[15px] leading-snug line-clamp-3 group-hover:text-accent transition-colors duration-200">
-            {cert.title}
+          {/* Issuer row */}
+          <div className="flex items-center gap-2.5 mb-auto">
+            <div className="shrink-0 w-9 h-9 rounded-lg bg-background/50 border border-border/70 flex items-center justify-center overflow-hidden">
+              {cert.issuer_logo ? (
+                <img src={cert.issuer_logo} alt={cert.issuer} loading="lazy" decoding="async" className="w-6 h-6 object-contain" />
+              ) : (
+                <Award className="w-4 h-4" style={{ color: accent.border }} />
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold text-foreground/60 truncate leading-none mb-1">{cert.issuer}</p>
+              {cert.is_verifiable && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-400">
+                  <BadgeCheck className="w-3 h-3" />
+                  Verified
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Title — centre of the certificate */}
+          <h4
+            className="font-display font-bold text-foreground text-[15px] leading-snug line-clamp-2 transition-colors duration-200 my-3"
+            style={{ color: undefined }}
+          >
+            <span className="group-hover:text-[var(--accent-col)] transition-colors duration-200"
+              style={{ "--accent-col": accent.border } as React.CSSProperties}>
+              {cert.title}
+            </span>
           </h4>
 
-          {/* Dates */}
-          <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 shrink-0 text-accent/70" />
-              {fmt(cert.issue_date)}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 shrink-0 text-muted-foreground/60" />
-              {cert.does_not_expire ? "No Expiry" : fmt(cert.expiry_date) || "No Expiry"}
-            </span>
-          </div>
+          {/* Footer */}
+          <div className="mt-auto space-y-2.5">
+            {/* Date row */}
+            <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3 h-3 shrink-0" style={{ color: accent.border }} />
+                {fmt(cert.issue_date)}
+              </span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3 shrink-0 opacity-50" />
+                {cert.does_not_expire ? "No Expiry" : fmt(cert.expiry_date) || "No Expiry"}
+              </span>
+            </div>
 
-          {/* Tags */}
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-auto">
-              {tags.slice(0, 3).map((tag, i) => (
+            {/* Tags + View — single row, no wrap */}
+            <div className="flex items-center gap-1.5 overflow-hidden">
+              {tags.slice(0, 2).map((tag, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-semibold border border-accent/20"
+                  className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap"
+                  style={{ background: accent.tag, border: `1px solid ${accent.tagBorder}`, color: accent.tagText }}
                 >
                   {tag}
                 </span>
               ))}
-              {tags.length > 3 && (
-                <span className="px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-semibold">
-                  +{tags.length - 3}
+              {tags.length > 2 && (
+                <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold text-muted-foreground bg-muted whitespace-nowrap">
+                  +{tags.length - 2}
                 </span>
               )}
-            </div>
-          )}
 
-          {/* View CTA — always visible */}
-          <div className="flex items-center justify-between pt-3 border-t border-border/50 mt-auto">
-            {cert.credential_id && (
-              <button
-                onClick={handleCopyId}
-                className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground/60 hover:text-accent transition-colors group/copy"
-                title="Copy credential ID"
-              >
-                <span>{copied ? "Copied!" : "Copy ID"}</span>
-                {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-              </button>
-            )}
-            {cert.credential_url ? (
-              <a
-                href={cert.credential_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"
-              >
-                View <ExternalLink className="w-3 h-3" />
-              </a>
-            ) : (
-              <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-accent/80 group-hover:text-accent transition-colors">
-                Details <ArrowRight className="w-3 h-3" />
-              </span>
-            )}
+              {/* View link pushed to right */}
+              <div className="ml-auto shrink-0">
+                {cert.credential_url ? (
+                  <a
+                    href={cert.credential_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold hover:underline whitespace-nowrap"
+                    style={{ color: accent.border }}
+                  >
+                    View <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold whitespace-nowrap"
+                    style={{ color: accent.border }}
+                  >
+                    Details <ArrowRight className="w-3 h-3" />
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -170,9 +168,9 @@ export function CertificatesPreview() {
     return (
       <section className="py-20 bg-secondary/20">
         <div className="section-container">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-5">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-72 rounded-2xl bg-card animate-pulse" />
+              <div key={i} className="w-full rounded-xl bg-card animate-pulse" style={{ aspectRatio: "3/2" }} />
             ))}
           </div>
         </div>
@@ -210,7 +208,6 @@ export function CertificatesPreview() {
               </p>
             </div>
 
-            {/* Nav + See All */}
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setPage(p => Math.max(0, p - 1))}
@@ -220,7 +217,7 @@ export function CertificatesPreview() {
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-xs text-muted-foreground tabular-nums min-w-[60px] text-center">
+              <span className="text-xs text-muted-foreground tabular-nums min-w-[52px] text-center">
                 {page + 1} / {totalPages}
               </span>
               <button
@@ -262,7 +259,7 @@ export function CertificatesPreview() {
               </m.div>
             ))}
             {Array.from({ length: PER_PAGE - visible.length }).map((_, i) => (
-              <div key={`pad-${i}`} />
+              <div key={`pad-${i}`} style={{ aspectRatio: "3/2" }} />
             ))}
           </m.div>
         </AnimatePresence>
