@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Award, ExternalLink, Calendar, ChevronLeft, ChevronRight, Copy, Check, ArrowRight, Clock } from "lucide-react";
+import { Award, ExternalLink, Calendar, ChevronLeft, ChevronRight, Copy, Check, ArrowRight, Clock, BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCertificates } from "@/shared/hooks/useCommon";
 import { Certificate } from "@/types";
@@ -14,7 +14,7 @@ const fmt = (d: string | null | undefined) => {
   } catch { return d; }
 };
 
-function CertCard({ cert }: { cert: Certificate }) {
+function CertCard({ cert, index }: { cert: Certificate; index: number }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyId = useCallback((e: React.MouseEvent) => {
@@ -29,40 +29,55 @@ function CertCard({ cert }: { cert: Certificate }) {
 
   const tags = cert.tags?.length ? cert.tags : cert.skills || [];
 
+  const accentColors = [
+    "from-cyan-500/20 to-teal-500/10",
+    "from-violet-500/20 to-purple-500/10",
+    "from-amber-500/20 to-orange-500/10",
+  ];
+  const accentBorder = [
+    "border-t-cyan-500/60",
+    "border-t-violet-500/60",
+    "border-t-amber-500/60",
+  ];
+  const gradient = accentColors[index % accentColors.length];
+  const topBorder = accentBorder[index % accentBorder.length];
+
   return (
     <Link to={`/certifications/${cert.id}`} className="group block h-full">
       <div
-        className="relative h-full flex flex-col rounded-2xl border border-border bg-card overflow-hidden transition-all duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:-translate-y-[5px] group-hover:shadow-xl"
-        style={{ minHeight: 260 }}
+        className={`relative h-full flex flex-col rounded-2xl border border-border/70 bg-card overflow-hidden transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:shadow-2xl group-hover:border-border border-t-2 ${topBorder}`}
+        style={{ minHeight: 280 }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLDivElement).style.boxShadow =
-            "0 0 0 1.5px hsl(var(--accent)), 0 16px 40px rgba(0,0,0,0.10)";
+            "0 0 0 1px hsl(var(--accent) / 0.3), 0 20px 50px rgba(0,0,0,0.18)";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLDivElement).style.boxShadow = "";
         }}
       >
-        {/* Header area */}
-        <div className="flex items-center gap-3 p-4 pb-3 border-b border-border/60">
-          {/* Issuer logo */}
-          <div className="shrink-0 w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
+        {/* Gradient glow at top */}
+        <div className={`absolute top-0 left-0 right-0 h-24 bg-gradient-to-b ${gradient} pointer-events-none`} />
+
+        {/* Header */}
+        <div className="relative flex items-center gap-3 p-5 pb-4">
+          <div className="shrink-0 w-11 h-11 rounded-xl bg-background/60 border border-border/80 flex items-center justify-center overflow-hidden shadow-sm">
             {cert.issuer_logo ? (
               <img
                 src={cert.issuer_logo}
                 alt={cert.issuer}
                 loading="lazy"
                 decoding="async"
-                className="w-8 h-8 object-contain"
+                className="w-7 h-7 object-contain"
               />
             ) : (
-              <Award className="w-6 h-6 text-accent" />
+              <Award className="w-5 h-5 text-accent" />
             )}
           </div>
-          <div className="min-w-0">
-            <p className="text-[11px] text-muted-foreground font-medium truncate">{cert.issuer}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-foreground/70 truncate">{cert.issuer}</p>
             {cert.is_verifiable && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 mt-0.5">
+                <BadgeCheck className="w-3 h-3" />
                 Verified
               </span>
             )}
@@ -70,73 +85,71 @@ function CertCard({ cert }: { cert: Certificate }) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 flex flex-col p-4 gap-3">
+        <div className="relative flex-1 flex flex-col px-5 pb-5 gap-4">
           {/* Title */}
-          <h4 className="font-display font-bold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-accent transition-colors duration-[250ms]">
+          <h4 className="font-display font-bold text-foreground text-[15px] leading-snug line-clamp-3 group-hover:text-accent transition-colors duration-200">
             {cert.title}
           </h4>
 
-          {/* Meta row: dates */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
+          {/* Dates */}
+          <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 shrink-0 text-accent/70" />
               {fmt(cert.issue_date)}
             </span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {cert.does_not_expire ? "No Expiration" : fmt(cert.expiry_date) || "No Expiration"}
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 shrink-0 text-muted-foreground/60" />
+              {cert.does_not_expire ? "No Expiry" : fmt(cert.expiry_date) || "No Expiry"}
             </span>
           </div>
 
-          {/* Credential ID — copyable */}
-          {cert.credential_id && (
-            <button
-              onClick={handleCopyId}
-              className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground hover:text-accent transition-colors group/copy w-fit"
-            >
-              <span className="truncate max-w-[180px]">ID: {cert.credential_id}</span>
-              <span className="shrink-0 opacity-0 group-hover/copy:opacity-100 transition-opacity">
-                {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-              </span>
-            </button>
-          )}
-
           {/* Tags */}
           {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
-              {tags.slice(0, 4).map((tag, i) => (
+            <div className="flex flex-wrap gap-1.5 mt-auto">
+              {tags.slice(0, 3).map((tag, i) => (
                 <span
                   key={i}
-                  className="cert-tag transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                  style={{ transitionDelay: `${i * 20}ms` }}
+                  className="px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-semibold border border-accent/20"
                 >
                   {tag}
                 </span>
               ))}
-              {tags.length > 4 && (
-                <span className="text-[10px] text-muted-foreground self-center">+{tags.length - 4}</span>
+              {tags.length > 3 && (
+                <span className="px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-semibold">
+                  +{tags.length - 3}
+                </span>
               )}
             </div>
           )}
-        </div>
 
-        {/* Footer — "View Credential" fades in on hover */}
-        <div className="px-4 pb-4 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-[300ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
-          {cert.credential_url ? (
-            <a
-              href={cert.credential_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => { e.stopPropagation(); }}
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-accent hover:underline"
-            >
-              View Credential <ExternalLink className="w-3 h-3" />
-            </a>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-accent">
-              View Details <ArrowRight className="w-3 h-3" />
-            </span>
-          )}
+          {/* View CTA — always visible */}
+          <div className="flex items-center justify-between pt-3 border-t border-border/50 mt-auto">
+            {cert.credential_id && (
+              <button
+                onClick={handleCopyId}
+                className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground/60 hover:text-accent transition-colors group/copy"
+                title="Copy credential ID"
+              >
+                <span>{copied ? "Copied!" : "Copy ID"}</span>
+                {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+              </button>
+            )}
+            {cert.credential_url ? (
+              <a
+                href={cert.credential_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"
+              >
+                View <ExternalLink className="w-3 h-3" />
+              </a>
+            ) : (
+              <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-accent/80 group-hover:text-accent transition-colors">
+                Details <ArrowRight className="w-3 h-3" />
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>
@@ -155,11 +168,11 @@ export function CertificatesPreview() {
 
   if (isLoading) {
     return (
-      <section className="py-16 bg-secondary/30">
+      <section className="py-20 bg-secondary/20">
         <div className="section-container">
           <div className="grid md:grid-cols-3 gap-6">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-64 rounded-2xl bg-card animate-pulse" />
+              <div key={i} className="h-72 rounded-2xl bg-card animate-pulse" />
             ))}
           </div>
         </div>
@@ -168,7 +181,7 @@ export function CertificatesPreview() {
   }
 
   return (
-    <section className="py-16 bg-secondary/30">
+    <section className="py-20 bg-secondary/20">
       <div className="section-container">
 
         {/* Header */}
@@ -177,15 +190,22 @@ export function CertificatesPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-10"
         >
-          <span className="section-title">Credentials</span>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="section-title">Credentials</span>
+            {sorted.length > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-accent/15 text-accent text-[11px] font-bold border border-accent/25">
+                {sorted.length} total
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Licenses &amp; Certifications
               </h2>
-              <p className="text-muted-foreground max-w-xl">
+              <p className="text-muted-foreground max-w-lg text-sm leading-relaxed">
                 Industry-recognized credentials validating expertise across cloud, development, and data engineering.
               </p>
             </div>
@@ -196,21 +216,24 @@ export function CertificatesPreview() {
                 onClick={() => setPage(p => Math.max(0, p - 1))}
                 disabled={page === 0}
                 aria-label="Previous"
-                className="w-10 h-10 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
+                className="w-9 h-9 rounded-full border border-border flex items-center justify-center transition-all hover:border-accent/60 hover:text-accent hover:bg-accent/5 disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
+              <span className="text-xs text-muted-foreground tabular-nums min-w-[60px] text-center">
+                {page + 1} / {totalPages}
+              </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                 disabled={page >= totalPages - 1}
                 aria-label="Next"
-                className="w-10 h-10 rounded-full border border-border flex items-center justify-center transition-colors hover:border-accent/60 hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed"
+                className="w-9 h-9 rounded-full border border-border flex items-center justify-center transition-all hover:border-accent/60 hover:text-accent hover:bg-accent/5 disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
               <Link
                 to="/certifications"
-                className="ml-1 inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-accent-foreground rounded-full font-semibold text-sm hover:opacity-90 transition-opacity"
+                className="ml-2 inline-flex items-center gap-2 px-5 py-2 bg-accent text-accent-foreground rounded-full font-semibold text-sm hover:opacity-90 transition-opacity"
               >
                 See All <ArrowRight className="w-4 h-4" />
               </Link>
@@ -222,48 +245,44 @@ export function CertificatesPreview() {
         <AnimatePresence mode="wait">
           <m.div
             key={page}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.28, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
             className="grid grid-cols-1 md:grid-cols-3 gap-5"
           >
             {visible.map((cert: Certificate, i: number) => (
               <m.div
                 key={cert.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.07, duration: 0.4 }}
+                transition={{ delay: i * 0.08, duration: 0.35 }}
               >
-                <CertCard cert={cert} />
+                <CertCard cert={cert} index={i} />
               </m.div>
             ))}
-
-            {/* Fill empty slots on last page */}
             {Array.from({ length: PER_PAGE - visible.length }).map((_, i) => (
               <div key={`pad-${i}`} />
             ))}
           </m.div>
         </AnimatePresence>
 
-        {/* Dot indicators */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-1.5 mt-6">
-            {totalPages <= 7
-              ? Array.from({ length: totalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i)}
-                    className="rounded-full border-none cursor-pointer p-0 transition-all duration-200"
-                    style={{
-                      width: i === page ? 20 : 8,
-                      height: 8,
-                      background: i === page ? "hsl(var(--accent))" : "hsl(var(--border))",
-                    }}
-                  />
-                ))
-              : <span className="text-xs text-muted-foreground">Page {page + 1} of {totalPages}</span>
-            }
+        {/* Dot pagination */}
+        {totalPages > 1 && totalPages <= 10 && (
+          <div className="flex items-center justify-center gap-1.5 mt-8">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                aria-label={`Page ${i + 1}`}
+                className="rounded-full border-none cursor-pointer p-0 transition-all duration-200"
+                style={{
+                  width: i === page ? 22 : 7,
+                  height: 7,
+                  background: i === page ? "hsl(var(--accent))" : "hsl(var(--border))",
+                }}
+              />
+            ))}
           </div>
         )}
       </div>
