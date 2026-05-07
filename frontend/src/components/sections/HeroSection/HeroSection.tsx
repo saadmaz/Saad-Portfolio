@@ -274,29 +274,32 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.0 }}
-              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3"
+              className="flex flex-col gap-3"
             >
-              <Link
-                to="/projects"
-                className="hero-btn-primary group inline-flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                See My Work
-                {/* Arrow nudges right on hover via group-hover utility */}
-                <ArrowRight className="w-4 h-4 transition-transform duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1" />
-              </Link>
+              {/* Main CTAs: side-by-side on mobile, inline row on sm+ */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-row justify-center lg:justify-start gap-3">
+                <Link
+                  to="/projects"
+                  className="hero-btn-primary group inline-flex items-center justify-center gap-2"
+                >
+                  See My Work
+                  {/* Arrow nudges right on hover via group-hover utility */}
+                  <ArrowRight className="w-4 h-4 transition-transform duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1" />
+                </Link>
 
-              <Link
-                to="/contact"
-                className="hero-btn-outline group inline-flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                Get in Touch
-              </Link>
+                <Link
+                  to="/contact"
+                  className="hero-btn-outline group inline-flex items-center justify-center gap-2"
+                >
+                  Get in Touch
+                </Link>
+              </div>
 
               {/* `download` attribute tells the browser to save the file with the given name */}
               <a
                 href={myResume}
                 download="Saad_Mazhar_Resume.pdf"
-                className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+                className="inline-flex items-center justify-center gap-2 sm:w-auto px-5 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-colors duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
               >
                 <Download className="w-4 h-4" />
                 Resume
@@ -313,7 +316,7 @@ export function HeroSection() {
               >
                 Connect with me:
               </m.span>
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                 {socials.map((social, i) => (
                   // `index={i}` drives the stagger delay inside SocialIcon
                   <SocialIcon key={i} {...social} index={i} />

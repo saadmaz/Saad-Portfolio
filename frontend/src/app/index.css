@@ -548,6 +548,13 @@
     100% { opacity: 0;   transform: scale(1.4); }
   }
 
+  @media (max-width: 639px) {
+    .social-icon-branded {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
   /* ── HERO PRIMARY BUTTON: shimmer sweep ──────────────────────────────────── */
   .hero-btn-primary {
     position: relative;
