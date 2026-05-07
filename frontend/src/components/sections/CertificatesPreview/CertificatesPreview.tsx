@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Award, ExternalLink, Calendar, ChevronLeft, ChevronRight, Copy, Check, ArrowRight, Clock, BadgeCheck } from "lucide-react";
+import { Award, ExternalLink, Calendar, ChevronLeft, ChevronRight, ArrowRight, Clock, BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCertificates } from "@/shared/hooks/useCommon";
 import { Certificate } from "@/types";
@@ -14,26 +14,28 @@ const fmt = (d: string | null | undefined) => {
   } catch { return d; }
 };
 
+// border = color for top border + hover ring
+// glow   = gradient fill at top of card (dark mode only — opacity reduced in light)
+// tag*   = pill colors; lightText = darker shade for readable contrast on white
 const ACCENT_VARIANTS = [
-  { border: "#22d3ee", glow: "rgba(34,211,238,0.12)",   tag: "rgba(34,211,238,0.15)",   tagBorder: "rgba(34,211,238,0.3)",   tagText: "#22d3ee"  }, // cyan
-  { border: "#a78bfa", glow: "rgba(167,139,250,0.12)",  tag: "rgba(167,139,250,0.15)",  tagBorder: "rgba(167,139,250,0.3)",  tagText: "#a78bfa"  }, // violet
-  { border: "#fb923c", glow: "rgba(251,146,60,0.12)",   tag: "rgba(251,146,60,0.15)",   tagBorder: "rgba(251,146,60,0.3)",   tagText: "#fb923c"  }, // orange
-  { border: "#34d399", glow: "rgba(52,211,153,0.12)",   tag: "rgba(52,211,153,0.15)",   tagBorder: "rgba(52,211,153,0.3)",   tagText: "#34d399"  }, // emerald
-  { border: "#f472b6", glow: "rgba(244,114,182,0.12)",  tag: "rgba(244,114,182,0.15)",  tagBorder: "rgba(244,114,182,0.3)",  tagText: "#f472b6"  }, // pink
-  { border: "#facc15", glow: "rgba(250,204,21,0.12)",   tag: "rgba(250,204,21,0.15)",   tagBorder: "rgba(250,204,21,0.3)",   tagText: "#facc15"  }, // yellow
-  { border: "#60a5fa", glow: "rgba(96,165,250,0.12)",   tag: "rgba(96,165,250,0.15)",   tagBorder: "rgba(96,165,250,0.3)",   tagText: "#60a5fa"  }, // blue
-  { border: "#f87171", glow: "rgba(248,113,113,0.12)",  tag: "rgba(248,113,113,0.15)",  tagBorder: "rgba(248,113,113,0.3)",  tagText: "#f87171"  }, // red
-  { border: "#4ade80", glow: "rgba(74,222,128,0.12)",   tag: "rgba(74,222,128,0.15)",   tagBorder: "rgba(74,222,128,0.3)",   tagText: "#4ade80"  }, // green
-  { border: "#e879f9", glow: "rgba(232,121,249,0.12)",  tag: "rgba(232,121,249,0.15)",  tagBorder: "rgba(232,121,249,0.3)",  tagText: "#e879f9"  }, // fuchsia
-  { border: "#38bdf8", glow: "rgba(56,189,248,0.12)",   tag: "rgba(56,189,248,0.15)",   tagBorder: "rgba(56,189,248,0.3)",   tagText: "#38bdf8"  }, // sky
-  { border: "#fb7185", glow: "rgba(251,113,133,0.12)",  tag: "rgba(251,113,133,0.15)",  tagBorder: "rgba(251,113,133,0.3)",  tagText: "#fb7185"  }, // rose
-  { border: "#a3e635", glow: "rgba(163,230,53,0.12)",   tag: "rgba(163,230,53,0.15)",   tagBorder: "rgba(163,230,53,0.3)",   tagText: "#a3e635"  }, // lime
-  { border: "#2dd4bf", glow: "rgba(45,212,191,0.12)",   tag: "rgba(45,212,191,0.15)",   tagBorder: "rgba(45,212,191,0.3)",   tagText: "#2dd4bf"  }, // teal
-  { border: "#818cf8", glow: "rgba(129,140,248,0.12)",  tag: "rgba(129,140,248,0.15)",  tagBorder: "rgba(129,140,248,0.3)",  tagText: "#818cf8"  }, // indigo
-  { border: "#fda4af", glow: "rgba(253,164,175,0.12)",  tag: "rgba(253,164,175,0.15)",  tagBorder: "rgba(253,164,175,0.3)",  tagText: "#fda4af"  }, // light rose
+  { border: "#22d3ee", glow: "rgba(34,211,238,0.14)",   tag: "rgba(34,211,238,0.12)",  tagBorder: "rgba(34,211,238,0.35)",  tagText: "#22d3ee",  lightText: "#0891b2"  },
+  { border: "#a78bfa", glow: "rgba(167,139,250,0.14)",  tag: "rgba(167,139,250,0.12)", tagBorder: "rgba(167,139,250,0.35)", tagText: "#a78bfa",  lightText: "#7c3aed"  },
+  { border: "#fb923c", glow: "rgba(251,146,60,0.14)",   tag: "rgba(251,146,60,0.12)",  tagBorder: "rgba(251,146,60,0.35)",  tagText: "#fb923c",  lightText: "#c2410c"  },
+  { border: "#34d399", glow: "rgba(52,211,153,0.14)",   tag: "rgba(52,211,153,0.12)",  tagBorder: "rgba(52,211,153,0.35)",  tagText: "#34d399",  lightText: "#059669"  },
+  { border: "#f472b6", glow: "rgba(244,114,182,0.14)",  tag: "rgba(244,114,182,0.12)", tagBorder: "rgba(244,114,182,0.35)", tagText: "#f472b6",  lightText: "#db2777"  },
+  { border: "#facc15", glow: "rgba(250,204,21,0.14)",   tag: "rgba(250,204,21,0.12)",  tagBorder: "rgba(250,204,21,0.35)",  tagText: "#ca8a04",  lightText: "#a16207"  },
+  { border: "#60a5fa", glow: "rgba(96,165,250,0.14)",   tag: "rgba(96,165,250,0.12)",  tagBorder: "rgba(96,165,250,0.35)",  tagText: "#60a5fa",  lightText: "#2563eb"  },
+  { border: "#f87171", glow: "rgba(248,113,113,0.14)",  tag: "rgba(248,113,113,0.12)", tagBorder: "rgba(248,113,113,0.35)", tagText: "#f87171",  lightText: "#dc2626"  },
+  { border: "#4ade80", glow: "rgba(74,222,128,0.14)",   tag: "rgba(74,222,128,0.12)",  tagBorder: "rgba(74,222,128,0.35)",  tagText: "#4ade80",  lightText: "#16a34a"  },
+  { border: "#e879f9", glow: "rgba(232,121,249,0.14)",  tag: "rgba(232,121,249,0.12)", tagBorder: "rgba(232,121,249,0.35)", tagText: "#e879f9",  lightText: "#a21caf"  },
+  { border: "#38bdf8", glow: "rgba(56,189,248,0.14)",   tag: "rgba(56,189,248,0.12)",  tagBorder: "rgba(56,189,248,0.35)",  tagText: "#38bdf8",  lightText: "#0284c7"  },
+  { border: "#fb7185", glow: "rgba(251,113,133,0.14)",  tag: "rgba(251,113,133,0.12)", tagBorder: "rgba(251,113,133,0.35)", tagText: "#fb7185",  lightText: "#e11d48"  },
+  { border: "#a3e635", glow: "rgba(163,230,53,0.14)",   tag: "rgba(163,230,53,0.12)",  tagBorder: "rgba(163,230,53,0.35)",  tagText: "#65a30d",  lightText: "#4d7c0f"  },
+  { border: "#2dd4bf", glow: "rgba(45,212,191,0.14)",   tag: "rgba(45,212,191,0.12)",  tagBorder: "rgba(45,212,191,0.35)",  tagText: "#2dd4bf",  lightText: "#0d9488"  },
+  { border: "#818cf8", glow: "rgba(129,140,248,0.14)",  tag: "rgba(129,140,248,0.12)", tagBorder: "rgba(129,140,248,0.35)", tagText: "#818cf8",  lightText: "#4f46e5"  },
+  { border: "#f9a8d4", glow: "rgba(249,168,212,0.14)",  tag: "rgba(249,168,212,0.12)", tagBorder: "rgba(249,168,212,0.35)", tagText: "#ec4899",  lightText: "#be185d"  },
 ];
 
-// Hash the cert id to a stable index so colours don't shift on re-render
 function hashId(id: string | number): number {
   const s = String(id);
   let h = 0;
@@ -41,51 +43,65 @@ function hashId(id: string | number): number {
   return Math.abs(h);
 }
 
+function useIsDark() {
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+  useEffect(() => {
+    const obs = new MutationObserver(() =>
+      setIsDark(document.documentElement.classList.contains("dark"))
+    );
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return isDark;
+}
+
 export function CertCard({ cert }: { cert: Certificate }) {
-  const [copied, setCopied] = useState(false);
+  const isDark = useIsDark();
   const accent = ACCENT_VARIANTS[hashId(cert.id) % ACCENT_VARIANTS.length];
   const tags = cert.tags?.length ? cert.tags : cert.skills || [];
-
-  const handleCopyId = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!cert.credential_id) return;
-    navigator.clipboard.writeText(cert.credential_id).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [cert.credential_id]);
+  const tagText = isDark ? accent.tagText : accent.lightText;
 
   return (
     <Link to={`/certifications/${cert.id}`} className="group block">
-      {/* Certificate aspect ratio: 3/2 (landscape) */}
       <div
-        className="relative w-full overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-2xl"
+        className="relative w-full overflow-hidden rounded-xl border bg-card transition-all duration-300 ease-out group-hover:-translate-y-1"
         style={{
           aspectRatio: "3 / 2",
           borderTop: `2px solid ${accent.border}`,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+          borderRight: `1px solid ${isDark ? "hsl(var(--border)/0.5)" : "hsl(var(--border))"}`,
+          borderBottom: `1px solid ${isDark ? "hsl(var(--border)/0.5)" : "hsl(var(--border))"}`,
+          borderLeft: `1px solid ${isDark ? "hsl(var(--border)/0.5)" : "hsl(var(--border))"}`,
+          boxShadow: isDark
+            ? "0 2px 12px rgba(0,0,0,0.15)"
+            : "0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            `0 0 0 1px ${accent.border}55, 0 20px 50px rgba(0,0,0,0.2)`;
+          (e.currentTarget as HTMLDivElement).style.boxShadow = isDark
+            ? `0 0 0 1px ${accent.border}55, 0 20px 50px rgba(0,0,0,0.25)`
+            : `0 0 0 1.5px ${accent.border}66, 0 8px 30px rgba(0,0,0,0.1)`;
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.08)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = isDark
+            ? "0 2px 12px rgba(0,0,0,0.15)"
+            : "0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)";
         }}
       >
-        {/* Top glow */}
+        {/* Top glow — visible in dark, very subtle in light */}
         <div
           className="absolute top-0 left-0 right-0 h-20 pointer-events-none"
-          style={{ background: `linear-gradient(to bottom, ${accent.glow}, transparent)` }}
+          style={{
+            background: `linear-gradient(to bottom, ${accent.glow}, transparent)`,
+            opacity: isDark ? 1 : 0.4,
+          }}
         />
 
-        {/* Inner layout — flex column filling the card */}
         <div className="absolute inset-0 flex flex-col p-5">
 
           {/* Issuer row */}
-          <div className="flex items-center gap-2.5 mb-auto">
-            <div className="shrink-0 w-9 h-9 rounded-lg bg-background/50 border border-border/70 flex items-center justify-center overflow-hidden">
+          <div className="flex items-center gap-2.5">
+            <div className={`shrink-0 w-9 h-9 rounded-lg border flex items-center justify-center overflow-hidden ${isDark ? "bg-background/50 border-border/70" : "bg-muted/60 border-border"}`}>
               {cert.issuer_logo ? (
                 <img src={cert.issuer_logo} alt={cert.issuer} loading="lazy" decoding="async" className="w-6 h-6 object-contain" />
               ) : (
@@ -93,9 +109,9 @@ export function CertCard({ cert }: { cert: Certificate }) {
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold text-foreground/60 truncate leading-none mb-1">{cert.issuer}</p>
+              <p className="text-[11px] font-semibold text-muted-foreground truncate leading-none mb-1">{cert.issuer}</p>
               {cert.is_verifiable && (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-400">
+                <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>
                   <BadgeCheck className="w-3 h-3" />
                   Verified
                 </span>
@@ -103,20 +119,19 @@ export function CertCard({ cert }: { cert: Certificate }) {
             </div>
           </div>
 
-          {/* Title — centre of the certificate */}
-          <h4
-            className="font-display font-bold text-foreground text-[15px] leading-snug line-clamp-2 transition-colors duration-200 my-3"
-            style={{ color: undefined }}
-          >
-            <span className="group-hover:text-[var(--accent-col)] transition-colors duration-200"
-              style={{ "--accent-col": accent.border } as React.CSSProperties}>
+          {/* Title */}
+          <h4 className="font-display font-bold text-foreground text-[15px] leading-snug line-clamp-2 transition-colors duration-200 my-3">
+            <span
+              className="group-hover:text-[var(--accent-col)] transition-colors duration-200"
+              style={{ "--accent-col": accent.border } as React.CSSProperties}
+            >
               {cert.title}
             </span>
           </h4>
 
           {/* Footer */}
           <div className="mt-auto space-y-2.5">
-            {/* Date row */}
+            {/* Dates */}
             <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3 shrink-0" style={{ color: accent.border }} />
@@ -129,12 +144,19 @@ export function CertCard({ cert }: { cert: Certificate }) {
             </div>
 
             {/* Tags + View — single row, no wrap */}
-            <div className="flex items-center gap-1.5 overflow-hidden">
+            <div
+              className={`flex items-center gap-1.5 overflow-hidden pt-2.5 border-t`}
+              style={{ borderColor: isDark ? "hsl(var(--border)/0.4)" : "hsl(var(--border))" }}
+            >
               {tags.slice(0, 2).map((tag, i) => (
                 <span
                   key={i}
                   className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap"
-                  style={{ background: accent.tag, border: `1px solid ${accent.tagBorder}`, color: accent.tagText }}
+                  style={{
+                    background: accent.tag,
+                    border: `1px solid ${accent.tagBorder}`,
+                    color: tagText,
+                  }}
                 >
                   {tag}
                 </span>
@@ -144,8 +166,6 @@ export function CertCard({ cert }: { cert: Certificate }) {
                   +{tags.length - 2}
                 </span>
               )}
-
-              {/* View link pushed to right */}
               <div className="ml-auto shrink-0">
                 {cert.credential_url ? (
                   <a
@@ -228,7 +248,6 @@ export function CertificatesPreview() {
                 Industry-recognized credentials validating expertise across cloud, development, and data engineering.
               </p>
             </div>
-
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setPage(p => Math.max(0, p - 1))}
