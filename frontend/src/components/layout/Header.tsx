@@ -140,10 +140,6 @@ export function Header() {
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
-              <Button asChild variant="ghost" size="sm" className="btn-accent gap-2 px-3 h-auto">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf"><Download className="w-4 h-4" />Resume</a>
-              </Button>
-
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
