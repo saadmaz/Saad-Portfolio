@@ -1,7 +1,5 @@
 # Saad Mazhar - Portfolio
 
-test
-
 A modern, full-featured personal portfolio built with **React + Vite** and **Firebase** - deployed on **Vercel** with zero backend server required.
 
 Live: [saadmaz.com](https://saadmaz.com)
