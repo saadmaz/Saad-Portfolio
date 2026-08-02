@@ -1,4 +1,4 @@
-# Saad Mazhar - Portfolio
+# Saad Mazhar - Portfolio tyoscrip 
 
 A modern, full-featured personal portfolio built with **React + Vite** and **Firebase** - deployed on **Vercel** with zero backend server required.
 
