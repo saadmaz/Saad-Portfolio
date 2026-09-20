@@ -64,9 +64,15 @@
 
   <body>
     <div id="root"></div>
+    <!--
+      No page-specific heading here on purpose: the build's prerender step
+      (scripts/prerender.mjs) writes a real, per-route H1 and content into
+      #root above. This noscript block only matters for an unprerendered
+      preview (e.g. local `vite preview`), so it stays generic rather than
+      duplicating - and contradicting - whichever route's H1 is above it.
+    -->
     <noscript>
-      <h1>Saad Mazhar - Full-Stack Developer &amp; Startup Founder</h1>
-      <p>Saad Mazhar - startup founder, tech speaker, and full-stack developer in Colombo, Sri Lanka, building AI-powered products and web apps. Please enable JavaScript to view the full site.</p>
+      <p>Please enable JavaScript to view the full site.</p>
       <nav>
         <a href="https://saadmaz.com/projects">Projects</a> |
         <a href="https://saadmaz.com/about">About</a> |
