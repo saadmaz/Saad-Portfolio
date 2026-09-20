@@ -9,7 +9,7 @@ import {
 import { ProjectService } from '@/services/project-service';
 import { BlogService } from '@/services/blog-service';
 import { CommonService } from '@/shared/services/common-service';
-import type { ActivityLog } from '@/types';
+import type { ActivityLog, FirestoreLikeTimestamp } from '@/types';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 
@@ -58,6 +58,13 @@ const actionVerb = (action: string) => {
   if (action === 'UPDATE') return 'Updated';
   if (action === 'DELETE') return 'Deleted';
   return action;
+};
+
+/** Firestore Admin/client SDKs return Timestamp objects with .toDate(); plain
+ * writes may store a Date, ISO string, or epoch number instead. */
+const toJsDate = (ts: FirestoreLikeTimestamp): Date => {
+  if (ts && typeof ts === 'object' && 'toDate' in ts) return ts.toDate();
+  return ts ? new Date(ts) : new Date(0);
 };
 
 /* ══════════════════════════════════════════════════════════════════
@@ -116,7 +123,7 @@ const AdminDashboard = () => {
           organizations: organizations.length,
           volunteer:     volunteer.length,
           education:     education.length,
-          messages:      messages.filter((m) => !(m as any).read).length,
+          messages:      messages.filter((m) => !m.read).length,
         });
         setLogs([...activityLogs].reverse().slice(0, 8));
       } catch {
@@ -287,9 +294,7 @@ const AdminDashboard = () => {
             <div>
               {logs.map((log) => {
                 const dotColor = actionDotColor(log.action);
-                const ts = (log.timestamp as any)?.toDate
-                  ? (log.timestamp as any).toDate()
-                  : new Date(log.timestamp as any);
+                const ts = toJsDate(log.timestamp);
                 return (
                   <div
                     key={log.id}

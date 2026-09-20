@@ -1066,7 +1066,7 @@ const EducationForm = () => {
                   award={a}
                   index={i}
                   collapsed={collapsedAwards.has(i)}
-                  onToggle={() => setCollapsedAwards(s => { const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n; })}
+                  onToggle={() => setCollapsedAwards(s => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
                   onUpdate={(updated) => setAwards(arr => arr.map((x, idx) => idx === i ? updated : x))}
                   onRemove={() => { setAwards(arr => arr.filter((_, idx) => idx !== i)); setCollapsedAwards(s => { const n = new Set(s); n.delete(i); return n; }); }}
                 />
@@ -1105,7 +1105,7 @@ const EducationForm = () => {
                   item={m}
                   index={i}
                   collapsed={collapsedMedia.has(i)}
-                  onToggle={() => setCollapsedMedia(s => { const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n; })}
+                  onToggle={() => setCollapsedMedia(s => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
                   onUpdate={(updated) => setMedia(arr => arr.map((x, idx) => idx === i ? updated : x))}
                   onRemove={() => { setMedia(arr => arr.filter((_, idx) => idx !== i)); setCollapsedMedia(s => { const n = new Set(s); n.delete(i); return n; }); }}
                 />

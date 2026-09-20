@@ -571,7 +571,7 @@ const ExperienceForm = () => {
   };
 
   const toggleRoleCollapse = (i: number) =>
-    setCollapsedRoles(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; });
+    setCollapsedRoles(prev => { const s = new Set(prev); if (s.has(i)) s.delete(i); else s.add(i); return s; });
 
   const addTopSkill = () => {
     const s = newTopSkill.trim();

@@ -92,7 +92,7 @@ const AdminLayout = () => {
   const location = useLocation();
 
   useEffect(() => {
-    try { localStorage.setItem(SIDEBAR_KEY, String(collapsed)); } catch {}
+    try { localStorage.setItem(SIDEBAR_KEY, String(collapsed)); } catch { /* localStorage unavailable (private mode, quota) - ignore */ }
   }, [collapsed]);
 
   useEffect(() => {
@@ -340,7 +340,7 @@ const AdminLayout = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={async () => { try { await auth.signOut(); } catch {} navigate('/admin/login'); }}
+                    onClick={async () => { try { await auth.signOut(); } catch { /* ignore, still navigate away */ } navigate('/admin/login'); }}
                     className="w-full flex items-center justify-center p-2 rounded-lg transition-all"
                     style={{ color: 'hsl(var(--foreground) / 0.22)' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--destructive) / 0.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive))'; }}
@@ -355,7 +355,7 @@ const AdminLayout = () => {
               </Tooltip>
             ) : (
               <button
-                onClick={async () => { try { await auth.signOut(); } catch {} navigate('/admin/login'); }}
+                onClick={async () => { try { await auth.signOut(); } catch { /* ignore, still navigate away */ } navigate('/admin/login'); }}
                 className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all group text-[12px] font-medium"
                 style={{ color: 'hsl(var(--foreground) / 0.25)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--destructive) / 0.07)'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive))'; }}
