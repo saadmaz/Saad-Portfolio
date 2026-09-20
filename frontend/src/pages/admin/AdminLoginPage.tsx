@@ -77,7 +77,7 @@ const AdminLoginPage = () => {
           >
             Admin Portal
           </h1>
-          <p className="text-[13px]" style={{ color: 'hsl(var(--foreground) / 0.36)' }}>
+          <p className="text-[13px]" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
             Sign in to manage your portfolio content
           </p>
         </div>
@@ -95,12 +95,14 @@ const AdminLoginPage = () => {
             {/* Email */}
             <div>
               <label
+                htmlFor="login-email"
                 className="block text-[11px] font-semibold uppercase tracking-widest mb-2"
-                style={{ color: 'hsl(var(--foreground) / 0.38)' }}
+                style={{ color: 'hsl(var(--foreground) / 0.60)' }}
               >
                 Email Address
               </label>
               <input
+                id="login-email"
                 type="email"
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-xl text-[13px] outline-none transition-all duration-200"
@@ -109,7 +111,7 @@ const AdminLoginPage = () => {
                   border: '1px solid var(--admin-border-md)',
                   color: 'hsl(var(--foreground) / 0.88)',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent) / 0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.08)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent))'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.35)'; }}
                 onBlur={e  => { e.currentTarget.style.borderColor = 'var(--admin-border-md)'; e.currentTarget.style.boxShadow = 'none'; }}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -121,17 +123,19 @@ const AdminLoginPage = () => {
             {/* Password */}
             <div>
               <label
+                htmlFor="login-password"
                 className="block text-[11px] font-semibold uppercase tracking-widest mb-2"
-                style={{ color: 'hsl(var(--foreground) / 0.38)' }}
+                style={{ color: 'hsl(var(--foreground) / 0.60)' }}
               >
                 Password
               </label>
               <div className="relative">
                 <Lock
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
-                  style={{ color: 'hsl(var(--foreground) / 0.28)' }}
+                  style={{ color: 'hsl(var(--foreground) / 0.60)' }}
                 />
                 <input
+                  id="login-password"
                   type="password"
                   placeholder="••••••••"
                   className="w-full pl-11 pr-4 py-3 rounded-xl text-[13px] outline-none transition-all duration-200"
@@ -140,7 +144,7 @@ const AdminLoginPage = () => {
                     border: '1px solid var(--admin-border-md)',
                     color: 'hsl(var(--foreground) / 0.88)',
                   }}
-                  onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent) / 0.40)'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.08)'; }}
+                  onFocus={e => { e.currentTarget.style.borderColor = 'hsl(var(--accent))'; e.currentTarget.style.boxShadow = '0 0 0 3px hsl(var(--accent) / 0.35)'; }}
                   onBlur={e  => { e.currentTarget.style.borderColor = 'var(--admin-border-md)'; e.currentTarget.style.boxShadow = 'none'; }}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -183,7 +187,7 @@ const AdminLoginPage = () => {
           <div className="mt-6 pt-5" style={{ borderTop: '1px solid var(--admin-surface-lg)' }}>
             <p
               className="admin-editorial text-[11px] text-center leading-relaxed"
-              style={{ color: 'hsl(var(--foreground) / 0.20)' }}
+              style={{ color: 'hsl(var(--foreground) / 0.60)' }}
             >
               "Great things are done by a series of small things brought together."
             </p>

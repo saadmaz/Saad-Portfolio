@@ -109,7 +109,7 @@ const AdminEntityDialog = ({
                         <Textarea
                           {...formField}
                           placeholder={field.placeholder}
-                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50 min-h-[100px]"
+                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50 min-h-[100px]"
                         />
                       ) : field.type === 'select' ? (
                         <Select
@@ -143,7 +143,7 @@ const AdminEntityDialog = ({
                           {...formField}
                           type={field.type}
                           placeholder={field.placeholder}
-                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50"
+                          className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50"
                           onChange={(e) => {
                             if (field.type === 'number') {
                               const raw = e.target.value;

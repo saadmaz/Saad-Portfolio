@@ -50,7 +50,7 @@ const PublicationsPage = () => {
 
           {publications.length === 0 ? (
             <div className="rounded-xl border border-border bg-card p-16 text-center">
-              <FileText className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-1">No publications yet</h3>
               <p className="text-muted-foreground text-sm">Check back soon for articles and papers.</p>
             </div>
@@ -110,7 +110,7 @@ const PublicationsPage = () => {
 
                       {pub.tags && pub.tags.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <Tag className="w-3.5 h-3.5 text-muted-foreground/50" />
+                          <Tag className="w-3.5 h-3.5 text-muted-foreground" />
                           {pub.tags.map(tag => (
                             <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
                               {tag}

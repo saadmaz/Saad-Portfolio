@@ -132,7 +132,7 @@ const AdminTestimonials = () => {
                 </p>
                 <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(test)} className="h-8 w-8 hover:bg-secondary">
-                    <Edit2 className="w-4 h-4 text-muted-foreground/70" />
+                    <Edit2 className="w-4 h-4 text-muted-foreground" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(test.id, test.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400 hover:text-red-500">
                     <Trash2 className="w-4 h-4" />
@@ -144,7 +144,7 @@ const AdminTestimonials = () => {
         ) : (
           <div className="md:col-span-2 rounded-2xl border border-border bg-card shadow-sm p-12 text-center">
             <h3 className="text-lg font-medium text-muted-foreground mb-1">No testimonials yet</h3>
-            <p className="text-sm text-muted-foreground/70">Showcase what people are saying about your work.</p>
+            <p className="text-sm text-muted-foreground">Showcase what people are saying about your work.</p>
           </div>
         )}
       </div>

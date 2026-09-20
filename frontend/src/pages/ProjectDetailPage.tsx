@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useProject } from "@/shared/hooks/useProjects";
+import { useModalA11y } from "@/shared/hooks/useModalA11y";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +23,8 @@ import {
 const ProjectDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useModalA11y(!!selectedImage, () => setSelectedImage(null), lightboxRef);
 
   // Fetch project via TanStack Query – falls back to static data if API is offline
   const { data: project, isLoading, isError } = useProject(slug || "");
@@ -175,9 +178,13 @@ const ProjectDetailPage = () => {
                 {/* 1. HERO IMAGE (Interactive) */}
                 {/* ADDED: cursor-zoom-in, onClick handler, and a group-hover scale animation */}
                 {project.heroImage && (
-                  <div 
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View full-size ${project.title} cover image`}
                     onClick={() => setSelectedImage(project!.heroImage!)}
-                    className="group rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in"
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(project!.heroImage!); } }}
+                    className="group rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <img
                       src={project.heroImage}
@@ -241,9 +248,13 @@ const ProjectDetailPage = () => {
                       </p>
                     )}
                     {project.architecture.diagramUrl && hasValue(project.architecture.diagramUrl) && (
-                      <div 
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`View full-size ${project.title} architecture diagram`}
                         onClick={() => setSelectedImage(project!.architecture!.diagramUrl!)}
-                        className="group p-2 rounded-2xl bg-card border border-border cursor-zoom-in overflow-hidden"
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(project!.architecture!.diagramUrl!); } }}
+                        className="group p-2 rounded-2xl bg-card border border-border cursor-zoom-in overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <img
                           src={project.architecture.diagramUrl}
@@ -347,10 +358,14 @@ const ProjectDetailPage = () => {
                     <h2 className="text-2xl font-bold text-foreground">Interface Gallery</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {project.screenshots.map((shot, i) => (
-                        <div 
-                          key={i} 
+                        <div
+                          key={i}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View full-size screenshot ${i + 1}`}
                           onClick={() => setSelectedImage(shot)}
-                          className="group rounded-xl overflow-hidden border border-border bg-card cursor-zoom-in relative"
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(shot); } }}
+                          className="group rounded-xl overflow-hidden border border-border bg-card cursor-zoom-in relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         >
                           <img
                             src={shot}
@@ -532,6 +547,10 @@ const ProjectDetailPage = () => {
       <AnimatePresence>
         {selectedImage && (
           <m.div
+            ref={lightboxRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Enlarged image"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -539,9 +558,9 @@ const ProjectDetailPage = () => {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 md:p-12 cursor-zoom-out"
           >
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-card/10 text-card-foreground hover:bg-card/20 transition-colors backdrop-blur-lg"
+              className="absolute top-6 right-6 p-3 rounded-full bg-card/10 text-card-foreground hover:bg-card/20 transition-colors backdrop-blur-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <X className="w-6 h-6" />
             </button>

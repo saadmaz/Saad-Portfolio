@@ -81,12 +81,12 @@ const AdminLogs = () => {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search by admin email, action, or entity type..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-11 h-11 bg-card border border-border focus:border-accent/50 transition-all rounded-xl text-foreground placeholder:text-muted-foreground/70 font-medium"
+          className="pl-11 h-11 bg-card border border-border focus:border-accent/50 transition-all rounded-xl text-foreground placeholder:text-muted-foreground font-medium"
         />
       </div>
 
@@ -122,7 +122,7 @@ const AdminLogs = () => {
                 </div>
 
                 <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 border-border pt-3 sm:pt-0 text-right">
-                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/70 font-medium uppercase tracking-wider">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
                     <Clock className="w-3 h-3 flex-shrink-0" />
                     <span className="hidden sm:inline">{getTimestamp(log.timestamp)}</span>
                     <span className="sm:hidden">{getTimestamp(log.timestamp).split(',')[0]}</span>
@@ -137,12 +137,12 @@ const AdminLogs = () => {
         ) : (
           <div className="rounded-xl border border-dashed border-border bg-card p-16 text-center shadow-sm">
             <div className="mx-auto w-16 h-16 rounded-xl bg-secondary flex items-center justify-center mb-5 border border-border">
-              <History className="w-8 h-8 text-muted-foreground/40" />
+              <History className="w-8 h-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-black text-muted-foreground mb-2" style={{ fontFamily: 'DM Sans' }}>
               No logs found
             </h3>
-            <p className="text-sm text-muted-foreground/70 max-w-xs mx-auto">
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
               {searchQuery ? `No results for "${searchQuery}". Try a different search.` : "Administrative actions will appear here."}
             </p>
           </div>

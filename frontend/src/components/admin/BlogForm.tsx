@@ -50,7 +50,7 @@ const toSlug = (s: string) =>
 /* ── Shared label style ──────────────────────────────────────────── */
 const Label = ({ children }: { children: React.ReactNode }) => (
   <span className="block text-[11px] font-semibold uppercase tracking-widest mb-1.5"
-        style={{ color: 'hsl(var(--foreground) / 0.40)' }}>
+        style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
     {children}
   </span>
 );
@@ -146,7 +146,7 @@ const SectionCard = ({
     >
       <Icon className="w-3.5 h-3.5 text-emerald-400" />
       <span className="text-[11px] font-semibold uppercase tracking-widest"
-            style={{ color: 'hsl(var(--foreground) / 0.40)' }}>
+            style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
         {title}
       </span>
     </div>
@@ -166,7 +166,7 @@ const ToolbarBtn = ({
       'p-1.5 rounded-md transition-all flex items-center justify-center',
       active ? 'bg-emerald-500/20 text-emerald-400' : 'hover:bg-white/[0.06]',
     )}
-    style={{ color: active ? 'hsl(var(--accent-bright))' : 'hsl(var(--foreground) / 0.45)' }}
+    style={{ color: active ? 'hsl(var(--accent-bright))' : 'hsl(var(--foreground) / 0.60)' }}
   >
     {children}
   </button>
@@ -398,7 +398,7 @@ const BlogForm = () => {
 
   /* ═══════════════════ RENDER ═══════════════════════════════════ */
   return (
-    <div className="space-y-0 animate-in fade-in duration-300 pb-20">
+    <form onSubmit={handleSubmit(d => onSubmit(d, false))} className="space-y-0 animate-in fade-in duration-300 pb-20">
 
       {/* ── Top bar ────────────────────────────────────────────── */}
       <div
@@ -420,7 +420,7 @@ const BlogForm = () => {
           <h1 className="text-xl font-bold" style={{ color: 'hsl(var(--foreground) / 0.90)', letterSpacing: '-0.02em' }}>
             {isEditMode ? 'Edit Post' : 'New Blog Post'}
           </h1>
-          <p className="text-[11px] mt-0.5" style={{ color: 'hsl(var(--foreground) / 0.35)' }}>
+          <p className="text-[11px] mt-0.5" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
             {isEditMode ? 'Update content and metadata.' : 'Write something worth reading.'}
           </p>
         </div>
@@ -438,8 +438,7 @@ const BlogForm = () => {
           </button>
 
           <button
-            type="button"
-            onClick={handleSubmit(d => onSubmit(d, false))}
+            type="submit"
             disabled={isLoading}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-50"
             style={{ background: 'var(--admin-surface-md)', border: '1px solid var(--admin-surface-xl)', color: 'hsl(var(--foreground) / 0.65)' }}
@@ -508,7 +507,7 @@ const BlogForm = () => {
                 className="flex items-center gap-2 pt-3"
                 style={{ borderTop: '1px solid var(--admin-surface-lg)' }}
               >
-                <span className="text-[11px] font-medium flex-shrink-0" style={{ color: 'hsl(var(--foreground) / 0.30)' }}>
+                <span className="text-[11px] font-medium flex-shrink-0" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
                   /blog/
                 </span>
                 <input
@@ -528,7 +527,7 @@ const BlogForm = () => {
             >
               <div className="flex items-center justify-between pt-4 mb-2">
                 <Label>Excerpt</Label>
-                <span className="text-[10px]" style={{ color: excerptLen > 280 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.25)' }}>
+                <span className="text-[10px]" style={{ color: excerptLen > 280 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.60)' }}>
                   {excerptLen}/300
                 </span>
               </div>
@@ -643,7 +642,7 @@ const BlogForm = () => {
                   className="py-1.5 rounded-md text-[11px] font-semibold capitalize transition-all"
                   style={{
                     background:   publishMode === mode ? 'hsl(var(--accent))' : 'transparent',
-                    color:        publishMode === mode ? 'hsl(var(--accent-foreground))' : 'hsl(var(--foreground) / 0.45)',
+                    color:        publishMode === mode ? 'hsl(var(--accent-foreground))' : 'hsl(var(--foreground) / 0.60)',
                     boxShadow:    publishMode === mode ? '0 2px 8px hsl(var(--accent) / 0.25)' : 'none',
                   }}
                 >
@@ -674,7 +673,7 @@ const BlogForm = () => {
                 style={{
                   background: publishMode === 'publish' ? 'hsl(var(--accent))'
                     : publishMode === 'schedule' ? 'hsl(var(--warning))'
-                    : 'hsl(var(--foreground) / 0.25)',
+                    : 'hsl(var(--foreground) / 0.60)',
                 }}
               />
               <span className="text-[11px] font-medium" style={{ color: 'hsl(var(--foreground) / 0.55)' }}>
@@ -699,7 +698,7 @@ const BlogForm = () => {
             <Field error={errors.metaDescription?.message}>
               <div className="flex items-center justify-between mb-1.5">
                 <Label>Meta Description</Label>
-                <span className="text-[10px]" style={{ color: metaLen > 150 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.25)' }}>
+                <span className="text-[10px]" style={{ color: metaLen > 150 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground) / 0.60)' }}>
                   {metaLen}/160
                 </span>
               </div>
@@ -716,7 +715,7 @@ const BlogForm = () => {
                 {...register('keywords')}
                 placeholder="react, typescript, web dev"
               />
-              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.25)' }}>
+              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
                 Comma-separated primary &amp; secondary keywords
               </p>
             </Field>
@@ -758,7 +757,7 @@ const BlogForm = () => {
                   style={{ color: 'hsl(var(--foreground) / 0.75)', minWidth: 80 }}
                 />
               </div>
-              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.22)' }}>
+              <p className="text-[10px] mt-1" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
                 Press Enter or comma to add
               </p>
             </div>
@@ -786,7 +785,7 @@ const BlogForm = () => {
           >
             <div>
               <h3 className="text-base font-bold mb-1" style={{ color: 'hsl(var(--foreground) / 0.90)' }}>Delete Post?</h3>
-              <p className="text-[13px]" style={{ color: 'hsl(var(--foreground) / 0.45)' }}>
+              <p className="text-[13px]" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
                 This post will be permanently deleted and cannot be recovered.
               </p>
             </div>
@@ -813,7 +812,7 @@ const BlogForm = () => {
           </div>
         </div>
       )}
-    </div>
+    </form>
   );
 };
 

@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { m } from 'framer-motion';
 import { MapPin, ExternalLink, ChevronDown, ChevronUp, Building, Trophy, Star, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useExperience } from '@/shared/hooks/useCommon';
 import { Experience, ExperienceMedia, ExperienceRole } from '@/types';
+import { useModalA11y } from '@/shared/hooks/useModalA11y';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -225,6 +226,8 @@ function calcTotalExperience(companies: NormalizedCompany[]): { years: number; m
 
 function MediaStrip({ items }: { items: ExperienceMedia[] }) {
   const [lightbox, setLightbox] = useState<ExperienceMedia | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useModalA11y(!!lightbox, () => setLightbox(null), lightboxRef);
   if (!items.length) return null;
 
   return (
@@ -254,12 +257,16 @@ function MediaStrip({ items }: { items: ExperienceMedia[] }) {
       </div>
       {lightbox && (
         <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightbox.media_caption ?? 'Media preview'}
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setLightbox(null)}
         >
           <div className="relative max-w-4xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
             <button
-              className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors"
+              className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               onClick={() => setLightbox(null)}
             >
               <X className="w-6 h-6" />

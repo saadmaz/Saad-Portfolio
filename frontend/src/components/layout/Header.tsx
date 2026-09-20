@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { m, AnimatePresence } from "framer-motion";
 import { Menu, ChevronDown, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, 
@@ -46,6 +46,8 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -55,11 +57,25 @@ export function Header() {
 
   useEffect(() => {
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-  }, [location, isMobileMenuOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
     return () => { document.body.style.overflow = "unset"; };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    mobileNavRef.current?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
   return (
@@ -141,11 +157,12 @@ export function Header() {
               </button>
               
               <button
+                ref={menuButtonRef}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-nav"
-                className="p-2 text-foreground focus:outline-none"
+                className="p-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -158,7 +175,7 @@ export function Header() {
         {isMobileMenuOpen && (
           <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-[45] lg:hidden">
             <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
-            <m.nav id="mobile-nav" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50]">
+            <m.nav id="mobile-nav" ref={mobileNavRef} tabIndex={-1} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50] focus:outline-none">
               <div className="space-y-6">
                 <MobileNavSection title="Home" href="/" />
                 <MobileNavSection title="About" items={aboutItems} />
@@ -197,7 +214,7 @@ function MobileNavSection({ title, href, items }: { title: string; href?: string
 
   return (
     <div className="border-b border-border/50 pb-2 relative z-[51]">
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2 focus:outline-none">
+      <button onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen} className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg">
         {title}
         <ChevronDown className={cn("w-6 h-6 transition-transform duration-300", isOpen && "rotate-180 text-accent")} />
       </button>

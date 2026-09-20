@@ -112,11 +112,11 @@ const AdminOrganizations = () => {
 
       <div className="flex items-center gap-4 bg-card p-4 rounded-lg border border-border shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search organizations..."
-            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-foreground placeholder:text-muted-foreground/70 font-medium"
+            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none transition-all text-foreground placeholder:text-muted-foreground font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -149,7 +149,7 @@ const AdminOrganizations = () => {
                         <h3 className="font-black text-foreground text-sm" style={{ fontFamily: 'DM Sans' }}>{org.name}</h3>
                         {org.position && <p className="text-xs text-accent font-medium">{org.position}</p>}
                         {(org.startDate || org.endDate) && (
-                          <p className="text-xs text-muted-foreground/70 flex items-center gap-1 mt-0.5">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                             <Calendar className="w-3 h-3" />
                             {org.startDate}{org.isCurrent ? ' – Present' : org.endDate ? ` – ${org.endDate}` : ''}
                           </p>
@@ -158,11 +158,11 @@ const AdminOrganizations = () => {
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {org.link && (
-                        <a href={org.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-secondary text-muted-foreground/70 hover:text-foreground transition-all">
+                        <a href={org.link} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-all">
                           <ExternalLink className="w-4 h-4" />
                         </a>
                       )}
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(org)} className="h-9 w-9 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-lg">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(org)} className="h-9 w-9 hover:bg-secondary text-muted-foreground hover:text-foreground rounded-lg">
                         <Edit2 className="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(org.id, org.name)} className="h-9 w-9 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-lg">
@@ -177,7 +177,7 @@ const AdminOrganizations = () => {
         ) : (
           <div className="rounded-lg border border-border bg-card p-12 text-center shadow-sm">
             <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No organizations found</h3>
-            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
+            <p className="text-sm text-muted-foreground mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Add professional associations and memberships.'}
             </p>
           </div>

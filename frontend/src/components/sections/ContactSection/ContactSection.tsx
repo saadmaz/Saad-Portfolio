@@ -17,6 +17,10 @@ export function ContactSection() {
       className="py-16 relative overflow-hidden"
       style={{
         background: "var(--gradient-contact)",
+        // This section is always dark regardless of site theme, so pin --accent
+        // to the dark-theme value (light-theme's darker teal fails contrast here).
+        ["--accent" as string]: "174 72% 44%",
+        ["--accent-foreground" as string]: "196 60% 4%",
       }}
     >
       {/* Ambient teal glow blobs */}
@@ -142,7 +146,7 @@ export function ContactSection() {
                         Get a response within 24 hours.
                       </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
+                    <ArrowRight className="w-5 h-5 text-white/50 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </Link>
               </m.div>
@@ -166,7 +170,7 @@ export function ContactSection() {
                         Book a 30-minute chat via Cal.com
                       </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
+                    <ArrowRight className="w-5 h-5 text-white/50 group-hover:text-accent group-hover:translate-x-2 transition-all duration-300 mt-1" />
                   </div>
                 </a>
               </m.div>

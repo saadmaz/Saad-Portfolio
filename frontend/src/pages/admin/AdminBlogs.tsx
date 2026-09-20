@@ -145,7 +145,7 @@ const AdminBlogs = () => {
             </h1>
             <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-3">
               <span className="text-emerald-400 font-black">{publishedCount} Published</span>
-              <span className="mx-2 text-muted-foreground/40">·</span>
+              <span className="mx-2 text-muted-foreground">·</span>
               <span className="text-amber-400 font-black">{draftCount} Draft{draftCount !== 1 ? 's' : ''}</span>
             </p>
           </div>
@@ -160,11 +160,11 @@ const AdminBlogs = () => {
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search posts by title or excerpt..."
-            className="w-full bg-card border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 outline-none transition-all font-medium shadow-sm"
+            className="w-full bg-card border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-accent focus:border-accent/40 outline-none transition-all font-medium shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -211,7 +211,7 @@ const AdminBlogs = () => {
       </div>
 
       {!isLoading && (
-        <p className="text-[9px] text-muted-foreground/70 font-black uppercase tracking-[0.15em]">
+        <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.15em]">
           {filtered.length} post{filtered.length !== 1 ? 's' : ''} shown
         </p>
       )}
@@ -263,19 +263,19 @@ const AdminBlogs = () => {
                         }
                       </button>
                     </div>
-                    <div className="flex items-center gap-3 text-[9px] text-muted-foreground/70 mb-1.5 font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-3 text-[9px] text-muted-foreground mb-1.5 font-bold uppercase tracking-wider">
                       <Calendar className="w-3 h-3 text-accent/50 flex-shrink-0" />{format(new Date(post.date), 'MMM d, yyyy')}
                       <span>·</span>
                       <UserIcon className="w-3 h-3 text-accent/50 flex-shrink-0" />{post.author}
                     </div>
-                    <p className="text-[11px] text-muted-foreground/70 line-clamp-1 max-w-lg leading-relaxed">{post.excerpt}</p>
+                    <p className="text-[11px] text-muted-foreground line-clamp-1 max-w-lg leading-relaxed">{post.excerpt}</p>
                   </div>
 
                   <div className="flex items-center gap-1.5 ml-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded-lg hover:bg-secondary text-muted-foreground/70 hover:text-foreground transition-all"
+                      className="h-9 w-9 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-all"
                       title="Preview"
                       onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
                     >
@@ -285,7 +285,7 @@ const AdminBlogs = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-secondary active:scale-90">
-                          <MoreVertical className="w-4 h-4 text-muted-foreground/70" />
+                          <MoreVertical className="w-4 h-4 text-muted-foreground" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="border-border bg-card text-foreground rounded-lg shadow-xl p-1">
@@ -320,10 +320,10 @@ const AdminBlogs = () => {
         ) : (
           <div className="rounded-lg border border-border bg-card py-16 text-center shadow-sm">
             <div className="mx-auto w-14 h-14 rounded-lg bg-secondary flex items-center justify-center mb-4 border border-border">
-              <FileText className="w-7 h-7 text-muted-foreground/70" />
+              <FileText className="w-7 h-7 text-muted-foreground" />
             </div>
             <h3 className="text-base font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No posts found</h3>
-            <p className="text-[11px] text-muted-foreground/70 mt-1 uppercase tracking-wider font-medium">
+            <p className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider font-medium">
               {searchQuery || filterStatus !== 'all' ? 'Try adjusting your filters.' : 'Write your first blog post to get started.'}
             </p>
           </div>

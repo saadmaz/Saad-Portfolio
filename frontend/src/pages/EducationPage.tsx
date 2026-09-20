@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useModalA11y } from '@/shared/hooks/useModalA11y';
 import { m, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/SEO';
@@ -93,6 +94,8 @@ function MediaLightbox({
 }) {
   const [index, setIndex] = useState(initialIndex);
   const item = items[index];
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useModalA11y(!!item, onClose, lightboxRef);
   if (!item) return null;
 
   const dateLabel = item.media_date_month && item.media_date_year
@@ -101,6 +104,10 @@ function MediaLightbox({
 
   return (
     <m.div
+      ref={lightboxRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.media_caption || 'Media preview'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -108,7 +115,7 @@ function MediaLightbox({
       onClick={onClose}
     >
       <button onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
         <X className="w-5 h-5" />
       </button>
       {index > 0 && (
@@ -146,7 +153,7 @@ function MediaLightbox({
             {dateLabel && <span className="text-xs text-muted-foreground whitespace-nowrap">{dateLabel}</span>}
           </div>
           {item.media_description && <p className="text-sm text-muted-foreground">{item.media_description}</p>}
-          <p className="text-[10px] text-muted-foreground/50">{index + 1} / {items.length}</p>
+          <p className="text-[10px] text-muted-foreground">{index + 1} / {items.length}</p>
         </div>
       </div>
     </m.div>
@@ -214,7 +221,7 @@ function EducationCard({
                 {websiteUrl ? (
                   <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
                     className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
-                    {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
+                    {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                   </a>
                 ) : (
                   <span className="font-bold text-foreground">{schoolName}</span>
@@ -233,7 +240,7 @@ function EducationCard({
               <div className="flex items-center gap-2 flex-wrap mt-1">
                 <p className="text-xs text-muted-foreground">
                   {duration}
-                  {durationStr && <span className="ml-1 text-muted-foreground/60">· {durationStr}</span>}
+                  {durationStr && <span className="ml-1 text-muted-foreground">· {durationStr}</span>}
                 </p>
                 {expectedLabel && (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{expectedLabel}</span>
@@ -255,7 +262,7 @@ function EducationCard({
           {/* Activities */}
           {activities && (
             <div className="flex items-start gap-1.5">
-              <Users className="w-3.5 h-3.5 text-muted-foreground/60 mt-0.5 shrink-0" />
+              <Users className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">{activities}</p>
             </div>
           )}
@@ -327,7 +334,7 @@ function EducationCard({
                       <span className="font-medium text-foreground">{a.award_title}</span>
                       {a.award_issuer && <span className="text-muted-foreground"> · {a.award_issuer}</span>}
                       {(a.award_date_month || a.award_date_year) && (
-                        <span className="text-muted-foreground/60 text-xs ml-1">
+                        <span className="text-muted-foreground text-xs ml-1">
                           ({a.award_date_month ? a.award_date_month.slice(0, 3) + ' ' : ''}{a.award_date_year})
                         </span>
                       )}
@@ -424,8 +431,12 @@ function TimelineEntry({
 
       <div className="flex-1 pb-8 min-w-0">
         <div
-          className="flex items-start justify-between gap-2 cursor-pointer group h-12"
+          role="button"
+          tabIndex={0}
+          aria-expanded={expanded}
+          className="flex items-start justify-between gap-2 cursor-pointer group h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           onClick={onToggle}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
         >
           <div>
             <div className="flex items-center gap-1.5">
@@ -433,7 +444,7 @@ function TimelineEntry({
                 <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="font-semibold text-foreground hover:text-accent transition-colors flex items-center gap-1 text-base">
-                  {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
+                  {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                 </a>
               ) : (
                 <span className="font-semibold text-foreground text-base group-hover:text-accent transition-colors">{schoolName}</span>
@@ -600,11 +611,11 @@ const EducationPage = () => {
 
               {education.length > 1 && (
                 <div className="flex items-center gap-1 p-1 rounded-lg bg-card border border-border">
-                  <button onClick={() => setView('card')}
+                  <button onClick={() => setView('card')} aria-pressed={view === 'card'}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'card' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
                     <LayoutList className="w-3.5 h-3.5" /> Cards
                   </button>
-                  <button onClick={() => setView('timeline')}
+                  <button onClick={() => setView('timeline')} aria-pressed={view === 'timeline'}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'timeline' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
                     <GitBranch className="w-3.5 h-3.5" /> Timeline
                   </button>
@@ -632,9 +643,9 @@ const EducationPage = () => {
           {/* Empty state */}
           {!eduLoading && !eduError && education.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border bg-card p-16 text-center">
-              <GraduationCap className="w-12 h-12 text-muted-foreground/20 mx-auto mb-4" />
+              <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-muted-foreground">No education entries yet</h3>
-              <p className="text-sm text-muted-foreground/60 mt-1">Check back later.</p>
+              <p className="text-sm text-muted-foreground mt-1">Check back later.</p>
             </div>
           )}
 

@@ -105,11 +105,12 @@ const CertificateForm = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           className="rounded-full hover:bg-white/10"
           onClick={() => navigate('/admin/certificates')}
         >
@@ -123,8 +124,8 @@ const CertificateForm = () => {
             "Your hard work is your unique signature."
           </p>
         </div>
-        <Button 
-          onClick={handleSubmit(onSubmit)} 
+        <Button
+          type="submit"
           className="ml-auto bg-accent hover:bg-accent/90 text-black font-bold px-8"
           disabled={isLoading}
         >
@@ -149,7 +150,7 @@ const CertificateForm = () => {
                 {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-muted-foreground">Issuer / Authority</label>
                   <Input {...register('issuer')} placeholder="e.g. Google" className="bg-white/5 border-white/10" />
@@ -233,7 +234,7 @@ const CertificateForm = () => {
           </Card>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

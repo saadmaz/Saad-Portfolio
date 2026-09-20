@@ -23,7 +23,7 @@ export function TestimonialsSection() {
         <div className="section-container">
           <div className="flex gap-6 overflow-hidden">
             {[1, 2, 3].map(i => (
-              <div key={i} className="flex-shrink-0 w-[350px] h-52 rounded-xl bg-card animate-pulse" />
+              <div key={i} className="flex-shrink-0 w-[85vw] max-w-[350px] h-52 rounded-xl bg-card animate-pulse" />
             ))}
           </div>
         </div>
@@ -83,7 +83,7 @@ export function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.4) }}
-              className="flex-shrink-0 w-[350px] snap-center"
+              className="flex-shrink-0 w-[85vw] max-w-[350px] snap-center"
             >
               <div className="bg-card rounded-xl border border-border p-6 h-full flex flex-col card-hover transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent/30">
                 <Quote className="w-8 h-8 text-accent/30 mb-4 shrink-0" />

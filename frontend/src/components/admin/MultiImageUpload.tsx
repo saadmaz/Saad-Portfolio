@@ -102,7 +102,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
                 className="w-full h-full object-cover"
               />
               {/* Overlay */}
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center">
                 <button
                   type="button"
                   onClick={() => remove(i)}
@@ -123,7 +123,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="aspect-video rounded-lg border-2 border-dashed border-white/10 hover:border-accent/40 hover:bg-white/[0.03] transition-all flex flex-col items-center justify-center gap-1 text-white/30 hover:text-accent"
+              className="aspect-video rounded-lg border-2 border-dashed border-white/10 hover:border-accent/40 hover:bg-white/[0.03] transition-all flex flex-col items-center justify-center gap-1 text-white/60 hover:text-accent"
             >
               <Plus className="w-5 h-5" />
               <span className="text-[9px] font-bold uppercase tracking-wide">Add</span>
@@ -135,11 +135,15 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
       {/* Upload dropzone - shown when no images yet */}
       {value.length === 0 && (
         <div
+          role="button"
+          tabIndex={0}
+          aria-label="Upload images"
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onClick={() => !uploading && fileInputRef.current?.click()}
+          onKeyDown={(e) => { if (!uploading && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); fileInputRef.current?.click(); } }}
           className={cn(
-            'rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-accent/30 transition-all flex flex-col items-center justify-center gap-2 py-10 cursor-pointer'
+            'rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-accent/30 transition-all flex flex-col items-center justify-center gap-2 py-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
           )}
         >
           {uploading ? (
@@ -158,7 +162,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
                 <p className="text-sm font-bold text-white/60 hover:text-accent transition-colors">
                   Drop images here or click to upload
                 </p>
-                <p className="text-[10px] text-white/30 mt-0.5">
+                <p className="text-[10px] text-white/60 mt-0.5">
                   Up to {maxImages} images · JPG, PNG, WebP · Max 10 MB each
                 </p>
               </div>
@@ -179,7 +183,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
 
       {/* Footer row with count + upload button */}
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-white/30 font-medium">
+        <span className="text-[10px] text-white/60 font-medium">
           {value.length}/{maxImages} images
         </span>
         {canAdd && value.length > 0 && !uploading && (

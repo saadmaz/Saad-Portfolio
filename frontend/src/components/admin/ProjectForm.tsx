@@ -89,8 +89,8 @@ const toSlug = (s: string) =>
     .replace(/[\s_]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-const FIELD_CLS = "bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 focus:border-accent/40 rounded-lg h-10";
-const LABEL_CLS = "text-[10px] font-black uppercase tracking-widest text-white/40 mb-1.5 block";
+const FIELD_CLS = "bg-white/[0.04] border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-accent focus:border-accent/40 rounded-lg h-10";
+const LABEL_CLS = "text-[10px] font-black uppercase tracking-widest text-white/60 mb-1.5 block";
 
 // ── Reusable tag-list editor ──────────────────────────────────────
 const TagListEditor = ({
@@ -118,7 +118,7 @@ const TagListEditor = ({
             </button>
           </span>
         ))}
-        {values.length === 0 && <p className="text-xs text-white/20">None added</p>}
+        {values.length === 0 && <p className="text-xs text-white/60">None added</p>}
       </div>
       <div className="flex gap-2">
         <Input value={input} onChange={e => setInput(e.target.value)}
@@ -294,10 +294,10 @@ const ProjectForm = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-white/10 w-9 h-9"
+        <Button type="button" variant="ghost" size="icon" className="rounded-xl hover:bg-white/10 w-9 h-9"
           onClick={() => navigate('/admin/projects')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -308,13 +308,13 @@ const ProjectForm = () => {
           </h1>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}
+          <Button type="submit" disabled={isLoading}
             className="bg-accent hover:bg-accent/90 text-accent-foreground font-black rounded-xl h-10 px-6 shadow-[0_0_20px_hsl(var(--accent)/0.28)]">
             <Save className="w-3.5 h-3.5 mr-2" />
             {isLoading ? 'Saving…' : 'Save Project'}
           </Button>
           {isEditMode && (
-            <Button variant="ghost" size="icon"
+            <Button type="button" variant="ghost" size="icon"
               className="text-red-500/60 hover:bg-red-500/10 hover:text-red-500 rounded-xl w-9 h-9"
               onClick={() => setDeleteDialogOpen(true)} disabled={isLoading}>
               <Trash2 className="w-4 h-4" />
@@ -329,7 +329,7 @@ const ProjectForm = () => {
 
           {/* Essentials */}
           <Section icon={Layout} title="Project Essentials">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={LABEL_CLS}>Title</label>
                 <Input {...register('title')} placeholder="e.g. Portfolio v3" className={FIELD_CLS} />
@@ -347,7 +347,7 @@ const ProjectForm = () => {
               <Input {...register('tagline')} placeholder="Short punchy description…" className={FIELD_CLS} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={LABEL_CLS}>Date</label>
                 <Input {...register('date')} placeholder="e.g. 2025-06-01" className={FIELD_CLS} />
@@ -358,11 +358,11 @@ const ProjectForm = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className={LABEL_CLS}>Type</label>
                 <Select value={(watch('type') as string) ?? ''} onValueChange={(v) => setValue('type', v)}>
-                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent outline-none">
                     <SelectValue placeholder="Select…" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -379,7 +379,7 @@ const ProjectForm = () => {
               <div>
                 <label className={LABEL_CLS}>Stage</label>
                 <Select value={(watch('stage') as string) ?? ''} onValueChange={(v) => setValue('stage', v)}>
-                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent outline-none">
                     <SelectValue placeholder="Select…" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -401,13 +401,13 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>Overview (Detailed)</label>
               <Textarea {...register('overview')} placeholder="Full project overview - goals, outcomes, architecture…"
-                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 rounded-lg min-h-[120px] resize-none" />
+                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-accent rounded-lg min-h-[120px] resize-none" />
               {errors.overview && <p className="text-xs text-red-400 mt-1">{errors.overview.message}</p>}
             </div>
             <div>
               <label className={LABEL_CLS}>Long Description</label>
               <Textarea {...register('long_description')} placeholder="Extended write-up for the project detail page…"
-                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/25 focus:ring-2 focus:ring-accent/30 rounded-lg min-h-[100px] resize-none" />
+                className="bg-white/[0.04] border-white/10 text-white placeholder:text-white/60 focus:ring-2 focus:ring-accent rounded-lg min-h-[100px] resize-none" />
             </div>
           </Section>
 
@@ -450,12 +450,12 @@ const ProjectForm = () => {
             badge={linkedEducationIds.length + linkedExperienceIds.length > 0
               ? `${linkedEducationIds.length + linkedExperienceIds.length}`
               : undefined}>
-            <p className="text-[10px] text-white/40">
+            <p className="text-[10px] text-white/60">
               Link this project to education entries and work experience. They will display this project as a card strip in their respective public pages.
             </p>
 
             {assocLoading ? (
-              <div className="flex items-center gap-2 text-xs text-white/40 py-2">
+              <div className="flex items-center gap-2 text-xs text-white/60 py-2">
                 <div className="w-4 h-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
                 Loading…
               </div>
@@ -493,7 +493,7 @@ const ProjectForm = () => {
                               <p className={`text-xs font-semibold truncate ${isLinked ? 'text-white' : 'text-white/50'}`}>
                                 {edu.school_name ?? edu.institution}
                               </p>
-                              <p className="text-[10px] text-white/30 truncate">
+                              <p className="text-[10px] text-white/60 truncate">
                                 {edu.degree}{edu.field_of_study ? ` · ${edu.field_of_study}` : ''}
                               </p>
                             </div>
@@ -536,7 +536,7 @@ const ProjectForm = () => {
                               <p className={`text-xs font-semibold truncate ${isLinked ? 'text-white' : 'text-white/50'}`}>
                                 {exp.company_name ?? exp.company}
                               </p>
-                              <p className="text-[10px] text-white/30 truncate">
+                              <p className="text-[10px] text-white/60 truncate">
                                 {exp.employment_type ?? exp.employmentType}
                                 {exp.location ? ` · ${exp.location}` : ''}
                               </p>
@@ -549,7 +549,7 @@ const ProjectForm = () => {
                 )}
 
                 {allEducation.length === 0 && allExperiences.length === 0 && (
-                  <p className="text-xs text-white/30 py-1">No education or experience entries found.</p>
+                  <p className="text-xs text-white/60 py-1">No education or experience entries found.</p>
                 )}
               </div>
             )}
@@ -583,7 +583,7 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>YouTube / Video URL</label>
               <div className="relative">
-                <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/60" />
                 <Input {...register('video')} placeholder="https://youtube.com/watch?v=…"
                   className={cn(FIELD_CLS, "pl-9")} />
               </div>
@@ -595,7 +595,7 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>Live Demo URL</label>
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/60" />
                 <Input {...register('liveUrl')} placeholder="https://example.com"
                   className={cn(FIELD_CLS, "pl-9")} />
               </div>
@@ -604,7 +604,7 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>Live Preview (legacy)</label>
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/60" />
                 <Input {...register('live_preview')} placeholder="https://…"
                   className={cn(FIELD_CLS, "pl-9")} />
               </div>
@@ -612,7 +612,7 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>GitHub Repository</label>
               <div className="relative">
-                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/60" />
                 <Input {...register('githubUrl')} placeholder="https://github.com/…"
                   className={cn(FIELD_CLS, "pl-9")} />
               </div>
@@ -620,7 +620,7 @@ const ProjectForm = () => {
             <div>
               <label className={LABEL_CLS}>GitHub (legacy)</label>
               <div className="relative">
-                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+                <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/60" />
                 <Input {...register('github')} placeholder="https://github.com/…"
                   className={cn(FIELD_CLS, "pl-9")} />
               </div>
@@ -629,11 +629,11 @@ const ProjectForm = () => {
 
           {/* Settings */}
           <Section icon={Sparkles} title="Settings">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className={LABEL_CLS}>Status</label>
                 <Select value={(watch('status') as string) ?? ''} onValueChange={(v) => setValue('status', v)}>
-                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent/30 outline-none">
+                  <SelectTrigger className="w-full bg-transparent border border-white/10 rounded-lg px-3 h-10 text-sm text-white focus:ring-2 focus:ring-accent outline-none">
                     <SelectValue placeholder="Select…" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -684,7 +684,7 @@ const ProjectForm = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </form>
   );
 };
 

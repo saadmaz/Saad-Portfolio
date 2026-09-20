@@ -366,7 +366,7 @@ const AdminCertificates = () => {
                 <p className="text-xs text-muted-foreground font-semibold mt-0.5 truncate">{cert.issuer}</p>
 
                 <div className="mt-auto flex items-center justify-between pt-2 border-t border-border">
-                  <span className="text-[10px] text-muted-foreground/70 font-medium flex items-center gap-1">
+                  <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-accent/70" />
                     {cert.issue_date}
                   </span>
@@ -389,7 +389,7 @@ const AdminCertificates = () => {
               <Award className="w-8 h-8 text-accent/50" />
             </div>
             <h3 className="text-base font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No certificates added</h3>
-            <p className="text-sm text-muted-foreground/60 mt-1 font-medium">Showcase your verified achievements and professional learning.</p>
+            <p className="text-sm text-muted-foreground mt-1 font-medium">Showcase your verified achievements and professional learning.</p>
             <Button onClick={() => openSheet(null)} className="mt-4 bg-accent hover:bg-accent/90 text-black font-black h-10 px-5 rounded-lg">
               <Plus className="w-4 h-4 mr-1.5" /> Add Certificate
             </Button>
@@ -425,7 +425,7 @@ const AdminCertificates = () => {
                   <FormItem>
                     <FormLabel className="text-muted-foreground font-medium text-sm">Certificate Title *</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g. Python Essential Training" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      <Input {...field} placeholder="e.g. Python Essential Training" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                     </FormControl>
                     <FormMessage className="text-red-500 text-xs" />
                   </FormItem>
@@ -436,7 +436,7 @@ const AdminCertificates = () => {
                     <FormItem>
                       <FormLabel className="text-muted-foreground font-medium text-sm">Issuer *</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                       </FormControl>
                       <FormMessage className="text-red-500 text-xs" />
                     </FormItem>
@@ -445,7 +445,7 @@ const AdminCertificates = () => {
                     <FormItem>
                       <FormLabel className="text-muted-foreground font-medium text-sm">Platform *</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                        <Input {...field} placeholder="LinkedIn Learning" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                       </FormControl>
                       <FormMessage className="text-red-500 text-xs" />
                     </FormItem>
@@ -456,7 +456,7 @@ const AdminCertificates = () => {
                   <FormItem>
                     <FormLabel className="text-muted-foreground font-medium text-sm">Issue Date *</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="YYYY-MM-DD" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      <Input {...field} placeholder="YYYY-MM-DD" className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                     </FormControl>
                     <FormMessage className="text-red-500 text-xs" />
                   </FormItem>
@@ -499,7 +499,7 @@ const AdminCertificates = () => {
                   <FormItem>
                     <FormLabel className="text-muted-foreground font-medium text-sm">Credential URL</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="https://..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      <Input {...field} placeholder="https://..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                     </FormControl>
                     <FormMessage className="text-red-500 text-xs" />
                   </FormItem>
@@ -509,7 +509,7 @@ const AdminCertificates = () => {
                   <FormItem>
                     <FormLabel className="text-muted-foreground font-medium text-sm">PDF Link (Optional)</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="/Certificates/..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50" />
+                      <Input {...field} placeholder="/Certificates/..." className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50" />
                     </FormControl>
                   </FormItem>
                 )} />
@@ -521,7 +521,7 @@ const AdminCertificates = () => {
                       <Textarea
                         {...field}
                         placeholder="What did you learn?"
-                        className="bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-accent/50 min-h-[90px]"
+                        className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-accent/50 min-h-[90px]"
                       />
                     </FormControl>
                   </FormItem>

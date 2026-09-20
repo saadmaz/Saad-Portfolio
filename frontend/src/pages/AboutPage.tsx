@@ -31,7 +31,7 @@ const StarRating = ({ filled }: { filled: number }) => (
         key={star}
         // Logic: Apply accent fill/color if the star index is less than or equal to the proficiency value
         // Otherwise, render a semi-transparent muted star.
-        className={`w-4 h-4 ${star <= filled ? "fill-accent text-accent" : "text-muted-foreground/30"}`}
+        className={`w-4 h-4 ${star <= filled ? "fill-accent text-accent" : "text-muted-foreground"}`}
       />
     ))}
   </div>
@@ -123,7 +123,7 @@ const AboutPage = () => {
               </div>
             ) : publishedEducation.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
-                <GraduationCap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <GraduationCap className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">No education entries yet.</p>
               </div>
             ) : (
@@ -148,7 +148,7 @@ const AboutPage = () => {
                           {logo ? (
                             <img src={logo} alt={name} className="w-full h-full object-contain p-1" />
                           ) : (
-                            <GraduationCap className="w-6 h-6 text-muted-foreground/40" />
+                            <GraduationCap className="w-6 h-6 text-muted-foreground" />
                           )}
                         </div>
 
@@ -158,7 +158,7 @@ const AboutPage = () => {
                               {edu.school_website_url ? (
                                 <a href={edu.school_website_url} target="_blank" rel="noopener noreferrer"
                                   className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
-                                  {name} <ExternalLink className="w-3 h-3 text-muted-foreground/50" />
+                                  {name} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                                 </a>
                               ) : (
                                 <h3 className="font-bold text-foreground">{name}</h3>

@@ -146,7 +146,7 @@ const AdminDashboard = () => {
       {/* ── Greeting ───────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4 pt-0.5">
         <div>
-          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase mb-1.5 text-muted-foreground/70">
+          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase mb-1.5 text-muted-foreground">
             {dateStr}
           </p>
           <h1 className="text-[27px] font-bold leading-tight text-foreground">
@@ -183,6 +183,12 @@ const AdminDashboard = () => {
                 style={{ background: 'var(--admin-surface-xl)' }}
               />
 
+              {/* Dark scrim so label/count text clears WCAG contrast against the gradient's light end */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 80%)' }}
+              />
+
               {/* Icon */}
               <div
                 className="relative z-10 w-8 h-8 rounded-xl flex items-center justify-center mb-3"
@@ -196,7 +202,7 @@ const AdminDashboard = () => {
                 <div>
                   <p
                     className="text-[9.5px] font-medium mb-0.5 leading-tight"
-                    style={{ color: 'hsl(0 0% 100% / 0.72)' }}
+                    style={{ color: 'hsl(0 0% 100% / 0.85)' }}
                   >
                     {card.label}
                   </p>
@@ -229,7 +235,7 @@ const AdminDashboard = () => {
           <h2 className="text-[15px] font-bold mb-0.5 text-foreground">
             Quick Actions
           </h2>
-          <p className="text-[12px] mb-5 text-muted-foreground/70">
+          <p className="text-[12px] mb-5 text-muted-foreground">
             Jump to the most common tasks
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -249,7 +255,7 @@ const AdminDashboard = () => {
                     <p className="text-[12.5px] font-semibold text-foreground">
                       {action.label}
                     </p>
-                    <p className="text-[10.5px] truncate text-muted-foreground/70">
+                    <p className="text-[10.5px] truncate text-muted-foreground">
                       {action.sub}
                     </p>
                   </div>
@@ -266,7 +272,7 @@ const AdminDashboard = () => {
               <h2 className="text-[15px] font-bold text-foreground">
                 Recent Activity
               </h2>
-              <p className="text-[11px] text-muted-foreground/70">
+              <p className="text-[11px] text-muted-foreground">
                 Latest events across the platform
               </p>
             </div>
@@ -310,11 +316,11 @@ const AdminDashboard = () => {
                         <span style={{ color: dotColor }}>{log.entityType}</span>
                       </p>
                       {log.details && (
-                        <p className="text-[10.5px] truncate mt-0.5 text-muted-foreground/70">
+                        <p className="text-[10.5px] truncate mt-0.5 text-muted-foreground">
                           {log.details}
                         </p>
                       )}
-                      <p className="text-[10px] mt-0.5 flex items-center gap-1 text-muted-foreground/40">
+                      <p className="text-[10px] mt-0.5 flex items-center gap-1 text-muted-foreground">
                         <Clock className="w-2.5 h-2.5" />
                         {formatDistanceToNow(ts, { addSuffix: true })}
                       </p>
@@ -325,7 +331,7 @@ const AdminDashboard = () => {
             </div>
           ) : (
             <div className="py-12 text-center">
-              <p className="text-sm text-muted-foreground/70">No activity yet.</p>
+              <p className="text-sm text-muted-foreground">No activity yet.</p>
             </div>
           )}
         </div>

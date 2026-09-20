@@ -130,7 +130,7 @@ const CertificateDetailPage = () => {
 
             {/* LEFT - credential card */}
             <div className="lg:col-span-4">
-              <div className="bg-card rounded-2xl border border-border shadow-sm sticky top-24 overflow-hidden">
+              <div className="bg-card rounded-2xl border border-border shadow-sm lg:sticky lg:top-24 overflow-hidden">
 
                 {/* Logo + issuer */}
                 <div className="flex flex-col items-center py-8 px-6 border-b border-border">

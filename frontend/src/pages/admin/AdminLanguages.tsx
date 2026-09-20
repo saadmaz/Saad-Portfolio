@@ -132,7 +132,7 @@ const AdminLanguages = () => {
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(lang)} className="h-8 w-8 hover:bg-secondary">
-                      <Edit2 className="w-4 h-4 text-muted-foreground/70" />
+                      <Edit2 className="w-4 h-4 text-muted-foreground" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={() => handleDelete(lang.id, lang.name)} className="h-8 w-8 hover:bg-red-500/10 text-red-400 hover:text-red-500">
                       <Trash2 className="w-4 h-4" />
@@ -157,7 +157,7 @@ const AdminLanguages = () => {
         ) : (
           <div className="md:col-span-2 rounded-2xl border border-border bg-card shadow-sm p-12 text-center">
             <h3 className="text-lg font-medium text-muted-foreground mb-1">No languages added</h3>
-            <p className="text-sm text-muted-foreground/70">Add languages to showcase your communication skills.</p>
+            <p className="text-sm text-muted-foreground">Add languages to showcase your communication skills.</p>
           </div>
         )}
       </div>

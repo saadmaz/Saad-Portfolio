@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, Briefcase, Code, BookOpen, FileCheck,
@@ -87,6 +87,8 @@ const AdminLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [navCounts, setNavCounts] = useState<Record<string, number>>({});
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileSidebarRef = useRef<HTMLElement>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -140,6 +142,19 @@ const AdminLayout = () => {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    mobileSidebarRef.current?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileOpen(false);
+        mobileMenuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileOpen]);
+
   const currentPageLabel = navGroups
     .flatMap(g => g.items)
     .find(i => location.pathname === i.path || location.pathname.startsWith(i.path + '/'))
@@ -181,9 +196,12 @@ const AdminLayout = () => {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-expanded={!collapsed}
           className={cn(
             "hidden md:flex items-center justify-center w-5 h-5 rounded-md transition-all duration-200 flex-shrink-0",
             "text-[var(--admin-fg-22)] hover:text-[var(--admin-fg-60)] hover:bg-white/[0.06]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             collapsed && "absolute left-[52px] top-[20px] z-10 border shadow-xl rounded-full"
           )}
           style={collapsed ? { background: 'hsl(var(--card))', borderColor: 'var(--admin-border-md)' } : {}}
@@ -200,7 +218,7 @@ const AdminLayout = () => {
               {!collapsed && (
                 <p
                   className="text-[9px] font-semibold px-2.5 pb-1.5 pt-0.5 tracking-[0.14em] uppercase select-none"
-                  style={{ color: 'hsl(var(--foreground) / 0.18)' }}
+                  style={{ color: 'hsl(var(--foreground) / 0.55)' }}
                 >
                   {group.label}
                 </p>
@@ -224,7 +242,7 @@ const AdminLayout = () => {
                     )}
                     style={{
                       background: isActive ? 'hsl(var(--accent) / 0.08)' : undefined,
-                      color: isActive ? 'hsl(var(--accent))' : 'hsl(var(--foreground) / 0.40)',
+                      color: isActive ? 'hsl(var(--accent))' : 'hsl(var(--foreground) / 0.55)',
                     }}
                     onMouseEnter={e => {
                       if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'var(--admin-surface-xs)';
@@ -253,7 +271,7 @@ const AdminLayout = () => {
                       <>
                         <span
                           className="text-[12.5px] font-medium tracking-[0.005em] truncate flex-1 transition-colors duration-150"
-                          style={{ color: isActive ? 'hsl(var(--accent))' : 'hsl(var(--foreground) / 0.48)' }}
+                          style={{ color: isActive ? 'hsl(var(--accent))' : 'hsl(var(--foreground) / 0.60)' }}
                         >
                           {item.label}
                         </span>
@@ -264,7 +282,7 @@ const AdminLayout = () => {
                         ) : count !== undefined ? (
                           <span
                             className="ml-auto text-[10px] font-semibold tabular-nums"
-                            style={{ color: isActive ? 'hsl(var(--accent) / 0.55)' : 'hsl(var(--foreground) / 0.15)' }}
+                            style={{ color: isActive ? 'hsl(var(--accent) / 0.55)' : 'hsl(var(--foreground) / 0.55)' }}
                           >
                             {count}
                           </span>
@@ -285,7 +303,7 @@ const AdminLayout = () => {
                       >
                         {item.label}
                         {count !== undefined && (
-                          <span style={{ color: 'hsl(var(--foreground) / 0.35)' }}>{count}</span>
+                          <span style={{ color: 'hsl(var(--foreground) / 0.55)' }}>{count}</span>
                         )}
                       </TooltipContent>
                     </Tooltip>
@@ -316,7 +334,7 @@ const AdminLayout = () => {
               <p className="text-[11.5px] font-semibold truncate" style={{ color: 'hsl(var(--foreground) / 0.80)' }}>
                 Saad Mazhar
               </p>
-              <p className="text-[9.5px] truncate" style={{ color: 'hsl(var(--foreground) / 0.22)' }}>
+              <p className="text-[9.5px] truncate" style={{ color: 'hsl(var(--foreground) / 0.60)' }}>
                 saadmazaa@gmail.com
               </p>
             </div>
@@ -342,9 +360,9 @@ const AdminLayout = () => {
                   <button
                     onClick={async () => { try { await auth.signOut(); } catch { /* ignore, still navigate away */ } navigate('/admin/login'); }}
                     className="w-full flex items-center justify-center p-2 rounded-lg transition-all"
-                    style={{ color: 'hsl(var(--foreground) / 0.22)' }}
+                    style={{ color: 'hsl(var(--foreground) / 0.55)' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--destructive) / 0.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive))'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = ''; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--foreground) / 0.22)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = ''; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--foreground) / 0.55)'; }}
                   >
                     <LogOut className="w-[15px] h-[15px]" />
                   </button>
@@ -357,9 +375,9 @@ const AdminLayout = () => {
               <button
                 onClick={async () => { try { await auth.signOut(); } catch { /* ignore, still navigate away */ } navigate('/admin/login'); }}
                 className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all group text-[12px] font-medium"
-                style={{ color: 'hsl(var(--foreground) / 0.25)' }}
+                style={{ color: 'hsl(var(--foreground) / 0.60)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--destructive) / 0.07)'; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--destructive))'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = ''; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--foreground) / 0.25)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = ''; (e.currentTarget as HTMLButtonElement).style.color = 'hsl(var(--foreground) / 0.60)'; }}
               >
                 <LogOut className="w-[14px] h-[14px] flex-shrink-0" />
                 Sign Out
@@ -397,8 +415,10 @@ const AdminLayout = () => {
 
         {/* Mobile sidebar */}
         <aside
+          ref={mobileSidebarRef}
+          tabIndex={-1}
           className={cn(
-            "fixed inset-y-0 left-0 z-50 w-[220px] transition-all duration-300 ease-in-out md:hidden flex flex-col",
+            "fixed inset-y-0 left-0 z-50 w-[220px] transition-all duration-300 ease-in-out md:hidden flex flex-col focus:outline-none",
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           )}
           style={{ background: 'hsl(var(--card))', borderRight: '1px solid var(--admin-border)' }}
@@ -416,8 +436,11 @@ const AdminLayout = () => {
           >
             {/* Mobile menu */}
             <Button
+              ref={mobileMenuButtonRef}
               variant="ghost"
               size="icon"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
               className="md:hidden rounded-lg w-7 h-7 hover:bg-white/[0.06] flex-shrink-0"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
@@ -427,12 +450,12 @@ const AdminLayout = () => {
             {/* Breadcrumb */}
             <div
               className="hidden md:flex items-center gap-1.5 text-[10.5px] font-medium flex-shrink-0"
-              style={{ color: 'hsl(var(--foreground) / 0.25)' }}
+              style={{ color: 'hsl(var(--foreground) / 0.55)' }}
             >
               <ShieldCheck className="w-3 h-3" style={{ color: 'hsl(var(--accent) / 0.55)' }} />
               <span>Admin</span>
-              <span style={{ color: 'hsl(var(--foreground) / 0.12)' }}>›</span>
-              <span style={{ color: 'hsl(var(--foreground) / 0.48)' }}>{currentPageLabel}</span>
+              <span aria-hidden="true" style={{ color: 'hsl(var(--foreground) / 0.12)' }}>›</span>
+              <span style={{ color: 'hsl(var(--foreground) / 0.60)' }}>{currentPageLabel}</span>
             </div>
 
             {/* Right actions */}
@@ -442,9 +465,9 @@ const AdminLayout = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full font-medium tracking-wide transition-all duration-200"
-                style={{ background: 'var(--admin-surface-sm)', color: 'hsl(var(--foreground) / 0.35)', border: '1px solid var(--admin-surface-lg)' }}
+                style={{ background: 'var(--admin-surface-sm)', color: 'hsl(var(--foreground) / 0.60)', border: '1px solid var(--admin-surface-lg)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'hsl(var(--foreground) / 0.65)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'hsl(var(--foreground) / 0.35)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'hsl(var(--foreground) / 0.60)'; }}
               >
                 <ExternalLink className="w-2.5 h-2.5" />
                 View site

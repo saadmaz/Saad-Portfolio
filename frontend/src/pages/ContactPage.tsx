@@ -168,8 +168,7 @@ const ContactPage = () => {
                 <iframe
                   src="https://calendly.com/saadmaz/30min?embed_domain=saadmaz.com&embed_type=Inline&hide_gdpr_banner=1&background_color=050505&text_color=ffffff&primary_color=2dd4bf"
                   title="Schedule a meeting with Saad Mazhar"
-                  className="w-full border-0"
-                  style={{ minHeight: "600px" }}
+                  className="w-full border-0 min-h-[420px] sm:min-h-[600px]"
                   loading="lazy"
                 />
               </div>

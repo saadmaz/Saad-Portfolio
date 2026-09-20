@@ -55,7 +55,7 @@
     --contact-blue: 174 72% 32%;
 
     /* Destructive */
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
 
     /* Border & Input */
@@ -73,9 +73,9 @@
     --slate-light: 180 14% 94%;
     --blue-accent: 174 72% 32%;
     --blue-soft: 174 72% 92%;
-    --success: 142 71% 45%;
+    --success: 142 71% 35%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 38 92% 38%;
     --warning-foreground: 0 0% 100%;
 
     /* --- PREMIUM TEAL GRADIENTS --- */
@@ -279,7 +279,7 @@
   /* PRIMARY BUTTON: Teal gradient - visible on both light and dark */
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
-    color: white !important;
+    color: hsl(var(--accent-foreground)) !important;
     @apply border border-transparent transition-all duration-300;
     background: var(--gradient-accent);
     box-shadow: var(--shadow-md);
@@ -306,7 +306,7 @@
   /* ACCENT TEAL BUTTON: Header CTA - same teal gradient */
   .btn-accent {
     @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg font-semibold text-sm;
-    color: white !important;
+    color: hsl(var(--accent-foreground)) !important;
     @apply border border-transparent transition-all duration-300;
     background: var(--gradient-accent);
     box-shadow: var(--shadow-md);
@@ -328,7 +328,7 @@
   }
 
   .btn-outline:hover {
-    color: white !important;
+    color: hsl(var(--accent-foreground)) !important;
     border-color: transparent !important;
     background: var(--gradient-accent);
     box-shadow: var(--shadow-glow);
@@ -810,7 +810,7 @@
 
     /* ── Emerald accent - replaces every teal/gold reference ───── */
     --accent:                   160 84% 39%;   /* #10b981 emerald-500        */
-    --accent-foreground:          0  0% 100%;  /* white text on emerald      */
+    --accent-foreground:       228 52%  6%;    /* dark navy text on emerald — passes AA, white failed at 2.59:1 */
     --accent-glow:               160 84% 39%;
     --accent-bright:             152 63% 52%;  /* emerald-400 for highlights */
 
@@ -821,7 +821,7 @@
     --radius:                   0.5rem;
 
     /* ── Destructive (unchanged) ─────────────────────────────── */
-    --destructive:                0 62% 50%;
+    --destructive:                0 62% 44%;
     --destructive-foreground:    36 22% 91%;
 
     /* ── Sidebar tokens ──────────────────────────────────────── */

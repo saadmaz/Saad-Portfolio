@@ -131,7 +131,7 @@ const AdminSkills = () => {
           <Card key={catIndex} className="bg-card border-border overflow-hidden rounded-2xl shadow-sm group/card transition-all hover:border-accent/30">
             <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-border bg-secondary">
               <div className="flex items-center gap-4 flex-1">
-                <GripVertical className="w-4 h-4 text-muted-foreground/40 cursor-grab active:cursor-grabbing hover:text-accent transition-colors" />
+                <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab active:cursor-grabbing hover:text-accent transition-colors" />
                 <div className="relative group/input flex-1 max-w-sm">
                   <Input
                     value={set.category}
@@ -140,17 +140,17 @@ const AdminSkills = () => {
                       next[catIndex].category = e.target.value;
                       setSkillSets(next);
                     }}
-                    className="bg-transparent border-none text-xl font-bold p-0 h-auto focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/40"
+                    className="bg-transparent border-none text-xl font-bold p-0 h-auto focus-visible:ring-0 text-foreground placeholder:text-muted-foreground"
                     placeholder="Enter category name..."
                   />
                   <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-accent transition-all duration-300 group-focus-within/input:w-full" />
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-card text-muted-foreground/70 hover:text-foreground" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground" onClick={() => moveCategory(catIndex, 'up')} disabled={catIndex === 0}>
                   <ChevronUp className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-card text-muted-foreground/70 hover:text-foreground" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground" onClick={() => moveCategory(catIndex, 'down')} disabled={catIndex === skillSets.length - 1}>
                   <ChevronDown className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg ml-1" onClick={() => removeCategory(catIndex)}>
@@ -181,7 +181,7 @@ const AdminSkills = () => {
                         value={skill.level}
                         onValueChange={(v) => updateSkill(catIndex, skillIndex, 'level', v)}
                       >
-                        <SelectTrigger className="bg-card border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-muted-foreground h-auto focus:ring-accent/50">
+                        <SelectTrigger className="bg-card border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-muted-foreground h-auto focus:ring-accent">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-border text-foreground">
@@ -212,7 +212,7 @@ const AdminSkills = () => {
                 ))}
                 <button
                   onClick={() => addSkill(catIndex)}
-                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-border hover:border-accent hover:text-accent transition-all text-sm text-muted-foreground/70 gap-1 min-h-[82px]"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-border hover:border-accent hover:text-accent transition-all text-sm text-muted-foreground gap-1 min-h-[82px]"
                 >
                   <Plus className="w-4 h-4" />
                   Add Skill

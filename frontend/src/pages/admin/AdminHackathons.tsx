@@ -157,7 +157,7 @@ const AdminHackathons = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 self-end md:self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(hack)} className="hover:bg-secondary text-muted-foreground/70 hover:text-foreground">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(hack)} className="hover:bg-secondary text-muted-foreground hover:text-foreground">
                         <Edit2 className="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(hack.id, hack.name)} className="hover:bg-red-500/10 text-red-400 hover:text-red-500">
@@ -172,7 +172,7 @@ const AdminHackathons = () => {
         ) : (
           <div className="rounded-2xl border border-border bg-card p-12 text-center shadow-sm">
             <h3 className="text-lg font-medium text-muted-foreground mb-1">No hackathons listed</h3>
-            <p className="text-sm text-muted-foreground/70">Add your hackathon experiences to highlight your rapid prototyping skills.</p>
+            <p className="text-sm text-muted-foreground">Add your hackathon experiences to highlight your rapid prototyping skills.</p>
           </div>
         )}
       </div>

@@ -230,12 +230,12 @@ const AdminExperience = () => {
                     <p className="text-muted-foreground font-semibold text-sm mb-2">
                       {firstRoleTitle}
                       {roleCount > 1 && (
-                        <span className="ml-2 text-[11px] text-muted-foreground/60 font-normal">
+                        <span className="ml-2 text-[11px] text-muted-foreground font-normal">
                           +{roleCount - 1} more role{roleCount > 2 ? 's' : ''}
                         </span>
                       )}
                     </p>
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground/70 font-medium">
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground font-medium">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-accent" />
                         {getStartDateDisplay(exp)} – {getEndDateDisplay(exp)}
@@ -244,7 +244,7 @@ const AdminExperience = () => {
                         <MapPin className="w-3.5 h-3.5 text-accent" /> {location}
                       </span>
                       {exp.display_order !== undefined && (
-                        <span className="text-muted-foreground/40">Order: {exp.display_order}</span>
+                        <span className="text-muted-foreground">Order: {exp.display_order}</span>
                       )}
                     </div>
                   </div>
@@ -253,7 +253,7 @@ const AdminExperience = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary active:scale-90 transition-all flex-shrink-0">
-                        <MoreVertical className="w-4 h-4 text-muted-foreground/70" />
+                        <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-card border-border text-foreground rounded-xl shadow-xl p-1 min-w-[160px]">
@@ -283,7 +283,7 @@ const AdminExperience = () => {
           })
         ) : (
           <div className="p-12 text-center border-2 border-dashed border-border rounded-2xl bg-card shadow-sm">
-            <Building2 className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+            <Building2 className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
             <p className="text-muted-foreground font-medium">
               {search || filter !== 'all' ? 'No results match your search.' : 'No experience entries yet.'}
             </p>

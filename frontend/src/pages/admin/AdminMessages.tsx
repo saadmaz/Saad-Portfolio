@@ -95,11 +95,11 @@ const AdminMessages = () => {
         </div>
 
         <div className="relative group max-w-md w-full flex-shrink-0">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70 group-focus-within:text-accent transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
           <input
             type="text"
             placeholder="Search name, email or content..."
-            className="w-full bg-secondary border border-border rounded-lg py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-accent/40 transition-all text-foreground placeholder:text-muted-foreground/70 font-medium"
+            className="w-full bg-secondary border border-border rounded-lg py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-accent/40 transition-all text-foreground placeholder:text-muted-foreground font-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -114,9 +114,9 @@ const AdminMessages = () => {
         </div>
       ) : filteredMessages.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-20 bg-card rounded-lg border border-dashed border-border shadow-sm text-center">
-          <Mail className="w-16 h-16 text-muted-foreground/40 mb-4" />
+          <Mail className="w-16 h-16 text-muted-foreground mb-4" />
           <h3 className="text-lg font-black mb-2 text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No messages found</h3>
-          <p className="text-muted-foreground/70 text-sm">Try adjusting your search or check back later.</p>
+          <p className="text-muted-foreground text-sm">Try adjusting your search or check back later.</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -138,11 +138,11 @@ const AdminMessages = () => {
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-black text-sm truncate text-foreground" style={{ fontFamily: 'DM Sans' }}>{msg.name}</span>
-                      <span className="text-[9px] text-muted-foreground/70 uppercase tracking-wider truncate font-bold">{msg.email}</span>
+                      <span className="text-[9px] text-muted-foreground uppercase tracking-wider truncate font-bold">{msg.email}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-[9px] text-muted-foreground/70 font-black uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-[9px] text-muted-foreground font-black uppercase tracking-wider">
                     <Clock className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>{formatDate(msg.created_at)}</span>
                   </div>

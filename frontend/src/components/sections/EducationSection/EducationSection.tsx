@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useModalA11y } from "@/shared/hooks/useModalA11y";
 import { m, AnimatePresence } from "framer-motion";
 import {
   ExternalLink, GraduationCap, ChevronDown, ChevronUp,
@@ -77,17 +78,23 @@ function MediaLightbox({ items, index: init, onClose }: {
 }) {
   const [index, setIndex] = useState(init);
   const item = items[index];
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useModalA11y(!!item, onClose, lightboxRef);
   if (!item) return null;
   const dateLabel = item.media_date_month && item.media_date_year
     ? `${item.media_date_month.slice(0, 3)} ${item.media_date_year}` : null;
 
   return createPortal(
     <div
+      ref={lightboxRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.media_caption || 'Media preview'}
       className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <button onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
         <X className="w-5 h-5" />
       </button>
       {index > 0 && (
@@ -124,7 +131,7 @@ function MediaLightbox({ items, index: init, onClose }: {
             {dateLabel && <span className="text-xs text-muted-foreground whitespace-nowrap">{dateLabel}</span>}
           </div>
           {item.media_description && <p className="text-sm text-muted-foreground">{item.media_description}</p>}
-          <p className="text-[10px] text-muted-foreground/50">{index + 1} / {items.length}</p>
+          <p className="text-[10px] text-muted-foreground">{index + 1} / {items.length}</p>
         </div>
       </div>
     </div>,
@@ -139,6 +146,8 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
 }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useModalA11y(true, onClose, modalRef);
 
   const logo = getLogo(edu);
   const schoolName = getSchoolName(edu);
@@ -167,6 +176,10 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
         onClick={onClose}
       >
         <m.div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={getSchoolName(edu)}
           key="edu-modal-panel"
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
@@ -207,7 +220,7 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
                   {websiteUrl ? (
                     <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
                       className="font-bold text-lg text-foreground hover:text-accent transition-colors flex items-center gap-1">
-                      {schoolName} <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50" />
+                      {schoolName} <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                     </a>
                   ) : (
                     <span className="font-bold text-lg text-foreground">{schoolName}</span>
@@ -224,7 +237,7 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
                 <div className="flex items-center gap-2 flex-wrap mt-1">
                   <p className="text-xs text-muted-foreground">
                     {duration}
-                    {durationStr && <span className="ml-1 text-muted-foreground/60">· {durationStr}</span>}
+                    {durationStr && <span className="ml-1 text-muted-foreground">· {durationStr}</span>}
                   </p>
                   {expectedLabel && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{expectedLabel}</span>
@@ -247,7 +260,7 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
             {/* Activities */}
             {activities && (
               <div className="flex items-start gap-2 p-3.5 rounded-xl bg-secondary/50 border border-border">
-                <Users className="w-4 h-4 text-muted-foreground/60 mt-0.5 shrink-0" />
+                <Users className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                 <p className="text-sm text-muted-foreground leading-relaxed">{activities}</p>
               </div>
             )}
@@ -319,7 +332,7 @@ function EducationDetailModal({ edu, linkedProjects, onClose }: {
                         <span className="font-medium text-foreground">{a.award_title}</span>
                         {a.award_issuer && <span className="text-muted-foreground"> · {a.award_issuer}</span>}
                         {(a.award_date_month || a.award_date_year) && (
-                          <span className="text-muted-foreground/60 text-xs ml-1">
+                          <span className="text-muted-foreground text-xs ml-1">
                             ({[a.award_date_month?.slice(0, 3), a.award_date_year].filter(Boolean).join(' ')})
                           </span>
                         )}
@@ -403,7 +416,10 @@ function EducationCard({ edu, index, linkedProjects, onSelect }: {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       onClick={onSelect}
-      className="bg-card border border-border rounded-2xl overflow-hidden cursor-pointer hover:border-accent/40 hover:shadow-md transition-all group"
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(); } }}
+      className="bg-card border border-border rounded-2xl overflow-hidden cursor-pointer hover:border-accent/40 hover:shadow-md transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       {edu.is_featured && <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0" />}
       <div className="p-5 sm:p-6">
@@ -426,7 +442,7 @@ function EducationCard({ edu, index, linkedProjects, onSelect }: {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  className="text-muted-foreground/40 hover:text-accent transition-colors"
+                  className="text-muted-foreground hover:text-accent transition-colors"
                   title="Visit school website"
                 >
                   <ExternalLink className="w-3 h-3" />
@@ -444,7 +460,7 @@ function EducationCard({ edu, index, linkedProjects, onSelect }: {
             <div className="flex items-center gap-2 flex-wrap mt-1">
               <p className="text-xs text-muted-foreground">
                 {duration}
-                {durationStr && <span className="ml-1 text-muted-foreground/60">· {durationStr}</span>}
+                {durationStr && <span className="ml-1 text-muted-foreground">· {durationStr}</span>}
               </p>
               {expectedLabel && (
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{expectedLabel}</span>
@@ -550,7 +566,7 @@ function PreviewCard({ edu, index, onSelect }: { edu: Education; index: number; 
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={e => e.stopPropagation()}
-                className="flex-shrink-0 text-muted-foreground/40 hover:text-accent transition-colors"
+                className="flex-shrink-0 text-muted-foreground hover:text-accent transition-colors"
                 title="Visit school website"
               >
                 <ExternalLink className="w-3 h-3" />
@@ -569,7 +585,7 @@ function PreviewCard({ edu, index, onSelect }: { edu: Education; index: number; 
             <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Current</span>
           )}
           {duration && <span className="text-[10px] text-muted-foreground whitespace-nowrap">{duration}</span>}
-          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-accent transition-colors" />
+          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground group-hover:text-accent transition-colors" />
         </div>
       </div>
     </m.div>
@@ -619,7 +635,7 @@ function EducationTimelineEntry({ edu, index, isLast, linkedProjects, onSelect }
           {websiteUrl && (
             <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="text-muted-foreground/40 hover:text-accent transition-colors">
+              className="text-muted-foreground hover:text-accent transition-colors">
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
@@ -800,11 +816,11 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Academic Background</h2>
             {education.length > 1 && (
               <div className="flex items-center gap-1 p-1 rounded-lg bg-card border border-border">
-                <button onClick={() => setView('card')}
+                <button onClick={() => setView('card')} aria-pressed={view === 'card'}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'card' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
                   <LayoutList className="w-3.5 h-3.5" /> Cards
                 </button>
-                <button onClick={() => setView('timeline')}
+                <button onClick={() => setView('timeline')} aria-pressed={view === 'timeline'}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'timeline' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
                   <GitBranch className="w-3.5 h-3.5" /> Timeline
                 </button>

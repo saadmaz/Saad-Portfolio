@@ -50,12 +50,14 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
       <div className={`relative overflow-hidden rounded-2xl select-none ${className ?? ''}`}>
         {/* Slides */}
         <div
-          role="region"
-          aria-label={alt ? `${alt} image carousel` : 'Image carousel'}
-          className="relative aspect-video bg-black cursor-zoom-in"
+          role="button"
+          tabIndex={0}
+          aria-label={alt ? `Open ${alt} in fullscreen` : 'Open image in fullscreen'}
+          className="relative aspect-video bg-black cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClick={() => setLightboxOpen(true)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxOpen(true); } }}
         >
           <AnimatePresence initial={false} custom={direction}>
             <m.img

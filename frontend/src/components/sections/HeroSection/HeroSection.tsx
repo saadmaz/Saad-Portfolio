@@ -232,7 +232,7 @@ export function HeroSection() {
 
             {/* Main heading — "Hi, I'm" fades in, then AnimatedName staggers each letter */}
             <div className="space-y-4">
-              <h1 className="font-display whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1]">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] md:whitespace-nowrap">
                 <m.span
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -249,7 +249,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.7 }}
-                className="whitespace-nowrap text-base sm:text-lg md:text-2xl text-muted-foreground font-light"
+                className="text-base sm:text-lg md:text-2xl text-muted-foreground font-light md:whitespace-nowrap"
               >
                 • Startup Founder • Tech Speaker • Compere
               </m.p>

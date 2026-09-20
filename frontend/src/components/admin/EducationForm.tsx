@@ -65,7 +65,7 @@ function charColor(len: number, max: number): string {
   const pct = len / max;
   if (pct >= 1) return 'text-red-400';
   if (pct >= 0.8) return 'text-amber-400';
-  return 'text-muted-foreground/50';
+  return 'text-muted-foreground';
 }
 
 // ─── Shared sub-components ────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ function AdminSelect({
   return (
     <Select value={value ?? ''} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger
-        className={`bg-white/5 border-white/10 text-foreground focus:ring-accent/40 focus:border-accent/40 ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
+        className={`bg-white/5 border-white/10 text-foreground focus:ring-accent focus:border-accent/40 ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
       >
         <SelectValue placeholder={placeholder ?? 'Select…'} />
       </SelectTrigger>
@@ -147,13 +147,17 @@ function SectionHeader({
   return (
     <div className="border border-white/10 rounded-xl overflow-hidden">
       <div
-        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors select-none"
+        role="button"
+        tabIndex={0}
+        aria-expanded={!collapsed}
+        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         onClick={onToggle}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
       >
         <span className="text-accent flex-shrink-0">{icon}</span>
         <span className="flex-1 text-sm font-bold text-foreground">{title}</span>
         {children}
-        {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
+        {collapsed ? <ChevronDown className="w-4 h-4 text-white/60" /> : <ChevronUp className="w-4 h-4 text-white/60" />}
       </div>
     </div>
   );
@@ -245,7 +249,7 @@ function MediaSubForm({
         <span className="text-accent flex-shrink-0">{mediaIcon(item.media_type)}</span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">
-            {item.media_caption || <span className="text-white/30 font-normal">Media {index + 1}</span>}
+            {item.media_caption || <span className="text-white/60 font-normal">Media {index + 1}</span>}
           </p>
           <p className="text-[10px] text-muted-foreground">{item.media_type}</p>
         </div>
@@ -256,7 +260,7 @@ function MediaSubForm({
         >
           <X className="w-3.5 h-3.5" />
         </button>
-        {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
+        {collapsed ? <ChevronDown className="w-4 h-4 text-white/60" /> : <ChevronUp className="w-4 h-4 text-white/60" />}
       </div>
 
       {!collapsed && (
@@ -378,7 +382,7 @@ function AwardSubForm({
         <Trophy className="w-3.5 h-3.5 text-accent flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">
-            {award.award_title || <span className="text-white/30 font-normal">Award {index + 1}</span>}
+            {award.award_title || <span className="text-white/60 font-normal">Award {index + 1}</span>}
           </p>
           {award.award_issuer && <p className="text-[10px] text-muted-foreground truncate">{award.award_issuer}</p>}
         </div>
@@ -389,7 +393,7 @@ function AwardSubForm({
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
-        {collapsed ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronUp className="w-4 h-4 text-white/40" />}
+        {collapsed ? <ChevronDown className="w-4 h-4 text-white/60" /> : <ChevronUp className="w-4 h-4 text-white/60" />}
       </div>
 
       {!collapsed && (
@@ -728,14 +732,14 @@ const EducationForm = () => {
                   School Website URL
                 </label>
                 <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/50" />
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                   <Input
                     {...register('school_website_url')}
                     placeholder="https://www.university.edu"
                     className="bg-white/5 border-white/10 pl-9"
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground/50">
+                <p className="text-[10px] text-muted-foreground">
                   Logo and school name on public site will link here.
                 </p>
               </div>
@@ -764,7 +768,7 @@ const EducationForm = () => {
                 <datalist id="degree-suggestions">
                   {DEGREE_SUGGESTIONS.map(d => <option key={d} value={d} />)}
                 </datalist>
-                <p className="text-[10px] text-muted-foreground/50">
+                <p className="text-[10px] text-muted-foreground">
                   Suggestions: {DEGREE_SUGGESTIONS.slice(0, 4).join(', ')}…
                 </p>
               </div>
@@ -804,7 +808,7 @@ const EducationForm = () => {
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground">
-                    End Date {isCurrent && <span className="text-muted-foreground/50 font-normal">(or expected)</span>}
+                    End Date {isCurrent && <span className="text-muted-foreground font-normal">(or expected)</span>}
                   </label>
                   <MonthYearPicker
                     month={endMonth}
@@ -866,7 +870,7 @@ const EducationForm = () => {
                   maxLength={80}
                   className="bg-white/5 border-white/10"
                 />
-                <p className="text-[10px] text-muted-foreground/50">
+                <p className="text-[10px] text-muted-foreground">
                   Accepts any format: GPA, percentage, grade classification, or score.
                 </p>
                 {errors.grade && <p className="text-xs text-red-400">{errors.grade.message}</p>}
@@ -934,13 +938,13 @@ const EducationForm = () => {
             collapsed={collapsed.skills}
             onToggle={() => toggle('skills')}
           >
-            <span className={`text-[10px] font-bold mr-2 ${skills.length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
+            <span className={`text-[10px] font-bold mr-2 ${skills.length > 5 ? 'text-amber-400' : 'text-muted-foreground'}`}>
               {skills.length}/20
             </span>
           </SectionHeader>
           {!collapsed.skills && (
             <div className="p-5 space-y-3 border-t border-white/10">
-              <p className="text-[10px] text-muted-foreground/50">
+              <p className="text-[10px] text-muted-foreground">
                 Add the top skills you developed during this education. Top 5 recommended for visibility.
               </p>
 
@@ -996,7 +1000,7 @@ const EducationForm = () => {
           </SectionHeader>
           {!collapsed.projects && (
             <div className="p-5 space-y-3 border-t border-white/10">
-              <p className="text-[10px] text-muted-foreground/50">
+              <p className="text-[10px] text-muted-foreground">
                 Link existing portfolio projects to this education entry. Linked projects appear as a card strip on the public education page.
               </p>
               {projectsLoading ? (
@@ -1005,7 +1009,7 @@ const EducationForm = () => {
                   Loading projects…
                 </div>
               ) : allProjects.length === 0 ? (
-                <p className="text-xs text-muted-foreground/50 py-2">
+                <p className="text-xs text-muted-foreground py-2">
                   No projects found. Add portfolio projects first, then link them here.
                 </p>
               ) : (
@@ -1035,7 +1039,7 @@ const EducationForm = () => {
                           <p className={`text-xs font-semibold truncate ${isLinked ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {proj.title}
                           </p>
-                          <p className="text-[10px] text-muted-foreground/60 truncate">
+                          <p className="text-[10px] text-muted-foreground truncate">
                             {proj.status}{proj.techStack?.length ? ` · ${proj.techStack.slice(0, 3).join(', ')}` : ''}
                           </p>
                         </div>
@@ -1056,7 +1060,7 @@ const EducationForm = () => {
             collapsed={collapsed.awards}
             onToggle={() => toggle('awards')}
           >
-            <span className="text-[10px] text-muted-foreground/50 mr-2">{awards.length}</span>
+            <span className="text-[10px] text-muted-foreground mr-2">{awards.length}</span>
           </SectionHeader>
           {!collapsed.awards && (
             <div className="p-5 space-y-3 border-t border-white/10">
@@ -1092,11 +1096,11 @@ const EducationForm = () => {
             collapsed={collapsed.media}
             onToggle={() => toggle('media')}
           >
-            <span className="text-[10px] text-muted-foreground/50 mr-2">{media.length}/20</span>
+            <span className="text-[10px] text-muted-foreground mr-2">{media.length}/20</span>
           </SectionHeader>
           {!collapsed.media && (
             <div className="p-5 space-y-3 border-t border-white/10">
-              <p className="text-[10px] text-muted-foreground/50">
+              <p className="text-[10px] text-muted-foreground">
                 Each media item requires a caption. Clicking a thumbnail on the public site opens a lightbox with the caption, description, and date.
               </p>
               {media.map((m, i) => (
@@ -1148,7 +1152,7 @@ const EducationForm = () => {
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-foreground group-hover:text-accent transition-colors">Featured</p>
-                  <p className="text-[10px] text-muted-foreground/60">Pins this entry to the top of the Education section on your public portfolio.</p>
+                  <p className="text-[10px] text-muted-foreground">Pins this entry to the top of the Education section on your public portfolio.</p>
                 </div>
               </label>
 
@@ -1164,7 +1168,7 @@ const EducationForm = () => {
                   <p className="text-xs font-semibold text-foreground group-hover:text-accent transition-colors">
                     {isPublished ? 'Published' : 'Draft'}
                   </p>
-                  <p className="text-[10px] text-muted-foreground/60">Draft entries are saved but not visible on your public portfolio.</p>
+                  <p className="text-[10px] text-muted-foreground">Draft entries are saved but not visible on your public portfolio.</p>
                 </div>
               </label>
 
@@ -1177,7 +1181,7 @@ const EducationForm = () => {
                   placeholder="e.g. 1 (lower = appears first)"
                   className="bg-white/5 border-white/10 w-48"
                 />
-                <p className="text-[10px] text-muted-foreground/50">Lower number = appears first. Leave blank for auto-ordering.</p>
+                <p className="text-[10px] text-muted-foreground">Lower number = appears first. Leave blank for auto-ordering.</p>
               </div>
             </div>
           )}

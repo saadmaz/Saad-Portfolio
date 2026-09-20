@@ -217,7 +217,7 @@ const AdminEducation = () => {
                   <p className="text-xs text-accent font-semibold mt-0.5 truncate">{getSchoolName(edu)}</p>
 
                   <div className="mt-auto flex items-center justify-between pt-2 border-t border-border">
-                    <span className="text-[10px] text-muted-foreground/70 font-medium flex items-center gap-1">
+                    <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-accent/70" />
                       {getDisplayStartDate(edu)} – {endDate}
                       {expectedGrad && <span className="ml-1 text-amber-400/80">(Expected)</span>}
@@ -238,7 +238,7 @@ const AdminEducation = () => {
               <GraduationCap className="w-8 h-8 text-purple-400" />
             </div>
             <h3 className="text-base font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No education history</h3>
-            <p className="text-sm text-muted-foreground/60 mt-1 font-medium">Add your degrees and institutions to complete your profile.</p>
+            <p className="text-sm text-muted-foreground mt-1 font-medium">Add your degrees and institutions to complete your profile.</p>
             <Button
               onClick={() => navigate('/admin/education/new')}
               className="mt-4 bg-accent hover:bg-accent/90 text-black font-black h-10 px-5 rounded-lg"

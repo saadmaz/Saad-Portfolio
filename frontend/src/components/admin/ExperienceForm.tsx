@@ -97,7 +97,7 @@ function AdminSelect({
   return (
     <Select value={value ?? ''} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger
-        className={`bg-white/5 border-white/10 text-foreground focus:ring-accent/40 focus:border-accent/40 ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
+        className={`bg-white/5 border-white/10 text-foreground focus:ring-accent focus:border-accent/40 ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
       >
         <SelectValue placeholder={placeholder ?? 'Select…'} />
       </SelectTrigger>
@@ -217,13 +217,17 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
     <div className="border border-white/10 rounded-xl overflow-hidden">
       {/* Collapse header */}
       <div
-        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors"
+        role="button"
+        tabIndex={0}
+        aria-expanded={!collapsed}
+        className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         onClick={onToggle}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
       >
-        <GripVertical className="w-4 h-4 text-white/20 flex-shrink-0" />
+        <GripVertical className="w-4 h-4 text-white/60 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">
-            {role.role_title || <span className="text-white/30 font-normal">Role {index + 1}</span>}
+            {role.role_title || <span className="text-white/60 font-normal">Role {index + 1}</span>}
           </p>
           {duration && <p className="text-[10px] text-muted-foreground">{duration}</p>}
         </div>
@@ -238,8 +242,8 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
             </button>
           )}
           {collapsed
-            ? <ChevronDown className="w-4 h-4 text-white/40" />
-            : <ChevronUp className="w-4 h-4 text-white/40" />}
+            ? <ChevronDown className="w-4 h-4 text-white/60" />
+            : <ChevronUp className="w-4 h-4 text-white/60" />}
         </div>
       </div>
 
@@ -257,7 +261,7 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
           </div>
 
           {/* Role dates */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-[10px] uppercase font-bold text-muted-foreground">Start</label>
               <MonthYearPicker
@@ -296,7 +300,7 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[10px] uppercase font-bold text-muted-foreground">Description</label>
-              <span className="text-[10px] text-muted-foreground/50">{(role.description ?? '').length}/2000</span>
+              <span className="text-[10px] text-muted-foreground">{(role.description ?? '').length}/2000</span>
             </div>
             <Textarea
               value={role.description ?? ''}
@@ -312,7 +316,7 @@ function RoleSubForm({ role, index, total, collapsed, onToggle, onUpdate, onRemo
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-[10px] uppercase font-bold text-muted-foreground">Skills</label>
-              <span className={`text-[10px] ${(role.skills ?? []).length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
+              <span className={`text-[10px] ${(role.skills ?? []).length > 5 ? 'text-amber-400' : 'text-muted-foreground'}`}>
                 {(role.skills ?? []).length}/20
                 {(role.skills ?? []).length > 5 && ' · LinkedIn recommends top 5'}
               </span>
@@ -592,11 +596,11 @@ const ExperienceForm = () => {
   }[type]);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
 
       {/* ── Header ── */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10"
+        <Button type="button" variant="ghost" size="icon" className="rounded-full hover:bg-white/10"
           onClick={() => navigate('/admin/experience')}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -606,7 +610,7 @@ const ExperienceForm = () => {
           </h1>
           <p className="text-muted-foreground text-sm">Fill in the company details and roles below.</p>
         </div>
-        <Button onClick={handleSubmit(onSubmit)}
+        <Button type="submit"
           className="ml-auto bg-accent hover:bg-accent/90 text-black font-bold px-8"
           disabled={isLoading}>
           <Save className="w-4 h-4 mr-2" />
@@ -765,7 +769,7 @@ const ExperienceForm = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs text-muted-foreground">Company-level summary</p>
-                <span className="text-[10px] text-muted-foreground/50">{(watch('description') ?? '').length}/2000</span>
+                <span className="text-[10px] text-muted-foreground">{(watch('description') ?? '').length}/2000</span>
               </div>
               <Textarea {...register('description')}
                 placeholder="Describe your overall responsibilities, what you worked on, and your impact..."
@@ -783,7 +787,7 @@ const ExperienceForm = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs text-muted-foreground">Metrics, wins, and impact highlights</p>
-                <span className="text-[10px] text-muted-foreground/50">{(watch('achievements') ?? '').length}/2000</span>
+                <span className="text-[10px] text-muted-foreground">{(watch('achievements') ?? '').length}/2000</span>
               </div>
               <Textarea {...register('achievements')}
                 placeholder="e.g. Grew user base by 40%, Led a team of 8, Shipped 3 major features..."
@@ -801,7 +805,7 @@ const ExperienceForm = () => {
             <CardContent className="p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">Skills across all roles (optional)</p>
-                <span className={`text-[10px] ${topSkills.length > 5 ? 'text-amber-400' : 'text-muted-foreground/50'}`}>
+                <span className={`text-[10px] ${topSkills.length > 5 ? 'text-amber-400' : 'text-muted-foreground'}`}>
                   {topSkills.length}/20{topSkills.length > 5 && ' · LinkedIn recommends top 5'}
                 </span>
               </div>
@@ -887,7 +891,7 @@ const ExperienceForm = () => {
                   Loading projects…
                 </div>
               ) : allProjects.length === 0 ? (
-                <p className="text-xs text-muted-foreground/50 py-2">
+                <p className="text-xs text-muted-foreground py-2">
                   No projects found. Add portfolio projects first.
                 </p>
               ) : (
@@ -917,7 +921,7 @@ const ExperienceForm = () => {
                           <p className={`text-xs font-semibold truncate ${isLinked ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {proj.title}
                           </p>
-                          <p className="text-[10px] text-muted-foreground/60 truncate">
+                          <p className="text-[10px] text-muted-foreground truncate">
                             {proj.status}{proj.techStack?.length ? ` · ${proj.techStack.slice(0, 3).join(', ')}` : ''}
                           </p>
                         </div>
@@ -977,20 +981,20 @@ const ExperienceForm = () => {
                 <label className="text-[10px] uppercase font-bold text-muted-foreground">Display Order</label>
                 <Input {...register('display_order')} type="number" placeholder="e.g. 1"
                   className="bg-white/5 border-white/10 text-sm" />
-                <p className="text-[10px] text-muted-foreground/50">Lower = appears first</p>
+                <p className="text-[10px] text-muted-foreground">Lower = appears first</p>
               </div>
             </CardContent>
           </Card>
 
           {/* LinkedIn hint */}
           <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-            <p className="text-[11px] text-muted-foreground/60 leading-relaxed">
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
               <span className="font-semibold text-muted-foreground">Tip:</span> Structure your entries the same way as your LinkedIn profile — company name, roles, and dates should match exactly.
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

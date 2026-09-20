@@ -43,9 +43,9 @@ const ROLE_OPTIONS = ['Speaker', 'Host', 'Compere', 'Organizer', 'Panelist', 'At
 const TYPE_OPTIONS = ['Conference', 'Summit', 'Workshop', 'Hackathon', 'Networking', 'Seminar', 'Webinar', 'Other'];
 
 // shared input class helper
-const inp = 'bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none w-full';
-const sel = 'bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/40 outline-none w-full';
-const lbl = 'text-[10px] font-black uppercase tracking-widest text-muted-foreground/70';
+const inp = 'bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-accent focus:border-accent/40 outline-none w-full';
+const sel = 'bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent outline-none w-full';
+const lbl = 'text-[10px] font-black uppercase tracking-widest text-muted-foreground';
 
 // ─── Event Form Dialog ────────────────────────────────────────────────────────
 interface EventFormDialogProps {
@@ -130,9 +130,9 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
           {/* ── ROLE + TYPE ── */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className={lbl}>Your Role * <span className="text-white/20 normal-case font-normal">(how you participated)</span></label>
+              <label className={lbl}>Your Role * <span className="text-white/60 normal-case font-normal">(how you participated)</span></label>
               <Select value={watch('role')} onValueChange={(v) => setValue('role', v, { shouldValidate: true })}>
-                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/40 outline-none w-full h-auto">
+                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent outline-none w-full h-auto">
                   <SelectValue placeholder="Select role…" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border text-foreground">
@@ -142,9 +142,9 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
               {errors.role && <p className="text-[11px] text-red-400">{errors.role.message}</p>}
             </div>
             <div className="space-y-1">
-              <label className={lbl}>Event Type * <span className="text-white/20 normal-case font-normal">(category)</span></label>
+              <label className={lbl}>Event Type * <span className="text-white/60 normal-case font-normal">(category)</span></label>
               <Select value={watch('type')} onValueChange={(v) => setValue('type', v, { shouldValidate: true })}>
-                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/40 outline-none w-full h-auto">
+                <SelectTrigger className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent outline-none w-full h-auto">
                   <SelectValue placeholder="Select type…" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border text-foreground">
@@ -163,7 +163,7 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
               {errors.organizer && <p className="text-[11px] text-red-400">{errors.organizer.message}</p>}
             </div>
             <div className="space-y-1">
-              <label className={lbl}>Attendees <span className="text-white/20 normal-case font-normal">(optional)</span></label>
+              <label className={lbl}>Attendees <span className="text-white/60 normal-case font-normal">(optional)</span></label>
               <input {...register('attendees')} placeholder='e.g. 500+, 2,000+' className={inp} />
             </div>
           </div>
@@ -196,14 +196,14 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
 
           {/* ── HIGHLIGHTS ── */}
           <div className="space-y-2">
-            <label className={lbl}>Highlights <span className="text-white/20 normal-case font-normal">(bullet points on detail page)</span></label>
+            <label className={lbl}>Highlights <span className="text-white/60 normal-case font-normal">(bullet points on detail page)</span></label>
             {highlights.length > 0 && (
               <ul className="space-y-1.5">
                 {highlights.map((h, i) => (
                   <li key={i} className="flex items-center gap-2 bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
                     <span className="flex-1">{h}</span>
-                    <button type="button" onClick={() => removeHighlight(i)} className="text-muted-foreground/70 hover:text-red-400 transition-colors">
+                    <button type="button" onClick={() => removeHighlight(i)} className="text-muted-foreground hover:text-red-400 transition-colors">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </li>
@@ -230,7 +230,7 @@ function EventFormDialog({ isOpen, onClose, title, defaultValues, onSubmit }: Ev
 
           {/* ── LINK ── */}
           <div className="space-y-1">
-            <label className={lbl}>Event Link <span className="text-white/20 normal-case font-normal">(optional)</span></label>
+            <label className={lbl}>Event Link <span className="text-white/60 normal-case font-normal">(optional)</span></label>
             <input {...register('link')} placeholder="https://..." className={inp} />
             {errors.link && <p className="text-[11px] text-red-400">{errors.link.message}</p>}
           </div>
@@ -355,11 +355,11 @@ const AdminEvents = () => {
       {/* Search */}
       <div className="flex items-center gap-4 bg-card p-4 rounded-lg border border-border shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search events..."
-            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-foreground placeholder:text-muted-foreground/70 font-medium"
+            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none transition-all text-foreground placeholder:text-muted-foreground font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -402,13 +402,13 @@ const AdminEvents = () => {
                             </span>
                           )}
                           {imgCount > 0 && (
-                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-muted-foreground/70 bg-secondary border border-border px-1.5 py-0.5 rounded">
+                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-secondary border border-border px-1.5 py-0.5 rounded">
                               <Images className="w-3 h-3" />{imgCount}
                             </span>
                           )}
                         </div>
                         <p className="text-muted-foreground font-semibold text-sm">{event.organizer} • {event.type}</p>
-                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-muted-foreground/70 font-medium mt-1.5">
+                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-muted-foreground font-medium mt-1.5">
                           <span className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 text-accent/60" /> {event.date}
                           </span>
@@ -416,12 +416,12 @@ const AdminEvents = () => {
                             <MapPin className="w-3.5 h-3.5 text-accent/60" /> {event.location}
                           </span>
                           {event.attendees && (
-                            <span className="text-muted-foreground/70">{event.attendees} attendees</span>
+                            <span className="text-muted-foreground">{event.attendees} attendees</span>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 ml-2 shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="h-9 w-9 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-lg">
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="h-9 w-9 hover:bg-secondary text-muted-foreground hover:text-foreground rounded-lg">
                           <Edit2 className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(event.id, event.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-lg">
@@ -437,7 +437,7 @@ const AdminEvents = () => {
         ) : (
           <div className="rounded-lg border border-border bg-card shadow-sm p-12 text-center">
             <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No events found</h3>
-            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
+            <p className="text-sm text-muted-foreground mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Add your first event to get started.'}
             </p>
           </div>

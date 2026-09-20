@@ -130,11 +130,11 @@ const AdminNewsletters = () => {
 
       <div className="flex items-center gap-4 bg-card p-4 rounded-lg border border-border shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search newsletters..."
-            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent/50 outline-none transition-all text-foreground placeholder:text-muted-foreground/70 font-medium"
+            className="w-full bg-secondary border border-border rounded-lg pl-11 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none transition-all text-foreground placeholder:text-muted-foreground font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -172,7 +172,7 @@ const AdminNewsletters = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 ml-2">
-                  <Button variant="ghost" size="icon" onClick={() => handleEdit(newsletter)} className="h-9 w-9 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-lg">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(newsletter)} className="h-9 w-9 hover:bg-secondary text-muted-foreground hover:text-foreground rounded-lg">
                     <Edit2 className="w-4 h-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(newsletter.id, newsletter.title)} className="h-9 w-9 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-lg">
@@ -187,7 +187,7 @@ const AdminNewsletters = () => {
             <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>
               No newsletters found
             </h3>
-            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
+            <p className="text-sm text-muted-foreground mt-1 font-medium">
               {searchQuery ? 'Try a different search.' : 'Publish your first newsletter to get started.'}
             </p>
           </div>

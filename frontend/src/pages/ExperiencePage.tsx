@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { m } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/SEO';
@@ -6,6 +6,7 @@ import { PAGE_SEO, BASE_URL } from '@/lib/seo-content';
 import { Building, ExternalLink, MapPin, Trophy, Star, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useExperience } from '@/shared/hooks/useCommon';
 import { Experience, ExperienceMedia } from '@/types';
+import { useModalA11y } from '@/shared/hooks/useModalA11y';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -177,6 +178,8 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
 
 function MediaStrip({ items }: { items: ExperienceMedia[] }) {
   const [lb, setLb] = useState<ExperienceMedia | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useModalA11y(!!lb, () => setLb(null), lightboxRef);
   if (!items.length) return null;
   return (
     <>
@@ -201,9 +204,16 @@ function MediaStrip({ items }: { items: ExperienceMedia[] }) {
         ))}
       </div>
       {lb && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setLb(null)}>
+        <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lb.media_caption ?? 'Media preview'}
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setLb(null)}
+        >
           <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
-            <button className="absolute -top-10 right-0 text-white/70 hover:text-white" onClick={() => setLb(null)}>
+            <button className="absolute -top-10 right-0 text-white/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" onClick={() => setLb(null)}>
               <X className="w-6 h-6" />
             </button>
             <img src={lb.media_url} alt={lb.media_caption ?? ''} className="rounded-xl max-h-[80vh] object-contain mx-auto" />

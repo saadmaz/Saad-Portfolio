@@ -48,7 +48,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange, label, class
   return (
     <div className={`space-y-2 ${className ?? ''}`}>
       {label && (
-        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-1.5">
+        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 block mb-1.5">
           {label}
         </label>
       )}
@@ -58,7 +58,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange, label, class
           <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-white/5">
             <img src={value} alt="Uploaded" className="w-full h-full object-cover" />
             {/* Change / Remove overlay */}
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -80,8 +80,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange, label, class
           </div>
         ) : (
           <div
+            role="button"
+            tabIndex={0}
+            aria-label={label ? `Upload ${label}` : 'Upload image'}
             onClick={() => !isUploading && fileInputRef.current?.click()}
-            className="aspect-video rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-accent/40 transition-all cursor-pointer flex flex-col items-center justify-center gap-2"
+            onKeyDown={(e) => { if (!isUploading && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); fileInputRef.current?.click(); } }}
+            className="aspect-video rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-accent/40 transition-all cursor-pointer flex flex-col items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {isUploading ? (
               <>
@@ -102,7 +106,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange, label, class
                 <span className="text-sm font-bold text-white/50 group-hover:text-accent transition-colors">
                   Click to upload
                 </span>
-                <span className="text-[10px] text-white/30">JPG, PNG or WebP · Max 10 MB</span>
+                <span className="text-[10px] text-white/60">JPG, PNG or WebP · Max 10 MB</span>
               </>
             )}
           </div>

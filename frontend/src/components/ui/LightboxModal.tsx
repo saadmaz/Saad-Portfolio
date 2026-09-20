@@ -1,6 +1,8 @@
 import { AnimatePresence, m } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
+
+const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 interface LightboxModalProps {
   images: string[];
@@ -14,6 +16,9 @@ interface LightboxModalProps {
 export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigate, alt }: LightboxModalProps) {
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < images.length - 1;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   const prev = useCallback(() => {
     if (hasPrev && onNavigate) onNavigate(currentIndex - 1);
@@ -29,15 +34,39 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowLeft') prev();
       if (e.key === 'ArrowRight') next();
+      if (e.key === 'Tab') {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
   }, [isOpen, onClose, prev, next]);
 
+  useEffect(() => {
+    if (isOpen) {
+      previouslyFocused.current = document.activeElement as HTMLElement | null;
+      closeButtonRef.current?.focus();
+    } else {
+      previouslyFocused.current?.focus();
+      previouslyFocused.current = null;
+    }
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <m.div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label="Image lightbox"
@@ -49,6 +78,7 @@ export function LightboxModal({ images, currentIndex, isOpen, onClose, onNavigat
         >
           {/* Close */}
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             aria-label="Close lightbox"
             className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"

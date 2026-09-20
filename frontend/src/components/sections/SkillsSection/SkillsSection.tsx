@@ -99,10 +99,14 @@ export function SkillsSection() {
           className="relative mb-8"
         >
           {/* Scrollable tab bar */}
-          <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
+          <div role="tablist" aria-label="Skill categories" className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
             {skillCategories.map((cat, i) => (
               <button
                 key={cat.category}
+                role="tab"
+                id={`skills-tab-${i}`}
+                aria-selected={activeTab === i}
+                aria-controls="skills-tabpanel"
                 onClick={() => setActiveTab(i)}
                 className={`
                   relative shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200
@@ -129,6 +133,9 @@ export function SkillsSection() {
         <AnimatePresence mode="wait">
           <m.div
             key={activeTab}
+            id="skills-tabpanel"
+            role="tabpanel"
+            aria-labelledby={`skills-tab-${activeTab}`}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}

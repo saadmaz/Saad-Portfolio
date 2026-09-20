@@ -115,7 +115,7 @@ const AdminCauses = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(cause)} className="h-7 w-7 hover:bg-secondary text-muted-foreground/70 hover:text-foreground rounded-md">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(cause)} className="h-7 w-7 hover:bg-secondary text-muted-foreground hover:text-foreground rounded-md">
                       <Edit2 className="w-3.5 h-3.5" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={() => handleDelete(cause.id, cause.name)} className="h-7 w-7 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-md">
@@ -129,7 +129,7 @@ const AdminCauses = () => {
         ) : (
           <div className="col-span-full rounded-lg border border-border bg-card p-12 text-center shadow-sm">
             <h3 className="text-lg font-black text-muted-foreground" style={{ fontFamily: 'DM Sans' }}>No causes added</h3>
-            <p className="text-sm text-muted-foreground/70 mt-1 font-medium">
+            <p className="text-sm text-muted-foreground mt-1 font-medium">
               Share the issues and causes you care about.
             </p>
           </div>

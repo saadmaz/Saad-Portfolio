@@ -73,7 +73,7 @@ export function AboutSection() {
             <div className="h-44 rounded-xl bg-card border border-border animate-pulse" />
           ) : !latestEducation ? (
             <div className="bg-card rounded-xl border border-dashed border-border p-8 text-center">
-              <GraduationCap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+              <GraduationCap className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">No education entries yet.</p>
             </div>
           ) : (
@@ -102,7 +102,7 @@ export function AboutSection() {
                         {schoolName}
                       </h4>
                       {latestEducation.school_website_url && (
-                        <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/40" />
+                        <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                       )}
                     </div>
                     {(latestEducation.degree || field) && (

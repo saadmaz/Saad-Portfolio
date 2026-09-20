@@ -108,7 +108,7 @@ const BlogsPage: React.FC = () => {
                 placeholder="Search posts…"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-3 pr-8 py-2 text-sm rounded-full border border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all w-48"
+                className="pl-3 pr-8 py-2 text-sm rounded-full border border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all w-48"
               />
               {searchQuery && (
                 <button
