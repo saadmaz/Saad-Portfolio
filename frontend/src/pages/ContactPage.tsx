@@ -1,6 +1,7 @@
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe, Instagram, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,9 +36,9 @@ const ContactPage = () => {
   return (
     <Layout>
       <SEO
-        title="Contact Saad Mazhar | Hire a Freelance Developer in Sri Lanka"
-        description="Ready to hire a freelance developer in Colombo? Contact Saad Mazhar for web development, AI integration, mobile apps, speaking engagements, or consulting. Fast response guaranteed."
-        url="https://saadmaz.com/contact"
+        title={PAGE_SEO["/contact"].title}
+        description={PAGE_SEO["/contact"].description}
+        url={`${BASE_URL}/contact`}
         keywords="hire freelance developer Sri Lanka, hire full-stack developer Colombo, freelance React developer, Flutter developer for hire"
       />
       <section className="section-padding">

@@ -1,6 +1,7 @@
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { FileText, ExternalLink, Calendar, Tag } from "lucide-react";
 import { usePublications } from "@/shared/hooks/useCommon";
 
@@ -26,9 +27,9 @@ const PublicationsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Publications | Saad Mazhar"
-        description="Articles, research papers, and published work by Saad Mazhar."
-        url="https://saadmaz.com/publications"
+        title={PAGE_SEO["/publications"].title}
+        description={PAGE_SEO["/publications"].description}
+        url={`${BASE_URL}/publications`}
       />
       <section className="section-padding">
         <div className="section-container">

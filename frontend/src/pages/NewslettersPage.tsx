@@ -1,6 +1,7 @@
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { TrendingUp, Rocket, BookOpen, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -62,9 +63,9 @@ const NewslettersPage = () => {
   return (
     <Layout>
       <SEO
-        title="Newsletters | Saad Mazhar - CSE Newsroom & Founders' Brief"
-        description="Subscribe to Saad Mazhar's LinkedIn newsletters: The CSE Newsroom for Colombo Stock Exchange analysis and Founders' Brief for Sri Lankan startup founder stories."
-        url="https://saadmaz.com/newsletters"
+        title={PAGE_SEO["/newsletters"].title}
+        description={PAGE_SEO["/newsletters"].description}
+        url={`${BASE_URL}/newsletters`}
       />
       <section className="section-padding">
         <div className="section-container">

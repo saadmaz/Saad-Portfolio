@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { m, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/SEO';
+import { PAGE_SEO, BASE_URL } from '@/lib/seo-content';
 import {
   GraduationCap, ExternalLink, Trophy, Users, ChevronDown, ChevronUp,
   X, ChevronLeft, ChevronRight, LayoutList, GitBranch, ArrowRight,
@@ -574,9 +575,9 @@ const EducationPage = () => {
   return (
     <Layout>
       <SEO
-        title="Education — Saad Maz"
+        title={PAGE_SEO["/education"].title}
         description={metaDesc}
-        url="https://saadmaz.com/education"
+        url={`${BASE_URL}/education`}
       />
 
       <section className="section-padding">

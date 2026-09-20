@@ -7,6 +7,7 @@ import { useState } from "react";
 import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal, BookMarked, Lightbulb, ClipboardList, Building2, Leaf, Calendar } from "lucide-react";
 
 // --- UI Components & Data ---
@@ -78,9 +79,9 @@ const AboutPage = () => {
   return (
     <Layout>
       <SEO
-        title="About Saad Mazhar | CS Student, Startup Founder & Tech Speaker in Colombo"
-        description="Get to know Saad Mazhar - a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code."
-        url="https://saadmaz.com/about"
+        title={PAGE_SEO["/about"].title}
+        description={PAGE_SEO["/about"].description}
+        url={`${BASE_URL}/about`}
       />
       {/* section-padding: custom utility for consistent vertical spacing across the site */}
       <section className="section-padding">

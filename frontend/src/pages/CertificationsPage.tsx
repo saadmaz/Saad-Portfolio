@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { Award, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,10 +50,10 @@ const CertificationsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Certifications & Professional Credentials"
-        description="Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more — earned from Microsoft, LinkedIn Learning, Google, and ISACA."
-        url="https://saadmaz.com/certifications"
-        breadcrumbs={[{ name: "Certifications", url: "https://saadmaz.com/certifications" }]}
+        title={PAGE_SEO["/certifications"].title}
+        description={PAGE_SEO["/certifications"].description}
+        url={`${BASE_URL}/certifications`}
+        breadcrumbs={[{ name: "Certifications", url: `${BASE_URL}/certifications` }]}
       />
       <section className="pt-10 pb-20 md:pb-24">
         <div className="section-container">

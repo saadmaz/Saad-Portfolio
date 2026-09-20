@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { useProjects } from "@/shared/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const ProjectsPage = () => {
   const { data: projects = [], isLoading } = useProjects();
@@ -40,9 +41,9 @@ const ProjectsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Projects | AI, Web & Mobile Apps by Saad Mazhar"
-        description="View case studies and live projects by Saad Mazhar - full-stack web apps, AI integrations, Flutter mobile apps, and startup products. Available for hire in Colombo, Sri Lanka."
-        url="https://saadmaz.com/projects"
+        title={PAGE_SEO["/projects"].title}
+        description={PAGE_SEO["/projects"].description}
+        url={`${BASE_URL}/projects`}
         keywords="full-stack developer portfolio Sri Lanka, React projects, Flutter apps, AI developer Colombo, hire developer Sri Lanka"
       />
       <section className="section-padding">

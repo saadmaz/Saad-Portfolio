@@ -2,6 +2,7 @@ import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import {
   Mic2,
   Users,
@@ -61,9 +62,9 @@ const EventsPage = () => {
   return (
     <Layout>
       <SEO
-        title="Events & Public Presence | Saad Mazhar"
-        description="Saad Mazhar as a speaker, host, and organizer at tech conferences, summits, and community events in Sri Lanka and beyond."
-        url="https://saadmaz.com/events"
+        title={PAGE_SEO["/events"].title}
+        description={PAGE_SEO["/events"].description}
+        url={`${BASE_URL}/events`}
       />
       <section className="section-padding">
         <div className="section-container">

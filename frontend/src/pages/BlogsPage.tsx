@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { m } from "framer-motion";
 import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { BlogCard } from "../components/blog/BlogCard/BlogCard";
 import { useBlogPosts } from "../shared/hooks/useBlog";
 
@@ -53,9 +54,9 @@ const BlogsPage: React.FC = () => {
   return (
     <Layout>
       <SEO
-        title="Blog | Startups, AI & Developer Insights by Saad Mazhar"
-        description="Thoughts, tutorials, and real-world insights from Saad Mazhar - covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem."
-        url="https://saadmaz.com/blog"
+        title={PAGE_SEO["/blog"].title}
+        description={PAGE_SEO["/blog"].description}
+        url={`${BASE_URL}/blog`}
       />
 
       <section className="section-padding">

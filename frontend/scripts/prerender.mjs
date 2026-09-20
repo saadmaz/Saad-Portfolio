@@ -1,137 +1,110 @@
 /**
  * prerender.mjs
- * Generates per-route HTML files so Googlebot sees the correct
- * <title>, <meta description>, and <link rel="canonical"> on first crawl.
+ * ─────────────────────────────────────────────────────────────
+ * Generates per-route static HTML so search engines and any other
+ * client that doesn't run JavaScript see a real <title>, meta
+ * description, canonical link, an H1, actual body text, on-page links,
+ * and JSON-LD structured data - not an empty shell.
  *
- * Strategy:
- *   1. Try full Puppeteer rendering (real React content, needs Chrome).
- *      Uses domcontentloaded + custom wait so Firebase WebSocket connections
- *      don't block the networkidle2 phase indefinitely.
- *   2. Per-route fallback to meta-only injection if Puppeteer fails for that
- *      specific route - every route always gets a pre-rendered index.html.
+ * This used to try full Puppeteer rendering first, with a plain
+ * meta-tags-only fallback if that failed. Puppeteer never reliably
+ * launches inside Vercel's build container (no system Chrome, missing
+ * shared libraries), so that path always silently fell back - every
+ * deployed page shipped with 0 words, no H1, and no structured data.
+ * This version only ever does the reliable thing: plain string
+ * templating that produces identical output on every platform.
+ *
+ * Title/description text lives in ../src/lib/seo-content.js, the same
+ * file each page's <SEO> component imports, so the two can't drift
+ * apart the way the old hardcoded ROUTES array here used to.
  */
 
-import { createServer } from 'http';
-import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, mkdirSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from '../src/lib/seo-content.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, '..', 'dist');
-const PORT = 5174;
-const BASE_URL = 'https://saadmaz.com';
-const SITE_NAME = 'Saad Mazhar';
 
-const MIME_TYPES = {
-  '.html': 'text/html; charset=utf-8',
-  '.js':   'application/javascript',
-  '.mjs':  'application/javascript',
-  '.css':  'text/css',
-  '.json': 'application/json',
-  '.png':  'image/png',
-  '.jpg':  'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.svg':  'image/svg+xml',
-  '.ico':  'image/x-icon',
-  '.pdf':  'application/pdf',
-  '.woff2':'font/woff2',
-  '.woff': 'font/woff',
-  '.ttf':  'font/ttf',
-  '.webp': 'image/webp',
-  '.webm': 'video/webm',
-  '.txt':  'text/plain',
-  '.xml':  'application/xml',
-};
+// ── HTML helpers ─────────────────────────────────────────────────────────
 
-const ROUTES = [
-  {
-    path: '/',
-    title: 'Saad Mazhar | Startup Founder, Tech Speaker & Full-Stack Developer in Sri Lanka',
-    description: 'Portfolio of Saad Mazhar - startup founder, tech speaker, and full-stack developer based in Colombo, Sri Lanka. Building AI-powered products, web apps, and mobile solutions.',
-  },
-  {
-    path: '/projects',
-    title: 'Projects | AI, Web & Mobile Apps by Saad Mazhar',
-    description: 'Explore projects built by Saad Mazhar - full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka.',
-  },
-  {
-    path: '/about',
-    title: 'About Saad Mazhar | CS Student, Startup Founder & Tech Speaker in Colombo',
-    description: 'Get to know Saad Mazhar - a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka. Education, achievements, languages, and interests beyond the code.',
-  },
-  {
-    path: '/blog',
-    title: 'Blog | Startups, AI & Developer Insights by Saad Mazhar',
-    description: 'Thoughts, tutorials, and real-world insights from Saad Mazhar - covering AI tools, full-stack development, startup building, and the Sri Lanka tech ecosystem.',
-  },
-  {
-    path: '/contact',
-    title: 'Contact Saad Mazhar | Hire a Freelance Developer in Sri Lanka',
-    description: 'Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting - based in Colombo, Sri Lanka.',
-  },
-  {
-    path: '/experience',
-    title: "Work Experience | Saad Mazhar's Professional Journey in Sri Lanka",
-    description: "A timeline of Saad Mazhar's professional experience - from internships to founding startups in Sri Lanka. Full-stack development, AI, product management and leadership roles.",
-  },
-  {
-    path: '/skills',
-    title: "Skills | Saad Mazhar's Technical Stack & Expertise",
-    description: "Explore the full technical skill set of Saad Mazhar - proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka.",
-  },
-  {
-    path: '/certifications',
-    title: "Certifications | Saad Mazhar's Professional Credentials",
-    description: "Browse Saad Mazhar's professional certifications in AI, cybersecurity, cloud computing, data analytics, Flutter, DevOps, and more - earned from Microsoft, LinkedIn Learning, Google, and ISACA.",
-  },
-  {
-    path: '/events',
-    title: "Events | Saad Mazhar's Speaking & Community Engagements",
-    description: "Talks, workshops, and community events featuring Saad Mazhar - tech speaker and startup founder based in Colombo, Sri Lanka.",
-  },
-  {
-    path: '/newsletters',
-    title: "Newsletter | Insights by Saad Mazhar",
-    description: "Subscribe to Saad Mazhar's newsletter for insights on AI, startups, and full-stack development from Colombo, Sri Lanka.",
-  },
-];
-
-// ── Meta injection ──────────────────────────────────────────────────────────
-
+/** Safe in both text nodes and double-quoted attribute values. */
 function escape(str) {
-  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function navHtml(currentPath) {
+  const links = NAV_LINKS.map(
+    (l) => `    <a href="${l.path}"${l.path === currentPath ? ' aria-current="page"' : ''}>${escape(l.label)}</a>`,
+  ).join('\n');
+  return `<nav aria-label="Primary">\n${links}\n</nav>`;
+}
+
+function schemasForRoute(routePath, title) {
+  if (routePath === '/') return [PERSON_SCHEMA];
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: title,
+      url: `${BASE_URL}${routePath}`,
+      isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: BASE_URL },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: title, item: `${BASE_URL}${routePath}` },
+      ],
+    },
+  ];
 }
 
 /**
- * Injects correct title, description, canonical, and OG tags into an HTML
- * string. Works on both the raw index.html shell and Puppeteer-rendered HTML.
+ * Rewrites `shell` (the built, JS-only index.html) into a real page for
+ * `routePath`: correct title/canonical/meta/OG/Twitter tags (as before),
+ * plus actual content inside <div id="root"> - an H1, a short paragraph,
+ * on-page links, and JSON-LD. A normal client-side mount (src/app/main.tsx)
+ * replaces this instantly for real visitors; it's here for crawlers and
+ * anything else that reads the page without executing JavaScript.
  */
-function injectMeta(html, { path: routePath, title, description }) {
+function injectContent(shell, { path: routePath, title, description, schemas, extraBodyHtml = '' }) {
   const canonicalUrl = routePath === '/' ? BASE_URL : `${BASE_URL}${routePath}`;
   const fullTitle = `${title} - ${SITE_NAME}`;
   const et = escape(fullTitle);
   const ed = escape(description);
   const eu = escape(canonicalUrl);
 
-  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${et}</title>`);
+  let html = shell.replace(/<title>[\s\S]*?<\/title>/, `<title>${et}</title>`);
 
-  // canonical - update existing or insert before </head>
   if (/<link\s[^>]*rel=["']canonical["'][^>]*>/i.test(html)) {
-    html = html.replace(
-      /<link\s[^>]*rel=["']canonical["'][^>]*>/i,
-      `<link rel="canonical" href="${eu}" />`,
-    );
+    html = html.replace(/<link\s[^>]*rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${eu}" />`);
   } else {
     html = html.replace('</head>', `  <link rel="canonical" href="${eu}" />\n</head>`);
   }
 
-  html = html.replace(/(<meta\s+name="description"\s+content=")[^"]*(")/i,    `$1${ed}$2`);
-  html = html.replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i,   `$1${et}$2`);
+  html = html.replace(/(<meta\s+name="description"\s+content=")[^"]*(")/i, `$1${ed}$2`);
+  html = html.replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i, `$1${et}$2`);
   html = html.replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, `$1${ed}$2`);
-  html = html.replace(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i,     `$1${eu}$2`);
-  html = html.replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i,  `$1${et}$2`);
+  html = html.replace(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i, `$1${eu}$2`);
+  html = html.replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i, `$1${et}$2`);
   html = html.replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, `$1${ed}$2`);
+
+  const schemaScripts = (schemas || [])
+    .map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`)
+    .join('\n');
+
+  const bodyContent = [`<h1>${escape(title)}</h1>`, `<p>${escape(description)}</p>`, extraBodyHtml, navHtml(routePath), schemaScripts]
+    .filter(Boolean)
+    .join('\n');
+
+  html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${bodyContent}</div>`);
 
   return html;
 }
@@ -142,160 +115,154 @@ function writeRoute(routePath, html) {
   writeFileSync(join(routeDir, 'index.html'), html, 'utf-8');
 }
 
-// ── Meta-only fallback (no browser required) ────────────────────────────────
+// ── Static routes, from seo-content.js ──────────────────────────────────
 
-function metaOnlyForRoute(route) {
-  const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
-  const html = injectMeta(shell, route);
-  writeRoute(route.path, html);
-}
-
-function metaOnlyPrerender() {
-  console.log('\n📄  Running meta-only prerender (no browser available).');
-  let ok = 0;
-  for (const route of ROUTES) {
-    metaOnlyForRoute(route);
-    console.log(`  ✅  ${route.path}`);
-    ok++;
+function prerenderStaticRoutes(shell) {
+  let count = 0;
+  for (const [routePath, { title, description }] of Object.entries(PAGE_SEO)) {
+    const html = injectContent(shell, { path: routePath, title, description, schemas: schemasForRoute(routePath, title) });
+    writeRoute(routePath, html);
+    count++;
   }
-  console.log(`\n🎉  Meta prerender done - ${ok} routes written.\n`);
+  console.log(`✅ Static routes prerendered: ${count}`);
 }
 
-// ── Full Puppeteer prerender ─────────────────────────────────────────────────
+// ── Dynamic routes, from Firestore ──────────────────────────────────────
 
-function createStaticServer() {
-  return createServer((req, res) => {
-    const urlPath = decodeURIComponent(req.url.split('?')[0]);
-    let filePath = join(DIST_DIR, urlPath);
-    if (!extname(filePath)) filePath = join(DIST_DIR, 'index.html');
+async function prerenderDynamicRoutes(shell) {
+  const hasCreds = process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY;
+  if (!hasCreds) {
+    console.warn('⚠️  Firebase Admin credentials not set - skipping project/blog detail-page prerendering.');
+    return { projects: [], posts: [] };
+  }
 
-    if (existsSync(filePath)) {
-      try {
-        const content = readFileSync(filePath);
-        const ext = extname(filePath).toLowerCase();
-        res.writeHead(200, { 'Content-Type': MIME_TYPES[ext] || 'application/octet-stream' });
-        res.end(content);
-        return;
-      } catch { /* fall through */ }
-    }
+  const { initializeApp, cert, getApps } = await import('firebase-admin/app');
+  const { getFirestore } = await import('firebase-admin/firestore');
 
-    try {
-      const indexHtml = readFileSync(join(DIST_DIR, 'index.html'));
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(indexHtml);
-    } catch {
-      res.writeHead(500);
-      res.end('Internal Server Error');
-    }
-  });
-}
-
-async function puppeteerPrerender() {
-  const { default: puppeteer } = await import('puppeteer');
-
-  const systemChrome =
-    process.platform === 'win32'
-      ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-      : process.platform === 'darwin'
-      ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      : '/usr/bin/google-chrome';
-
-  const executablePath = existsSync(systemChrome) ? systemChrome : undefined;
-
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--single-process',
-        '--no-zygote',
-      ],
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      }),
     });
-  } catch (err) {
-    console.warn(`\n⚠️  Puppeteer launch failed (${err.message}) - falling back to meta-only prerender.`);
-    return false;
+  }
+  const db = getFirestore();
+
+  // Projects have no draft/published flag - ProjectsPage.tsx lists every one.
+  const projectsSnap = await db.collection('projects').get();
+  const projects = projectsSnap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((p) => p.slug);
+
+  for (const project of projects) {
+    const routePath = `/projects/${project.slug}`;
+    const title = `${project.title} | Project by Saad Mazhar`;
+    const description = project.tagline
+      ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(', ')}.` : ''} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
+      : project.overview
+        ? `${project.overview.slice(0, 140)} - case study by Saad Mazhar, full-stack developer in Sri Lanka.`
+        : `${project.title} - a software project by Saad Mazhar, full-stack developer in Sri Lanka.`;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: project.title,
+      description: project.tagline || project.overview,
+      url: project.liveUrl || `${BASE_URL}${routePath}`,
+      image: project.heroImage,
+      applicationCategory: project.category || 'WebApplication',
+      operatingSystem: 'Web',
+      author: { '@type': 'Person', name: 'Saad Mazhar', url: BASE_URL },
+      keywords: project.technologies?.join(', '),
+    };
+    const html = injectContent(shell, {
+      path: routePath,
+      title,
+      description,
+      schemas: [schema],
+      extraBodyHtml: '<a href="/projects">Back to projects</a>',
+    });
+    writeRoute(routePath, html);
   }
 
-  const server = createStaticServer();
-  await new Promise((resolve, reject) => {
-    server.listen(PORT, resolve);
-    server.on('error', reject);
-  });
-  console.log(`\n📡  Local server running at http://localhost:${PORT}`);
+  // Blog posts: published only, matching BlogService.getPublished().
+  const postsSnap = await db.collection('blog_posts').where('published', '==', true).get();
+  const posts = postsSnap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((p) => p.slug);
 
-  let success = 0;
-  let failed = 0;
-
-  for (const route of ROUTES) {
-    const page = await browser.newPage();
-    page.on('console', () => {});
-    page.on('pageerror', () => {});
-
-    try {
-      // Use domcontentloaded instead of networkidle2 - Firebase keeps WebSocket
-      // connections open which would cause networkidle2 to never resolve.
-      await page.goto(`http://localhost:${PORT}${route.path}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 30_000,
-      });
-
-      await page
-        .waitForFunction(
-          () => {
-            const root = document.getElementById('root');
-            return root && root.children.length > 0 && root.innerHTML.length > 500;
-          },
-          { timeout: 15_000 },
-        )
-        .catch(() => {});
-
-      await new Promise(r => setTimeout(r, 3000));
-
-      const html = injectMeta(await page.content(), route);
-      writeRoute(route.path, html);
-      console.log(`  ✅  ${route.path}`);
-      success++;
-    } catch (err) {
-      console.error(`  ❌  ${route.path} - ${err.message}`);
-      // Always fall back to meta-only for this route so it's never skipped.
-      try {
-        metaOnlyForRoute(route);
-        console.log(`  📄  ${route.path} - meta-only fallback applied`);
-      } catch (fallbackErr) {
-        console.error(`  💥  ${route.path} - meta-only also failed: ${fallbackErr.message}`);
-      }
-      failed++;
-    } finally {
-      await page.close();
-    }
+  for (const post of posts) {
+    const routePath = `/blog/${post.slug}`;
+    const description =
+      post.excerpt || `Read "${post.title}" by ${post.author} on Saad Mazhar's blog - AI, startups, and full-stack development from Colombo, Sri Lanka.`;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      image: post.image,
+      author: { '@type': 'Person', name: post.author, url: BASE_URL },
+      publisher: { '@type': 'Person', name: 'Saad Mazhar', url: BASE_URL },
+      datePublished: post.date,
+      url: `${BASE_URL}${routePath}`,
+      keywords: post.tags?.join(', '),
+    };
+    const html = injectContent(shell, {
+      path: routePath,
+      title: post.title,
+      description,
+      schemas: [schema],
+      extraBodyHtml: '<a href="/blog">Back to blog</a>',
+    });
+    writeRoute(routePath, html);
   }
 
-  await browser.close();
-  server.close();
-  console.log(`\n🎉  Puppeteer prerender done - ${success} succeeded, ${failed} fell back to meta-only.\n`);
-
-  return true;
+  console.log(`✅ Dynamic routes prerendered: ${projects.length} projects, ${posts.length} blog posts.`);
+  return { projects, posts };
 }
 
-// ── Entry point ──────────────────────────────────────────────────────────────
+// ── Sitemaps, regenerated from the same data so they can't go stale ─────
 
-async function prerender() {
-  const puppeteerOk = await puppeteerPrerender().catch(() => false);
-  if (!puppeteerOk) {
-    metaOnlyPrerender();
-  }
+function urlEntry(loc, lastmod, changefreq, priority) {
+  return `  <url>\n    <loc>${escape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 }
 
-prerender().catch(err => {
-  console.warn('\n⚠️  Prerender encountered an unexpected error:', err.message);
-  try {
-    metaOnlyPrerender();
-  } catch (fallbackErr) {
-    console.error('Meta-only fallback also failed:', fallbackErr.message);
-  }
+function toDateString(value) {
+  const d = value ? new Date(value) : new Date();
+  return Number.isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
+}
+
+function writeSitemaps({ projects, posts }) {
+  const projectsXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntry(
+    `${BASE_URL}/projects`,
+    toDateString(),
+    'weekly',
+    '0.9',
+  )}\n${projects.map((p) => urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), 'monthly', '0.8')).join('\n')}\n</urlset>\n`;
+
+  const blogXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntry(
+    `${BASE_URL}/blog`,
+    toDateString(),
+    'weekly',
+    '0.9',
+  )}\n${posts.map((p) => urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.date), 'monthly', '0.8')).join('\n')}\n</urlset>\n`;
+
+  mkdirSync(join(DIST_DIR, 'sitemaps'), { recursive: true });
+  writeFileSync(join(DIST_DIR, 'sitemaps', 'projects.xml'), projectsXml, 'utf-8');
+  writeFileSync(join(DIST_DIR, 'sitemaps', 'blog.xml'), blogXml, 'utf-8');
+  console.log('✅ sitemaps/projects.xml and sitemaps/blog.xml regenerated from Firestore data.');
+}
+
+// ── Entry point ────────────────────────────────────────────────────────
+
+async function main() {
+  // Read once, before anything writes to dist/index.html, so every route
+  // starts from the same pristine, JS-only shell.
+  const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
+
+  prerenderStaticRoutes(shell);
+  const { projects, posts } = await prerenderDynamicRoutes(shell);
+  if (projects.length || posts.length) writeSitemaps({ projects, posts });
+}
+
+main().catch((err) => {
+  console.error('Prerender failed:', err);
+  process.exit(1);
 });

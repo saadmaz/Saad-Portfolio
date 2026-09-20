@@ -2,6 +2,7 @@ import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { useSkills } from "@/shared/hooks/useCommon";
 
 const levelColors: Record<string, { badge: string; bar: string }> = {
@@ -25,9 +26,9 @@ const SkillsOnlyPage = () => {
   return (
     <Layout>
       <SEO
-        title="Skills | Saad Mazhar's Technical Stack & Expertise"
-        description="Explore the full technical skill set of Saad Mazhar - proficiency in React, TypeScript, Flutter, Python, AI tools, cloud platforms, and more. Based in Sri Lanka."
-        url="https://saadmaz.com/skills"
+        title={PAGE_SEO["/skills"].title}
+        description={PAGE_SEO["/skills"].description}
+        url={`${BASE_URL}/skills`}
       />
       <section className="section-padding">
         <div className="section-container">

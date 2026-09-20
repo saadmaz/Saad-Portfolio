@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { m } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/SEO';
+import { PAGE_SEO, BASE_URL } from '@/lib/seo-content';
 import { Building, ExternalLink, MapPin, Trophy, Star, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useExperience } from '@/shared/hooks/useCommon';
 import { Experience, ExperienceMedia } from '@/types';
@@ -414,9 +415,9 @@ const ExperiencePage = () => {
   return (
     <Layout>
       <SEO
-        title="Work Experience | Saad Mazhar's Professional Journey in Sri Lanka"
-        description="Explore Saad Mazhar's career timeline — startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka. Real roles, real impact, available to hire."
-        url="https://saadmaz.com/experience"
+        title={PAGE_SEO["/experience"].title}
+        description={PAGE_SEO["/experience"].description}
+        url={`${BASE_URL}/experience`}
         keywords="full-stack developer experience Sri Lanka, startup founder Colombo, software engineer career Sri Lanka"
       />
       <section className="section-padding">
