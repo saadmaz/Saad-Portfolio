@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Certificate } from "@/types";
 import { CommonService } from "@/shared/services/common-service";
+import { BASE_URL } from "@/lib/seo-content.js";
 
 const CertificateDetailPage = () => {
   const { id } = useParams();
@@ -45,7 +46,7 @@ const CertificateDetailPage = () => {
     });
   };
 
-  const canonicalUrl = `https://saadmaz.com/certifications/${id}`;
+  const canonicalUrl = `${BASE_URL}/certifications/${id}`;
 
   if (loading) {
     return (
@@ -94,7 +95,7 @@ const CertificateDetailPage = () => {
         image={cert.issuer_logo || undefined}
         type="article"
         breadcrumbs={[
-          { name: "Certifications", url: "https://saadmaz.com/certifications" },
+          { name: "Certifications", url: `${BASE_URL}/certifications` },
           { name: cert.title, url: canonicalUrl },
         ]}
       />

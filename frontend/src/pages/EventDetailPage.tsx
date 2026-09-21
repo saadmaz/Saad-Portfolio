@@ -15,119 +15,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { useEvents } from "@/shared/hooks/useCommon";
 import { ImageCarousel } from "@/components/ui/ImageCarousel";
-
-// Event data - in real app, this would come from an API or CMS
-const eventsData: Record<string, {
-  id: string;
-  title: string;
-  role: string;
-  type: string;
-  description: string;
-  fullDescription: string;
-  date: string;
-  location: string;
-  image: string;
-  gallery: string[];
-  highlights: string[];
-  attendees?: string;
-  organizer?: string;
-}> = {
-  "1": {
-    id: "1",
-    title: "TechCrunch Disrupt 2024",
-    role: "Host",
-    type: "host",
-    description: "Hosted the main stage startup pitch competition with 2,000+ attendees.",
-    fullDescription: "As the main stage host for TechCrunch Disrupt 2024, I had the privilege of facilitating one of the most anticipated startup events of the year. I introduced keynote speakers, moderated panel discussions on AI and the future of startups, and conducted live Q&A sessions with top-tier venture capitalists. The event brought together founders, investors, and tech enthusiasts from around the world.",
-    date: "October 15-17, 2024",
-    location: "Moscone Center, San Francisco, CA",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80",
-      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
-      "https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&q=80",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e4?w=800&q=80",
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
-      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80",
-      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80",
-    ],
-    highlights: [
-      "Hosted main stage for 3 consecutive days",
-      "Facilitated Q&A with 15+ VCs and founders",
-      "Moderated 5 panel discussions on emerging tech",
-      "Introduced keynote speakers including industry leaders",
-    ],
-    attendees: "2,000+",
-    organizer: "TechCrunch",
-  },
-  "2": {
-    id: "2",
-    title: "Google Developer Summit",
-    role: "Speaker",
-    type: "speaker",
-    description: "Delivered keynote on AI-first product development strategies.",
-    fullDescription: "Invited as a keynote speaker at Google Developer Summit, I shared insights on building AI-first products and integrating machine learning into existing applications. The talk covered practical strategies for developers looking to leverage AI, including best practices for ML pipelines, model deployment, and user experience considerations.",
-    date: "September 22, 2024",
-    location: "Google Campus, Mountain View, CA",
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e4?w=800&q=80",
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80",
-      "https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&q=80",
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
-      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80",
-      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80",
-    ],
-    highlights: [
-      "45-minute keynote presentation",
-      "Live coding demonstration",
-      "500+ developers in attendance",
-      "Q&A session with audience",
-    ],
-    attendees: "500+",
-    organizer: "Google Developers",
-  },
-
-  
-  "3": {
-    id: "3",
-    title: "HackMIT 2024",
-    role: "Organizer",
-    type: "organizer",
-    description: "Led organization of 800+ participant hackathon with $50K in prizes.",
-    fullDescription: "As lead organizer for HackMIT 2024, I coordinated all aspects of MIT's premier hackathon. This included managing sponsor relations with major tech companies, coordinating logistics for 800+ participants, organizing judging panels, and ensuring smooth execution of the 36-hour event. The hackathon featured $50K in prizes and workshops from industry experts.",
-    date: "September 14-15, 2024",
-    location: "MIT Campus, Cambridge, MA",
-    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80",
-      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
-      "https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&q=80",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e4?w=800&q=80",
-      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80",
-      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80",
-    ],
-    highlights: [
-      "Managed 50+ sponsors and partners",
-      "Coordinated 100+ mentor volunteers",
-      "Organized judging with 30 industry experts",
-      "36-hour event with zero major incidents",
-    ],
-    attendees: "800+",
-    organizer: "MIT",
-  },
-};
+import { SEO } from "@/components/SEO";
+import { BASE_URL } from "@/lib/seo-content.js";
 
 const roleColors: Record<string, string> = {
   Host: "bg-accent text-accent-foreground",
@@ -141,9 +30,7 @@ const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: firestoreEvents = [] } = useEvents();
 
-  // Prefer Firestore event (matched by id), fall back to hardcoded data
   const firestoreEvent = firestoreEvents.find((e) => e.id === id);
-  const legacyEvent = id ? eventsData[id] : null;
 
   // Normalise to a common shape for rendering
   const event = firestoreEvent
@@ -157,11 +44,12 @@ const EventDetailPage = () => {
         highlights: firestoreEvent.highlights ?? [],
         attendees: firestoreEvent.attendees,
       }
-    : legacyEvent;
+    : null;
 
   if (!event) {
     return (
       <Layout>
+        <SEO title="Event Not Found" noIndex />
         <section className="section-padding">
           <div className="section-container text-center">
             <h1 className="font-display text-3xl font-bold text-foreground mb-4">
@@ -182,8 +70,32 @@ const EventDetailPage = () => {
     );
   }
 
+  const eventSchema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.fullDescription,
+    startDate: event.date,
+    location: { "@type": "Place", name: event.location },
+    image: event.image ?? event.gallery?.[0],
+    performer: { "@type": "Person", name: "Saad Mazhar", url: BASE_URL },
+    organizer: event.organizer ? { "@type": "Organization", name: event.organizer } : undefined,
+  };
+
   return (
     <Layout>
+      <SEO
+        title={`${event.title} | Event`}
+        description={event.description || event.fullDescription}
+        image={event.image ?? event.gallery?.[0]}
+        url={`${BASE_URL}/events/${id}`}
+        type="article"
+        structuredData={eventSchema}
+        breadcrumbs={[
+          { name: "Events", url: `${BASE_URL}/events` },
+          { name: event.title, url: `${BASE_URL}/events/${id}` },
+        ]}
+      />
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
         <div className="absolute inset-0">

@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
 
-# Block admin panel from crawlers
-Disallow: /admin/
+# Block admin panel from crawlers ("/admin" also covers everything under "/admin/")
 Disallow: /admin
 
-Sitemap: https://saadmaz.com/sitemap.xml
+Sitemap: https://www.saadmaz.com/sitemap.xml

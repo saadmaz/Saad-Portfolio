@@ -15,7 +15,9 @@
  */
 
 export const SITE_NAME = "Saad Mazhar";
-export const BASE_URL = "https://saadmaz.com";
+// www is what actually serves (apex 301s to www) - canonical/og:url must
+// name the URL that returns 200, or Google treats it as a conflicting signal.
+export const BASE_URL = "https://www.saadmaz.com";
 
 export const PERSON_SCHEMA = {
   "@context": "https://schema.org",
@@ -48,10 +50,11 @@ export const NAV_LINKS = [
 
 /**
  * Every statically prerendered route. Titles are the raw `<SEO title>`
- * prop - SEO.tsx (and prerender.mjs) append " - Saad Mazhar" themselves,
- * so keep each title under ~46 characters to land under the ~60-character
- * display limit once the suffix is added. Descriptions should stay under
- * ~160 characters.
+ * prop - SEO.tsx (and prerender.mjs) append " - Saad Mazhar" themselves, so
+ * titles here must NOT already contain the brand name (that produced the
+ * "Publications | Saad Mazhar - Saad Mazhar" double-brand bug). Keep each
+ * title under ~46 characters to land under the ~60-character display limit
+ * once the suffix is added. Descriptions should stay under ~160 characters.
  */
 export const PAGE_SEO = {
   "/": {
@@ -65,7 +68,7 @@ export const PAGE_SEO = {
       "Explore projects built by Saad Mazhar - full-stack web applications, AI integrations, Flutter mobile apps, and startup products developed in Sri Lanka.",
   },
   "/about": {
-    title: "About Saad Mazhar | Founder & Developer",
+    title: "About | Founder & Developer",
     description:
       "Get to know Saad Mazhar — computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka.",
   },
@@ -75,41 +78,41 @@ export const PAGE_SEO = {
       "Thoughts and tutorials from Saad Mazhar on AI tools, full-stack development, and the Sri Lanka tech ecosystem.",
   },
   "/contact": {
-    title: "Contact Saad Mazhar | Hire a Developer",
+    title: "Contact | Hire a Developer",
     description:
       "Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting - based in Colombo, Sri Lanka.",
   },
   "/experience": {
-    title: "Work Experience | Saad Mazhar",
+    title: "Work Experience",
     description:
       "Saad Mazhar's career timeline — startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka.",
   },
   "/skills": {
-    title: "Skills | Saad Mazhar's Tech Stack",
+    title: "Skills & Tech Stack",
     description:
       "Saad Mazhar's technical skill set — React, TypeScript, Flutter, Python, AI tools, and cloud platforms.",
   },
   "/certifications": {
-    title: "Certifications | Saad Mazhar",
+    title: "Certifications",
     description:
       "Saad Mazhar's certifications in AI, cybersecurity, cloud computing, and DevOps — from Microsoft, Google, and ISACA.",
   },
   "/events": {
-    title: "Events & Public Presence | Saad Mazhar",
+    title: "Events & Public Presence",
     description:
       "Saad Mazhar as a speaker, host, and organizer at tech conferences, summits, and community events in Sri Lanka and beyond.",
   },
   "/newsletters": {
-    title: "Newsletter | Insights by Saad Mazhar",
+    title: "Newsletter | Insights",
     description:
       "Subscribe to Saad Mazhar's newsletter for insights on AI, startups, and full-stack development from Colombo, Sri Lanka.",
   },
   "/publications": {
-    title: "Publications | Saad Mazhar",
+    title: "Publications",
     description: "Articles, research papers, and published work by Saad Mazhar.",
   },
   "/education": {
-    title: "Education | Saad Mazhar",
+    title: "Education",
     description: "Saad Mazhar's academic background, degrees, and coursework.",
   },
 };

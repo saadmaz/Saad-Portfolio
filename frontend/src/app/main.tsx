@@ -4,6 +4,28 @@ import "./index.css";
 
 const rootElement = document.getElementById("root")!;
 
+// The build's prerender step (scripts/prerender.mjs) and the static tags in
+// index.html both write real <title>/canonical/meta/JSON-LD into <head> so
+// crawlers that don't run JS see correct SEO tags. Once JS does run, <SEO>
+// (react-helmet-async) takes over and renders its own copy of the same tags
+// for the current route - but Helmet only manages tags it renders itself,
+// it has no way to know the ones already sitting in <head> are equivalent,
+// so without this cleanup every tag below ends up duplicated. Removing the
+// pre-hydration copies here, once, before Helmet ever mounts, keeps exactly
+// one of each in the final DOM.
+function stripPrerenderedSeoTags() {
+  const selector = [
+    'link[rel="canonical"]',
+    'meta[name="description"]',
+    'meta[name="keywords"]',
+    'meta[property^="og:"]',
+    'meta[name^="twitter:"]',
+    'script[type="application/ld+json"]',
+  ].join(", ");
+  document.head.querySelectorAll(selector).forEach((el) => el.remove());
+}
+stripPrerenderedSeoTags();
+
 // Always a fresh client-side mount. The build's prerender step
 // (scripts/prerender.mjs) writes crawler-visible static HTML into this
 // element for search engines and other non-JS clients; it isn't meant to

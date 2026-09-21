@@ -5,6 +5,7 @@ import { useBlogPost } from "../shared/hooks/useBlog";
 import { ArrowLeft, Calendar, User, Edit, ChevronRight } from "lucide-react";
 import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { BASE_URL } from "@/lib/seo-content.js";
 
 
 export default function BlogDetailPage() {
@@ -53,17 +54,17 @@ export default function BlogDetailPage() {
     author: {
       "@type": "Person",
       name: author,
-      url: "https://saadmaz.com",
+      url: BASE_URL,
       address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
     },
     publisher: {
       "@type": "Person",
       name: "Saad Mazhar",
-      url: "https://saadmaz.com",
+      url: BASE_URL,
     },
     datePublished: publishedDate,
-    url: `https://saadmaz.com/blog/${slug}`,
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://saadmaz.com/blog/${slug}` },
+    url: `${BASE_URL}/blog/${slug}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/blog/${slug}` },
     keywords: tags?.join(", "),
     inLanguage: "en",
   };
@@ -74,13 +75,12 @@ export default function BlogDetailPage() {
         title={title}
         description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog - AI, startups, and full-stack development from Colombo, Sri Lanka.`}
         image={coverImage}
-        url={`https://saadmaz.com/blog/${slug}`}
+        url={`${BASE_URL}/blog/${slug}`}
         type="article"
         structuredData={articleSchema}
-        keywords={tags?.join(", ")}
         breadcrumbs={[
-          { name: "Blog", url: "https://saadmaz.com/blog" },
-          { name: title, url: `https://saadmaz.com/blog/${slug}` },
+          { name: "Blog", url: `${BASE_URL}/blog` },
+          { name: title, url: `${BASE_URL}/blog/${slug}` },
         ]}
       />
       <article className="blog-detail-page">

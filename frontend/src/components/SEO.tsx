@@ -13,6 +13,7 @@
  */
 
 import { Helmet } from "react-helmet-async";
+import { SITE_NAME, BASE_URL } from "@/lib/seo-content.js";
 
 interface BreadcrumbItem {
   name: string;
@@ -22,25 +23,30 @@ interface BreadcrumbItem {
 interface SEOProps {
   title?: string;
   description?: string;
-  /** Absolute URL to OG image (1200×630 recommended) */
+  /** Absolute URL to OG image (1200×630 recommended for summary_large_image) */
   image?: string;
+  /** Actual pixel dimensions of `image` - must match reality or the OG/Twitter card renders cropped. */
+  imageWidth?: number;
+  imageHeight?: number;
   /** Canonical URL for this page */
   url?: string;
   /** JSON-LD structured data object - passed as-is to <script type="application/ld+json"> */
   structuredData?: object;
   /** "website" | "article" - defaults to "website" */
   type?: string;
-  /** Page-specific keywords for <meta name="keywords"> */
-  keywords?: string;
   /** Breadcrumb trail - renders a BreadcrumbList JSON-LD block for rich results */
   breadcrumbs?: BreadcrumbItem[];
   /** Prevent search engines from indexing this page */
   noIndex?: boolean;
 }
 
-const SITE_NAME  = "Saad Mazhar";
-const BASE_URL   = "https://saadmaz.com";
+// logo.png is a 500x500 square - not the 1200x630 card summary_large_image
+// expects. Keep these three in sync with whatever `image` actually is;
+// pass a real 1200x630 asset + imageWidth={1200} imageHeight={630} once one
+// exists to get "summary_large_image" treatment on that page.
 const DEFAULT_OG = `${BASE_URL}/logo.png`;
+const DEFAULT_OG_WIDTH = 500;
+const DEFAULT_OG_HEIGHT = 500;
 
 const DEFAULT_DESCRIPTION =
   "Saad Mazhar - Startup Founder, Tech Speaker & Full-Stack Developer based in Colombo, Sri Lanka. Building products at the intersection of technology and impact.";
@@ -49,14 +55,16 @@ export function SEO({
   title,
   description = DEFAULT_DESCRIPTION,
   image = DEFAULT_OG,
+  imageWidth = DEFAULT_OG_WIDTH,
+  imageHeight = DEFAULT_OG_HEIGHT,
   url = BASE_URL,
   structuredData,
   type = "website",
-  keywords,
   breadcrumbs,
   noIndex = false,
 }: SEOProps) {
   const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
+  const isLargeImage = imageWidth / imageHeight >= 1.9 && imageWidth >= 1200;
 
   const breadcrumbSchema = breadcrumbs
     ? {
@@ -83,7 +91,6 @@ export function SEO({
         ? <meta name="robots" content="noindex, nofollow" />
         : <link rel="canonical" href={url} />
       }
-      {keywords && <meta name="keywords" content={keywords} />}
 
       {/* ── Open Graph ───────────────────────────────────────────── */}
       <meta property="og:site_name"   content={SITE_NAME} />
@@ -93,11 +100,11 @@ export function SEO({
       <meta property="og:url"         content={url} />
       <meta property="og:image"       content={image} />
       <meta property="og:image:alt"   content={`${SITE_NAME} preview`} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content={String(imageWidth)} />
+      <meta property="og:image:height" content={String(imageHeight)} />
 
       {/* ── Twitter / X Card ─────────────────────────────────────── */}
-      <meta name="twitter:card"        content="summary_large_image" />
+      <meta name="twitter:card"        content={isLargeImage ? "summary_large_image" : "summary"} />
       <meta name="twitter:site"        content="@SaadMazhar_" />
       <meta name="twitter:title"       content={fullTitle} />
       <meta name="twitter:description" content={description} />

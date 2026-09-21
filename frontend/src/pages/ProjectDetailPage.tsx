@@ -4,6 +4,7 @@ import { useProject } from "@/shared/hooks/useProjects";
 import { useModalA11y } from "@/shared/hooks/useModalA11y";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { BASE_URL } from "@/lib/seo-content.js";
 import { Skeleton } from "@/components/ui/skeleton";
 import { m, AnimatePresence } from "framer-motion";
 import { 
@@ -78,14 +79,14 @@ const ProjectDetailPage = () => {
     "@type": "SoftwareApplication",
     name: project.title,
     description: project.tagline || project.overview,
-    url: project.liveUrl || `https://saadmaz.com/projects/${project.slug}`,
+    url: project.liveUrl || `${BASE_URL}/projects/${project.slug}`,
     image: project.heroImage,
     applicationCategory: project.category || "WebApplication",
     operatingSystem: "Web",
     author: {
       "@type": "Person",
       name: "Saad Mazhar",
-      url: "https://saadmaz.com",
+      url: BASE_URL,
       address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
     },
     keywords: project.technologies?.join(", "),
@@ -95,7 +96,7 @@ const ProjectDetailPage = () => {
   return (
     <Layout>
       <SEO
-        title={`${project.title} | Project by Saad Mazhar`}
+        title={`${project.title} | Project`}
         description={
           project.tagline
             ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
@@ -104,12 +105,11 @@ const ProjectDetailPage = () => {
             : `${project.title} - a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
         }
         image={project.heroImage}
-        url={`https://saadmaz.com/projects/${project.slug}`}
+        url={`${BASE_URL}/projects/${project.slug}`}
         structuredData={projectSchema}
-        keywords={project.technologies?.join(", ")}
         breadcrumbs={[
-          { name: "Projects", url: "https://saadmaz.com/projects" },
-          { name: project.title, url: `https://saadmaz.com/projects/${project.slug}` },
+          { name: "Projects", url: `${BASE_URL}/projects` },
+          { name: project.title, url: `${BASE_URL}/projects/${project.slug}` },
         ]}
       />
       {/* Background container: Neutral, sleek tones */}
