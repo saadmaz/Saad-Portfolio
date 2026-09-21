@@ -355,11 +355,13 @@ export function HeroSection() {
                   className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border border-accent/20 group"
                   style={{ boxShadow: "0 0 0 1px hsl(174 72% 44% / 0.15), 0 20px 40px -10px hsl(196 60% 4% / 0.4)" }}
                 >
-                  {/* fetchPriority="high" + loading="eager" ensures LCP image loads ASAP */}
+                  {/* fetchpriority="high" + loading="eager" ensures LCP image loads ASAP.
+                      Lowercase attribute name: framer-motion forwards props verbatim to the
+                      DOM node, and React only recognizes the lowercase HTML attribute spelling. */}
                   <m.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
-                    fetchPriority="high"
+                    {...{ fetchpriority: 'high' }}
                     loading="eager"
                     decoding="sync"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

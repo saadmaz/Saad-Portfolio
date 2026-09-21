@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Award, ExternalLink, Calendar, ChevronLeft, ChevronRight, ArrowRight, Clock, BadgeCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCertificates } from "@/shared/hooks/useCommon";
 import { Certificate } from "@/types";
 
@@ -59,12 +59,21 @@ function useIsDark() {
 
 export function CertCard({ cert }: { cert: Certificate }) {
   const isDark = useIsDark();
+  const navigate = useNavigate();
   const accent = ACCENT_VARIANTS[hashId(cert.id) % ACCENT_VARIANTS.length];
   const tags = cert.tags?.length ? cert.tags : cert.skills || [];
   const tagText = isDark ? accent.tagText : accent.lightText;
 
+  // Card navigates to the detail page on click/Enter; the "View credential" link below is a
+  // real external <a>, so the card itself can't also be an <a> (invalid nested-anchor HTML).
   return (
-    <Link to={`/certifications/${cert.id}`} className="group block">
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={() => navigate(`/certifications/${cert.id}`)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/certifications/${cert.id}`); } }}
+      className="group block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
+    >
       <div
         className="relative w-full overflow-hidden rounded-xl border bg-card transition-all duration-300 ease-out group-hover:-translate-y-1"
         style={{
@@ -191,7 +200,7 @@ export function CertCard({ cert }: { cert: Certificate }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
