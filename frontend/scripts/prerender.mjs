@@ -133,7 +133,7 @@ async function prerenderDynamicRoutes(shell) {
   const hasCreds = process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY;
   if (!hasCreds) {
     console.warn('⚠️  Firebase Admin credentials not set - skipping project/blog detail-page prerendering.');
-    return { projects: [], posts: [] };
+    return { projects: [], posts: [], hasEducation: false, hasEvents: false, hasPublications: false };
   }
 
   const { initializeApp, cert, getApps } = await import('firebase-admin/app');
@@ -150,13 +150,17 @@ async function prerenderDynamicRoutes(shell) {
   }
   const db = getFirestore();
 
-  // Projects have no draft/published flag - ProjectsPage.tsx lists every one.
+  // `published` defaults to true for legacy docs predating the field (see
+  // useProjects.ts's isPublished) - only an explicit `false` hides a project
+  // from crawlers and the sitemap the way the admin toggle promises.
   const projectsSnap = await db.collection('projects').get();
-  const projects = projectsSnap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((p) => p.slug);
+  const projects = projectsSnap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .filter((p) => p.slug && p.published !== false);
 
   for (const project of projects) {
     const routePath = `/projects/${project.slug}`;
-    const title = `${project.title} | Project by Saad Mazhar`;
+    const title = `${project.title} | Project`;
     const description = project.tagline
       ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(', ')}.` : ''} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
       : project.overview
@@ -214,11 +218,31 @@ async function prerenderDynamicRoutes(shell) {
     writeRoute(routePath, html);
   }
 
+  // Collections with no per-item detail page - only their existence (not
+  // their content) matters here, to decide whether /events, /publications
+  // etc. belong in the sitemap. A page nobody has published anything to
+  // yet is real but empty; submitting it to Google just to have Google see
+  // an empty state is the sitemap.xml half of the "don't ship empty
+  // sections" problem, so it's left out until it has something in it.
+  const [eventsSnap, publicationsSnap, educationSnap] = await Promise.all([
+    db.collection('events').limit(1).get(),
+    db.collection('publications').limit(1).get(),
+    db.collection('education').limit(1).get(),
+  ]);
+
   console.log(`✅ Dynamic routes prerendered: ${projects.length} projects, ${posts.length} blog posts.`);
-  return { projects, posts };
+  return {
+    projects,
+    posts,
+    hasEvents: !eventsSnap.empty,
+    hasPublications: !publicationsSnap.empty,
+    hasEducation: !educationSnap.empty,
+  };
 }
 
-// ── Sitemaps, regenerated from the same data so they can't go stale ─────
+// ── Sitemaps, regenerated at every build from the same data the pages use,
+// so they can never drift into the stale/empty state a hand-maintained
+// static sitemap eventually does ─────────────────────────────────────────
 
 function urlEntry(loc, lastmod, changefreq, priority) {
   return `  <url>\n    <loc>${escape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
@@ -229,25 +253,51 @@ function toDateString(value) {
   return Number.isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
 }
 
-function writeSitemaps({ projects, posts }) {
-  const projectsXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntry(
-    `${BASE_URL}/projects`,
-    toDateString(),
-    'weekly',
-    '0.9',
-  )}\n${projects.map((p) => urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), 'monthly', '0.8')).join('\n')}\n</urlset>\n`;
+function buildUrlset(entries) {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>\n`;
+}
 
-  const blogXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntry(
-    `${BASE_URL}/blog`,
-    toDateString(),
-    'weekly',
-    '0.9',
-  )}\n${posts.map((p) => urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.date), 'monthly', '0.8')).join('\n')}\n</urlset>\n`;
+/** Static routes always worth submitting - always have real content regardless of Firestore state. */
+const ALWAYS_INDEXED_ROUTES = ['/', '/about', '/experience', '/skills', '/certifications', '/contact'];
 
+function writeSitemaps({ projects, posts, hasEvents, hasPublications, hasEducation }) {
+  const today = toDateString();
   mkdirSync(join(DIST_DIR, 'sitemaps'), { recursive: true });
+
+  const mainRoutes = [...ALWAYS_INDEXED_ROUTES, '/newsletters'];
+  if (hasPublications) mainRoutes.push('/publications');
+  if (hasEducation) mainRoutes.push('/education');
+  if (hasEvents) mainRoutes.push('/events');
+  const mainXml = buildUrlset(
+    mainRoutes.map((path) =>
+      urlEntry(path === '/' ? BASE_URL : `${BASE_URL}${path}`, today, path === '/' ? 'weekly' : 'monthly', path === '/' ? '1.0' : '0.7'),
+    ),
+  );
+
+  const projectsXml = buildUrlset([
+    urlEntry(`${BASE_URL}/projects`, today, 'weekly', '0.9'),
+    ...projects.map((p) => urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), 'monthly', '0.8')),
+  ]);
+
+  const blogXml = buildUrlset([
+    urlEntry(`${BASE_URL}/blog`, today, 'weekly', '0.9'),
+    ...posts.map((p) => urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.date), 'monthly', '0.8')),
+  ]);
+
+  writeFileSync(join(DIST_DIR, 'sitemaps', 'main.xml'), mainXml, 'utf-8');
   writeFileSync(join(DIST_DIR, 'sitemaps', 'projects.xml'), projectsXml, 'utf-8');
   writeFileSync(join(DIST_DIR, 'sitemaps', 'blog.xml'), blogXml, 'utf-8');
-  console.log('✅ sitemaps/projects.xml and sitemaps/blog.xml regenerated from Firestore data.');
+
+  // No events.xml/media.xml: events has no published items to list yet, and
+  // the old media.xml wasn't a valid image sitemap - it just repeated a
+  // page URL. Re-add each once there's something real to put in it.
+  const indexEntries = ['main.xml', 'projects.xml', 'blog.xml'].map(
+    (f) => `  <sitemap>\n    <loc>${BASE_URL}/sitemaps/${f}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`,
+  );
+  const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexEntries.join('\n')}\n</sitemapindex>\n`;
+  writeFileSync(join(DIST_DIR, 'sitemap.xml'), sitemapIndex, 'utf-8');
+
+  console.log('✅ sitemap.xml + sitemaps/{main,projects,blog}.xml regenerated from Firestore data.');
 }
 
 // ── Entry point ────────────────────────────────────────────────────────
@@ -258,8 +308,8 @@ async function main() {
   const shell = readFileSync(join(DIST_DIR, 'index.html'), 'utf-8');
 
   prerenderStaticRoutes(shell);
-  const { projects, posts } = await prerenderDynamicRoutes(shell);
-  if (projects.length || posts.length) writeSitemaps({ projects, posts });
+  const dynamic = await prerenderDynamicRoutes(shell);
+  writeSitemaps(dynamic);
 }
 
 main().catch((err) => {
