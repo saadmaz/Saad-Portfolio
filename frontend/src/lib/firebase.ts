@@ -3,10 +3,12 @@
  * ─────────────────────────────────────────────────────────────
  * Single source of truth for all Firebase SDK instances.
  *
+ * This is the public site - it only reads Firestore (and lets the
+ * contact form create one document). Firebase Auth lives in the
+ * separate Saad-Portfolio-Admin app now, so it isn't initialized here.
+ *
  * Exports:
- *   auth     – Firebase Authentication (login / session management)
- *   db       – Cloud Firestore (all data reads & writes)
- *   storage  – Firebase Storage (image uploads)
+ *   db  – Cloud Firestore (all data reads & the contact form's write)
  *
  * All config values come from Vite environment variables so that
  * different values can be used in development vs production without
@@ -19,7 +21,6 @@
  */
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // ─── Firebase project config ────────────────────────────────────
@@ -39,7 +40,6 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 // ─── Service exports ─────────────────────────────────────────────
-export const auth = getAuth(app);      // Firebase Auth
-export const db   = getFirestore(app); // Firestore database
+export const db = getFirestore(app); // Firestore database
 
 export default app;

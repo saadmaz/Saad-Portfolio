@@ -10,8 +10,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/shared/hooks/useTheme";
 import { ScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AuthProvider } from "@/shared/contexts/AuthContext";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // domMax includes layout animations used on /certifications and /events
 const loadMotionFeatures = () =>
@@ -34,33 +32,6 @@ const EventDetailPage = React.lazy(() => import("../pages/EventDetailPage"));
 const ProjectDetailPage = React.lazy(() => import("../pages/ProjectDetailPage"));
 const NotFound = React.lazy(() => import("../pages/NotFound"));
 
-// --- Admin routes ---
-const AdminLayout = React.lazy(() => import("../components/admin/AdminLayout"));
-const AdminLoginPage = React.lazy(() => import("../pages/admin/AdminLoginPage"));
-const AdminDashboard = React.lazy(() => import("../pages/admin/AdminDashboard"));
-const AdminProjects = React.lazy(() => import("../pages/admin/AdminProjects"));
-const ProjectForm = React.lazy(() => import("../components/admin/ProjectForm"));
-const AdminBlogs = React.lazy(() => import("../pages/admin/AdminBlogs"));
-const BlogForm = React.lazy(() => import("../components/admin/BlogForm"));
-const AdminExperience = React.lazy(() => import("../pages/admin/AdminExperience"));
-const ExperienceForm = React.lazy(() => import("../components/admin/ExperienceForm"));
-const AdminSkills = React.lazy(() => import("../pages/admin/AdminSkills"));
-const AdminCertificates = React.lazy(() => import("../pages/admin/AdminCertificates"));
-const CertificateForm = React.lazy(() => import("../components/admin/CertificateForm"));
-const AdminAwards = React.lazy(() => import("../pages/admin/AdminAwards"));
-const AdminLanguages = React.lazy(() => import("../pages/admin/AdminLanguages"));
-const AdminHackathons = React.lazy(() => import("../pages/admin/AdminHackathons"));
-const AdminTestimonials = React.lazy(() => import("../pages/admin/AdminTestimonials"));
-const AdminVolunteer = React.lazy(() => import("../pages/admin/AdminVolunteer"));
-const AdminEducation = React.lazy(() => import("../pages/admin/AdminEducation"));
-const EducationForm = React.lazy(() => import("../components/admin/EducationForm"));
-const AdminEvents = React.lazy(() => import("../pages/admin/AdminEvents"));
-const AdminNewsletters = React.lazy(() => import("../pages/admin/AdminNewsletters"));
-const AdminMessages = React.lazy(() => import("../pages/admin/AdminMessages"));
-const AdminCourses = React.lazy(() => import("../pages/admin/AdminCourses"));
-const AdminPublications = React.lazy(() => import("../pages/admin/AdminPublications"));
-const AdminPatents = React.lazy(() => import("../pages/admin/AdminPatents"));
-const AdminOrganizations = React.lazy(() => import("../pages/admin/AdminOrganizations"));
 const PublicationsPage = React.lazy(() => import("../pages/PublicationsPage"));
 const EducationPage = React.lazy(() => import("../pages/EducationPage"));
 
@@ -87,83 +58,40 @@ const App = () => (
   <HelmetProvider>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ThemeProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <Analytics />
-              <LazyMotion features={loadMotionFeatures}>
-                <BrowserRouter>
-                  <ScrollToTop />
-                  <Suspense fallback={<PageLoader />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/projects" element={<ProjectsPage />} />
-                      <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-                      <Route path="/experience" element={<ExperiencePage />} />
-                      <Route path="/skills" element={<SkillsOnlyPage />} />
-                      <Route path="/certifications" element={<CertificationsPage />} />
-                      <Route path="/certifications/:id" element={<CertificateDetailPage />} />
-                      <Route path="/about" element={<AboutPage />} />
-                      <Route path="/contact" element={<ContactPage />} />
-                      <Route path="/blog" element={<BlogsPage />} />
-                      <Route path="/blog/:slug" element={<BlogDetailPage />} />
-                      <Route path="/newsletters" element={<NewslettersPage />} />
-                      <Route path="/events" element={<EventsPage />} />
-                      <Route path="/events/:id" element={<EventDetailPage />} />
-                      <Route path="/publications" element={<PublicationsPage />} />
-                      <Route path="/education" element={<EducationPage />} />
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Analytics />
+            <LazyMotion features={loadMotionFeatures}>
+              <BrowserRouter>
+                <ScrollToTop />
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/projects" element={<ProjectsPage />} />
+                    <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+                    <Route path="/experience" element={<ExperiencePage />} />
+                    <Route path="/skills" element={<SkillsOnlyPage />} />
+                    <Route path="/certifications" element={<CertificationsPage />} />
+                    <Route path="/certifications/:id" element={<CertificateDetailPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/blog" element={<BlogsPage />} />
+                    <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                    <Route path="/newsletters" element={<NewslettersPage />} />
+                    <Route path="/events" element={<EventsPage />} />
+                    <Route path="/events/:id" element={<EventDetailPage />} />
+                    <Route path="/publications" element={<PublicationsPage />} />
+                    <Route path="/education" element={<EducationPage />} />
 
-                      <Route path="/admin/login" element={<AdminLoginPage />} />
-                      <Route
-                        path="/admin"
-                        element={
-                          <ProtectedRoute>
-                            <AdminLayout />
-                          </ProtectedRoute>
-                        }
-                      >
-                        <Route index element={<AdminDashboard />} />
-                        <Route path="dashboard" element={<AdminDashboard />} />
-                        <Route path="projects" element={<AdminProjects />} />
-                        <Route path="projects/new" element={<ProjectForm />} />
-                        <Route path="projects/:id" element={<ProjectForm />} />
-                        <Route path="blogs" element={<AdminBlogs />} />
-                        <Route path="blogs/new" element={<BlogForm />} />
-                        <Route path="blogs/:id" element={<BlogForm />} />
-                        <Route path="experience" element={<AdminExperience />} />
-                        <Route path="experience/new" element={<ExperienceForm />} />
-                        <Route path="experience/:id" element={<ExperienceForm />} />
-                        <Route path="skills" element={<AdminSkills />} />
-                        <Route path="certificates" element={<AdminCertificates />} />
-                        <Route path="certificates/new" element={<CertificateForm />} />
-                        <Route path="certificates/:id" element={<CertificateForm />} />
-                        <Route path="awards" element={<AdminAwards />} />
-                        <Route path="languages" element={<AdminLanguages />} />
-                        <Route path="hackathons" element={<AdminHackathons />} />
-                        <Route path="testimonials" element={<AdminTestimonials />} />
-                        <Route path="volunteer" element={<AdminVolunteer />} />
-                        <Route path="education" element={<AdminEducation />} />
-                        <Route path="education/new" element={<EducationForm />} />
-                        <Route path="education/:id" element={<EducationForm />} />
-                        <Route path="events" element={<AdminEvents />} />
-                        <Route path="newsletters" element={<AdminNewsletters />} />
-                        <Route path="messages" element={<AdminMessages />} />
-                        <Route path="courses" element={<AdminCourses />} />
-                        <Route path="publications" element={<AdminPublications />} />
-                        <Route path="patents" element={<AdminPatents />} />
-                        <Route path="organizations" element={<AdminOrganizations />} />
-                      </Route>
-
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </BrowserRouter>
-              </LazyMotion>
-            </TooltipProvider>
-          </ThemeProvider>
-        </AuthProvider>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </LazyMotion>
+          </TooltipProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   </HelmetProvider>
