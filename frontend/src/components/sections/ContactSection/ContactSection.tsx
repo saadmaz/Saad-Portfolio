@@ -19,8 +19,17 @@ export function ContactSection() {
         background: "var(--gradient-contact)",
         // This section is always dark regardless of site theme, so pin --accent
         // to the dark-theme value (light-theme's darker teal fails contrast here).
+        // --card/--border/--card-foreground are pinned too: .social-icon-branded
+        // reads --card for its background and --border for its outline, and in
+        // light theme those otherwise resolve to white, rendering the social
+        // icons below as white-on-white (icon color is derived from
+        // --card-foreground, so it stays paired with whatever surface color
+        // the button actually gets).
         ["--accent" as string]: "174 72% 44%",
         ["--accent-foreground" as string]: "196 60% 4%",
+        ["--card" as string]: "196 55% 7%",
+        ["--card-foreground" as string]: "174 20% 95%",
+        ["--border" as string]: "196 50% 15%",
       }}
     >
       {/* Ambient teal glow blobs */}
@@ -113,7 +122,7 @@ export function ContactSection() {
                   }
                 >
                   <span className="social-icon-ring" />
-                  <social.Icon className="w-5 h-5 relative z-10 text-white/70 transition-colors duration-[250ms] group-hover:text-[var(--brand-color)]" />
+                  <social.Icon className="w-5 h-5 relative z-10 text-[hsl(var(--card-foreground)/0.7)] transition-colors duration-[250ms] group-hover:text-[var(--brand-color)]" />
                 </m.a>
               ))}
             </m.div>
