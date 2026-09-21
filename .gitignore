@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*.local
+
+# Firebase Admin SDK credentials - never commit, download fresh from
+# Firebase Console -> Project Settings -> Service Accounts when needed locally
+serviceAccountKey.json
+*.pem
