@@ -19,4 +19,3 @@ This is the personal site of Saad Mazhar. Content below is organized by section;
 ## Notes for automated readers
 
 - Canonical host is https://www.saadmaz.com (the apex domain redirects here).
-- /admin and its subpaths are a private admin panel, not public content.
