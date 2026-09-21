@@ -52,6 +52,7 @@ const projectSchema = z.object({
   colour: z.string().optional().or(z.literal('')),
   order_index: z.number().optional(),
   featured: z.boolean().default(false),
+  published: z.boolean().default(true),
 
   // Descriptions
   description: z.string().optional().or(z.literal('')),
@@ -60,6 +61,7 @@ const projectSchema = z.object({
 
   // Media
   heroImage: z.string().optional().or(z.literal('')),
+  altText: z.string().optional().or(z.literal('')),
   image: z.string().optional().or(z.literal('')),
   screenshots: z.array(z.string()).optional().default([]),
   images: z.array(z.string()).optional().default([]),
@@ -175,7 +177,7 @@ const ProjectForm = () => {
     defaultValues: {
       techStack: [], technologies: [], screenshots: [], images: [],
       challenges: [], learnings: [], features: [],
-      status: 'Completed', featured: false,
+      status: 'Completed', featured: false, published: true,
     },
   });
 
@@ -212,10 +214,12 @@ const ProjectForm = () => {
           colour:           p.colour           || '',
           order_index:      p.order_index,
           featured:         p.featured         ?? false,
+          published:        p.published        ?? true,
           description:      p.description      || '',
           long_description: p.long_description || '',
           overview:         p.overview         || '',
           heroImage:        p.heroImage        || p.image || '',
+          altText:          p.altText          || '',
           image:            p.image            || '',
           screenshots:      p.screenshots      ?? p.images ?? [],
           images:           p.images           ?? [],
@@ -565,6 +569,11 @@ const ProjectForm = () => {
               value={watch('heroImage') || watch('image')}
               onChange={url => { setValue('heroImage', url); setValue('image', url); }}
             />
+            <div className="mt-3">
+              <label className={LABEL_CLS}>Image Alt Text</label>
+              <Input {...register('altText')} placeholder={watch('title') || 'Falls back to the project title if left blank'}
+                className={FIELD_CLS} />
+            </div>
           </Section>
 
           {/* Gallery */}
@@ -657,6 +666,13 @@ const ProjectForm = () => {
             <label className="flex items-center justify-between cursor-pointer group pt-1">
               <span className="text-sm font-bold text-white/70 group-hover:text-white transition-colors">Featured Project</span>
               <input type="checkbox" {...register('featured')}
+                className="w-4 h-4 rounded accent-teal-400 bg-white/5 border-white/10" />
+            </label>
+            <label className="flex items-center justify-between cursor-pointer group pt-1">
+              <span className="text-sm font-bold text-white/70 group-hover:text-white transition-colors">
+                Published <span className="font-normal text-white/40">(unpublish to hide from the public site and sitemap)</span>
+              </span>
+              <input type="checkbox" {...register('published')}
                 className="w-4 h-4 rounded accent-teal-400 bg-white/5 border-white/10" />
             </label>
           </Section>

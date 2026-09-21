@@ -50,7 +50,7 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
           <div className="relative h-36 overflow-hidden bg-muted">
             <img
               src={project.heroImage}
-              alt={`${project.title} - ${project.tagline || "project preview"}`}
+              alt={project.altText || project.title}
               loading="lazy"
               decoding="async"
               className="object-cover w-full h-full transition-transform duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.06]"

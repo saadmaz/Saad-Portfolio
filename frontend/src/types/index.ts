@@ -13,6 +13,8 @@ export interface Project {
   colour?: string;
   order_index?: number;
   featured?: boolean;
+  /** Defaults to visible when absent (legacy docs). Set to false to hide from the public site and sitemap. */
+  published?: boolean;
 
   // Descriptions
   description?: string;
@@ -21,6 +23,8 @@ export interface Project {
 
   // Media
   heroImage: string;
+  /** Alt text for heroImage. Falls back to the project title when unset - never derived from free-text fields like tagline/description. */
+  altText?: string;
   image?: string;           // legacy alias for heroImage
   images?: string[];        // legacy gallery
   screenshots?: string[];
