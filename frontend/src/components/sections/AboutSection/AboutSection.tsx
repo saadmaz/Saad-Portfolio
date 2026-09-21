@@ -1,6 +1,5 @@
 import { m } from "framer-motion";
-import { GraduationCap, MapPin, Calendar, Trophy, Globe, ArrowRight, ExternalLink } from "lucide-react";
-import { languages, awards } from "@/data/personal/about";
+import { GraduationCap, Calendar, Trophy, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEducation } from "@/shared/hooks/useCommon";
@@ -56,8 +55,7 @@ export function AboutSection() {
             Beyond the Code
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            I believe in being well-rounded. Here's a glimpse into my education,
-            languages, and recognition.
+            I believe in being well-rounded. Here's a glimpse into my education.
           </p>
         </m.div>
 
@@ -135,67 +133,16 @@ export function AboutSection() {
             </Link>
           )}
 
-          <div className="flex justify-center mt-6">
-            <Link to="/education">
-              <Button variant="outline" className="gap-2">
-                See All Education <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
+          {latestEducation && (
+            <div className="flex justify-center mt-6">
+              <Link to="/education">
+                <Button variant="outline" className="gap-2">
+                  See All Education <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </m.div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Languages */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            id="languages"
-          >
-            <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Globe className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-semibold text-foreground">Languages</h3>
-              </div>
-              <ul className="space-y-3">
-                {languages.map((lang) => (
-                  <li key={lang.name} className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-foreground">{lang.name}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
-                      {lang.level}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </m.div>
-
-          {/* Awards */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            id="awards"
-          >
-            <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Trophy className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-semibold text-foreground">Awards & Recognition</h3>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {awards.map((award) => (
-                  <div key={award.title} className="p-4 rounded-lg bg-secondary/50">
-                    <p className="text-sm font-medium text-foreground">{award.title}</p>
-                    <p className="text-xs text-muted-foreground">{award.issuer}</p>
-                    <p className="text-xs text-accent mt-1">{award.year}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </m.div>
-        </div>
       </div>
     </section>
   );

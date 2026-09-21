@@ -135,6 +135,8 @@ export function EventsPreview() {
   const { data: events = [], isLoading } = useEvents();
   const featured = events.slice(0, 3);
 
+  if (!isLoading && featured.length === 0) return null;
+
   return (
     <section className="section-padding">
       <div className="section-container">
@@ -169,7 +171,7 @@ export function EventsPreview() {
               <div key={i} className="rounded-xl bg-secondary/30 animate-pulse aspect-[4/3]" />
             ))}
           </div>
-        ) : featured.length === 0 ? null : (
+        ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map((event, index) => (
               <EventCard key={event.id} event={event} index={index} />

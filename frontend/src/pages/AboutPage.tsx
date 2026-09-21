@@ -8,34 +8,14 @@ import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { GraduationCap, MapPin, Trophy, Heart, Dumbbell, Globe, Star, Zap, ExternalLink, Medal, BookMarked, Lightbulb, ClipboardList, Building2, Leaf, Calendar } from "lucide-react";
+import { GraduationCap, Trophy, Heart, Globe, Zap, ExternalLink, Medal, BookMarked, Lightbulb, ClipboardList, Building2, Leaf, Calendar } from "lucide-react";
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge";
-import { languages, volunteer, sports, awards } from "@/data/personal/about";
-import { useHackathons, useVolunteer, useEducation, useCourses, usePatents, useTestScores, useOrganizations, useCauses } from "@/shared/hooks/useCommon";
+import { useHackathons, useVolunteer, useEducation, useCourses, usePatents, useTestScores, useOrganizations, useCauses, useLanguages, useAwards } from "@/shared/hooks/useCommon";
 import type { VolunteerExperience, Education } from "@/types";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 import { Link } from "react-router-dom";
-
-/**
- * STAR RATING COMPONENT
- * A utility component that renders a 5-star visual representation of proficiency.
- * @param filled - The number of stars to highlight (e.g., 4 out of 5)
- */
-const StarRating = ({ filled }: { filled: number }) => (
-  <div className="flex gap-1">
-    {/* Map through a fixed array of 5 to generate the rating scale */}
-    {[1, 2, 3, 4, 5].map((star) => (
-      <Star
-        key={star}
-        // Logic: Apply accent fill/color if the star index is less than or equal to the proficiency value
-        // Otherwise, render a semi-transparent muted star.
-        className={`w-4 h-4 ${star <= filled ? "fill-accent text-accent" : "text-muted-foreground"}`}
-      />
-    ))}
-  </div>
-);
 
 const AboutPage = () => {
   const { data: hackathons = [], isLoading: hackLoading } = useHackathons();
@@ -46,6 +26,8 @@ const AboutPage = () => {
   const { data: testScores = [] } = useTestScores();
   const { data: organizations = [] } = useOrganizations();
   const { data: causes = [] } = useCauses();
+  const { data: languages = [] } = useLanguages();
+  const { data: awards = [] } = useAwards();
 
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -206,55 +188,28 @@ const AboutPage = () => {
             )}
           </div>
 
-          {/* --- LANGUAGES & SPORTS GRID --- */}
-          {/* Two-column layout on large screens (lg:grid-cols-2) to maximize space efficiency */}
-          <div className="grid lg:grid-cols-2 gap-8 mb-16">
-            
-            {/* --- LANGUAGES CARD --- */}
-            <div id="languages" className="bg-card rounded-xl border border-border p-6">
+          {/* --- LANGUAGES CARD --- */}
+          {languages.length > 0 && (
+            <div id="languages" className="bg-card rounded-xl border border-border p-6 mb-16 max-w-md">
               <div className="flex items-center gap-2 mb-6">
                 <Globe className="w-5 h-5 text-accent" />
                 <h3 className="font-display text-xl font-semibold text-foreground">Languages</h3>
               </div>
               <ul className="space-y-5">
-                {/* Iterates through languages, filtering out any entry missing a star rating */}
-                {languages.filter(l => l.stars).map((lang) => (
-                  <li key={lang.name} className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium text-foreground">{lang.name}</span>
-                      <p className="text-xs text-muted-foreground">{lang.level}</p>
-                    </div>
-                    {/* Render the reusable StarRating component */}
-                    {lang.stars && <StarRating filled={lang.stars} />}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* --- SPORTS CARD --- */}
-            <div id="sports" className="bg-card rounded-xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Dumbbell className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-xl font-semibold text-foreground">Sports</h3>
-              </div>
-              <ul className="space-y-4">
-                {sports.map((sport) => (
-                  <li key={sport.name} className="flex items-center justify-between pb-4 border-b border-border last:border-0">
-                    <div>
-                      <span className="font-medium text-foreground">{sport.name}</span>
-                      <p className="text-xs text-muted-foreground">{sport.level}</p>
-                    </div>
-                    {/* Skill categorization label (Competitive, Varsity, etc.) */}
-                    <span className="text-xs px-3 py-1 rounded-full bg-secondary text-muted-foreground">
-                      {sport.skill}
+                {languages.map((lang) => (
+                  <li key={lang.id} className="flex items-center justify-between">
+                    <span className="font-medium text-foreground">{lang.name}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                      {lang.level}
                     </span>
                   </li>
                 ))}
               </ul>
             </div>
-          </div>
+          )}
 
           {/* --- VOLUNTEER WORK SECTION --- */}
+          {volunteerData.length > 0 && (
           <div className="mb-16" id="volunteer">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-lg bg-accent/10">
@@ -263,8 +218,7 @@ const AboutPage = () => {
               <h2 className="font-display text-2xl font-bold text-foreground">Volunteer Work</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Prefer Firestore data; fall back to static data */}
-              {(volunteerData.length > 0 ? volunteerData : volunteer as unknown as VolunteerExperience[]).map((vol) => {
+              {volunteerData.map((vol) => {
                 type V = VolunteerExperience & { org?: string; period?: string };
                 const v = vol as V;
                 const org = v.organization ?? v.org;
@@ -297,8 +251,10 @@ const AboutPage = () => {
               })}
             </div>
           </div>
+          )}
 
           {/* --- AWARDS SECTION --- */}
+          {awards.length > 0 && (
           <div id="awards" className="mb-16">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 rounded-lg bg-accent/10">
@@ -309,16 +265,17 @@ const AboutPage = () => {
             {/* Grid layout shifts from 1 col (mobile) to 2 (tablet) to 3 (desktop) */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {awards.map((award) => (
-                <div key={award.title} className="bg-card rounded-xl border border-border p-5 card-hover">
+                <div key={award.id} className="bg-card rounded-xl border border-border p-5 card-hover">
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-medium text-foreground">{award.title}</h4>
-                    <span className="text-xs text-accent font-medium">{award.year}</span>
+                    {award.date && <span className="text-xs text-accent font-medium">{award.date}</span>}
                   </div>
                   <p className="text-sm text-muted-foreground">{award.issuer}</p>
                 </div>
               ))}
             </div>
           </div>
+          )}
 
           {/* --- HACKATHONS SECTION --- */}
           {!hackLoading && hackathons.length > 0 && (
