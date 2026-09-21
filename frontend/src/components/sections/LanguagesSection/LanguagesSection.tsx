@@ -97,7 +97,7 @@ export function LanguagesSection() {
   if (languages.length === 0) return null;
 
   return (
-    <section className="section-padding">
+    <section aria-labelledby="languages-heading" className="section-padding">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -107,7 +107,7 @@ export function LanguagesSection() {
           className="mb-10"
         >
           <span className="section-title">Languages</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          <h2 id="languages-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground">
             Languages I Speak
           </h2>
         </m.div>

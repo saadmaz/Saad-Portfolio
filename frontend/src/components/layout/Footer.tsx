@@ -18,8 +18,6 @@ const exploreLinks = [
 const personalLinks = [
   { title: "Events & Hosting", href: "/events" },
   { title: "Volunteer", href: "/about#volunteer" },
-  { title: "Extra-Curricular", href: "/about#extracurricular" },
-  { title: "Sports", href: "/about#sports" },
   { title: "Awards", href: "/about#awards" },
   { title: "Languages", href: "/about#languages" },
 ];
@@ -131,7 +129,7 @@ export function Footer() {
                       href={social.href}
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="p-2 rounded-lg text-muted-foreground transition-all hover:text-card-foreground hover:bg-accent active:scale-95" 
+                      className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-muted-foreground transition-all hover:text-card-foreground hover:bg-accent active:scale-95"
                       aria-label={social.label}
                     >
                       <social.icon className="w-5 h-5" />

@@ -16,24 +16,27 @@ const fmt = (d: string | null | undefined) => {
 
 // border = color for top border + hover ring
 // glow   = gradient fill at top of card (dark mode only — opacity reduced in light)
-// tag*   = pill colors; lightText = darker shade for readable contrast on white
+// tag*   = pill colors; lightText = darker shade for readable contrast on white.
+// These are Tailwind -800/-900 shades rather than -600/-700: at the chip's actual
+// size (10px/600) the -600/-700 shades measured 2.04-3.33:1 against the near-white
+// tag background, short of the 4.5:1 WCAG AA floor for text this small.
 const ACCENT_VARIANTS = [
-  { border: "#22d3ee", glow: "rgba(34,211,238,0.14)",   tag: "rgba(34,211,238,0.12)",  tagBorder: "rgba(34,211,238,0.35)",  tagText: "#22d3ee",  lightText: "#0891b2"  },
-  { border: "#a78bfa", glow: "rgba(167,139,250,0.14)",  tag: "rgba(167,139,250,0.12)", tagBorder: "rgba(167,139,250,0.35)", tagText: "#a78bfa",  lightText: "#7c3aed"  },
-  { border: "#fb923c", glow: "rgba(251,146,60,0.14)",   tag: "rgba(251,146,60,0.12)",  tagBorder: "rgba(251,146,60,0.35)",  tagText: "#fb923c",  lightText: "#c2410c"  },
-  { border: "#34d399", glow: "rgba(52,211,153,0.14)",   tag: "rgba(52,211,153,0.12)",  tagBorder: "rgba(52,211,153,0.35)",  tagText: "#34d399",  lightText: "#059669"  },
-  { border: "#f472b6", glow: "rgba(244,114,182,0.14)",  tag: "rgba(244,114,182,0.12)", tagBorder: "rgba(244,114,182,0.35)", tagText: "#f472b6",  lightText: "#db2777"  },
-  { border: "#facc15", glow: "rgba(250,204,21,0.14)",   tag: "rgba(250,204,21,0.12)",  tagBorder: "rgba(250,204,21,0.35)",  tagText: "#ca8a04",  lightText: "#a16207"  },
-  { border: "#60a5fa", glow: "rgba(96,165,250,0.14)",   tag: "rgba(96,165,250,0.12)",  tagBorder: "rgba(96,165,250,0.35)",  tagText: "#60a5fa",  lightText: "#2563eb"  },
-  { border: "#f87171", glow: "rgba(248,113,113,0.14)",  tag: "rgba(248,113,113,0.12)", tagBorder: "rgba(248,113,113,0.35)", tagText: "#f87171",  lightText: "#dc2626"  },
-  { border: "#4ade80", glow: "rgba(74,222,128,0.14)",   tag: "rgba(74,222,128,0.12)",  tagBorder: "rgba(74,222,128,0.35)",  tagText: "#4ade80",  lightText: "#16a34a"  },
-  { border: "#e879f9", glow: "rgba(232,121,249,0.14)",  tag: "rgba(232,121,249,0.12)", tagBorder: "rgba(232,121,249,0.35)", tagText: "#e879f9",  lightText: "#a21caf"  },
-  { border: "#38bdf8", glow: "rgba(56,189,248,0.14)",   tag: "rgba(56,189,248,0.12)",  tagBorder: "rgba(56,189,248,0.35)",  tagText: "#38bdf8",  lightText: "#0284c7"  },
-  { border: "#fb7185", glow: "rgba(251,113,133,0.14)",  tag: "rgba(251,113,133,0.12)", tagBorder: "rgba(251,113,133,0.35)", tagText: "#fb7185",  lightText: "#e11d48"  },
-  { border: "#a3e635", glow: "rgba(163,230,53,0.14)",   tag: "rgba(163,230,53,0.12)",  tagBorder: "rgba(163,230,53,0.35)",  tagText: "#65a30d",  lightText: "#4d7c0f"  },
-  { border: "#2dd4bf", glow: "rgba(45,212,191,0.14)",   tag: "rgba(45,212,191,0.12)",  tagBorder: "rgba(45,212,191,0.35)",  tagText: "#2dd4bf",  lightText: "#0d9488"  },
-  { border: "#818cf8", glow: "rgba(129,140,248,0.14)",  tag: "rgba(129,140,248,0.12)", tagBorder: "rgba(129,140,248,0.35)", tagText: "#818cf8",  lightText: "#4f46e5"  },
-  { border: "#f9a8d4", glow: "rgba(249,168,212,0.14)",  tag: "rgba(249,168,212,0.12)", tagBorder: "rgba(249,168,212,0.35)", tagText: "#ec4899",  lightText: "#be185d"  },
+  { border: "#22d3ee", glow: "rgba(34,211,238,0.14)",   tag: "rgba(34,211,238,0.12)",  tagBorder: "rgba(34,211,238,0.35)",  tagText: "#22d3ee",  lightText: "#155e75"  },
+  { border: "#a78bfa", glow: "rgba(167,139,250,0.14)",  tag: "rgba(167,139,250,0.12)", tagBorder: "rgba(167,139,250,0.35)", tagText: "#a78bfa",  lightText: "#5b21b6"  },
+  { border: "#fb923c", glow: "rgba(251,146,60,0.14)",   tag: "rgba(251,146,60,0.12)",  tagBorder: "rgba(251,146,60,0.35)",  tagText: "#fb923c",  lightText: "#9a3412"  },
+  { border: "#34d399", glow: "rgba(52,211,153,0.14)",   tag: "rgba(52,211,153,0.12)",  tagBorder: "rgba(52,211,153,0.35)",  tagText: "#34d399",  lightText: "#065f46"  },
+  { border: "#f472b6", glow: "rgba(244,114,182,0.14)",  tag: "rgba(244,114,182,0.12)", tagBorder: "rgba(244,114,182,0.35)", tagText: "#f472b6",  lightText: "#9d174d"  },
+  { border: "#facc15", glow: "rgba(250,204,21,0.14)",   tag: "rgba(250,204,21,0.12)",  tagBorder: "rgba(250,204,21,0.35)",  tagText: "#ca8a04",  lightText: "#78350f"  },
+  { border: "#60a5fa", glow: "rgba(96,165,250,0.14)",   tag: "rgba(96,165,250,0.12)",  tagBorder: "rgba(96,165,250,0.35)",  tagText: "#60a5fa",  lightText: "#1e40af"  },
+  { border: "#f87171", glow: "rgba(248,113,113,0.14)",  tag: "rgba(248,113,113,0.12)", tagBorder: "rgba(248,113,113,0.35)", tagText: "#f87171",  lightText: "#991b1b"  },
+  { border: "#4ade80", glow: "rgba(74,222,128,0.14)",   tag: "rgba(74,222,128,0.12)",  tagBorder: "rgba(74,222,128,0.35)",  tagText: "#4ade80",  lightText: "#166534"  },
+  { border: "#e879f9", glow: "rgba(232,121,249,0.14)",  tag: "rgba(232,121,249,0.12)", tagBorder: "rgba(232,121,249,0.35)", tagText: "#e879f9",  lightText: "#701a75"  },
+  { border: "#38bdf8", glow: "rgba(56,189,248,0.14)",   tag: "rgba(56,189,248,0.12)",  tagBorder: "rgba(56,189,248,0.35)",  tagText: "#38bdf8",  lightText: "#075985"  },
+  { border: "#fb7185", glow: "rgba(251,113,133,0.14)",  tag: "rgba(251,113,133,0.12)", tagBorder: "rgba(251,113,133,0.35)", tagText: "#fb7185",  lightText: "#9f1239"  },
+  { border: "#a3e635", glow: "rgba(163,230,53,0.14)",   tag: "rgba(163,230,53,0.12)",  tagBorder: "rgba(163,230,53,0.35)",  tagText: "#65a30d",  lightText: "#365314"  },
+  { border: "#2dd4bf", glow: "rgba(45,212,191,0.14)",   tag: "rgba(45,212,191,0.12)",  tagBorder: "rgba(45,212,191,0.35)",  tagText: "#2dd4bf",  lightText: "#115e59"  },
+  { border: "#818cf8", glow: "rgba(129,140,248,0.14)",  tag: "rgba(129,140,248,0.12)", tagBorder: "rgba(129,140,248,0.35)", tagText: "#818cf8",  lightText: "#3730a3"  },
+  { border: "#f9a8d4", glow: "rgba(249,168,212,0.14)",  tag: "rgba(249,168,212,0.12)", tagBorder: "rgba(249,168,212,0.35)", tagText: "#ec4899",  lightText: "#9d174d"  },
 ];
 
 function hashId(id: string | number): number {
@@ -118,9 +121,9 @@ export function CertCard({ cert }: { cert: Certificate }) {
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold text-muted-foreground truncate leading-none mb-1">{cert.issuer}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground truncate leading-none mb-1">{cert.issuer}</p>
               {cert.is_verifiable && (
-                <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>
+                <span className={`inline-flex items-center gap-0.5 text-[12px] font-bold ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>
                   <BadgeCheck className="w-3 h-3" />
                   Verified
                 </span>
@@ -141,7 +144,7 @@ export function CertCard({ cert }: { cert: Certificate }) {
           {/* Footer */}
           <div className="mt-auto space-y-2.5">
             {/* Dates */}
-            <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3 shrink-0" style={{ color: accent.border }} />
                 {fmt(cert.issue_date)}
@@ -160,7 +163,7 @@ export function CertCard({ cert }: { cert: Certificate }) {
               {tags.slice(0, 2).map((tag, i) => (
                 <span
                   key={i}
-                  className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap"
+                  className="shrink-0 px-2 py-0.5 rounded-full text-[12px] font-semibold whitespace-nowrap"
                   style={{
                     background: accent.tag,
                     border: `1px solid ${accent.tagBorder}`,
@@ -171,7 +174,7 @@ export function CertCard({ cert }: { cert: Certificate }) {
                 </span>
               ))}
               {tags.length > 2 && (
-                <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold text-muted-foreground bg-muted whitespace-nowrap">
+                <span className="shrink-0 px-2 py-0.5 rounded-full text-[12px] font-semibold text-muted-foreground bg-muted whitespace-nowrap">
                   +{tags.length - 2}
                 </span>
               )}
@@ -182,14 +185,14 @@ export function CertCard({ cert }: { cert: Certificate }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold hover:underline whitespace-nowrap"
+                    className="inline-flex items-center gap-1 text-[12px] font-semibold hover:underline whitespace-nowrap"
                     style={{ color: accent.border }}
                   >
                     View <ExternalLink className="w-3 h-3" />
                   </a>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold whitespace-nowrap"
+                    className="inline-flex items-center gap-1 text-[12px] font-semibold whitespace-nowrap"
                     style={{ color: accent.border }}
                   >
                     Details <ArrowRight className="w-3 h-3" />
@@ -229,7 +232,7 @@ export function CertificatesPreview() {
   }
 
   return (
-    <section className="py-20 bg-secondary/20">
+    <section aria-labelledby="credentials-heading" className="py-20 bg-secondary/20">
       <div className="section-container">
 
         {/* Header */}
@@ -243,14 +246,14 @@ export function CertificatesPreview() {
           <div className="flex items-center gap-2 mb-3">
             <span className="section-title">Credentials</span>
             {sorted.length > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-accent/15 text-accent text-[11px] font-bold border border-accent/25">
+              <span className="px-2 py-0.5 rounded-full bg-accent/15 text-accent text-[12px] font-bold border border-accent/25">
                 {sorted.length} total
               </span>
             )}
           </div>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              <h2 id="credentials-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Licenses &amp; Certifications
               </h2>
               <p className="text-muted-foreground max-w-lg text-sm leading-relaxed">

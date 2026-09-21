@@ -28,7 +28,7 @@ const newsletters = [
 
 export function NewsletterSection() {
   return (
-    <section className="py-16 bg-secondary/30">
+    <section aria-labelledby="newsletter-heading" className="py-16 bg-secondary/30">
       <div className="section-container"> 
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -38,7 +38,7 @@ export function NewsletterSection() {
           className="text-center mb-12"
         >
           <span className="section-title">Knowledge Hub</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4"> 
+          <h2 id="newsletter-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Stay Updated
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">

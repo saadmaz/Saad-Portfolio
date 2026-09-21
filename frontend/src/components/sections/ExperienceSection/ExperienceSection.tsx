@@ -489,7 +489,7 @@ export function ExperienceSection() {
   }
 
   return (
-    <section className="section-padding">
+    <section aria-labelledby="experience-heading" className="section-padding">
       <div className="section-container">
         {/* Section header */}
         <m.div
@@ -502,7 +502,7 @@ export function ExperienceSection() {
           <span className="section-title">Work Experience</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              <h2 id="experience-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground">
                 Where I've Worked
               </h2>
               {/* Total experience summary */}

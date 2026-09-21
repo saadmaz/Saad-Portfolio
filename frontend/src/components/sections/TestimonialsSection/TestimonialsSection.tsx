@@ -34,7 +34,7 @@ export function TestimonialsSection() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="section-padding">
+    <section aria-labelledby="testimonials-heading" className="section-padding">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -44,7 +44,7 @@ export function TestimonialsSection() {
           className="text-center mb-12"
         >
           <span className="section-title">Testimonials</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 id="testimonials-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             What People Say
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">

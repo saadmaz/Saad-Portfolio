@@ -90,7 +90,7 @@ export function Header() {
               <span className="font-display text-xl font-bold text-foreground">Saad Mazhar</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav aria-label="Main" className="hidden lg:flex items-center gap-1">
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
@@ -187,13 +187,13 @@ export function Header() {
 
               <div className="mt-12 pt-6 border-t border-border">
                 <div className="flex flex-wrap items-center gap-6">
-                  <a href="tel:+94720135801" aria-label="Call Saad" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Phone className="w-6 h-6" /></a>
-                  <a href="mailto:saadmazaa@gmail.com" aria-label="Email Saad" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Mail className="w-6 h-6" /></a>
-                  <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Linkedin className="w-6 h-6" /></a>
-                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" aria-label="GitHub" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Github className="w-6 h-6" /></a>
-                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" aria-label="Instagram" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Instagram className="w-6 h-6" /></a>
-                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" aria-label="Facebook" className="p-2 text-muted-foreground hover:text-accent transition-colors"><Facebook className="w-6 h-6" /></a>
-                  <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="p-2 text-muted-foreground hover:text-accent transition-colors"><X className="w-6 h-6" /></a>
+                  <a href="tel:+94720135801" aria-label="Call Saad" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Phone className="w-6 h-6" /></a>
+                  <a href="mailto:saadmazaa@gmail.com" aria-label="Email Saad" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Mail className="w-6 h-6" /></a>
+                  <a href="https://linkedin.com/in/saadmaz" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Linkedin className="w-6 h-6" /></a>
+                  <a href="https://github.com/saadmaz" target="_blank" rel="noreferrer" aria-label="GitHub" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Github className="w-6 h-6" /></a>
+                  <a href="https://instagram.com/saaadmaz/" target="_blank" rel="noreferrer" aria-label="Instagram" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Instagram className="w-6 h-6" /></a>
+                  <a href="https://facebook.com/saadmazhar03/" target="_blank" rel="noreferrer" aria-label="Facebook" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><Facebook className="w-6 h-6" /></a>
+                  <a href="https://x.com/SaadMazhar_" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="p-2.5 text-muted-foreground hover:text-accent transition-colors"><X className="w-6 h-6" /></a>
                 </div>
               </div>
             </m.nav>

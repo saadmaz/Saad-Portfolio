@@ -755,7 +755,7 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
   // ── Preview mode ──
   if (preview) {
     return (
-      <section className="section-padding bg-secondary/30">
+      <section aria-labelledby="education-heading-compact" className="section-padding bg-secondary/30">
         <div className="section-container">
           <m.div
             initial={{ opacity: 0, y: 20 }}
@@ -766,7 +766,7 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
           >
             <div>
               <span className="section-title">Education</span>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Academic Background</h2>
+              <h2 id="education-heading-compact" className="font-display text-3xl md:text-4xl font-bold text-foreground">Academic Background</h2>
             </div>
             <Link to="/education"
               className="hidden sm:flex items-center gap-1.5 text-sm text-accent font-semibold hover:underline flex-shrink-0">
@@ -802,7 +802,7 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
 
   // ── Full mode ──
   return (
-    <section className="section-padding bg-secondary/30">
+    <section aria-labelledby="education-heading" className="section-padding bg-secondary/30">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -813,7 +813,7 @@ export function EducationSection({ preview = false }: EducationSectionProps) {
         >
           <span className="section-title">Education</span>
           <div className="flex items-end justify-between flex-wrap gap-4">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Academic Background</h2>
+            <h2 id="education-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground">Academic Background</h2>
             {education.length > 1 && (
               <div className="flex items-center gap-1 p-1 rounded-lg bg-card border border-border">
                 <button onClick={() => setView('card')} aria-pressed={view === 'card'}

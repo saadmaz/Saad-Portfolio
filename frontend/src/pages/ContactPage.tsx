@@ -191,6 +191,8 @@ const ContactPage = () => {
                       <Label htmlFor="name">Name</Label>
                       <Input
                         id="name"
+                        name="name"
+                        autoComplete="name"
                         placeholder="Your name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -201,7 +203,9 @@ const ContactPage = () => {
                       <Label htmlFor="email">Email</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
                         placeholder="name@youremail.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -213,6 +217,8 @@ const ContactPage = () => {
                     <Label htmlFor="subject">Subject</Label>
                     <Input
                       id="subject"
+                      name="subject"
+                      autoComplete="off"
                       placeholder="What's this about?"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -223,6 +229,8 @@ const ContactPage = () => {
                     <Label htmlFor="message">Message</Label>
                     <Textarea
                       id="message"
+                      name="message"
+                      autoComplete="off"
                       placeholder="Your message..."
                       rows={6}
                       value={formData.message}

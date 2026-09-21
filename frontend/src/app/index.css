@@ -43,8 +43,11 @@
     /* ==========================================
        THE DARK TEAL ACCENT
        ========================================== */
-    /* Accent - Professional "Dark Teal" inspired by the image reference */
-    --accent: 174 72% 32%;
+    /* Accent - Professional "Dark Teal" inspired by the image reference.
+       32% lightness measured 3.65-3.96:1 against this theme's near-white
+       surfaces for small/bold text (section eyebrow labels) - short of the
+       4.5:1 WCAG AA floor. 27% clears ~5.5:1 while staying the same hue. */
+    --accent: 174 72% 27%;
     --accent-foreground: 0 0% 100%;
     --accent-glow: 174 72% 32%;
 

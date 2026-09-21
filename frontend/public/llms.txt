@@ -1,0 +1,22 @@
+# Saad Mazhar
+
+> Full-stack developer and startup founder based in Colombo, Sri Lanka, building AI-powered products and web apps.
+
+This is the personal site of Saad Mazhar. Content below is organized by section; each link is the canonical URL for that section.
+
+## Site sections
+
+- [Home](https://www.saadmaz.com/): overview, current focus, and contact links.
+- [About](https://www.saadmaz.com/about): background, education, languages, awards, and volunteer work.
+- [Projects](https://www.saadmaz.com/projects): software projects, with individual case study pages under /projects/{slug}.
+- [Work Experience](https://www.saadmaz.com/experience): career history.
+- [Skills](https://www.saadmaz.com/skills): technical skill set.
+- [Certifications](https://www.saadmaz.com/certifications): professional certifications.
+- [Blog](https://www.saadmaz.com/blog): articles, with individual posts under /blog/{slug}.
+- [Events](https://www.saadmaz.com/events): speaking, hosting, and organizing engagements.
+- [Contact](https://www.saadmaz.com/contact): contact form and direct contact details.
+
+## Notes for automated readers
+
+- Canonical host is https://www.saadmaz.com (the apex domain redirects here).
+- /admin and its subpaths are a private admin panel, not public content.

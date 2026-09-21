@@ -14,6 +14,7 @@ const socialLinks = [
 export function ContactSection() {
   return (
     <section
+      aria-labelledby="contact-heading"
       className="py-16 relative overflow-hidden"
       style={{
         background: "var(--gradient-contact)",
@@ -50,7 +51,7 @@ export function ContactSection() {
               Get in Touch
             </span>
 
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 leading-tight text-white">
+            <h2 id="contact-heading" className="font-display text-3xl md:text-4xl font-bold mb-4 leading-tight text-white">
               Let's Build Something{" "}
               <span className="text-accent">Great</span> Together
             </h2>

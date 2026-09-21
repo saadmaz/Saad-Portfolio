@@ -138,7 +138,7 @@ export function EventsPreview() {
   if (!isLoading && featured.length === 0) return null;
 
   return (
-    <section className="section-padding">
+    <section aria-labelledby="events-heading" className="section-padding">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -150,7 +150,7 @@ export function EventsPreview() {
           <span className="section-title">Public Presence</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              <h2 id="events-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Events &amp; Hosting
               </h2>
               <p className="text-muted-foreground max-w-xl">

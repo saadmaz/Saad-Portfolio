@@ -186,7 +186,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
+    <section aria-labelledby="hero-heading" className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
 
       {/* ── Layered background ─────────────────────────────────────────────────
           Three layers stacked via `absolute inset-0 -z-10`:
@@ -232,7 +232,7 @@ export function HeroSection() {
 
             {/* Main heading — "Hi, I'm" fades in, then AnimatedName staggers each letter */}
             <div className="space-y-4">
-              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] md:whitespace-nowrap">
+              <h1 id="hero-heading" className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] md:whitespace-nowrap">
                 <m.span
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}

@@ -9,8 +9,14 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent focus:text-accent-foreground focus:shadow-lg"
+      >
+        Skip to content
+      </a>
       <Header />
-      <main className="flex-1 pt-16 md:pt-20">
+      <main id="main-content" className="flex-1 pt-16 md:pt-20">
         {children}
       </main>
       <Footer />

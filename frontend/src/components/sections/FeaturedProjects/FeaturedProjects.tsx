@@ -43,7 +43,7 @@ export function FeaturedProjects() {
   if (gridProjects.length === 0) return null;
 
   return (
-    <section className="py-16 bg-secondary/30 overflow-hidden">
+    <section aria-labelledby="featured-work-heading" className="py-16 bg-secondary/30 overflow-hidden">
       <div className="section-container">
 
         {/* Section header */}
@@ -55,7 +55,7 @@ export function FeaturedProjects() {
           className="text-center mb-10"
         >
           <span className="section-title">Featured Work</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 id="featured-work-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Projects I'm Proud Of
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">

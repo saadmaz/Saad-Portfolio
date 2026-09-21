@@ -61,7 +61,7 @@ export function SkillsSection() {
   const activeCategory = skillCategories[activeTab];
 
   return (
-    <section className="section-padding bg-secondary/30 overflow-hidden">
+    <section aria-labelledby="skills-heading" className="section-padding bg-secondary/30 overflow-hidden">
       <div className="section-container">
 
         {/* ── Section header ─────────────────────────────────────── */}
@@ -75,7 +75,7 @@ export function SkillsSection() {
           <span className="section-title">Technical Skills</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              <h2 id="skills-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Tech Stack & Skills
               </h2>
               <p className="text-muted-foreground max-w-xl">

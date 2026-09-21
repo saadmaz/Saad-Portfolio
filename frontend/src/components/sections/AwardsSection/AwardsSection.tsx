@@ -108,7 +108,7 @@ export function AwardsSection() {
   if (awards.length === 0) return null;
 
   return (
-    <section className="section-padding bg-secondary/30">
+    <section aria-labelledby="awards-heading" className="section-padding bg-secondary/30">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -118,7 +118,7 @@ export function AwardsSection() {
           className="mb-10"
         >
           <span className="section-title">Recognition</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          <h2 id="awards-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground">
             Awards &amp; Honors
           </h2>
         </m.div>

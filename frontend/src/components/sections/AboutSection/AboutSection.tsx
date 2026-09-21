@@ -41,7 +41,7 @@ export function AboutSection() {
     : '';
 
   return (
-    <section className="section-padding">
+    <section aria-labelledby="about-heading" className="section-padding">
       <div className="section-container">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,7 +51,7 @@ export function AboutSection() {
           className="text-center mb-16"
         >
           <span className="section-title">About Me</span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 id="about-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Beyond the Code
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
