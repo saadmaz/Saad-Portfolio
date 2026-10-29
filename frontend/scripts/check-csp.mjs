@@ -36,7 +36,7 @@ for (const file of htmlFiles(DIST)) {
     // External scripts are covered by host allow-lists; JSON-LD is data, not code.
     if (/\bsrc=/.test(attrs) || /application\/ld\+json/.test(attrs)) continue;
     const hash = `'sha256-${createHash("sha256").update(body).digest("base64")}'`;
-    if (!scriptSrc.includes(hash)) missing.set(hash, relative(DIST, file));
+    if (!scriptSrc.includes(hash) && !missing.has(hash)) missing.set(hash, relative(DIST, file));
   }
 }
 
