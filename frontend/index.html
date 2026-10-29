@@ -17,6 +17,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Apply the saved/system theme before first paint so dark-mode visitors
+         don't see a light flash. Mirrors src/hooks/useTheme.tsx. Also CSP-hashed. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t !== "light" && t !== "dark") {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          if (t === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- The prerendered crawler content inside #root (scripts/prerender.mjs) is
+         unstyled. Keep it in the HTML for crawlers but don't paint it for
+         visitors: React replaces it on mount. If the app hasn't mounted after
+         4s (slow network / JS error) it's revealed as a readable fallback, and
+         it's always shown when JavaScript is disabled. -->
+    <style>
+      [data-prerendered] {
+        visibility: hidden;
+        animation: reveal-prerendered 0s 4s forwards;
+      }
+      @keyframes reveal-prerendered {
+        to {
+          visibility: visible;
+        }
+      }
+    </style>
+    <noscript>
+      <style>
+        [data-prerendered] {
+          visibility: visible;
+          animation: none;
+        }
+      </style>
+    </noscript>
+
     <title>Full-Stack Developer &amp; Startup Founder - Saad Mazhar</title>
 
     <meta
@@ -38,22 +77,13 @@
     <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
     <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin />
 
-    <!-- Non-render-blocking font load: all three families in one request, swapped after parse -->
+    <!-- All three font families in one small stylesheet. A plain <link> (no
+         inline onload="" swap trick) because the CSP forbids inline event
+         handlers; display=swap keeps text visible while font files download. -->
     <link
-      rel="preload"
-      as="style"
+      rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
-      onload="
-        this.onload = null;
-        this.rel = 'stylesheet';
-      "
     />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
-      />
-    </noscript>
 
     <meta property="og:site_name" content="Saad Mazhar" />
     <meta property="og:title" content="Full-Stack Developer &amp; Startup Founder - Saad Mazhar" />
