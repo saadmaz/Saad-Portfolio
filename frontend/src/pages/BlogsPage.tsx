@@ -5,7 +5,7 @@ import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { BlogCard } from "../components/blog/BlogCard/BlogCard";
-import { useBlogPosts } from "../shared/hooks/useBlog";
+import { useBlogPosts } from "@/hooks/useBlog";
 
 const BlogsPage: React.FC = () => {
   const { data: blogPosts = [], isLoading } = useBlogPosts();
@@ -14,19 +14,16 @@ const BlogsPage: React.FC = () => {
 
   const selectedTag = searchParams.get("tag");
 
-  const allTags = [
-    "All",
-    ...Array.from(new Set(blogPosts.flatMap(p => p.tags || []))).sort(),
-  ];
+  const allTags = ["All", ...Array.from(new Set(blogPosts.flatMap((p) => p.tags || []))).sort()];
 
-  const filteredPosts = blogPosts.filter(post => {
+  const filteredPosts = blogPosts.filter((post) => {
     const matchesTag = !selectedTag || (post.tags || []).includes(selectedTag);
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
       !q ||
       post.title?.toLowerCase().includes(q) ||
       post.excerpt?.toLowerCase().includes(q) ||
-      (post.tags || []).some(t => t.toLowerCase().includes(q));
+      (post.tags || []).some((t) => t.toLowerCase().includes(q));
     return matchesTag && matchesSearch;
   });
 
@@ -41,7 +38,7 @@ const BlogsPage: React.FC = () => {
         <section className="section-padding">
           <div className="section-container">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="aspect-[3/4] rounded-xl bg-secondary/30 animate-pulse" />
               ))}
             </div>
@@ -61,7 +58,6 @@ const BlogsPage: React.FC = () => {
 
       <section className="section-padding">
         <div className="section-container">
-
           {/* Header */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
@@ -74,8 +70,8 @@ const BlogsPage: React.FC = () => {
               Thoughts, Ideas &amp; Insights
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              I write about AI, startups, full-stack development, and building
-              products from Colombo, Sri Lanka.
+              I write about AI, startups, full-stack development, and building products from Colombo, Sri
+              Lanka.
             </p>
           </m.div>
 
@@ -87,7 +83,7 @@ const BlogsPage: React.FC = () => {
             className="flex flex-wrap items-center gap-3 mb-12"
           >
             {/* Tag pills */}
-            {allTags.map(tag => (
+            {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => handleTagClick(tag)}
@@ -107,7 +103,7 @@ const BlogsPage: React.FC = () => {
                 type="text"
                 placeholder="Search posts…"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-3 pr-8 py-2 text-sm rounded-full border border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all w-48"
               />
               {searchQuery && (
@@ -131,7 +127,10 @@ const BlogsPage: React.FC = () => {
             >
               <p className="text-lg mb-4">No posts found.</p>
               <button
-                onClick={() => { setSearchQuery(""); setSearchParams({}); }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSearchParams({});
+                }}
                 className="px-5 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-muted text-sm font-medium transition-colors"
               >
                 Clear filters
@@ -150,27 +149,11 @@ const BlogsPage: React.FC = () => {
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   className="h-full"
                 >
-                  <BlogCard
-                    slug={post.slug || post.id}
-                    metadata={{
-                      id: post.id,
-                      title: post.title,
-                      excerpt: post.excerpt,
-                      date: post.date,
-                      category: post.category,
-                      readTime: "5 min",
-                      slug: post.slug || post.id,
-                      author: post.author,
-                      coverImage: post.image,
-                      tags: post.tags,
-                      isLatest: post.is_latest,
-                    }}
-                  />
+                  <BlogCard post={post} />
                 </m.div>
               ))}
             </div>
           )}
-
         </div>
       </section>
     </Layout>

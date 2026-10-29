@@ -2,14 +2,27 @@ import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { Mail, Phone, MapPin, Github, Linkedin, X, Send, Calendar, Clock, Globe, Instagram, Facebook } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+  Linkedin,
+  X,
+  Send,
+  Calendar,
+  Clock,
+  Globe,
+  Instagram,
+  Facebook,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useContactMutation } from "@/shared/hooks/useCommon";
+import { useContactMutation } from "@/hooks/useContent";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -17,19 +30,20 @@ const ContactPage = () => {
     email: "",
     subject: "",
     message: "",
+    website: "", // honeypot - hidden from humans, left empty
   });
 
   const contactMutation = useContactMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       await contactMutation.mutateAsync(formData);
       toast.success("Message sent successfully! I'll get back to you soon.");
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", subject: "", message: "", website: "" });
     } catch (error) {
-      toast.error("Failed to send message. Please try again later.");
+      toast.error(error instanceof Error ? error.message : "Failed to send message. Please try again later.");
     }
   };
 
@@ -39,7 +53,6 @@ const ContactPage = () => {
         title={PAGE_SEO["/contact"].title}
         description={PAGE_SEO["/contact"].description}
         url={`${BASE_URL}/contact`}
-        keywords="hire freelance developer Sri Lanka, hire full-stack developer Colombo, freelance React developer, Flutter developer for hire"
       />
       <section className="section-padding">
         <div className="section-container">
@@ -55,8 +68,8 @@ const ContactPage = () => {
               Let's Connect
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Have a project in mind, want to collaborate, or just want to say hello? 
-              I'd love to hear from you. Fill out the form or reach out directly.
+              Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from
+              you. Fill out the form or reach out directly.
             </p>
           </m.div>
 
@@ -69,12 +82,10 @@ const ContactPage = () => {
               className="lg:col-span-2 space-y-8"
             >
               <div>
-                <h3 className="font-display text-xl font-semibold text-foreground mb-6">
-                  Get in Touch
-                </h3>
+                <h3 className="font-display text-xl font-semibold text-foreground mb-6">Get in Touch</h3>
                 <ul className="space-y-4">
                   <li>
-                    <a 
+                    <a
                       href="mailto:saadmazaa@gmail.com"
                       className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent/50 transition-colors"
                     >
@@ -88,7 +99,7 @@ const ContactPage = () => {
                     </a>
                   </li>
                   <li>
-                    <a 
+                    <a
                       href="tel:+94720135801"
                       className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent/50 transition-colors"
                     >
@@ -122,11 +133,11 @@ const ContactPage = () => {
                 </h4>
                 <div className="flex flex-wrap items-center gap-2">
                   {[
-                    { href: "https://github.com/saadmaz/",         Icon: Github,   label: "GitHub" },
-                    { href: "https://linkedin.com/in/saadmaz/",    Icon: Linkedin, label: "LinkedIn" },
-                    { href: "https://instagram.com/saadmazhar_",   Icon: Instagram, label: "Instagram"},
-                    { href: "https://facebook.com/saadmazhar",     Icon: Facebook, label: "Facebook"},
-                    { href: "https://x.com/SaadMazhar_",           Icon: X,        label: "X (Twitter)" },
+                    { href: "https://github.com/saadmaz/", Icon: Github, label: "GitHub" },
+                    { href: "https://linkedin.com/in/saadmaz/", Icon: Linkedin, label: "LinkedIn" },
+                    { href: "https://instagram.com/saadmazhar_", Icon: Instagram, label: "Instagram" },
+                    { href: "https://facebook.com/saadmazhar", Icon: Facebook, label: "Facebook" },
+                    { href: "https://x.com/SaadMazhar_", Icon: X, label: "X (Twitter)" },
                   ].map(({ href, Icon, label }) => (
                     <a
                       key={label}
@@ -154,7 +165,9 @@ const ContactPage = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  <span className="text-emerald-500 font-medium">Open to freelance &amp; full-time roles</span>
+                  <span className="text-emerald-500 font-medium">
+                    Open to freelance &amp; full-time roles
+                  </span>
                 </div>
               </div>
 
@@ -182,10 +195,21 @@ const ContactPage = () => {
               className="lg:col-span-3"
             >
               <div className="bg-card rounded-xl border border-border p-8">
-                <h3 className="font-display text-xl font-semibold text-foreground mb-6">
-                  Send a Message
-                </h3>
+                <h3 className="font-display text-xl font-semibold text-foreground mb-6">Send a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Honeypot: off-screen and skipped by keyboard/screen readers; bots fill it. */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                    <label htmlFor="website">Website</label>
+                    <input
+                      id="website"
+                      name="website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={formData.website}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name">Name</Label>
@@ -194,6 +218,7 @@ const ContactPage = () => {
                         name="name"
                         autoComplete="name"
                         placeholder="Your name"
+                        maxLength={100}
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
@@ -207,6 +232,7 @@ const ContactPage = () => {
                         type="email"
                         autoComplete="email"
                         placeholder="name@youremail.com"
+                        maxLength={254}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
@@ -220,6 +246,7 @@ const ContactPage = () => {
                       name="subject"
                       autoComplete="off"
                       placeholder="What's this about?"
+                      maxLength={200}
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       required
@@ -232,14 +259,16 @@ const ContactPage = () => {
                       name="message"
                       autoComplete="off"
                       placeholder="Your message..."
+                      minLength={10}
+                      maxLength={5000}
                       rows={6}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
                     />
                   </div>
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="btn-primary w-full gap-2"
                     disabled={contactMutation.isPending}
                   >

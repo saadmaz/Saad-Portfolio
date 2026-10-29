@@ -1,25 +1,35 @@
-import { useState, useMemo, useRef } from 'react';
-import { m } from 'framer-motion';
-import { MapPin, ExternalLink, ChevronDown, ChevronUp, Building, Trophy, Star, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { useExperience } from '@/shared/hooks/useCommon';
-import { Experience, ExperienceMedia, ExperienceRole } from '@/types';
-import { useModalA11y } from '@/shared/hooks/useModalA11y';
+import { useState, useMemo, useRef } from "react";
+import { m } from "framer-motion";
+import { MapPin, ExternalLink, ChevronDown, ChevronUp, Building, Trophy, Star, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { useExperience } from "@/hooks/useContent";
+import { Experience, ExperienceMedia } from "@/types";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const MONTHS = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December',
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // ─── Normalized types for rendering (handles both old and new schemas) ────────
 
 interface NormalizedRole {
   title: string;
-  startDate?: string;       // legacy
-  endDate?: string;         // legacy
+  startDate?: string; // legacy
+  endDate?: string; // legacy
   startMonth?: string;
   startYear?: number;
   endMonth?: string;
@@ -28,9 +38,9 @@ interface NormalizedRole {
   description?: string;
   skills: string[];
   media?: ExperienceMedia[];
-  employmentType?: string;  // per-role employment type (legacy fallback)
-  location?: string;        // legacy per-role
-  locationType?: string;    // legacy per-role
+  employmentType?: string; // per-role employment type (legacy fallback)
+  location?: string; // legacy per-role
+  locationType?: string; // legacy per-role
 }
 
 interface NormalizedCompany {
@@ -56,7 +66,7 @@ function parseRoleDate(month?: string, year?: number, legacyStr?: string): Date 
     const mIdx = month ? MONTHS.indexOf(month) : 0;
     return new Date(year, mIdx < 0 ? 0 : mIdx, 1);
   }
-  if (legacyStr && legacyStr !== 'Present') {
+  if (legacyStr && legacyStr !== "Present") {
     const parts = legacyStr.trim().split(/\s+/);
     const y = parseInt(parts[parts.length - 1]);
     const m = MONTHS.indexOf(parts[0]);
@@ -66,21 +76,22 @@ function parseRoleDate(month?: string, year?: number, legacyStr?: string): Date 
 }
 
 function calcDuration(start: Date | null, end: Date | null, isCurrent: boolean): string {
-  if (!start) return '';
+  if (!start) return "";
   const e = isCurrent ? new Date() : (end ?? new Date());
   let months = (e.getFullYear() - start.getFullYear()) * 12 + (e.getMonth() - start.getMonth());
   if (months < 1) months = 1;
   const yrs = Math.floor(months / 12);
   const mos = months % 12;
-  return [yrs > 0 && `${yrs} yr${yrs > 1 ? 's' : ''}`, mos > 0 && `${mos} mo${mos > 1 ? 's' : ''}`]
-    .filter(Boolean).join(' ');
+  return [yrs > 0 && `${yrs} yr${yrs > 1 ? "s" : ""}`, mos > 0 && `${mos} mo${mos > 1 ? "s" : ""}`]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function formatMonthYear(month?: string, year?: number, legacyStr?: string): string {
   if (month && year) return `${month.slice(0, 3)} ${year}`;
   if (year) return String(year);
   if (legacyStr) return legacyStr;
-  return '';
+  return "";
 }
 
 // ─── Data normalizer — converts Experience[] to NormalizedCompany[] ───────────
@@ -90,7 +101,7 @@ function normalizeExperiences(experiences: Experience[]): NormalizedCompany[] {
   const legacyMap = new Map<string, NormalizedCompany>();
 
   for (const exp of experiences) {
-    const companyName = exp.company_name ?? exp.company ?? '';
+    const companyName = exp.company_name ?? exp.company ?? "";
     const logo = exp.company_logo ?? exp.companyLogo;
     const companyUrl = exp.companyUrl;
     const locationType = exp.location_type ?? exp.workMode;
@@ -152,7 +163,7 @@ function normalizeExperiences(experiences: Experience[]): NormalizedCompany[] {
         });
       }
       legacyMap.get(key)!.roles.push({
-        title: exp.position ?? '',
+        title: exp.position ?? "",
         startDate: exp.startDate,
         endDate: exp.endDate,
         isCurrent: exp.is_current ?? exp.isCurrent ?? false,
@@ -181,12 +192,15 @@ function normalizeExperiences(experiences: Experience[]): NormalizedCompany[] {
   all.sort((a, b) => {
     if (a.isFeatured && !b.isFeatured) return -1;
     if (!a.isFeatured && b.isFeatured) return 1;
-    if (a.displayOrder !== undefined && b.displayOrder !== undefined)
-      return a.displayOrder - b.displayOrder;
+    if (a.displayOrder !== undefined && b.displayOrder !== undefined) return a.displayOrder - b.displayOrder;
     if (a.displayOrder !== undefined) return -1;
     if (b.displayOrder !== undefined) return 1;
-    const aDate = a.roles[0] ? parseRoleDate(a.roles[0].startMonth, a.roles[0].startYear, a.roles[0].startDate) : null;
-    const bDate = b.roles[0] ? parseRoleDate(b.roles[0].startMonth, b.roles[0].startYear, b.roles[0].startDate) : null;
+    const aDate = a.roles[0]
+      ? parseRoleDate(a.roles[0].startMonth, a.roles[0].startYear, a.roles[0].startDate)
+      : null;
+    const bDate = b.roles[0]
+      ? parseRoleDate(b.roles[0].startMonth, b.roles[0].startYear, b.roles[0].startDate)
+      : null;
     return (bDate?.getTime() ?? 0) - (aDate?.getTime() ?? 0);
   });
 
@@ -195,7 +209,11 @@ function normalizeExperiences(experiences: Experience[]): NormalizedCompany[] {
 
 // ─── Total experience calculator ──────────────────────────────────────────────
 
-function calcTotalExperience(companies: NormalizedCompany[]): { years: number; months: number; count: number } {
+function calcTotalExperience(companies: NormalizedCompany[]): {
+  years: number;
+  months: number;
+  count: number;
+} {
   const ranges: { start: Date; end: Date }[] = [];
   for (const c of companies) {
     for (const r of c.roles) {
@@ -236,16 +254,22 @@ function MediaStrip({ items }: { items: ExperienceMedia[] }) {
         {items.map((m, i) => (
           <button
             key={i}
-            onClick={() => m.media_type === 'Image' ? setLightbox(m) : window.open(m.media_url, '_blank', 'noopener')}
+            onClick={() =>
+              m.media_type === "Image" ? setLightbox(m) : window.open(m.media_url, "_blank", "noopener")
+            }
             className="snap-start flex-shrink-0 group relative w-24 h-16 rounded-lg overflow-hidden bg-secondary border border-border hover:border-accent/40 transition-all"
             title={m.media_caption ?? m.media_url}
           >
-            {m.media_type === 'Image' ? (
-              <img src={m.media_url} alt={m.media_caption ?? ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+            {m.media_type === "Image" ? (
+              <img
+                src={m.media_url}
+                alt={m.media_caption ?? ""}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-muted-foreground group-hover:text-accent transition-colors">
                 <span className="text-lg">
-                  {m.media_type === 'Document' ? '📄' : m.media_type === 'Presentation' ? '📊' : '🔗'}
+                  {m.media_type === "Document" ? "📄" : m.media_type === "Presentation" ? "📊" : "🔗"}
                 </span>
                 {m.media_caption && (
                   <span className="text-[9px] text-center px-1 truncate w-full">{m.media_caption}</span>
@@ -256,22 +280,29 @@ function MediaStrip({ items }: { items: ExperienceMedia[] }) {
         ))}
       </div>
       {lightbox && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- backdrop click is a mouse shortcut; Escape (useModalA11y) and the close button serve keyboard users
         <div
           ref={lightboxRef}
           role="dialog"
           aria-modal="true"
-          aria-label={lightbox.media_caption ?? 'Media preview'}
+          aria-label={lightbox.media_caption ?? "Media preview"}
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm"
-          onClick={() => setLightbox(null)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setLightbox(null);
+          }}
         >
-          <div className="relative max-w-4xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-4xl max-h-[90vh] w-full">
             <button
               className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               onClick={() => setLightbox(null)}
             >
               <X className="w-6 h-6" />
             </button>
-            <img src={lightbox.media_url} alt={lightbox.media_caption ?? ''} className="rounded-xl max-w-full max-h-[80vh] object-contain mx-auto" />
+            <img
+              src={lightbox.media_url}
+              alt={lightbox.media_caption ?? ""}
+              className="rounded-xl max-w-full max-h-[80vh] object-contain mx-auto"
+            />
             {lightbox.media_caption && (
               <p className="text-center text-sm text-white/60 mt-3">{lightbox.media_caption}</p>
             )}
@@ -291,14 +322,14 @@ function RoleRow({ role, isLast }: { role: NormalizedRole; isLast: boolean }) {
   const endDate = role.isCurrent ? null : parseRoleDate(role.endMonth, role.endYear, role.endDate);
   const duration = calcDuration(startDate, endDate, role.isCurrent);
   const startLabel = formatMonthYear(role.startMonth, role.startYear, role.startDate);
-  const endLabel = role.isCurrent ? 'Present' : formatMonthYear(role.endMonth, role.endYear, role.endDate);
-  const dateRange = [startLabel, endLabel].filter(Boolean).join(' – ');
+  const endLabel = role.isCurrent ? "Present" : formatMonthYear(role.endMonth, role.endYear, role.endDate);
+  const dateRange = [startLabel, endLabel].filter(Boolean).join(" – ");
 
   const skills = role.skills.length > 0 ? role.skills : [];
   const allMedia = role.media ?? [];
 
   return (
-    <div className={`relative pl-8 ${isLast ? '' : 'pb-6'}`}>
+    <div className={`relative pl-8 ${isLast ? "" : "pb-6"}`}>
       <div className="absolute left-[11px] top-1.5 w-2.5 h-2.5 rounded-full bg-accent border-2 border-background z-10" />
 
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 mb-1">
@@ -311,7 +342,12 @@ function RoleRow({ role, isLast }: { role: NormalizedRole; isLast: boolean }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mb-2">
-        {dateRange && <span>{dateRange}{duration ? ` · ${duration}` : ''}</span>}
+        {dateRange && (
+          <span>
+            {dateRange}
+            {duration ? ` · ${duration}` : ""}
+          </span>
+        )}
         {role.location && (
           <span className="flex items-center gap-1">
             <MapPin className="w-3 h-3" />
@@ -327,15 +363,23 @@ function RoleRow({ role, isLast }: { role: NormalizedRole; isLast: boolean }) {
 
       {role.description && (
         <div className="relative mb-2">
-          <p className={`text-sm text-muted-foreground leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+          <p className={`text-sm text-muted-foreground leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>
             {role.description}
           </p>
           {role.description.length > 200 && (
             <button
-              onClick={() => setExpanded(v => !v)}
+              onClick={() => setExpanded((v) => !v)}
               className="mt-1 flex items-center gap-1 text-xs text-accent font-medium hover:underline"
             >
-              {expanded ? <><ChevronUp className="w-3 h-3" /> Show less</> : <><ChevronDown className="w-3 h-3" /> Show more</>}
+              {expanded ? (
+                <>
+                  <ChevronUp className="w-3 h-3" /> Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-3 h-3" /> Show more
+                </>
+              )}
             </button>
           )}
         </div>
@@ -343,8 +387,11 @@ function RoleRow({ role, isLast }: { role: NormalizedRole; isLast: boolean }) {
 
       {skills.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-2">
-          {skills.map(s => (
-            <span key={s} className="tech-chip text-[10px] py-0.5 px-2 transition-all duration-200 hover:bg-accent/20 hover:text-accent hover:-translate-y-px">
+          {skills.map((s) => (
+            <span
+              key={s}
+              className="tech-chip text-[10px] py-0.5 px-2 transition-all duration-200 hover:bg-accent/20 hover:text-accent hover:-translate-y-px"
+            >
               {s}
             </span>
           ))}
@@ -359,19 +406,33 @@ function RoleRow({ role, isLast }: { role: NormalizedRole; isLast: boolean }) {
 // ─── Company Group Card ────────────────────────────────────────────────────────
 
 function CompanyGroup({ company, index }: { company: NormalizedCompany; index: number }) {
-  const { name, logo, companyUrl, employmentType, location, locationType, isFeatured, roles, achievements, topSkills, topMedia } = company;
+  const {
+    name,
+    logo,
+    companyUrl,
+    employmentType,
+    location,
+    locationType,
+    isFeatured,
+    roles,
+    achievements,
+    topSkills,
+    topMedia,
+  } = company;
 
   // Compute company-level duration from roles
-  const allStarts = roles.map(r => parseRoleDate(r.startMonth, r.startYear, r.startDate)).filter(Boolean) as Date[];
-  const allEnds = roles.map(r => r.isCurrent ? new Date() : parseRoleDate(r.endMonth, r.endYear, r.endDate)).filter(Boolean) as Date[];
-  const companyStart = allStarts.length ? new Date(Math.min(...allStarts.map(d => d.getTime()))) : null;
-  const companyEnd = allEnds.length ? new Date(Math.max(...allEnds.map(d => d.getTime()))) : null;
-  const hasCurrentRole = roles.some(r => r.isCurrent);
+  const allStarts = roles
+    .map((r) => parseRoleDate(r.startMonth, r.startYear, r.startDate))
+    .filter(Boolean) as Date[];
+  const allEnds = roles
+    .map((r) => (r.isCurrent ? new Date() : parseRoleDate(r.endMonth, r.endYear, r.endDate)))
+    .filter(Boolean) as Date[];
+  const companyStart = allStarts.length ? new Date(Math.min(...allStarts.map((d) => d.getTime()))) : null;
+  const companyEnd = allEnds.length ? new Date(Math.max(...allEnds.map((d) => d.getTime()))) : null;
+  const hasCurrentRole = roles.some((r) => r.isCurrent);
   const companyDuration = calcDuration(companyStart, hasCurrentRole ? null : companyEnd, hasCurrentRole);
 
-  const allSkills = topSkills.length > 0
-    ? topSkills
-    : [...new Set(roles.flatMap(r => r.skills))];
+  const allSkills = topSkills.length > 0 ? topSkills : [...new Set(roles.flatMap((r) => r.skills))];
 
   const allMedia = topMedia?.length ? topMedia : [];
 
@@ -379,7 +440,7 @@ function CompanyGroup({ company, index }: { company: NormalizedCompany; index: n
     <m.div
       initial={{ opacity: 0, x: -30 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
       className="relative flex gap-4"
     >
@@ -403,7 +464,8 @@ function CompanyGroup({ company, index }: { company: NormalizedCompany; index: n
             {companyUrl ? (
               <a
                 href={companyUrl}
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="font-display font-semibold text-base text-foreground hover:text-accent transition-colors flex items-center gap-1.5"
               >
                 {name} <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
@@ -412,11 +474,23 @@ function CompanyGroup({ company, index }: { company: NormalizedCompany; index: n
               <span className="font-display font-semibold text-base text-foreground">{name}</span>
             )}
             <p className="text-xs text-muted-foreground mt-0.5">
-              {[employmentType, companyDuration].filter(Boolean).join(' · ')}
+              {[employmentType, companyDuration].filter(Boolean).join(" · ")}
               {location && (
-                <> · <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{location}</span></>
+                <>
+                  {" "}
+                  ·{" "}
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {location}
+                  </span>
+                </>
               )}
-              {locationType && <> · <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary">{locationType}</span></>}
+              {locationType && (
+                <>
+                  {" "}
+                  · <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary">{locationType}</span>
+                </>
+              )}
             </p>
           </div>
           {isFeatured && (
@@ -434,10 +508,13 @@ function CompanyGroup({ company, index }: { company: NormalizedCompany; index: n
         </div>
 
         {/* Company-level skills (shown when not per-role) */}
-        {allSkills.length > 0 && roles.every(r => r.skills.length === 0) && (
+        {allSkills.length > 0 && roles.every((r) => r.skills.length === 0) && (
           <div className="flex flex-wrap gap-1.5 mt-3 ml-1">
-            {allSkills.map(s => (
-              <span key={s} className="tech-chip text-[10px] py-0.5 px-2 hover:bg-accent/20 hover:text-accent">
+            {allSkills.map((s) => (
+              <span
+                key={s}
+                className="tech-chip text-[10px] py-0.5 px-2 hover:bg-accent/20 hover:text-accent"
+              >
                 {s}
               </span>
             ))}
@@ -453,7 +530,11 @@ function CompanyGroup({ company, index }: { company: NormalizedCompany; index: n
         )}
 
         {/* Company-level media */}
-        {allMedia.length > 0 && <div className="ml-1"><MediaStrip items={allMedia} /></div>}
+        {allMedia.length > 0 && (
+          <div className="ml-1">
+            <MediaStrip items={allMedia} />
+          </div>
+        )}
       </div>
     </m.div>
   );
@@ -472,7 +553,7 @@ export function ExperienceSection() {
       <section className="section-padding">
         <div className="section-container">
           <div className="space-y-8">
-            {[1, 2].map(i => (
+            {[1, 2].map((i) => (
               <div key={i} className="flex gap-4">
                 <div className="w-[52px] h-[52px] rounded-xl bg-card animate-pulse shrink-0" />
                 <div className="flex-1 space-y-3">
@@ -502,16 +583,22 @@ export function ExperienceSection() {
           <span className="section-title">Work Experience</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 id="experience-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              <h2
+                id="experience-heading"
+                className="font-display text-3xl md:text-4xl font-bold text-foreground"
+              >
                 Where I've Worked
               </h2>
               {/* Total experience summary */}
               {(total.years > 0 || total.months > 0) && (
                 <p className="text-sm text-muted-foreground mt-2">
                   {[
-                    total.years > 0 && `${total.years} year${total.years !== 1 ? 's' : ''}`,
-                    total.months > 0 && `${total.months} month${total.months !== 1 ? 's' : ''}`,
-                  ].filter(Boolean).join(' ')} of experience across {total.count} {total.count === 1 ? 'company' : 'companies'}
+                    total.years > 0 && `${total.years} year${total.years !== 1 ? "s" : ""}`,
+                    total.months > 0 && `${total.months} month${total.months !== 1 ? "s" : ""}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}{" "}
+                  of experience across {total.count} {total.count === 1 ? "company" : "companies"}
                 </p>
               )}
             </div>

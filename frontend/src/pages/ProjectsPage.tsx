@@ -2,9 +2,8 @@ import { m } from "framer-motion";
 import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
-import { useProjects } from "@/shared/hooks/useProjects";
+import { useProjects } from "@/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
@@ -13,14 +12,10 @@ const ProjectsPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
 
   // derive categories dynamically from data
-  const categories = [
-    "All",
-    ...Array.from(new Set(projects.map((p) => p.category || "").filter(Boolean)))
-  ];
+  const categories = ["All", ...Array.from(new Set(projects.map((p) => p.category || "").filter(Boolean)))];
 
-  const filteredProjects = activeCategory === "All"
-    ? projects
-    : projects.filter(p => p.category === activeCategory);
+  const filteredProjects =
+    activeCategory === "All" ? projects : projects.filter((p) => p.category === activeCategory);
 
   if (isLoading) {
     return (
@@ -28,7 +23,7 @@ const ProjectsPage = () => {
         <section className="section-padding">
           <div className="section-container">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map(i => (
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="rounded-xl bg-secondary/30 animate-pulse aspect-[4/3]" />
               ))}
             </div>
@@ -44,7 +39,6 @@ const ProjectsPage = () => {
         title={PAGE_SEO["/projects"].title}
         description={PAGE_SEO["/projects"].description}
         url={`${BASE_URL}/projects`}
-        keywords="full-stack developer portfolio Sri Lanka, React projects, Flutter apps, AI developer Colombo, hire developer Sri Lanka"
       />
       <section className="section-padding">
         <div className="section-container">
@@ -60,8 +54,8 @@ const ProjectsPage = () => {
               Things I've Built
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              A collection of projects ranging from web applications to CLI tools.
-              Each one represents a problem I wanted to solve or a technology I wanted to explore.
+              A collection of projects ranging from web applications to CLI tools. Each one represents a
+              problem I wanted to solve or a technology I wanted to explore.
             </p>
           </m.div>
 
@@ -76,10 +70,11 @@ const ProjectsPage = () => {
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${activeCategory === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-muted"
-                  }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-muted"
+                }`}
               >
                 {category}
               </button>

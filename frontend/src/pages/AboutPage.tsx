@@ -1,5 +1,5 @@
 //ABOUT PAGE COMPONENT
-// This page serves as a "Beyond the Code" section of the portfolio, 
+// This page serves as a "Beyond the Code" section of the portfolio,
 // highlighting personal achievements, education, and hobbies.
 
 // --- Dependencies ---
@@ -8,11 +8,36 @@ import { m } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { GraduationCap, Trophy, Heart, Globe, Zap, ExternalLink, Medal, BookMarked, Lightbulb, ClipboardList, Building2, Leaf, Calendar } from "lucide-react";
+import {
+  GraduationCap,
+  Trophy,
+  Heart,
+  Globe,
+  Zap,
+  ExternalLink,
+  Medal,
+  BookMarked,
+  Lightbulb,
+  ClipboardList,
+  Building2,
+  Leaf,
+  Calendar,
+} from "lucide-react";
 
 // --- UI Components & Data ---
 import { Badge } from "@/components/ui/badge";
-import { useHackathons, useVolunteer, useEducation, useCourses, usePatents, useTestScores, useOrganizations, useCauses, useLanguages, useAwards } from "@/shared/hooks/useCommon";
+import {
+  useHackathons,
+  useVolunteer,
+  useEducation,
+  useCourses,
+  usePatents,
+  useTestScores,
+  useOrganizations,
+  useCauses,
+  useLanguages,
+  useAwards,
+} from "@/hooks/useContent";
 import type { VolunteerExperience, Education } from "@/types";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 import { Link } from "react-router-dom";
@@ -29,22 +54,22 @@ const AboutPage = () => {
   const { data: languages = [] } = useLanguages();
   const { data: awards = [] } = useAwards();
 
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
   function formatEducationPeriod(edu: Education): string {
     const isCurrent = edu.is_current ?? edu.isCurrent ?? false;
-    const start = edu.start_month && edu.start_year
-      ? `${edu.start_month.slice(0, 3)} ${edu.start_year}`
-      : edu.startDate ?? '';
-    const end = isCurrent ? 'Present'
+    const start =
+      edu.start_month && edu.start_year
+        ? `${edu.start_month.slice(0, 3)} ${edu.start_year}`
+        : (edu.startDate ?? "");
+    const end = isCurrent
+      ? "Present"
       : edu.end_month && edu.end_year
         ? `${edu.end_month.slice(0, 3)} ${edu.end_year}`
-        : edu.endDate ?? '';
-    return start ? (end ? `${start} – ${end}` : start) : '';
+        : (edu.endDate ?? "");
+    return start ? (end ? `${start} – ${end}` : start) : "";
   }
 
   const publishedEducation = [...educationData]
-    .filter(e => e.is_published !== false)
+    .filter((e) => e.is_published !== false)
     .sort((a, b) => {
       const aY = a.start_year ?? (a.startDate ? parseInt(a.startDate) : 0);
       const bY = b.start_year ?? (b.startDate ? parseInt(b.startDate) : 0);
@@ -68,7 +93,6 @@ const AboutPage = () => {
       {/* section-padding: custom utility for consistent vertical spacing across the site */}
       <section className="section-padding">
         <div className="section-container">
-          
           {/* --- PAGE HEADER --- */}
           {/* m.div: Uses initial/animate props to create a "rising fade" entry effect when the user lands on the page */}
           <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
@@ -99,7 +123,7 @@ const AboutPage = () => {
 
             {eduLoading ? (
               <div className="space-y-4">
-                {[1, 2].map(i => (
+                {[1, 2].map((i) => (
                   <div key={i} className="h-28 rounded-xl bg-card border border-border animate-pulse" />
                 ))}
               </div>
@@ -112,7 +136,7 @@ const AboutPage = () => {
               <div className="space-y-4">
                 {publishedEducation.slice(0, 3).map((edu, index) => {
                   const logo = edu.school_logo ?? edu.logo;
-                  const name = edu.school_name ?? edu.institution ?? '';
+                  const name = edu.school_name ?? edu.institution ?? "";
                   const period = formatEducationPeriod(edu);
                   const field = edu.field_of_study ?? edu.fieldOfStudy;
                   const skills = edu.skills ?? [];
@@ -138,8 +162,12 @@ const AboutPage = () => {
                           <div className="flex items-start justify-between gap-2 flex-wrap">
                             <div>
                               {edu.school_website_url ? (
-                                <a href={edu.school_website_url} target="_blank" rel="noopener noreferrer"
-                                  className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
+                                <a
+                                  href={edu.school_website_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1"
+                                >
                                   {name} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                                 </a>
                               ) : (
@@ -147,11 +175,17 @@ const AboutPage = () => {
                               )}
                               {(edu.degree || field) && (
                                 <p className="text-accent text-sm font-medium">
-                                  {edu.degree}{edu.degree && field ? ' · ' : ''}{field}
+                                  {edu.degree}
+                                  {edu.degree && field ? " · " : ""}
+                                  {field}
                                 </p>
                               )}
                             </div>
-                            {period && <Badge variant="secondary" className="w-fit text-xs shrink-0">{period}</Badge>}
+                            {period && (
+                              <Badge variant="secondary" className="w-fit text-xs shrink-0">
+                                {period}
+                              </Badge>
+                            )}
                           </div>
 
                           {edu.grade && edu.show_grade_publicly !== false && (
@@ -162,11 +196,18 @@ const AboutPage = () => {
 
                           {skills.length > 0 && (
                             <div className="pt-2 flex flex-wrap gap-1.5">
-                              {skills.slice(0, 5).map(skill => (
-                                <span key={skill} className="text-xs px-2 py-0.5 bg-secondary rounded text-muted-foreground">{skill}</span>
+                              {skills.slice(0, 5).map((skill) => (
+                                <span
+                                  key={skill}
+                                  className="text-xs px-2 py-0.5 bg-secondary rounded text-muted-foreground"
+                                >
+                                  {skill}
+                                </span>
                               ))}
                               {skills.length > 5 && (
-                                <span className="text-xs px-2 py-0.5 text-muted-foreground">+{skills.length - 5} more</span>
+                                <span className="text-xs px-2 py-0.5 text-muted-foreground">
+                                  +{skills.length - 5} more
+                                </span>
                               )}
                             </div>
                           )}
@@ -210,71 +251,78 @@ const AboutPage = () => {
 
           {/* --- VOLUNTEER WORK SECTION --- */}
           {volunteerData.length > 0 && (
-          <div className="mb-16" id="volunteer">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-lg bg-accent/10">
-                <Heart className="w-6 h-6 text-accent" />
+            <div className="mb-16" id="volunteer">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Heart className="w-6 h-6 text-accent" />
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Volunteer Work</h2>
               </div>
-              <h2 className="font-display text-2xl font-bold text-foreground">Volunteer Work</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {volunteerData.map((vol) => {
-                type V = VolunteerExperience & { org?: string; period?: string };
-                const v = vol as V;
-                const org = v.organization ?? v.org;
-                const role = v.role;
-                const period = v.period ?? `${v.startDate}${v.isCurrent ? ' – Present' : v.endDate ? ` – ${v.endDate}` : ''}`;
-                const desc = v.description;
-                const img = v.image;
-                return (
-                  <div key={v.id ?? org} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/30 transition-colors">
-                    {img && (
-                      <button
-                        type="button"
-                        className="block w-full h-40 overflow-hidden focus:outline-none"
-                        onClick={() => openLightbox([img])}
-                      >
-                        <img
-                          src={img}
-                          alt={org}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-zoom-in"
-                        />
-                      </button>
-                    )}
-                    <div className="p-6">
-                      <h4 className="font-semibold text-foreground mb-1">{org}</h4>
-                      <p className="text-sm text-accent mb-3">{role} • {period}</p>
-                      {desc && <p className="text-sm text-muted-foreground">{desc}</p>}
+              <div className="grid md:grid-cols-2 gap-6">
+                {volunteerData.map((vol) => {
+                  type V = VolunteerExperience & { org?: string; period?: string };
+                  const v = vol as V;
+                  const org = v.organization ?? v.org;
+                  const role = v.role;
+                  const period =
+                    v.period ??
+                    `${v.startDate}${v.isCurrent ? " – Present" : v.endDate ? ` – ${v.endDate}` : ""}`;
+                  const desc = v.description;
+                  const img = v.image;
+                  return (
+                    <div
+                      key={v.id ?? org}
+                      className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/30 transition-colors"
+                    >
+                      {img && (
+                        <button
+                          type="button"
+                          className="block w-full h-40 overflow-hidden focus:outline-none"
+                          onClick={() => openLightbox([img])}
+                        >
+                          <img
+                            src={img}
+                            alt={org}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-zoom-in"
+                          />
+                        </button>
+                      )}
+                      <div className="p-6">
+                        <h4 className="font-semibold text-foreground mb-1">{org}</h4>
+                        <p className="text-sm text-accent mb-3">
+                          {role} • {period}
+                        </p>
+                        {desc && <p className="text-sm text-muted-foreground">{desc}</p>}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
           )}
 
           {/* --- AWARDS SECTION --- */}
           {awards.length > 0 && (
-          <div id="awards" className="mb-16">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-lg bg-accent/10">
-                <Trophy className="w-6 h-6 text-accent" />
-              </div>
-              <h2 className="font-display text-2xl font-bold text-foreground">Awards</h2>
-            </div>
-            {/* Grid layout shifts from 1 col (mobile) to 2 (tablet) to 3 (desktop) */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {awards.map((award) => (
-                <div key={award.id} className="bg-card rounded-xl border border-border p-5 card-hover">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-medium text-foreground">{award.title}</h4>
-                    {award.date && <span className="text-xs text-accent font-medium">{award.date}</span>}
-                  </div>
-                  <p className="text-sm text-muted-foreground">{award.issuer}</p>
+            <div id="awards" className="mb-16">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-lg bg-accent/10">
+                  <Trophy className="w-6 h-6 text-accent" />
                 </div>
-              ))}
+                <h2 className="font-display text-2xl font-bold text-foreground">Awards</h2>
+              </div>
+              {/* Grid layout shifts from 1 col (mobile) to 2 (tablet) to 3 (desktop) */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {awards.map((award) => (
+                  <div key={award.id} className="bg-card rounded-xl border border-border p-5 card-hover">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-medium text-foreground">{award.title}</h4>
+                      {award.date && <span className="text-xs text-accent font-medium">{award.date}</span>}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{award.issuer}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
           )}
 
           {/* --- HACKATHONS SECTION --- */}
@@ -330,7 +378,9 @@ const AboutPage = () => {
                           <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                             {hack.name}
                           </h4>
-                          <p className="text-xs text-muted-foreground mt-0.5">{hack.organizer} · {hack.date}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {hack.organizer} · {hack.date}
+                          </p>
                         </div>
                         {hack.achievement && (
                           <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold border border-amber-500/20">
@@ -341,9 +391,7 @@ const AboutPage = () => {
                       </div>
 
                       {hack.projectTitle && (
-                        <p className="text-sm text-accent font-medium mb-2">
-                          Project: {hack.projectTitle}
-                        </p>
+                        <p className="text-sm text-accent font-medium mb-2">Project: {hack.projectTitle}</p>
                       )}
 
                       {hack.description && (
@@ -353,7 +401,9 @@ const AboutPage = () => {
                       )}
 
                       <div className="flex items-center justify-between">
-                        <Badge variant="secondary" className="text-[10px]">{hack.role}</Badge>
+                        <Badge variant="secondary" className="text-[10px]">
+                          {hack.role}
+                        </Badge>
                         {hack.link && (
                           <a
                             href={hack.link}
@@ -406,7 +456,12 @@ const AboutPage = () => {
                         {course.name}
                       </h4>
                       {course.link && (
-                        <a href={course.link} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 text-muted-foreground hover:text-accent transition-colors">
+                        <a
+                          href={course.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-shrink-0 text-muted-foreground hover:text-accent transition-colors"
+                        >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       )}
@@ -482,7 +537,9 @@ const AboutPage = () => {
                 </div>
                 <div>
                   <h2 className="font-display text-2xl font-bold text-foreground">Patents</h2>
-                  <p className="text-sm text-muted-foreground">{patents.length} {patents.length === 1 ? 'filing' : 'filings'}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {patents.length} {patents.length === 1 ? "filing" : "filings"}
+                  </p>
                 </div>
               </div>
               <div className="space-y-4">
@@ -499,28 +556,33 @@ const AboutPage = () => {
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                           <h4 className="font-semibold text-foreground">{patent.title}</h4>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
-                            patent.status.toLowerCase() === 'issued'
-                              ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                              : patent.status.toLowerCase() === 'pending'
-                              ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
-                              : 'bg-secondary text-muted-foreground border-border'
-                          }`}>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                              patent.status.toLowerCase() === "issued"
+                                ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                                : patent.status.toLowerCase() === "pending"
+                                  ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                                  : "bg-secondary text-muted-foreground border-border"
+                            }`}
+                          >
                             {patent.status}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {patent.patentOffice}{patent.patentNumber ? ` · ${patent.patentNumber}` : ''}
+                          {patent.patentOffice}
+                          {patent.patentNumber ? ` · ${patent.patentNumber}` : ""}
                         </p>
                         {(patent.filingDate || patent.issueDate) && (
                           <p className="text-xs text-muted-foreground mt-1">
-                            {patent.filingDate ? `Filed: ${patent.filingDate}` : ''}
-                            {patent.filingDate && patent.issueDate ? ' · ' : ''}
-                            {patent.issueDate ? `Issued: ${patent.issueDate}` : ''}
+                            {patent.filingDate ? `Filed: ${patent.filingDate}` : ""}
+                            {patent.filingDate && patent.issueDate ? " · " : ""}
+                            {patent.issueDate ? `Issued: ${patent.issueDate}` : ""}
                           </p>
                         )}
                         {patent.description && (
-                          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{patent.description}</p>
+                          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                            {patent.description}
+                          </p>
                         )}
                       </div>
                       {patent.link && (
@@ -572,7 +634,11 @@ const AboutPage = () => {
                         className="block w-full h-32 overflow-hidden focus:outline-none"
                         onClick={() => openLightbox([org.image!])}
                       >
-                        <img src={org.image} alt={org.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-zoom-in" />
+                        <img
+                          src={org.image}
+                          alt={org.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-zoom-in"
+                        />
                       </button>
                     )}
                     <div className="p-5">
@@ -583,12 +649,18 @@ const AboutPage = () => {
                           {(org.startDate || org.endDate) && (
                             <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {org.startDate}{org.isCurrent ? ' – Present' : org.endDate ? ` – ${org.endDate}` : ''}
+                              {org.startDate}
+                              {org.isCurrent ? " – Present" : org.endDate ? ` – ${org.endDate}` : ""}
                             </p>
                           )}
                         </div>
                         {org.link && (
-                          <a href={org.link} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors flex-shrink-0">
+                          <a
+                            href={org.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-accent transition-colors flex-shrink-0"
+                          >
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         )}
@@ -637,7 +709,6 @@ const AboutPage = () => {
               </div>
             </m.div>
           )}
-
         </div>
       </section>
 

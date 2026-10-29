@@ -1,5 +1,5 @@
 import { m } from "framer-motion";
-import { useLanguages } from "@/shared/hooks/useCommon";
+import { useLanguages } from "@/hooks/useContent";
 import { Language } from "@/types";
 
 const levelConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -26,10 +26,7 @@ const levelConfig: Record<string, { label: string; color: string; bg: string }> 
 };
 
 function getLevelConfig(level: string) {
-  return (
-    levelConfig[level] ||
-    levelConfig["Professional Working"]
-  );
+  return levelConfig[level] || levelConfig["Professional Working"];
 }
 
 function getBarColor(level: string): string {
@@ -85,7 +82,7 @@ export function LanguagesSection() {
       <section className="section-padding">
         <div className="section-container">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-20 rounded-xl bg-card animate-pulse" />
             ))}
           </div>

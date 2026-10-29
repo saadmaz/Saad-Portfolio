@@ -23,7 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-.env*.local
+coverage
+.firebase/
+
+# Environment files - only .env.example is committed
+.env
+.env.*
+!.env.example
 
 # Firebase Admin SDK credentials - never commit, download fresh from
 # Firebase Console -> Project Settings -> Service Accounts when needed locally

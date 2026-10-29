@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -6,31 +6,27 @@ import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { Award, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { dataManager } from "@/shared/lib/dataManager";
 import { CertCard } from "@/components/sections/CertificatesPreview";
-import { Certificate } from "@/types";
+import { useCertificates } from "@/hooks/useContent";
 
 const CertificationsPage = () => {
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading: loading } = useCertificates();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllCerts, setShowAllCerts] = useState(false);
 
-  useEffect(() => {
-    dataManager.getCertificates().then((data) => {
-      const sorted = [...data].sort((a, b) =>
-        new Date(b.issue_date || 0).getTime() - new Date(a.issue_date || 0).getTime()
-      );
-      setCertificates(sorted);
-      setLoading(false);
-    });
-  }, []);
+  const certificates = useMemo(
+    () =>
+      [...(data ?? [])].sort(
+        (a, b) => new Date(b.issue_date || 0).getTime() - new Date(a.issue_date || 0).getTime(),
+      ),
+    [data],
+  );
 
-  const categories = useMemo(() => [
-    "All",
-    ...Array.from(new Set(certificates.map((c) => c.category))),
-  ], [certificates]);
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(certificates.map((c) => c.category)))],
+    [certificates],
+  );
 
   const filteredCertificates = certificates.filter((cert) => {
     const matchesCategory = selectedCategory === "All" || cert.category === selectedCategory;
@@ -43,9 +39,7 @@ const CertificationsPage = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const displayedCertificates = showAllCerts
-    ? filteredCertificates
-    : filteredCertificates.slice(0, 6);
+  const displayedCertificates = showAllCerts ? filteredCertificates : filteredCertificates.slice(0, 6);
 
   return (
     <Layout>
@@ -57,7 +51,6 @@ const CertificationsPage = () => {
       />
       <section className="pt-10 pb-20 md:pb-24">
         <div className="section-container">
-
           {/* Header */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
@@ -75,8 +68,12 @@ const CertificationsPage = () => {
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="w-full rounded-xl bg-card animate-pulse" style={{ aspectRatio: "3/2" }} />
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="w-full rounded-xl bg-card animate-pulse"
+                  style={{ aspectRatio: "3/2" }}
+                />
               ))}
             </div>
           ) : (
@@ -155,9 +152,14 @@ const CertificationsPage = () => {
                     className="gap-2 px-8 border-accent/20 hover:border-accent/50 hover:bg-accent/5 transition-all"
                   >
                     {showAllCerts ? (
-                      <>Collapse List <ChevronUp className="w-4 h-4" /></>
+                      <>
+                        Collapse List <ChevronUp className="w-4 h-4" />
+                      </>
                     ) : (
-                      <>Show All {filteredCertificates.length} Certificates <ChevronDown className="w-4 h-4" /></>
+                      <>
+                        Show All {filteredCertificates.length} Certificates{" "}
+                        <ChevronDown className="w-4 h-4" />
+                      </>
                     )}
                   </Button>
                 </div>
@@ -170,7 +172,10 @@ const CertificationsPage = () => {
                   <p className="text-muted-foreground font-medium text-lg">No certifications found.</p>
                   <Button
                     variant="link"
-                    onClick={() => { setSelectedCategory("All"); setSearchQuery(""); }}
+                    onClick={() => {
+                      setSelectedCategory("All");
+                      setSearchQuery("");
+                    }}
                     className="text-accent mt-2"
                   >
                     Clear all filters

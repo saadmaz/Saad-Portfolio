@@ -1,30 +1,50 @@
-import { useState, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useModalA11y } from '@/shared/hooks/useModalA11y';
-import { m, AnimatePresence } from 'framer-motion';
-import { Layout } from '@/components/layout/Layout';
-import { SEO } from '@/components/SEO';
-import { PAGE_SEO, BASE_URL } from '@/lib/seo-content';
+import { useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useModalA11y } from "@/hooks/useModalA11y";
+import { m, AnimatePresence } from "framer-motion";
+import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import {
-  GraduationCap, ExternalLink, Trophy, Users, ChevronDown, ChevronUp,
-  X, ChevronLeft, ChevronRight, LayoutList, GitBranch, ArrowRight,
-} from 'lucide-react';
-import { useEducation } from '@/shared/hooks/useCommon';
-import { useProjects } from '@/shared/hooks/useProjects';
-import { Education, EducationMedia, Project } from '@/types';
-import { Link } from 'react-router-dom';
+  GraduationCap,
+  ExternalLink,
+  Trophy,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  LayoutList,
+  GitBranch,
+  ArrowRight,
+} from "lucide-react";
+import { useEducation } from "@/hooks/useContent";
+import { useProjects } from "@/hooks/useProjects";
+import { Education, EducationMedia, Project } from "@/types";
+import { Link } from "react-router-dom";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const MONTHS = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December',
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getSchoolName(edu: Education): string {
-  return edu.school_name ?? edu.institution ?? '';
+  return edu.school_name ?? edu.institution ?? "";
 }
 
 function getLogo(edu: Education): string | undefined {
@@ -41,28 +61,31 @@ function getIsCurrent(edu: Education): boolean {
 
 function getStartYear(edu: Education): number | undefined {
   if (edu.start_year) return edu.start_year;
-  if (edu.startDate) return parseInt(edu.startDate.split(' ').pop() ?? '');
+  if (edu.startDate) return parseInt(edu.startDate.split(" ").pop() ?? "");
   return undefined;
 }
 
 function formatDuration(edu: Education): string {
   const isCurrent = getIsCurrent(edu);
-  const start = edu.start_month && edu.start_year
-    ? `${edu.start_month.slice(0, 3)} ${edu.start_year}`
-    : edu.startDate ?? '';
-  const end = isCurrent ? 'Present'
+  const start =
+    edu.start_month && edu.start_year
+      ? `${edu.start_month.slice(0, 3)} ${edu.start_year}`
+      : (edu.startDate ?? "");
+  const end = isCurrent
+    ? "Present"
     : edu.end_month && edu.end_year
       ? `${edu.end_month.slice(0, 3)} ${edu.end_year}`
-      : edu.endDate ?? '';
-  return start ? (end ? `${start} – ${end}` : start) : '';
+      : (edu.endDate ?? "");
+  return start ? (end ? `${start} – ${end}` : start) : "";
 }
 
 function calcDurationStr(edu: Education): string {
   const isCurrent = getIsCurrent(edu);
-  if (!edu.start_year) return '';
+  if (!edu.start_year) return "";
   const sIdx = edu.start_month ? MONTHS.indexOf(edu.start_month) : 0;
   const s = new Date(edu.start_year, sIdx < 0 ? 0 : sIdx, 1);
-  const e = isCurrent ? new Date()
+  const e = isCurrent
+    ? new Date()
     : edu.end_year
       ? new Date(edu.end_year, edu.end_month ? MONTHS.indexOf(edu.end_month) : 11, 1)
       : new Date();
@@ -70,23 +93,27 @@ function calcDurationStr(edu: Education): string {
   if (m < 1) m = 0;
   const yrs = Math.floor(m / 12);
   const mos = m % 12;
-  if (!yrs && !mos) return '';
-  return [yrs > 0 && `${yrs} yr${yrs > 1 ? 's' : ''}`, mos > 0 && `${mos} mo${mos > 1 ? 's' : ''}`]
-    .filter(Boolean).join(' ');
+  if (!yrs && !mos) return "";
+  return [yrs > 0 && `${yrs} yr${yrs > 1 ? "s" : ""}`, mos > 0 && `${mos} mo${mos > 1 ? "s" : ""}`]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function isExpectedGrad(edu: Education): boolean {
   if (!getIsCurrent(edu) || !edu.end_year) return false;
   const now = new Date();
-  return edu.end_year > now.getFullYear() ||
-    (edu.end_year === now.getFullYear() && !!edu.end_month &&
-      MONTHS.indexOf(edu.end_month) >= now.getMonth());
+  return (
+    edu.end_year > now.getFullYear() ||
+    (edu.end_year === now.getFullYear() && !!edu.end_month && MONTHS.indexOf(edu.end_month) >= now.getMonth())
+  );
 }
 
 // ─── Media lightbox ───────────────────────────────────────────────────────────
 
 function MediaLightbox({
-  items, index: initialIndex, onClose,
+  items,
+  index: initialIndex,
+  onClose,
 }: {
   items: EducationMedia[];
   index: number;
@@ -98,51 +125,73 @@ function MediaLightbox({
   useModalA11y(!!item, onClose, lightboxRef);
   if (!item) return null;
 
-  const dateLabel = item.media_date_month && item.media_date_year
-    ? `${item.media_date_month.slice(0, 3)} ${item.media_date_year}`
-    : null;
+  const dateLabel =
+    item.media_date_month && item.media_date_year
+      ? `${item.media_date_month.slice(0, 3)} ${item.media_date_year}`
+      : null;
 
   return (
     <m.div
       ref={lightboxRef}
       role="dialog"
       aria-modal="true"
-      aria-label={item.media_caption || 'Media preview'}
+      aria-label={item.media_caption || "Media preview"}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      <button onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
         <X className="w-5 h-5" />
       </button>
       {index > 0 && (
-        <button onClick={(e) => { e.stopPropagation(); setIndex(i => i - 1); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIndex((i) => i - 1);
+          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+        >
           <ChevronLeft className="w-5 h-5" />
         </button>
       )}
       {index < items.length - 1 && (
-        <button onClick={(e) => { e.stopPropagation(); setIndex(i => i + 1); }}
-          className="absolute right-16 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIndex((i) => i + 1);
+          }}
+          className="absolute right-16 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+        >
           <ChevronRight className="w-5 h-5" />
         </button>
       )}
 
-      <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col bg-card rounded-2xl overflow-hidden shadow-2xl"
-        onClick={e => e.stopPropagation()}>
-        {item.media_type === 'Image' && item.media_url && (
+      <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col bg-card rounded-2xl overflow-hidden shadow-2xl">
+        {item.media_type === "Image" && item.media_url && (
           <div className="bg-black flex items-center justify-center max-h-[60vh]">
-            <img src={item.media_url} alt={item.media_caption} className="max-h-[60vh] w-full object-contain" />
+            <img
+              src={item.media_url}
+              alt={item.media_caption}
+              className="max-h-[60vh] w-full object-contain"
+            />
           </div>
         )}
-        {(item.media_type !== 'Image') && item.media_url && (
+        {item.media_type !== "Image" && item.media_url && (
           <div className="bg-secondary/50 flex items-center justify-center py-16">
-            <a href={item.media_url} target="_blank" rel="noopener noreferrer"
-              onClick={e => e.stopPropagation()}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-black font-bold hover:bg-accent/90">
+            <a
+              href={item.media_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-black font-bold hover:bg-accent/90"
+            >
               Open {item.media_type} <ExternalLink className="w-4 h-4" />
             </a>
           </div>
@@ -150,10 +199,16 @@ function MediaLightbox({
         <div className="p-5 space-y-1 border-t border-border">
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-bold text-foreground text-base">{item.media_caption}</h3>
-            {dateLabel && <span className="text-xs text-muted-foreground whitespace-nowrap">{dateLabel}</span>}
+            {dateLabel && (
+              <span className="text-xs text-muted-foreground whitespace-nowrap">{dateLabel}</span>
+            )}
           </div>
-          {item.media_description && <p className="text-sm text-muted-foreground">{item.media_description}</p>}
-          <p className="text-[10px] text-muted-foreground">{index + 1} / {items.length}</p>
+          {item.media_description && (
+            <p className="text-sm text-muted-foreground">{item.media_description}</p>
+          )}
+          <p className="text-[10px] text-muted-foreground">
+            {index + 1} / {items.length}
+          </p>
         </div>
       </div>
     </m.div>
@@ -163,7 +218,9 @@ function MediaLightbox({
 // ─── Education card ───────────────────────────────────────────────────────────
 
 function EducationCard({
-  edu, index, linkedProjects,
+  edu,
+  index,
+  linkedProjects,
 }: {
   edu: Education;
   index: number;
@@ -185,19 +242,23 @@ function EducationCard({
   const awards = edu.honors_and_awards ?? [];
   const activities = edu.activities_and_societies;
 
-  const expectedLabel = expectedGrad && edu.end_month && edu.end_year
-    ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}` : null;
+  const expectedLabel =
+    expectedGrad && edu.end_month && edu.end_year
+      ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}`
+      : null;
 
   return (
     <>
       <m.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
+        viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5, delay: index * 0.08 }}
         className="bg-card border border-border rounded-2xl overflow-hidden"
       >
-        {edu.is_featured && <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0" />}
+        {edu.is_featured && (
+          <div className="h-0.5 w-full bg-gradient-to-r from-accent/0 via-accent to-accent/0" />
+        )}
 
         <div className="p-5 sm:p-6 space-y-4">
           {/* Header */}
@@ -205,8 +266,18 @@ function EducationCard({
             <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
               {logo ? (
                 websiteUrl ? (
-                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center p-1">
-                    <img src={logo} alt={schoolName} loading="lazy" className="w-full h-full object-contain" />
+                  <a
+                    href={websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full h-full flex items-center justify-center p-1"
+                  >
+                    <img
+                      src={logo}
+                      alt={schoolName}
+                      loading="lazy"
+                      className="w-full h-full object-contain"
+                    />
                   </a>
                 ) : (
                   <img src={logo} alt={schoolName} loading="lazy" className="w-8 h-8 object-contain" />
@@ -219,21 +290,29 @@ function EducationCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 {websiteUrl ? (
-                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-                    className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1">
+                  <a
+                    href={websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1"
+                  >
                     {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                   </a>
                 ) : (
                   <span className="font-bold text-foreground">{schoolName}</span>
                 )}
                 {edu.is_featured && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">Featured</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">
+                    Featured
+                  </span>
                 )}
               </div>
 
               {(edu.degree || fieldOfStudy) && (
                 <p className="text-sm font-medium text-foreground/90 mt-0.5">
-                  {edu.degree}{edu.degree && fieldOfStudy ? ' · ' : ''}{fieldOfStudy}
+                  {edu.degree}
+                  {edu.degree && fieldOfStudy ? " · " : ""}
+                  {fieldOfStudy}
                 </p>
               )}
 
@@ -243,10 +322,14 @@ function EducationCard({
                   {durationStr && <span className="ml-1 text-muted-foreground">· {durationStr}</span>}
                 </p>
                 {expectedLabel && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{expectedLabel}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    {expectedLabel}
+                  </span>
                 )}
                 {isCurrent && !expectedLabel && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Present</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+                    Present
+                  </span>
                 )}
               </div>
             </div>
@@ -270,13 +353,27 @@ function EducationCard({
           {/* Description */}
           {edu.description && (
             <div>
-              <p className={`text-sm text-muted-foreground leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+              <p
+                className={`text-sm text-muted-foreground leading-relaxed ${expanded ? "" : "line-clamp-3"}`}
+              >
                 {edu.description}
               </p>
               {edu.description.length > 180 && (
-                <button onClick={() => setExpanded(v => !v)}
-                  className="mt-1 flex items-center gap-1 text-xs text-accent font-medium hover:underline">
-                  {expanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
+                <button
+                  onClick={() => setExpanded((v) => !v)}
+                  className="mt-1 flex items-center gap-1 text-xs text-accent font-medium hover:underline"
+                >
+                  {expanded ? (
+                    <>
+                      <ChevronUp className="w-3 h-3" />
+                      Show less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-3 h-3" />
+                      Show more
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -286,7 +383,12 @@ function EducationCard({
           {skills.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {skills.map((s, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium">{s}</span>
+                <span
+                  key={i}
+                  className="px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium"
+                >
+                  {s}
+                </span>
               ))}
             </div>
           )}
@@ -304,12 +406,18 @@ function EducationCard({
                   >
                     {(p.heroImage || p.image) && (
                       <div className="aspect-video w-full overflow-hidden">
-                        <img src={p.heroImage ?? p.image} alt={p.title} className="w-full h-full object-cover" />
+                        <img
+                          src={p.heroImage ?? p.image}
+                          alt={p.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     )}
                     <div className="p-3">
                       <p className="text-xs font-semibold text-foreground line-clamp-1">{p.title}</p>
-                      {p.tagline && <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{p.tagline}</p>}
+                      {p.tagline && (
+                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{p.tagline}</p>
+                      )}
                       <span className="mt-2 flex items-center gap-1 text-[10px] text-accent font-semibold">
                         View project <ArrowRight className="w-2.5 h-2.5" />
                       </span>
@@ -335,10 +443,13 @@ function EducationCard({
                       {a.award_issuer && <span className="text-muted-foreground"> · {a.award_issuer}</span>}
                       {(a.award_date_month || a.award_date_year) && (
                         <span className="text-muted-foreground text-xs ml-1">
-                          ({a.award_date_month ? a.award_date_month.slice(0, 3) + ' ' : ''}{a.award_date_year})
+                          ({a.award_date_month ? a.award_date_month.slice(0, 3) + " " : ""}
+                          {a.award_date_year})
                         </span>
                       )}
-                      {a.award_description && <p className="text-xs text-muted-foreground mt-0.5">{a.award_description}</p>}
+                      {a.award_description && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{a.award_description}</p>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -352,15 +463,22 @@ function EducationCard({
               <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wide">Media</p>
               <div className="flex gap-2.5 overflow-x-auto pb-1">
                 {media.map((m, i) => (
-                  <button key={i} type="button"
+                  <button
+                    key={i}
+                    type="button"
                     onClick={() => setLightboxIndex(i)}
                     className="flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border border-border hover:border-accent/50 transition-all bg-secondary"
-                    title={m.media_caption}>
-                    {m.media_type === 'Image' && m.media_url ? (
+                    title={m.media_caption}
+                  >
+                    {m.media_type === "Image" && m.media_url ? (
                       <img src={m.media_url} alt={m.media_caption} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
-                        <span className="text-xl">{({ Document: '📄', Presentation: '📊', Link: '🔗' } as Record<string, string>)[m.media_type] ?? '📎'}</span>
+                        <span className="text-xl">
+                          {({ Document: "📄", Presentation: "📊", Link: "🔗" } as Record<string, string>)[
+                            m.media_type
+                          ] ?? "📎"}
+                        </span>
                         <span className="text-[9px] text-muted-foreground">{m.media_type}</span>
                       </div>
                     )}
@@ -388,7 +506,12 @@ function EducationCard({
 // ─── Timeline entry ───────────────────────────────────────────────────────────
 
 function TimelineEntry({
-  edu, index, isLast, linkedProjects, expanded, onToggle,
+  edu,
+  index,
+  isLast,
+  linkedProjects,
+  expanded,
+  onToggle,
 }: {
   edu: Education;
   index: number;
@@ -403,14 +526,16 @@ function TimelineEntry({
   const isCurrent = getIsCurrent(edu);
   const duration = formatDuration(edu);
   const websiteUrl = edu.school_website_url;
-  const expectedLabel = isExpectedGrad(edu) && edu.end_month && edu.end_year
-    ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}` : null;
+  const expectedLabel =
+    isExpectedGrad(edu) && edu.end_month && edu.end_year
+      ? `Expected ${edu.end_month.slice(0, 3)} ${edu.end_year}`
+      : null;
 
   return (
     <m.div
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className="relative flex gap-4"
     >
@@ -426,7 +551,11 @@ function TimelineEntry({
             <GraduationCap className="w-5 h-5 text-muted-foreground" />
           )}
         </button>
-        {!isLast && <div className={`w-0.5 flex-1 mt-2 min-h-[24px] transition-colors ${expanded ? 'bg-accent/40' : 'bg-border'}`} />}
+        {!isLast && (
+          <div
+            className={`w-0.5 flex-1 mt-2 min-h-[24px] transition-colors ${expanded ? "bg-accent/40" : "bg-border"}`}
+          />
+        )}
       </div>
 
       <div className="flex-1 pb-8 min-w-0">
@@ -436,41 +565,64 @@ function TimelineEntry({
           aria-expanded={expanded}
           className="flex items-start justify-between gap-2 cursor-pointer group h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           onClick={onToggle}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onToggle();
+            }
+          }}
         >
           <div>
             <div className="flex items-center gap-1.5">
               {websiteUrl ? (
-                <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-                  onClick={e => e.stopPropagation()}
-                  className="font-semibold text-foreground hover:text-accent transition-colors flex items-center gap-1 text-base">
+                <a
+                  href={websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="font-semibold text-foreground hover:text-accent transition-colors flex items-center gap-1 text-base"
+                >
                   {schoolName} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                 </a>
               ) : (
-                <span className="font-semibold text-foreground text-base group-hover:text-accent transition-colors">{schoolName}</span>
+                <span className="font-semibold text-foreground text-base group-hover:text-accent transition-colors">
+                  {schoolName}
+                </span>
               )}
               {edu.is_featured && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">Featured</span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">
+                  Featured
+                </span>
               )}
             </div>
 
             <div className="flex items-center gap-1.5">
               {(edu.degree || fieldOfStudy) && (
                 <p className="text-sm text-foreground/80">
-                  {edu.degree}{edu.degree && fieldOfStudy ? ' · ' : ''}{fieldOfStudy}
+                  {edu.degree}
+                  {edu.degree && fieldOfStudy ? " · " : ""}
+                  {fieldOfStudy}
                 </p>
               )}
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {expectedLabel && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hidden sm:block">{expectedLabel}</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hidden sm:block">
+                {expectedLabel}
+              </span>
             )}
             {isCurrent && !expectedLabel && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 hidden sm:block">Present</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 hidden sm:block">
+                Present
+              </span>
             )}
             <span className="text-xs text-muted-foreground hidden sm:block">{duration}</span>
-            {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+            {expanded ? (
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            )}
           </div>
         </div>
 
@@ -479,14 +631,16 @@ function TimelineEntry({
           {expanded && (
             <m.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
               <div className="pt-3 space-y-3 border-t border-border mt-2">
                 {edu.grade && edu.show_grade_publicly !== false && (
-                  <p className="text-xs text-muted-foreground">Grade: <span className="font-medium text-foreground">{edu.grade}</span></p>
+                  <p className="text-xs text-muted-foreground">
+                    Grade: <span className="font-medium text-foreground">{edu.grade}</span>
+                  </p>
                 )}
                 {edu.description && (
                   <p className="text-sm text-muted-foreground leading-relaxed">{edu.description}</p>
@@ -494,17 +648,29 @@ function TimelineEntry({
                 {(edu.skills ?? []).length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {(edu.skills ?? []).map((s, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium">{s}</span>
+                      <span
+                        key={i}
+                        className="px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium"
+                      >
+                        {s}
+                      </span>
                     ))}
                   </div>
                 )}
                 {linkedProjects.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {linkedProjects.map(p => (
-                      <Link key={p.id} to={`/projects/${p.slug}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-secondary/50 hover:border-accent/40 transition-colors text-xs font-medium text-foreground">
+                    {linkedProjects.map((p) => (
+                      <Link
+                        key={p.id}
+                        to={`/projects/${p.slug}`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-secondary/50 hover:border-accent/40 transition-colors text-xs font-medium text-foreground"
+                      >
                         {(p.heroImage || p.image) && (
-                          <img src={p.heroImage ?? p.image} alt={p.title} className="w-4 h-4 rounded object-cover" />
+                          <img
+                            src={p.heroImage ?? p.image}
+                            alt={p.title}
+                            className="w-4 h-4 rounded object-cover"
+                          />
                         )}
                         {p.title}
                         <ArrowRight className="w-3 h-3 text-accent" />
@@ -526,74 +692,73 @@ function TimelineEntry({
 function Summary({ education }: { education: Education[] }) {
   if (!education.length) return null;
   const count = education.length;
-  const latestDegree = education.find(e => e.degree)?.degree;
-  const latestField = education.find(e => getFieldOfStudy(e));
+  const latestDegree = education.find((e) => e.degree)?.degree;
+  const latestField = education.find((e) => getFieldOfStudy(e));
   const field = latestField ? getFieldOfStudy(latestField) : undefined;
-  const expectedEntry = education.find(e => isExpectedGrad(e));
-  const expectedLabel = expectedEntry && expectedEntry.end_month && expectedEntry.end_year
-    ? `Expected ${expectedEntry.end_month.slice(0, 3)} ${expectedEntry.end_year}` : null;
+  const expectedEntry = education.find((e) => isExpectedGrad(e));
+  const expectedLabel =
+    expectedEntry && expectedEntry.end_month && expectedEntry.end_year
+      ? `Expected ${expectedEntry.end_month.slice(0, 3)} ${expectedEntry.end_year}`
+      : null;
 
   const parts: string[] = [];
-  parts.push(`${count} institution${count > 1 ? 's' : ''}`);
+  parts.push(`${count} institution${count > 1 ? "s" : ""}`);
   if (latestDegree && field) parts.push(`${latestDegree} in ${field}`);
   else if (latestDegree) parts.push(latestDegree);
   if (expectedLabel) parts.push(expectedLabel);
 
-  return <p className="text-sm text-muted-foreground mt-3">{parts.join(' · ')}</p>;
+  return <p className="text-sm text-muted-foreground mt-3">{parts.join(" · ")}</p>;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const EducationPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const view = (searchParams.get('view') ?? 'card') as 'card' | 'timeline';
+  const view = (searchParams.get("view") ?? "card") as "card" | "timeline";
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const { data: allEducation = [], isLoading: eduLoading, error: eduError } = useEducation();
   const { data: allProjects = [] } = useProjects();
 
   const education = allEducation
-    .filter(e => e.is_published !== false)
+    .filter((e) => e.is_published !== false)
     .sort((a, b) => {
       if (a.is_featured && !b.is_featured) return -1;
       if (!a.is_featured && b.is_featured) return 1;
-      if (a.display_order !== undefined && b.display_order !== undefined) return a.display_order - b.display_order;
+      if (a.display_order !== undefined && b.display_order !== undefined)
+        return a.display_order - b.display_order;
       return (getStartYear(b) ?? 0) - (getStartYear(a) ?? 0);
     });
 
   function getLinkedProjects(edu: Education): Project[] {
-    return allProjects.filter(p => (p.linked_education_ids ?? []).includes(edu.id));
+    return allProjects.filter((p) => (p.linked_education_ids ?? []).includes(edu.id));
   }
 
   function toggleExpand(id: string) {
-    setExpandedIds(prev => {
+    setExpandedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
 
-  const setView = (v: 'card' | 'timeline') => {
-    setSearchParams(v === 'card' ? {} : { view: v });
+  const setView = (v: "card" | "timeline") => {
+    setSearchParams(v === "card" ? {} : { view: v });
   };
 
   // Page meta: generate description from featured or first entry
-  const featured = education.find(e => e.is_featured) ?? education[0];
+  const featured = education.find((e) => e.is_featured) ?? education[0];
   const metaDesc = featured
-    ? `${featured.degree ?? ''} at ${getSchoolName(featured)}${featured.grade && featured.show_grade_publicly !== false ? ` · ${featured.grade}` : ''}`
+    ? `${featured.degree ?? ""} at ${getSchoolName(featured)}${featured.grade && featured.show_grade_publicly !== false ? ` · ${featured.grade}` : ""}`
     : "Academic background and qualifications.";
 
   return (
     <Layout>
-      <SEO
-        title={PAGE_SEO["/education"].title}
-        description={metaDesc}
-        url={`${BASE_URL}/education`}
-      />
+      <SEO title={PAGE_SEO["/education"].title} description={metaDesc} url={`${BASE_URL}/education`} />
 
       <section className="section-padding">
         <div className="section-container max-w-4xl">
-
           {/* Header */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
@@ -611,12 +776,18 @@ const EducationPage = () => {
 
               {education.length > 1 && (
                 <div className="flex items-center gap-1 p-1 rounded-lg bg-card border border-border">
-                  <button onClick={() => setView('card')} aria-pressed={view === 'card'}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'card' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
+                  <button
+                    onClick={() => setView("card")}
+                    aria-pressed={view === "card"}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === "card" ? "bg-accent text-black" : "text-muted-foreground hover:text-foreground"}`}
+                  >
                     <LayoutList className="w-3.5 h-3.5" /> Cards
                   </button>
-                  <button onClick={() => setView('timeline')} aria-pressed={view === 'timeline'}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === 'timeline' ? 'bg-accent text-black' : 'text-muted-foreground hover:text-foreground'}`}>
+                  <button
+                    onClick={() => setView("timeline")}
+                    aria-pressed={view === "timeline"}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${view === "timeline" ? "bg-accent text-black" : "text-muted-foreground hover:text-foreground"}`}
+                  >
                     <GitBranch className="w-3.5 h-3.5" /> Timeline
                   </button>
                 </div>
@@ -627,7 +798,7 @@ const EducationPage = () => {
           {/* Loading */}
           {eduLoading && (
             <div className="space-y-4">
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="h-48 rounded-2xl bg-card border border-border animate-pulse" />
               ))}
             </div>
@@ -636,7 +807,9 @@ const EducationPage = () => {
           {/* Error */}
           {eduError && !eduLoading && (
             <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8 text-center">
-              <p className="text-sm text-red-400">Failed to load education entries. Please try refreshing the page.</p>
+              <p className="text-sm text-red-400">
+                Failed to load education entries. Please try refreshing the page.
+              </p>
             </div>
           )}
 
@@ -652,7 +825,7 @@ const EducationPage = () => {
           {/* Content */}
           {!eduLoading && !eduError && education.length > 0 && (
             <AnimatePresence mode="wait">
-              {view === 'card' ? (
+              {view === "card" ? (
                 <m.div
                   key="cards"
                   initial={{ opacity: 0, y: 10 }}
@@ -662,12 +835,7 @@ const EducationPage = () => {
                   className="space-y-4"
                 >
                   {education.map((edu, i) => (
-                    <EducationCard
-                      key={edu.id}
-                      edu={edu}
-                      index={i}
-                      linkedProjects={getLinkedProjects(edu)}
-                    />
+                    <EducationCard key={edu.id} edu={edu} index={i} linkedProjects={getLinkedProjects(edu)} />
                   ))}
                 </m.div>
               ) : (

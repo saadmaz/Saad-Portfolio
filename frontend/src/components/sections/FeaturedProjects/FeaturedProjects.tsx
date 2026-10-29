@@ -1,7 +1,7 @@
 import { m } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useFeaturedProjects } from "@/shared/hooks/useProjects";
+import { useFeaturedProjects } from "@/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 const containerVariants = {
@@ -18,9 +18,7 @@ export function FeaturedProjects() {
   const { data: featuredProjects = [], isLoading } = useFeaturedProjects();
 
   // Sort by most recent (order_index asc), show max 3 in grid, overflow → marquee
-  const sorted = [...featuredProjects].sort(
-    (a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)
-  );
+  const sorted = [...featuredProjects].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
   const gridProjects = sorted.slice(0, 3);
   const marqueeProjects = sorted.length > 3 ? sorted.slice(3) : [];
   // Duplicate for seamless loop
@@ -31,7 +29,7 @@ export function FeaturedProjects() {
       <section className="py-16 bg-secondary/30">
         <div className="section-container">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="rounded-xl bg-card animate-pulse aspect-[4/3]" />
             ))}
           </div>
@@ -45,7 +43,6 @@ export function FeaturedProjects() {
   return (
     <section aria-labelledby="featured-work-heading" className="py-16 bg-secondary/30 overflow-hidden">
       <div className="section-container">
-
         {/* Section header */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -55,12 +52,15 @@ export function FeaturedProjects() {
           className="text-center mb-10"
         >
           <span className="section-title">Featured Work</span>
-          <h2 id="featured-work-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2
+            id="featured-work-heading"
+            className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4"
+          >
             Projects I'm Proud Of
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            A selection of my most impactful work. Each project represents a unique challenge
-            solved with thoughtful design and robust engineering.
+            A selection of my most impactful work. Each project represents a unique challenge solved with
+            thoughtful design and robust engineering.
           </p>
         </m.div>
 

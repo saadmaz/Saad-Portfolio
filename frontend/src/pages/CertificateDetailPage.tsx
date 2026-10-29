@@ -1,41 +1,15 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import {
-  ArrowLeft,
-  ExternalLink,
-  Award,
-  BadgeCheck,
-  FileText,
-  ShieldCheck,
-  Tag,
-} from "lucide-react";
+import { ArrowLeft, ExternalLink, Award, BadgeCheck, FileText, ShieldCheck, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Certificate } from "@/types";
-import { CommonService } from "@/shared/services/common-service";
+import { useCertificate } from "@/hooks/useContent";
 import { BASE_URL } from "@/lib/seo-content.js";
 
 const CertificateDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [cert, setCert] = useState<Certificate | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCert = async () => {
-      try {
-        const data = await CommonService.getCertificates();
-        const found = data.find((x) => String(x.id) === String(id));
-        setCert(found || null);
-      } catch (error) {
-        console.error("Failed to load certificate", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCert();
-  }, [id]);
+  const { data: cert, isLoading: loading } = useCertificate(id);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "N/A";
@@ -51,11 +25,7 @@ const CertificateDetailPage = () => {
   if (loading) {
     return (
       <Layout>
-        <SEO
-          title="Loading Certification"
-          url={canonicalUrl}
-          noIndex={true}
-        />
+        <SEO title="Loading Certification" url={canonicalUrl} noIndex={true} />
         <div className="section-container py-32 text-center">
           <div className="animate-spin h-12 w-12 border-4 border-accent border-t-transparent rounded-full mx-auto" />
           <p className="mt-4 text-muted-foreground animate-pulse">Loading credential details...</p>
@@ -67,11 +37,7 @@ const CertificateDetailPage = () => {
   if (!cert) {
     return (
       <Layout>
-        <SEO
-          title="Certification Not Found"
-          url={canonicalUrl}
-          noIndex={true}
-        />
+        <SEO title="Certification Not Found" url={canonicalUrl} noIndex={true} />
         <div className="section-container py-32 text-center">
           <Award className="w-20 h-20 text-muted-foreground mx-auto mb-6 opacity-20" />
           <h2 className="text-2xl font-bold mb-2">Credential Not Found</h2>
@@ -90,7 +56,10 @@ const CertificateDetailPage = () => {
     <Layout>
       <SEO
         title={cert.title}
-        description={cert.description || `${cert.title} — issued by ${cert.issuer} on ${cert.platform}. Verified professional credential.`}
+        description={
+          cert.description ||
+          `${cert.title} — issued by ${cert.issuer} on ${cert.platform}. Verified professional credential.`
+        }
         url={canonicalUrl}
         image={cert.issuer_logo || undefined}
         type="article"
@@ -101,7 +70,6 @@ const CertificateDetailPage = () => {
       />
       <section className="section-padding min-h-screen overflow-x-hidden">
         <div className="section-container">
-
           {/* Header */}
           <div className="mb-8 flex flex-col md:flex-row md:items-center gap-4">
             <Button
@@ -128,20 +96,14 @@ const CertificateDetailPage = () => {
 
           {/* Two-panel layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
             {/* LEFT - credential card */}
             <div className="lg:col-span-4">
               <div className="bg-card rounded-2xl border border-border shadow-sm lg:sticky lg:top-24 overflow-hidden">
-
                 {/* Logo + issuer */}
                 <div className="flex flex-col items-center py-8 px-6 border-b border-border">
                   <div className="w-20 h-20 rounded-full bg-background border-2 border-border shadow-sm flex items-center justify-center mb-4 overflow-hidden">
                     {cert.issuer_logo ? (
-                      <img
-                        src={cert.issuer_logo}
-                        alt={cert.issuer}
-                        className="w-14 h-14 object-contain"
-                      />
+                      <img src={cert.issuer_logo} alt={cert.issuer} className="w-14 h-14 object-contain" />
                     ) : (
                       <Award className="w-10 h-10 text-accent" />
                     )}
@@ -152,7 +114,6 @@ const CertificateDetailPage = () => {
 
                 {/* Body */}
                 <div className="px-6 py-5 space-y-5">
-
                   {/* Verified badge */}
                   {cert.is_verifiable && (
                     <div className="flex items-center gap-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-xl border border-emerald-500/20">
@@ -179,7 +140,7 @@ const CertificateDetailPage = () => {
                         Expires
                       </span>
                       <span className="text-sm font-bold">
-                        {cert.does_not_expire ? "Never" : formatDate(cert.expiry_date)}
+                        {cert.does_not_expire ? "Never" : formatDate(cert.expiry_date ?? "")}
                       </span>
                     </div>
                   </div>
@@ -236,7 +197,6 @@ const CertificateDetailPage = () => {
             {/* RIGHT - credential document */}
             <div className="lg:col-span-8">
               <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col h-full">
-
                 {/* Document header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/20">
                   <div className="flex items-center gap-2">
@@ -273,7 +233,6 @@ const CertificateDetailPage = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>

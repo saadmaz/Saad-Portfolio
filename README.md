@@ -1,223 +1,109 @@
-# Saad Mazhar - Portfolio tyoscrip 
+# Saad Mazhar - Portfolio
 
-A modern, full-featured personal portfolio built with **React + Vite** and **Firebase** - deployed on **Vercel** with zero backend server required.
+[![CI](https://github.com/saadmaz/Saad-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/saadmaz/Saad-Portfolio/actions/workflows/ci.yml)
+
+Personal portfolio built with **React + TypeScript + Vite**, reading content from **Cloud Firestore**, deployed on **Vercel**.
 
 Live: [saadmaz.com](https://saadmaz.com)
+
+Content is edited in a separate admin app (`Saad-Portfolio-Admin`). This repository is the public, read-only site.
 
 ---
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18, TypeScript, Vite |
-| Styling | Tailwind CSS, Framer Motion |
-| Data fetching | TanStack Query (React Query v5) |
-| Database | Firebase Firestore (client SDK) |
-| Auth | Firebase Authentication |
-| File storage | Firebase Storage |
-| Email | SendGrid (server-side only) |
-| Deployment | Vercel (frontend + 1 serverless function) |
-
----
+| Layer         | Technology                                         |
+| ------------- | -------------------------------------------------- |
+| UI            | React 18, TypeScript (strict), Tailwind, shadcn/ui |
+| Motion        | Framer Motion (`LazyMotion`)                       |
+| Data          | TanStack Query v5 over the Firestore web SDK       |
+| SEO           | react-helmet-async + build-time prerender/sitemap  |
+| Contact form  | Vercel function → Firestore (Admin SDK) + SendGrid |
+| Quality gates | ESLint (+ jsx-a11y), Vitest, Prettier, husky       |
 
 ## Architecture
 
-The entire app is a **single Vite SPA** deployed to Vercel. There is no Express server. All data reads and writes go directly from the browser to Firebase via the Firebase JS SDK. Security is enforced by Firestore and Storage security rules.
-
-The only server-side code is one Vercel serverless function that hides the SendGrid API key:
-
 ```
-Portfolio/
-├── frontend/
-│   ├── api/
-│   │   └── contact.ts          # Vercel serverless function - Firestore write + SendGrid email
-│   ├── public/
-│   │   ├── robots.txt
-│   │   └── sitemap.xml
-│   └── src/
-│       ├── app/                # App.tsx (router, providers), main.tsx, index.css
-│       ├── assets/             # Profile photo, resume PDF
-│       ├── components/
-│       │   ├── admin/          # Admin CRUD forms and layout
-│       │   ├── blog/           # BlogCard, BlogTemplate
-│       │   ├── education/      # EducationDialog
-│       │   ├── layout/         # Header, Footer, Layout wrapper
-│       │   ├── projects/       # ProjectCard
-│       │   ├── sections/       # Homepage sections (Hero, Skills, Experience, etc.)
-│       │   ├── ui/             # shadcn/ui primitives
-│       │   ├── SEO.tsx         # Reusable react-helmet-async wrapper
-│       │   └── ErrorBoundary.tsx
-│       ├── data/               # Static seed data (education, personal/about)
-│       ├── lib/
-│       │   └── firebase.ts     # Firebase app init - exports auth, db, storage
-│       ├── pages/              # Lazy-loaded route components (public + admin)
-│       ├── services/
-│       │   ├── project-service.ts   # Firestore CRUD for projects
-│       │   ├── blog-service.ts      # Firestore CRUD for blog posts
-│       │   └── storage.ts           # Firebase Storage upload helper
-│       ├── shared/
-│       │   ├── contexts/       # AuthContext
-│       │   ├── hooks/          # useProjects, useBlog, useCommon, useTheme, etc.
-│       │   ├── lib/
-│       │   │   ├── queryKeys.ts     # Centralized TanStack Query key registry
-│       │   │   └── dataManager.ts   # DataManager class for public data reads
-│       │   └── services/
-│       │       └── common-service.ts  # Firestore CRUD for all other entities
-│       └── types/
-│           └── index.ts        # TypeScript interfaces for all data models
-├── package.json                # Root scripts (proxies to frontend/)
-└── vercel.json                 # (in frontend/) SPA routing + API rewrite rules
+browser ──read──▶ Firestore            (rules: public read, admin-only write)
+browser ──POST──▶ /api/contact ──▶ Firestore contact_messages + SendGrid email
 ```
 
----
+- **Reads** go straight from the browser to Firestore through one typed layer:
+  `lib/firestore.ts` (helpers) → `services/*` (queries) → `hooks/*` (TanStack Query).
+  Errors propagate to React Query (`isError`); nothing silently returns `[]`.
+- **Writes** from the public site happen only through `api/contact.ts`, which
+  validates input, rate-limits per IP, filters bots with a honeypot, and stores
+  the message with the Admin SDK. Firestore rules deny client-side creates.
 
-## Local Development
+```
+frontend/
+├── api/contact.ts            # Vercel serverless function (+ contact.test.ts)
+├── scripts/
+│   ├── prerender.mjs         # Static HTML + sitemaps for crawlers (post-build)
+│   └── check-csp.mjs         # Fails the build if an inline script isn't CSP-hashed
+├── public/                   # Static assets, robots.txt, llms.txt
+└── src/
+    ├── app/                  # main.tsx, App.tsx (providers + routes), global CSS
+    ├── components/
+    │   ├── layout/           # Header, Footer, Layout
+    │   ├── sections/         # Home-page sections (one folder each)
+    │   ├── ui/               # shadcn/ui primitives actually in use
+    │   └── …                 # blog/, education/, projects/, SEO, ErrorBoundary
+    ├── hooks/                # useProjects, useBlog, useContent, useTheme, …
+    ├── lib/                  # firebase, firestore helpers, queryKeys, seo-content, utils
+    ├── pages/                # Lazy-loaded routes
+    ├── services/             # Read-only Firestore queries + contact client
+    └── types/                # Domain models
+```
 
-### Prerequisites
+## Getting started
 
-- Node.js v20+
-- A Firebase project with **Firestore**, **Authentication** (Email/Password), and **Storage** enabled
-
-### 1. Install dependencies
+Requires Node.js 20+.
 
 ```bash
-cd Portfolio/frontend
-npm install
+cd frontend
+npm install                  # also installs the git pre-commit hook
+cp .env.example .env         # fill in the VITE_FIREBASE_* values
+npm run dev                  # http://localhost:8080
 ```
 
-### 2. Environment variables
+The contact form needs the serverless function; run `vercel dev` instead of
+`npm run dev` to exercise it locally.
 
-Create `frontend/.env.local`:
+### Scripts (run in `frontend/`, or from the root via proxies)
 
-```env
-# Firebase client SDK (public - safe to expose)
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-```
+| Script                  | What it does                                         |
+| ----------------------- | ---------------------------------------------------- |
+| `npm run dev`           | Vite dev server                                      |
+| `npm run build`         | Production build → prerender → CSP check             |
+| `npm run typecheck`     | Strict `tsc` for app, API and tooling projects       |
+| `npm run lint`          | ESLint, zero warnings allowed                        |
+| `npm test`              | Vitest unit tests                                    |
+| `npm run format`        | Prettier (also applied to staged files on commit)    |
 
-### 3. Run the dev server
+CI (`.github/workflows/ci.yml`) runs typecheck → lint → test → build on every push and PR to `main`.
+
+## Deployment
+
+**Vercel project:** Root Directory `frontend`, Build Command `npm run build`, Output `dist`.
+Routing, security headers and the CSP live in `frontend/vercel.json`.
+
+Environment variables (Vercel dashboard): every key in `frontend/.env.example`.
+The `FIREBASE_*` service-account values and `SENDGRID_API_KEY` are server-only -
+never prefix them with `VITE_`.
+
+**Firebase rules and indexes** are deployed separately:
 
 ```bash
-npm run dev
-# → http://localhost:5173
+firebase deploy --only firestore:rules,firestore:indexes,storage
 ```
 
-The contact form hits `/api/contact` which is proxied to the Vercel serverless function. In local dev this won't work without [Vercel CLI](https://vercel.com/docs/cli). Everything else (Firestore, Auth, Storage) works directly.
+> Deploy the site **before** the rules whenever both change: the rules deny
+> client-side contact writes, which older site builds relied on.
 
----
+## Security notes
 
-## Deployment (Vercel)
-
-### Project settings
-
-| Setting | Value |
-|---|---|
-| Root Directory | `frontend` |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
-| Install Command | `npm install` |
-
-### Environment variables (Vercel dashboard)
-
-Add all of the above `VITE_FIREBASE_*` keys, plus these server-side secrets for the contact function:
-
-```env
-FIREBASE_PROJECT_ID=
-FIREBASE_CLIENT_EMAIL=
-FIREBASE_PRIVATE_KEY=           # paste with literal \n - Vercel handles the escape
-SENDGRID_API_KEY=
-TO_EMAIL=                       # your inbox address
-FROM_EMAIL=                     # verified SendGrid sender
-```
-
-The `frontend/vercel.json` handles routing automatically:
-
-```json
-{
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)",     "destination": "/index.html" }
-  ]
-}
-```
-
----
-
-## Firebase Setup
-
-### Firestore security rules
-
-```js
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-  }
-}
-```
-
-### Storage security rules
-
-```js
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /uploads/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-  }
-}
-```
-
-Deploy rules via Firebase CLI:
-
-```bash
-firebase deploy --only firestore:rules,storage
-```
-
----
-
-## Content Management
-
-All content is managed through the admin panel at `/admin`. Log in with the Firebase Authentication email/password you configured for your account.
-
-| Section | Firestore Collection |
-|---|---|
-| Projects | `projects` |
-| Blog Posts | `blog_posts` |
-| Work Experience | `work_experience` |
-| Skills | `skills` |
-| Certificates | `certificates` |
-| Awards | `awards` |
-| Languages | `languages` |
-| Hackathons | `hackathons` |
-| Testimonials | `testimonials` |
-| Volunteer | `volunteer_experience` |
-| Education | `education` |
-| Events | `events` |
-| Newsletters | `newsletters` |
-| Contact Messages | `contact_messages` |
-| Activity Logs | `activity_logs` |
-
----
-
-## Key Files
-
-| File | Purpose |
-|---|---|
-| `src/lib/firebase.ts` | Single Firebase init - exports `auth`, `db`, `storage` |
-| `src/services/storage.ts` | `uploadImage(file)` - direct browser → Firebase Storage |
-| `src/shared/lib/queryKeys.ts` | Centralized TanStack Query cache key registry |
-| `src/components/SEO.tsx` | Per-page meta tags, OG, Twitter card, JSON-LD |
-| `api/contact.ts` | Serverless function: validates input, writes to Firestore, sends email via SendGrid |
-| `public/robots.txt` | Blocks `/admin` from crawlers |
-| `public/sitemap.xml` | Static sitemap for all public routes |
+- Never commit `serviceAccountKey.json` or `.env` files (both are git-ignored).
+- The CSP allows exactly one inline script (the gtag snippet in `index.html`) by
+  SHA-256 hash. If you change it, `npm run build` fails and prints the new hash
+  to paste into `frontend/vercel.json`.

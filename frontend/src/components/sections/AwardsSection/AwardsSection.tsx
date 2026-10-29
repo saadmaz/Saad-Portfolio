@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { m } from "framer-motion";
 import { Trophy, ChevronDown, ChevronUp, ExternalLink, Calendar } from "lucide-react";
-import { useAwards } from "@/shared/hooks/useCommon";
+import { useAwards } from "@/hooks/useContent";
 import { Award } from "@/types";
 
 function AwardCard({ award, index }: { award: Award; index: number }) {
@@ -60,13 +60,17 @@ function AwardCard({ award, index }: { award: Award; index: number }) {
           </p>
           {isLong && (
             <button
-              onClick={() => setExpanded(v => !v)}
+              onClick={() => setExpanded((v) => !v)}
               className="mt-1.5 flex items-center gap-1 text-xs text-accent font-medium hover:underline"
             >
               {expanded ? (
-                <><ChevronUp className="w-3 h-3" /> Show less</>
+                <>
+                  <ChevronUp className="w-3 h-3" /> Show less
+                </>
               ) : (
-                <><ChevronDown className="w-3 h-3" /> Show more</>
+                <>
+                  <ChevronDown className="w-3 h-3" /> Show more
+                </>
               )}
             </button>
           )}
@@ -96,7 +100,7 @@ export function AwardsSection() {
       <section className="section-padding bg-secondary/30">
         <div className="section-container">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-40 rounded-2xl bg-card animate-pulse" />
             ))}
           </div>

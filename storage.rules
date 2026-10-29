@@ -4,7 +4,6 @@ service firebase.storage {
   match /b/{bucket}/o {
 
     // Same admin email restriction as Firestore rules.
-    // Replace YOUR_ADMIN_EMAIL_HERE with your actual admin email.
     function isAdmin() {
       return request.auth != null
           && request.auth.token.email == "saadmazaa@gmail.com";

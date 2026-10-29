@@ -3,7 +3,7 @@ import React from "react";
 import { m, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Download, Phone, Mail, Linkedin, Github, Instagram, Facebook, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+
 import profilePhoto from "@/assets/profile-photo.webp";
 import { useRef } from "react";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
@@ -16,49 +16,49 @@ const socials = [
     icon: Phone,
     href: "tel:+94720135801",
     label: "Phone",
-    brandColor: "hsl(142 70% 49%)",       // green
+    brandColor: "hsl(142 70% 49%)", // green
     glowColor: "hsl(142 70% 49% / 0.35)",
   },
   {
     icon: Mail,
     href: "mailto:saadmazaa@gmail.com",
     label: "Email",
-    brandColor: "hsl(4 90% 58%)",          // Gmail red
+    brandColor: "hsl(4 90% 58%)", // Gmail red
     glowColor: "hsl(4 90% 58% / 0.35)",
   },
   {
     icon: Linkedin,
     href: "https://linkedin.com/in/saadmaz/",
     label: "LinkedIn",
-    brandColor: "hsl(210 91% 40%)",        // LinkedIn blue
+    brandColor: "hsl(210 91% 40%)", // LinkedIn blue
     glowColor: "hsl(210 91% 40% / 0.35)",
   },
   {
     icon: Github,
     href: "https://github.com/saadmaz/",
     label: "GitHub",
-    brandColor: "hsl(262 55% 52%)",        // purple (GitHub dark theme accent)
+    brandColor: "hsl(262 55% 52%)", // purple (GitHub dark theme accent)
     glowColor: "hsl(262 55% 52% / 0.35)",
   },
   {
     icon: Instagram,
     href: "https://instagram.com/saaadmaz/",
     label: "Instagram",
-    brandColor: "hsl(340 74% 54%)",        // Instagram pink
+    brandColor: "hsl(340 74% 54%)", // Instagram pink
     glowColor: "hsl(340 74% 54% / 0.35)",
   },
   {
     icon: Facebook,
     href: "https://facebook.com/saadmazhar03",
     label: "Facebook",
-    brandColor: "hsl(214 94% 52%)",        // Facebook blue
+    brandColor: "hsl(214 94% 52%)", // Facebook blue
     glowColor: "hsl(214 94% 52% / 0.35)",
   },
   {
     icon: X,
     href: "https://x.com/SaadMazhar_",
     label: "X",
-    brandColor: "hsl(0 0% 63%)",           // X (Twitter) neutral grey
+    brandColor: "hsl(0 0% 63%)", // X (Twitter) neutral grey
     glowColor: "hsl(0 0% 63% / 0.40)",
   },
 ];
@@ -186,8 +186,10 @@ export function HeroSection() {
   };
 
   return (
-    <section aria-labelledby="hero-heading" className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden">
-
+    <section
+      aria-labelledby="hero-heading"
+      className="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 md:pt-0 overflow-hidden"
+    >
       {/* ── Layered background ─────────────────────────────────────────────────
           Three layers stacked via `absolute inset-0 -z-10`:
           1. Hero gradient from CSS variable (adapts to light/dark theme)
@@ -212,10 +214,8 @@ export function HeroSection() {
         {/* Two-column grid: text left, photo right on large screens.
             On mobile the photo appears first (order-1) above the text (order-2). */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
           {/* ── LEFT COLUMN: Text content ───────────────────────────────────── */}
           <div className="space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left mx-auto">
-
             {/* "Currently building" badge — fades in first (no delay) */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -232,7 +232,10 @@ export function HeroSection() {
 
             {/* Main heading — "Hi, I'm" fades in, then AnimatedName staggers each letter */}
             <div className="space-y-4">
-              <h1 id="hero-heading" className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] md:whitespace-nowrap">
+              <h1
+                id="hero-heading"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] md:whitespace-nowrap"
+              >
                 <m.span
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -262,8 +265,8 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.85 }}
               className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed"
             >
-              I build solutions that solve real problems. Passionate about the intersection
-              of technology, design, and business. Always learning, always shipping.
+              I build solutions that solve real problems. Passionate about the intersection of technology,
+              design, and business. Always learning, always shipping.
             </m.p>
 
             {/* CTA row: three action levels
@@ -339,7 +342,10 @@ export function HeroSection() {
             <div
               ref={ref}
               onMouseMove={handleMouseMove}
-              onMouseLeave={() => { x.set(0); y.set(0); }} // reset tilt when cursor leaves
+              onMouseLeave={() => {
+                x.set(0);
+                y.set(0);
+              }} // reset tilt when cursor leaves
               className="relative"
               style={{ perspective: "1000px" }}
             >
@@ -349,11 +355,12 @@ export function HeroSection() {
 
               {/* This div receives the spring-animated rotateX / rotateY transforms */}
               <m.div style={{ rotateX, rotateY }} className="relative">
-
                 {/* Photo frame */}
                 <div
                   className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border border-accent/20 group"
-                  style={{ boxShadow: "0 0 0 1px hsl(174 72% 44% / 0.15), 0 20px 40px -10px hsl(196 60% 4% / 0.4)" }}
+                  style={{
+                    boxShadow: "0 0 0 1px hsl(174 72% 44% / 0.15), 0 20px 40px -10px hsl(196 60% 4% / 0.4)",
+                  }}
                 >
                   {/* fetchpriority="high" + loading="eager" ensures LCP image loads ASAP.
                       Lowercase attribute name: framer-motion forwards props verbatim to the
@@ -361,7 +368,7 @@ export function HeroSection() {
                   <m.img
                     src={profilePhoto}
                     alt="Saad Mazhar"
-                    {...{ fetchpriority: 'high' }}
+                    {...{ fetchpriority: "high" }}
                     loading="eager"
                     decoding="sync"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -410,7 +417,9 @@ export function HeroSection() {
                     </div>
                     <div>
                       <p className="text-[10px] md:text-xs font-medium text-foreground">Building</p>
-                      <p className="text-[8px] md:text-[10px] text-muted-foreground truncate">TankSudda &amp; Stopwash</p>
+                      <p className="text-[8px] md:text-[10px] text-muted-foreground truncate">
+                        TankSudda &amp; Stopwash
+                      </p>
                     </div>
                   </div>
                 </m.div>
