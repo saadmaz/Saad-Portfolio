@@ -1,37 +1,25 @@
-import { m } from "framer-motion";
-import { Layout } from "../components/layout/Layout";
+import { useMemo, useState } from "react";
+import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { useState } from "react";
-
+import { Empty, FilterPill, PageHeader, Reveal, Skeleton } from "@/components/ui";
+import { ProjectCard } from "@/components/cards";
 import { useProjects } from "@/hooks/useProjects";
-import { ProjectCard } from "@/components/projects/ProjectCard";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const ProjectsPage = () => {
-  const { data: projects = [], isLoading } = useProjects();
-  const [activeCategory, setActiveCategory] = useState("All");
+  const { data = [], isLoading } = useProjects();
+  const [filter, setFilter] = useState("All");
 
-  // derive categories dynamically from data
-  const categories = ["All", ...Array.from(new Set(projects.map((p) => p.category || "").filter(Boolean)))];
-
-  const filteredProjects =
-    activeCategory === "All" ? projects : projects.filter((p) => p.category === activeCategory);
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <section className="section-padding">
-          <div className="section-container">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="rounded-xl bg-secondary/30 animate-pulse aspect-[4/3]" />
-              ))}
-            </div>
-          </div>
-        </section>
-      </Layout>
-    );
-  }
+  const projects = useMemo(
+    () => [...data].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)),
+    [data],
+  );
+  const categories = useMemo(
+    () => ["All", ...new Set(projects.map((p) => p.category || p.type).filter(Boolean) as string[])],
+    [projects],
+  );
+  const shown = filter === "All" ? projects : projects.filter((p) => (p.category || p.type) === filter);
+  const [first, ...rest] = shown;
 
   return (
     <Layout>
@@ -40,62 +28,42 @@ const ProjectsPage = () => {
         description={PAGE_SEO["/projects"].description}
         url={`${BASE_URL}/projects`}
       />
-      <section className="section-padding">
-        <div className="section-container">
-          {/* Header */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-12"
-          >
-            <span className="section-title">Projects</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Things I've Built
-            </h1>
-            <p className="text-muted-foreground max-w-2xl">
-              A collection of projects ranging from web applications to CLI tools. Each one represents a
-              problem I wanted to solve or a technology I wanted to explore.
-            </p>
-          </m.div>
-
-          {/* Filters */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex flex-wrap gap-2 mb-12"
-          >
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground hover:bg-muted"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </m.div>
-
-          {/* Projects Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-            {filteredProjects.map((project, index) => (
-              <m.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="group"
-              >
-                <ProjectCard project={project} />
-              </m.div>
+      <PageHeader
+        label="Projects"
+        title="Selected"
+        soft="work"
+        intro="Startups I founded, products I shipped for clients, and experiments that taught me something. Each one has a full case study."
+      >
+        {categories.length > 2 && (
+          <div className="mt-12 flex flex-wrap gap-2 border-t border-line-2 pt-8">
+            {categories.map((c) => (
+              <FilterPill key={c} active={filter === c} onClick={() => setFilter(c)}>
+                {c === "All" ? `All · ${projects.length}` : c}
+              </FilterPill>
             ))}
           </div>
-        </div>
+        )}
+      </PageHeader>
+
+      <section className="wrap pb-32">
+        {isLoading ? (
+          <Skeleton className="aspect-[16/9] w-full rounded-media" />
+        ) : shown.length === 0 ? (
+          <Empty>No projects here yet.</Empty>
+        ) : (
+          <div className="flex flex-col gap-20 md:gap-24">
+            <Reveal>
+              <ProjectCard project={first} index={0} feature />
+            </Reveal>
+            <div className="grid gap-16 md:grid-cols-2 md:gap-x-6 md:gap-y-24">
+              {rest.map((p, i) => (
+                <Reveal key={p.id}>
+                  <ProjectCard project={p} index={i + 1} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </Layout>
   );

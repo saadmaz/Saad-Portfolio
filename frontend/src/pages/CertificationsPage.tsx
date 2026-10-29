@@ -1,45 +1,43 @@
-import { useState, useMemo } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { Award, ChevronDown, ChevronUp, Search, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CertCard } from "@/components/sections/CertificatesPreview";
+import { Empty, FilterPill, PageHeader, Skeleton, Stat } from "@/components/ui";
+import { Mark, Row } from "@/components/cards";
 import { useCertificates } from "@/hooks/useContent";
+import { year } from "@/lib/format";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
+
+const PAGE = 24;
 
 const CertificationsPage = () => {
-  const { data, isLoading: loading } = useCertificates();
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showAllCerts, setShowAllCerts] = useState(false);
+  const { data = [], isLoading } = useCertificates();
+  const [category, setCategory] = useState("All");
+  const [query, setQuery] = useState("");
+  const [limit, setLimit] = useState(PAGE);
 
-  const certificates = useMemo(
+  const certs = useMemo(
     () =>
-      [...(data ?? [])].sort(
-        (a, b) => new Date(b.issue_date || 0).getTime() - new Date(a.issue_date || 0).getTime(),
+      [...data].sort(
+        (a, b) =>
+          Number(b.is_featured) - Number(a.is_featured) ||
+          new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime(),
       ),
     [data],
   );
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const c of certs) if (c.category) counts.set(c.category, (counts.get(c.category) ?? 0) + 1);
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [certs]);
+  const issuers = new Set(certs.map((c) => c.issuer).filter(Boolean)).size;
 
-  const categories = useMemo(
-    () => ["All", ...Array.from(new Set(certificates.map((c) => c.category)))],
-    [certificates],
+  const q = query.trim().toLowerCase();
+  const shown = certs.filter(
+    (c) =>
+      (category === "All" || c.category === category) &&
+      (!q || `${c.title} ${c.issuer} ${(c.skills ?? []).join(" ")}`.toLowerCase().includes(q)),
   );
-
-  const filteredCertificates = certificates.filter((cert) => {
-    const matchesCategory = selectedCategory === "All" || cert.category === selectedCategory;
-    const q = searchQuery.toLowerCase();
-    const matchesSearch =
-      cert.title.toLowerCase().includes(q) ||
-      cert.issuer.toLowerCase().includes(q) ||
-      cert.description.toLowerCase().includes(q) ||
-      (cert.tags || []).some((t) => t.toLowerCase().includes(q));
-    return matchesCategory && matchesSearch;
-  });
-
-  const displayedCertificates = showAllCerts ? filteredCertificates : filteredCertificates.slice(0, 6);
 
   return (
     <Layout>
@@ -47,144 +45,76 @@ const CertificationsPage = () => {
         title={PAGE_SEO["/certifications"].title}
         description={PAGE_SEO["/certifications"].description}
         url={`${BASE_URL}/certifications`}
-        breadcrumbs={[{ name: "Certifications", url: `${BASE_URL}/certifications` }]}
       />
-      <section className="pt-10 pb-20 md:pb-24">
-        <div className="section-container">
-          {/* Header */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-7"
-          >
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-2">
-              Licenses & Certificates
-            </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Professional certifications earned through continuous learning and industry validation.
-            </p>
-          </m.div>
+      <PageHeader
+        label="Certificates"
+        title="Always"
+        soft="learning"
+        aside={
+          certs.length > 0 && (
+            <div className="flex gap-14">
+              <Stat value={certs.length} label="Certificates" />
+              <Stat value={issuers} label="Issuers" />
+            </div>
+          )
+        }
+      >
+        <div className="mt-12 flex flex-col gap-5 border-t border-line-2 pt-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-2">
+            <FilterPill active={category === "All"} onClick={() => setCategory("All")}>
+              All · {certs.length}
+            </FilterPill>
+            {categories.map(([c, n]) => (
+              <FilterPill key={c} active={category === c} onClick={() => setCategory(c)}>
+                {c} · {n}
+              </FilterPill>
+            ))}
+          </div>
+          <label className="flex h-11 items-center gap-2.5 rounded-full border border-line-2 bg-surface px-4 lg:w-80">
+            <Search aria-hidden className="size-4 text-fg-3" />
+            <span className="sr-only">Search certificates</span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={`Search ${certs.length || ""} credentials`}
+              className="w-full bg-transparent text-sm placeholder:text-fg-3 focus:outline-none"
+            />
+          </label>
+        </div>
+      </PageHeader>
 
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="w-full rounded-xl bg-card animate-pulse"
-                  style={{ aspectRatio: "3/2" }}
+      <section className="wrap pb-32">
+        {isLoading ? (
+          <Skeleton className="h-96 w-full rounded-card" />
+        ) : shown.length === 0 ? (
+          <Empty>No certificates match that search.</Empty>
+        ) : (
+          <>
+            <div className="grid border-b border-line-2 md:grid-cols-2 md:gap-x-6">
+              {shown.slice(0, limit).map((c) => (
+                <Row
+                  key={c.id}
+                  to={`/certifications/${c.id}`}
+                  mark={<Mark src={c.issuer_logo} label={c.issuer} />}
+                  title={<span className="block text-[1rem] md:text-h4">{c.title}</span>}
+                  sub={c.issuer}
+                  trail={year(c.issue_date)}
                 />
               ))}
             </div>
-          ) : (
-            <>
-              {/* Search + filters on one line */}
-              <m.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="flex items-center gap-3 mb-8 overflow-x-auto pb-1 no-scrollbar"
-              >
-                {/* Search */}
-                <div className="relative shrink-0 w-56">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
-                  <Input
-                    placeholder="Search…"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 pr-8 h-9 bg-card border-border rounded-full text-xs w-full"
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-
-                {/* Divider */}
-                <div className="shrink-0 h-5 w-px bg-border" />
-
-                {/* Category pills — scroll horizontally, no wrap */}
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-                        selectedCategory === category
-                          ? "bg-accent text-accent-foreground shadow-md shadow-accent/20"
-                          : "bg-card border border-border text-muted-foreground hover:border-accent/40 hover:text-foreground"
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </m.div>
-
-              {/* Cards grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <AnimatePresence mode="popLayout">
-                  {displayedCertificates.map((cert, index) => (
-                    <m.div
-                      key={cert.id}
-                      layout
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.97 }}
-                      transition={{ duration: 0.25, delay: index * 0.04 }}
-                    >
-                      <CertCard cert={cert} />
-                    </m.div>
-                  ))}
-                </AnimatePresence>
+            {shown.length > limit && (
+              <div className="mt-12 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setLimit(limit + PAGE)}
+                  className="h-[52px] rounded-full border border-line-3 px-6 font-medium hover:bg-surface-2"
+                >
+                  Show more · {shown.length - limit} left
+                </button>
               </div>
-
-              {/* Expand/collapse */}
-              {filteredCertificates.length > 6 && (
-                <div className="mt-12 text-center">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowAllCerts(!showAllCerts)}
-                    className="gap-2 px-8 border-accent/20 hover:border-accent/50 hover:bg-accent/5 transition-all"
-                  >
-                    {showAllCerts ? (
-                      <>
-                        Collapse List <ChevronUp className="w-4 h-4" />
-                      </>
-                    ) : (
-                      <>
-                        Show All {filteredCertificates.length} Certificates{" "}
-                        <ChevronDown className="w-4 h-4" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
-
-              {/* Empty state */}
-              {filteredCertificates.length === 0 && (
-                <div className="text-center py-24 bg-secondary/10 rounded-3xl border border-dashed border-border mt-10">
-                  <Award className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-20" />
-                  <p className="text-muted-foreground font-medium text-lg">No certifications found.</p>
-                  <Button
-                    variant="link"
-                    onClick={() => {
-                      setSelectedCategory("All");
-                      setSearchQuery("");
-                    }}
-                    className="text-accent mt-2"
-                  >
-                    Clear all filters
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
       </section>
     </Layout>
   );

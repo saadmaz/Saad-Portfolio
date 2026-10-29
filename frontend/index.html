@@ -17,19 +17,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Apply the saved/system theme before first paint so dark-mode visitors
-         don't see a light flash. Mirrors src/hooks/useTheme.tsx. Also CSP-hashed. -->
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("theme");
-          if (t !== "light" && t !== "dark") {
-            t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          }
-          if (t === "dark") document.documentElement.classList.add("dark");
-        } catch (e) {}
-      })();
-    </script>
 
     <!-- The prerendered crawler content inside #root (scripts/prerender.mjs) is
          unstyled. Keep it in the HTML for crawlers but don't paint it for
@@ -66,9 +53,10 @@
     <meta name="robots" content="index, follow" />
     <meta name="google-adsense-account" content="ca-pub-4234483250409150" />
 
-    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/app-icon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#0c2029" />
+    <meta name="theme-color" content="#19191B" />
     <link rel="canonical" href="https://www.saadmaz.com/" />
 
     <!-- Preconnect for Google Fonts & Firebase CDN -->
@@ -77,12 +65,10 @@
     <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
     <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin />
 
-    <!-- All three font families in one small stylesheet. A plain <link> (no
-         inline onload="" swap trick) because the CSP forbids inline event
-         handlers; display=swap keeps text visible while font files download. -->
+    <!-- Geist + Geist Mono. Plain <link>: the CSP forbids inline onload handlers. -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap"
     />
 
     <meta property="og:site_name" content="Saad Mazhar" />

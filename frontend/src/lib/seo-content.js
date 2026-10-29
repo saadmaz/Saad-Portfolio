@@ -60,7 +60,7 @@ export const PAGE_SEO = {
   "/": {
     title: "Full-Stack Developer & Startup Founder",
     description:
-      "Saad Mazhar — startup founder, tech speaker, and full-stack developer in Colombo, Sri Lanka, building AI-powered products and web apps.",
+      "Saad Mazhar, startup founder, tech speaker, and full-stack developer in Colombo, Sri Lanka, building AI-powered products and web apps.",
   },
   "/projects": {
     title: "Projects | AI, Web & Mobile Apps",
@@ -70,7 +70,7 @@ export const PAGE_SEO = {
   "/about": {
     title: "About | Founder & Developer",
     description:
-      "Get to know Saad Mazhar — computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka.",
+      "Get to know Saad Mazhar, a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka.",
   },
   "/blog": {
     title: "Blog | Startups, AI & Dev Insights",
@@ -85,17 +85,17 @@ export const PAGE_SEO = {
   "/experience": {
     title: "Work Experience",
     description:
-      "Saad Mazhar's career timeline — startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka.",
+      "Saad Mazhar's career timeline: startup founder, full-stack developer, and AI engineer based in Colombo, Sri Lanka.",
   },
   "/skills": {
     title: "Skills & Tech Stack",
     description:
-      "Saad Mazhar's technical skill set — React, TypeScript, Flutter, Python, AI tools, and cloud platforms.",
+      "Saad Mazhar's technical skill set: React, TypeScript, Flutter, Python, AI tools, and cloud platforms.",
   },
   "/certifications": {
     title: "Certifications",
     description:
-      "Saad Mazhar's certifications in AI, cybersecurity, cloud computing, and DevOps — from Microsoft, Google, and ISACA.",
+      "Saad Mazhar's certifications in AI, cybersecurity, cloud computing, and DevOps, from Microsoft, Google, and ISACA.",
   },
   "/events": {
     title: "Events & Public Presence",
@@ -110,6 +110,10 @@ export const PAGE_SEO = {
   "/publications": {
     title: "Publications",
     description: "Articles, research papers, and published work by Saad Mazhar.",
+  },
+  "/languages": {
+    title: "Languages",
+    description: "The languages Saad Mazhar speaks and hosts events in, with proficiency for each.",
   },
   "/education": {
     title: "Education",

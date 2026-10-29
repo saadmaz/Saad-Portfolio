@@ -1,276 +1,130 @@
-import { useParams, Link } from "react-router-dom";
-import { m } from "framer-motion";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { Mic2, Users, Calendar, MapPin, ArrowLeft, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useEvents } from "@/hooks/useContent";
-import { ImageCarousel } from "@/components/ui/ImageCarousel";
 import { SEO } from "@/components/SEO";
-import { BASE_URL } from "@/lib/seo-content.js";
-
-const roleColors: Record<string, string> = {
-  Host: "bg-accent text-accent-foreground",
-  Compere: "bg-accent text-accent-foreground",
-  Speaker: "bg-success text-success-foreground",
-  Organizer: "bg-secondary text-secondary-foreground",
-  Attended: "bg-muted text-muted-foreground",
-};
+import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
+import { EventCard } from "@/components/cards";
+import { useEvents } from "@/hooks/useContent";
+import { fullDate } from "@/lib/format";
+import { BASE_URL } from "@/lib/seo-content";
 
 const EventDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: firestoreEvents = [] } = useEvents();
+  const { id } = useParams();
+  const { data = [], isLoading } = useEvents();
 
-  const firestoreEvent = firestoreEvents.find((e) => e.id === id);
-
-  // Normalise to a common shape for rendering
-  const event = firestoreEvent
-    ? {
-        ...firestoreEvent,
-        role: firestoreEvent.role ?? firestoreEvent.type ?? "",
-        fullDescription: firestoreEvent.description,
-        gallery:
-          firestoreEvent.images && firestoreEvent.images.length > 0
-            ? firestoreEvent.images
-            : firestoreEvent.image
-              ? [firestoreEvent.image]
-              : [],
-        highlights: firestoreEvent.highlights ?? [],
-        attendees: firestoreEvent.attendees,
-      }
-    : null;
-
-  if (!event) {
+  if (isLoading)
     return (
       <Layout>
-        <SEO title="Event Not Found" noIndex />
-        <section className="section-padding">
-          <div className="section-container text-center">
-            <h1 className="font-display text-3xl font-bold text-foreground mb-4">Event Not Found</h1>
-            <p className="text-muted-foreground mb-8">
-              The event you're looking for doesn't exist or has been removed.
-            </p>
-            <Button asChild>
-              <Link to="/events">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Events
-              </Link>
-            </Button>
-          </div>
-        </section>
+        <div className="wrap flex flex-col gap-8 py-24">
+          <Skeleton className="h-24 w-2/3" />
+          <Skeleton className="aspect-[2/1] w-full rounded-media" />
+        </div>
       </Layout>
     );
-  }
+  const event = data.find((e) => String(e.id) === String(id));
+  if (!event) return <Navigate to="/events" replace />;
 
-  const eventSchema = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: event.title,
-    description: event.fullDescription,
-    startDate: event.date,
-    location: { "@type": "Place", name: event.location },
-    image: event.image ?? event.gallery?.[0],
-    performer: { "@type": "Person", name: "Saad Mazhar", url: BASE_URL },
-    organizer: event.organizer ? { "@type": "Organization", name: event.organizer } : undefined,
-  };
+  const gallery = (event.images ?? []).filter((src) => src !== event.image);
+  const more = [...data]
+    .reverse()
+    .filter((e) => e.id !== event.id)
+    .slice(0, 3);
+  const details = [
+    ["Role", event.role],
+    ["Date", fullDate(event.date)],
+    ["Location", event.location],
+    ["Audience", event.attendees],
+    ["Organiser", event.organizer],
+  ].filter(([, v]) => v) as [string, string][];
 
   return (
     <Layout>
       <SEO
-        title={`${event.title} | Event`}
-        description={event.description || event.fullDescription}
-        image={event.image ?? event.gallery?.[0]}
-        url={`${BASE_URL}/events/${id}`}
-        type="article"
-        structuredData={eventSchema}
-        breadcrumbs={[
-          { name: "Events", url: `${BASE_URL}/events` },
-          { name: event.title, url: `${BASE_URL}/events/${id}` },
-        ]}
+        title={event.title}
+        description={event.description?.slice(0, 160)}
+        url={`${BASE_URL}/events/${event.id}`}
+        image={event.image}
       />
-      {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
-        <div className="absolute inset-0">
-          {(event.image || (event.gallery && event.gallery[0])) && (
-            <img
-              src={event.image ?? event.gallery![0]}
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
+      <header className="wrap pb-14 pt-12 md:pt-20">
+        <Link to="/events" className="text-sm text-fg-2 hover:text-fg">
+          ← All events
+        </Link>
+        <div className="mt-10 flex flex-wrap gap-2">
+          {event.role && <Tag active>{event.role}</Tag>}
+          {event.type && <Tag>{event.type}</Tag>}
+        </div>
+        <h1 className="mt-6 max-w-[1000px] text-display-l font-medium">{event.title}</h1>
+        <p className="mt-6 text-h2 font-light text-fg-2">{event.organizer}</p>
+      </header>
+
+      <div className="wrap">
+        <Media
+          src={event.image || event.images?.[0]}
+          alt={event.title}
+          className="aspect-[4/3] md:aspect-[2/1]"
+          priority
+        />
+      </div>
+
+      <section className="wrap grid gap-14 py-24 md:grid-cols-[320px_1fr] md:gap-24">
+        <aside className="flex flex-col">
+          {details.map(([k, v]) => (
+            <div key={k} className="flex flex-col gap-1.5 border-t border-line-2 py-4">
+              <span className="label text-fg-3">{k}</span>
+              <span>{v}</span>
+            </div>
+          ))}
+          {event.link && (
+            <div className="border-t border-line-2 pt-6">
+              <Button href={event.link} variant="secondary">
+                Event page
+              </Button>
+            </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 section-container pb-12">
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Link
-              to="/events"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Events
-            </Link>
-
-            <span
-              className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg mb-4",
-                roleColors[event.role] || roleColors.Attended,
-              )}
-            >
-              {(event.role === "Host" || event.role === "Compere") && <Mic2 className="w-3 h-3" />}
-              {event.role === "Speaker" && <Mic2 className="w-3 h-3" />}
-              {event.role === "Organizer" && <Users className="w-3 h-3" />}
-              {event.role}
-            </span>
-
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {event.title}
-            </h1>
-
-            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                {event.date}
-              </span>
-              <span className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                {event.location}
-              </span>
-              {event.attendees && (
-                <span className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  {event.attendees} attendees
-                </span>
-              )}
+        </aside>
+        <article className="flex max-w-prose flex-col gap-8">
+          <span className="label text-accent">About</span>
+          <p className="whitespace-pre-line text-body-l text-fg-2">{event.description}</p>
+          {event.highlights?.length ? (
+            <div className="flex flex-col gap-4 pt-4">
+              <span className="label text-fg-3">Highlights</span>
+              <ul className="flex flex-col gap-3">
+                {event.highlights.map((h) => (
+                  <li key={h} className="flex gap-3.5">
+                    <span aria-hidden className="mt-[11px] size-1.5 shrink-0 rounded-full bg-accent" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </m.div>
-        </div>
+          ) : null}
+        </article>
       </section>
 
-      {/* Content */}
-      <section className="section-padding">
-        <div className="section-container">
-          <div className="grid lg:grid-cols-3 gap-12">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <h2 className="font-display text-2xl font-bold text-foreground mb-4">About This Event</h2>
-                <p className="text-muted-foreground leading-relaxed">{event.fullDescription}</p>
-              </m.div>
-
-              {/* Highlights */}
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <h3 className="font-display text-xl font-semibold text-foreground mb-4">Highlights</h3>
-                <ul className="space-y-3">
-                  {event.highlights.map((highlight, index) => (
-                    <li key={index} className="flex items-start gap-3 text-muted-foreground">
-                      <span className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
-              </m.div>
-
-              {/* Photo Gallery */}
-              {event.gallery && event.gallery.length > 0 && (
-                <m.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <ImageIcon className="w-5 h-5 text-accent" />
-                    <h3 className="font-display text-xl font-semibold text-foreground">Event Gallery</h3>
-                    <span className="text-sm text-muted-foreground">
-                      ({event.gallery.length} photo{event.gallery.length !== 1 ? "s" : ""})
-                    </span>
-                  </div>
-
-                  {/* Swipeable carousel with lightbox */}
-                  <ImageCarousel
-                    images={event.gallery}
-                    alt={event.title}
-                    className="rounded-2xl overflow-hidden"
-                  />
-
-                  {/* Scrollable thumbnail strip for multiple images */}
-                  {event.gallery.length > 1 && (
-                    <div className="flex gap-2 mt-3 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-white/10">
-                      {event.gallery.map((img, i) => (
-                        <img
-                          key={i}
-                          src={img}
-                          alt={`${event.title} thumbnail ${i + 1}`}
-                          className="h-16 w-24 flex-shrink-0 object-cover rounded-lg border border-border opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
-                        />
-                      ))}
-                    </div>
-                  )}
-                </m.div>
-              )}
+      {gallery.length > 0 && (
+        <section className="section">
+          <div className="wrap">
+            <Eyebrow>Gallery</Eyebrow>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {gallery.map((src, i) => (
+                <Media key={src} src={src} alt={`${event.title}, photo ${i + 2}`} className="aspect-[4/3]" />
+              ))}
             </div>
-
-            {/* Sidebar */}
-            <m.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="space-y-6"
-            >
-              <div className="bg-card rounded-xl border border-border p-6 sticky top-24">
-                <h3 className="font-display text-lg font-semibold text-foreground mb-4">Event Details</h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Role</span>
-                    <p className="text-foreground font-medium">{event.role}</p>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Date</span>
-                    <p className="text-foreground font-medium">{event.date}</p>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Location</span>
-                    <p className="text-foreground font-medium">{event.location}</p>
-                  </div>
-
-                  {event.attendees && (
-                    <div>
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                        Attendees
-                      </span>
-                      <p className="text-foreground font-medium">{event.attendees}</p>
-                    </div>
-                  )}
-
-                  {event.organizer && (
-                    <div>
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                        Organizer
-                      </span>
-                      <p className="text-foreground font-medium">{event.organizer}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </m.div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {more.length > 0 && (
+        <section className="section">
+          <div className="wrap">
+            <Eyebrow>More on stage</Eyebrow>
+            <div className="mt-10 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {more.map((e) => (
+                <EventCard key={e.id} event={e} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </Layout>
   );
 };

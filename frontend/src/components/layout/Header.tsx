@@ -1,375 +1,267 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { m, AnimatePresence } from "framer-motion";
-import {
-  Menu,
-  ChevronDown,
-  Download,
-  Phone,
-  Mail,
-  Linkedin,
-  Github,
-  Instagram,
-  Facebook,
-  X,
-  Moon,
-  Sun,
-} from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { ArrowUpRight, ChevronDown, Menu, Minus, Plus, X } from "lucide-react";
+import { LogoMark } from "@/components/brand/Logo";
+import { Button } from "@/components/ui";
+import { NAV_MENUS, SOCIALS, type NavMenu } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/useTheme";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
-const workItems = [
-  { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
-  { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" },
-];
-
-const skillsItems = [
-  { title: "Skills Overview", href: "/skills", description: "Technical competencies" },
-  { title: "Licenses & Certificates", href: "/certifications", description: "Professional certifications" },
-];
-
-const aboutItems = [
-  { title: "Education", href: "/about#education", description: "Academic background" },
-  { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" },
-  { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" },
-  { title: "Extra-Curricular", href: "/about#extracurricular", description: "Activities and interests" },
-  { title: "Sports", href: "/about#sports", description: "Athletic pursuits" },
-  { title: "Languages", href: "/about#languages", description: "Communication abilities" },
-  { title: "Awards", href: "/about#awards", description: "Recognition and honors" },
-];
-
-const insightsItems = [
-  { title: "Blog / Thoughts", href: "/blog", description: "Articles and perspectives" },
-  { title: "Newsletters", href: "/newsletters", description: "Knowledge hub subscriptions" },
-];
-
-export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const mobileNavRef = useRef<HTMLElement>(null);
-
+function useScrolled(threshold = 40) {
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [threshold]);
+  return scrolled;
+}
 
-  useEffect(() => {
-    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+/** Which top-level menu owns the current route, for the active state. */
+function activeMenu(pathname: string): string | null {
+  const menu = NAV_MENUS.find((m) =>
+    m.items.some((i) => pathname.startsWith(i.href.split("#")[0]) && i.href !== "/"),
+  );
+  if (menu) return menu.label;
+  if (pathname.startsWith("/about")) return "About";
+  return null;
+}
 
-  useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isMobileMenuOpen]);
-
-  useEffect(() => {
-    if (!isMobileMenuOpen) return;
-    mobileNavRef.current?.focus();
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsMobileMenuOpen(false);
-        menuButtonRef.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isMobileMenuOpen]);
-
+function Wordmark() {
   return (
-    <>
-      <header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border"
-            : "bg-transparent",
-        )}
-      >
-        <div className="section-container">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <Link to="/" className="flex items-center gap-2 relative z-[60]">
-              <span className="font-display text-xl font-bold text-foreground">Saad Mazhar</span>
-            </Link>
-
-            <nav aria-label="Main" className="hidden lg:flex items-center gap-1">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <Link to="/" className="nav-link px-4 py-2">
-                      Home
-                    </Link>
-                  </NavigationMenuItem>
-
-                  {[
-                    { label: "About", items: aboutItems, wide: true },
-                    { label: "Work", items: workItems },
-                    { label: "Skills", items: skillsItems },
-                    { label: "Insights", items: insightsItems },
-                  ].map((menu) => (
-                    <NavigationMenuItem key={menu.label}>
-                      <NavigationMenuTrigger
-                        className={cn(
-                          "nav-link bg-none transition-all duration-300 px-4 py-2",
-                          "hover:text-accent active:text-accent hover:bg-transparent focus:bg-transparent",
-                          "data-[state=open]:bg-transparent data-[state=open]:text-accent",
-                          "focus:text-accent outline-none border-none shadow-none",
-                        )}
-                      >
-                        {menu.label}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul
-                          className={cn(
-                            "grid gap-1 p-3 bg-popover rounded-lg shadow-lg border border-border",
-                            menu.wide ? "w-[450px] md:grid-cols-2" : "w-[300px]",
-                          )}
-                        >
-                          {menu.items.map((item) => (
-                            <li key={item.href}>
-                              <NavigationMenuLink asChild>
-                                <Link
-                                  to={item.href}
-                                  className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 focus:bg-accent/10"
-                                >
-                                  <div className="text-sm font-medium text-foreground">{item.title}</div>
-                                  <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                                </Link>
-                              </NavigationMenuLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  ))}
-
-                  <NavigationMenuItem>
-                    <Link to="/contact" className="nav-link px-4 py-2">
-                      Contact
-                    </Link>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-            </nav>
-
-            <div className="hidden lg:flex items-center gap-3">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all duration-300 hover:scale-110"
-                aria-label="Toggle theme"
-              >
-                <m.div
-                  initial={false}
-                  animate={{ rotate: theme === "dark" ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </m.div>
-              </button>
-
-              <Button asChild variant="ghost" size="sm" className="btn-accent gap-2 h-auto">
-                <a href={myResume} download="Saad_Mazhar_Resume.pdf">
-                  <Download className="w-4 h-4" />
-                  Download Resume
-                </a>
-              </Button>
-            </div>
-
-            <div className="flex lg:hidden items-center gap-2 relative z-[60]">
-              <button
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-                className="p-2 rounded-lg bg-transparent text-foreground/70 hover:text-accent transition-all"
-              >
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-
-              <button
-                ref={menuButtonRef}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-nav"
-                className="p-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[45] lg:hidden"
-          >
-            <div className="absolute inset-0 bg-background/95 backdrop-blur-md" />
-            <m.nav
-              id="mobile-nav"
-              ref={mobileNavRef}
-              tabIndex={-1}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative pt-24 px-6 pb-20 h-full flex flex-col justify-between overflow-y-auto z-[50] focus:outline-none"
-            >
-              <div className="space-y-6">
-                <MobileNavSection title="Home" href="/" />
-                <MobileNavSection title="About" items={aboutItems} />
-                <MobileNavSection title="Work" items={workItems} />
-                <MobileNavSection title="Skills" items={skillsItems} />
-                <MobileNavSection title="Insights" items={insightsItems} />
-                <MobileNavSection title="Contact" href="/contact" />
-              </div>
-
-              <div className="mt-12 pt-6 border-t border-border">
-                <div className="flex flex-wrap items-center gap-6">
-                  <a
-                    href="tel:+94720135801"
-                    aria-label="Call Saad"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Phone className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="mailto:saadmazaa@gmail.com"
-                    aria-label="Email Saad"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Mail className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/saadmaz"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="LinkedIn"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Linkedin className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="https://github.com/saadmaz"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="GitHub"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Github className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="https://instagram.com/saaadmaz/"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Instagram"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Instagram className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="https://facebook.com/saadmazhar03/"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Facebook"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <Facebook className="w-6 h-6" />
-                  </a>
-                  <a
-                    href="https://x.com/SaadMazhar_"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="X (Twitter)"
-                    className="p-2.5 text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </a>
-                </div>
-              </div>
-            </m.nav>
-          </m.div>
-        )}
-      </AnimatePresence>
-    </>
+    <Link to="/" className="flex items-center gap-2.5 text-[15px] font-medium" aria-label="Saad Mazhar, home">
+      <LogoMark />
+      Saad Mazhar
+    </Link>
   );
 }
 
-function MobileNavSection({
-  title,
-  href,
-  items,
-}: {
-  title: string;
-  href?: string;
-  items?: { title: string; href: string; description: string }[];
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  if (href) {
-    return (
-      <Link
-        to={href}
-        className="relative block text-2xl font-bold text-foreground hover:text-accent transition-colors py-2 z-[55]"
+function Dropdown({ menu, open, onClose }: { menu: NavMenu; open: boolean; onClose: () => void }) {
+  return (
+    <div
+      className={cn(
+        "absolute left-1/2 top-full z-50 pt-3 -translate-x-1/2 transition duration-200 ease-out",
+        open ? "visible opacity-100" : "invisible -translate-y-1 opacity-0",
+      )}
+    >
+      <ul
+        className={cn(
+          "grid gap-0.5 rounded-[20px] border border-line-2 bg-surface/95 p-2 shadow-[0_24px_64px_-12px_rgb(0_0_0/0.5)] backdrop-blur-xl",
+          menu.items.length > 4 ? "w-[560px] grid-cols-2" : "w-[320px]",
+        )}
       >
-        {title}
-      </Link>
-    );
-  }
+        {menu.items.map((item) => (
+          <li key={item.title}>
+            <Link
+              to={item.href}
+              onClick={onClose}
+              className="group/item flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-surface-2"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-medium text-fg">{item.title}</span>
+                <span className="block text-sm text-fg-3">{item.description}</span>
+              </span>
+              <ArrowUpRight
+                aria-hidden
+                className="size-4 text-fg-3 opacity-0 transition-opacity group-hover/item:opacity-100"
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function DesktopNav({ current }: { current: string | null }) {
+  const [open, setOpen] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const closeTimer = useRef<number>();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(null);
+    const onClick = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpen(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, []);
+
+  const enter = (label: string) => {
+    window.clearTimeout(closeTimer.current);
+    setOpen(label);
+  };
+  const leave = () => {
+    closeTimer.current = window.setTimeout(() => setOpen(null), 150);
+  };
 
   return (
-    <div className="border-b border-border/50 pb-2 relative z-[51]">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        className="flex items-center justify-between w-full text-2xl font-bold text-foreground py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
-      >
-        {title}
-        <ChevronDown
-          className={cn("w-6 h-6 transition-transform duration-300", isOpen && "rotate-180 text-accent")}
-        />
-      </button>
-      <AnimatePresence>
-        {isOpen && items && (
-          <m.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
+    <nav ref={navRef} aria-label="Main" className="hidden lg:block">
+      <ul className="flex items-center gap-8">
+        {NAV_MENUS.map((menu) => (
+          <li
+            key={menu.label}
+            className="relative"
+            onMouseEnter={() => enter(menu.label)}
+            onMouseLeave={leave}
           >
-            <div className="pt-3 pl-4 space-y-4 border-l-2 border-accent/20 ml-1">
-              {items.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className="block text-lg text-muted-foreground hover:text-accent active:text-accent transition-colors py-1 z-[55]"
+            <button
+              type="button"
+              aria-expanded={open === menu.label}
+              onClick={() => setOpen(open === menu.label ? null : menu.label)}
+              className={cn(
+                "flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-fg",
+                current === menu.label || open === menu.label ? "text-fg" : "text-fg-2",
+              )}
+            >
+              {menu.label}
+              <ChevronDown
+                aria-hidden
+                className={cn(
+                  "size-3.5 transition-transform duration-200",
+                  open === menu.label ? "rotate-180 text-accent" : "text-fg-3",
+                )}
+              />
+            </button>
+            <Dropdown menu={menu} open={open === menu.label} onClose={() => setOpen(null)} />
+          </li>
+        ))}
+        <li>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              cn("text-sm font-medium transition-colors hover:text-fg", isActive ? "text-fg" : "text-fg-2")
+            }
+          >
+            Contact
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+function MobileMenu({ onClose }: { onClose: () => void }) {
+  const [expanded, setExpanded] = useState<string | null>(NAV_MENUS[0].label);
+  return (
+    <div className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-base pt-[72px] lg:hidden">
+      <nav aria-label="Mobile" className="px-5">
+        {NAV_MENUS.map((menu, i) => {
+          const isOpen = expanded === menu.label;
+          return (
+            <div key={menu.label} className="border-t border-line-2">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                onClick={() => setExpanded(isOpen ? null : menu.label)}
+                className="flex w-full items-center justify-between py-[18px]"
+              >
+                <span className="flex items-center gap-3.5">
+                  <span className={cn("label", isOpen ? "text-accent" : "text-fg-3")}>0{i + 1}</span>
+                  <span className="text-h2 font-medium">{menu.label}</span>
+                </span>
+                <span
+                  className={cn(
+                    "flex size-9 items-center justify-center rounded-full border border-line-2",
+                    isOpen && "bg-surface-2",
+                  )}
                 >
-                  {item.title}
-                </Link>
-              ))}
+                  {isOpen ? <Minus className="size-4 text-accent" /> : <Plus className="size-4 text-fg-2" />}
+                </span>
+              </button>
+              {isOpen && (
+                <ul className="pb-4">
+                  {menu.items.map((item) => (
+                    <li key={item.title}>
+                      <Link
+                        to={item.href}
+                        onClick={onClose}
+                        className="block rounded-xl px-3 py-2.5 text-fg-2 hover:bg-surface hover:text-fg"
+                      >
+                        {item.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+          );
+        })}
+        <Link
+          to="/contact"
+          onClick={onClose}
+          className="flex items-center justify-between border-y border-line-2 py-[18px]"
+        >
+          <span className="flex items-center gap-3.5">
+            <span className="label text-fg-3">05</span>
+            <span className="text-h2 font-medium">Contact</span>
+          </span>
+          <span className="flex size-9 items-center justify-center rounded-full border border-line-2">
+            <ArrowUpRight className="size-4 text-fg-2" />
+          </span>
+        </Link>
+      </nav>
+      <div className="mt-auto flex flex-col gap-5 px-5 pb-8 pt-10">
+        <Button to="/contact" size="lg" className="w-full">
+          Let’s talk
+        </Button>
+        <div className="flex justify-between font-mono text-meta text-fg-2">
+          {SOCIALS.map((s) => (
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
+  );
+}
+
+export function Header() {
+  const scrolled = useScrolled();
+  const { pathname } = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => setMobileOpen(false), [pathname]);
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  return (
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-3 lg:pt-4">
+        <div
+          className={cn(
+            "flex w-full items-center justify-between transition-all duration-300 ease-out",
+            scrolled && !mobileOpen
+              ? "max-w-[920px] rounded-full border border-line-2 bg-surface/75 py-2 pl-3 pr-2 shadow-[0_12px_40px_-8px_rgb(0_0_0/0.4)] backdrop-blur-xl"
+              : "max-w-wrap py-3 lg:py-4",
+          )}
+        >
+          <Wordmark />
+          <DesktopNav current={activeMenu(pathname)} />
+          <div className="hidden lg:block">
+            <Button to="/contact">Let’s talk</Button>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-expanded={mobileOpen}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            className="relative z-50 flex size-11 items-center justify-center rounded-full border border-line-2 lg:hidden"
+          >
+            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
+      </header>
+      {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
+    </>
   );
 }
