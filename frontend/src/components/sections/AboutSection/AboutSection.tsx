@@ -2,25 +2,24 @@ import { m } from "framer-motion";
 import { GraduationCap, Calendar, Trophy, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useEducation } from "@/shared/hooks/useCommon";
+import { useEducation } from "@/hooks/useContent";
 
 export function AboutSection() {
   const { data: educationData = [], isLoading: eduLoading } = useEducation();
 
-  const latestEducation = [...educationData]
-    .filter(e => e.is_published !== false)
-    .sort((a, b) => {
-      const aY = a.start_year ?? (a.startDate ? parseInt(a.startDate) : 0);
-      const bY = b.start_year ?? (b.startDate ? parseInt(b.startDate) : 0);
-      return bY - aY;
-    })[0] ?? null;
+  const latestEducation =
+    [...educationData]
+      .filter((e) => e.is_published !== false)
+      .sort((a, b) => {
+        const aY = a.start_year ?? (a.startDate ? parseInt(a.startDate) : 0);
+        const bY = b.start_year ?? (b.startDate ? parseInt(b.startDate) : 0);
+        return bY - aY;
+      })[0] ?? null;
 
   const schoolName = latestEducation
-    ? (latestEducation.school_name ?? latestEducation.institution ?? '')
-    : '';
-  const logo = latestEducation
-    ? (latestEducation.school_logo ?? latestEducation.logo)
-    : undefined;
+    ? (latestEducation.school_name ?? latestEducation.institution ?? "")
+    : "";
+  const logo = latestEducation ? (latestEducation.school_logo ?? latestEducation.logo) : undefined;
   const field = latestEducation
     ? (latestEducation.field_of_study ?? latestEducation.fieldOfStudy)
     : undefined;
@@ -29,16 +28,18 @@ export function AboutSection() {
     : false;
   const period = latestEducation
     ? (() => {
-        const start = latestEducation.start_month && latestEducation.start_year
-          ? `${latestEducation.start_month.slice(0, 3)} ${latestEducation.start_year}`
-          : latestEducation.startDate ?? '';
-        const end = isCurrent ? 'Present'
+        const start =
+          latestEducation.start_month && latestEducation.start_year
+            ? `${latestEducation.start_month.slice(0, 3)} ${latestEducation.start_year}`
+            : (latestEducation.startDate ?? "");
+        const end = isCurrent
+          ? "Present"
           : latestEducation.end_month && latestEducation.end_year
             ? `${latestEducation.end_month.slice(0, 3)} ${latestEducation.end_year}`
-            : latestEducation.endDate ?? '';
-        return start ? (end ? `${start} – ${end}` : start) : '';
+            : (latestEducation.endDate ?? "");
+        return start ? (end ? `${start} – ${end}` : start) : "";
       })()
-    : '';
+    : "";
 
   return (
     <section aria-labelledby="about-heading" className="section-padding">
@@ -105,7 +106,9 @@ export function AboutSection() {
                     </div>
                     {(latestEducation.degree || field) && (
                       <p className="text-muted-foreground mb-3">
-                        {latestEducation.degree}{latestEducation.degree && field ? ' · ' : ''}{field}
+                        {latestEducation.degree}
+                        {latestEducation.degree && field ? " · " : ""}
+                        {field}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -122,8 +125,13 @@ export function AboutSection() {
                     </div>
                     {(latestEducation.skills ?? []).length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
-                        {(latestEducation.skills ?? []).slice(0, 5).map(s => (
-                          <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent font-medium">{s}</span>
+                        {(latestEducation.skills ?? []).slice(0, 5).map((s) => (
+                          <span
+                            key={s}
+                            className="text-xs px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent font-medium"
+                          >
+                            {s}
+                          </span>
                         ))}
                       </div>
                     )}

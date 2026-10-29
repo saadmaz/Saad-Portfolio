@@ -2,18 +2,15 @@ import React, { Suspense } from "react";
 import { LazyMotion } from "framer-motion";
 import { HelmetProvider } from "react-helmet-async";
 import { Analytics } from "@vercel/analytics/react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/shared/hooks/useTheme";
-import { ScrollToTop } from "@/shared/hooks/useScrollToTop";
+import { ThemeProvider } from "@/hooks/useTheme";
+import { ScrollToTop } from "@/hooks/useScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // domMax includes layout animations used on /certifications and /events
-const loadMotionFeatures = () =>
-  import("framer-motion").then((mod) => mod.domMax);
+const loadMotionFeatures = () => import("framer-motion").then((mod) => mod.domMax);
 
 // --- Lazy loaded routes ---
 const Index = React.lazy(() => import("../pages/Index"));
@@ -59,38 +56,35 @@ const App = () => (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Analytics />
-            <LazyMotion features={loadMotionFeatures}>
-              <BrowserRouter>
-                <ScrollToTop />
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/projects" element={<ProjectsPage />} />
-                    <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-                    <Route path="/experience" element={<ExperiencePage />} />
-                    <Route path="/skills" element={<SkillsOnlyPage />} />
-                    <Route path="/certifications" element={<CertificationsPage />} />
-                    <Route path="/certifications/:id" element={<CertificateDetailPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/blog" element={<BlogsPage />} />
-                    <Route path="/blog/:slug" element={<BlogDetailPage />} />
-                    <Route path="/newsletters" element={<NewslettersPage />} />
-                    <Route path="/events" element={<EventsPage />} />
-                    <Route path="/events/:id" element={<EventDetailPage />} />
-                    <Route path="/publications" element={<PublicationsPage />} />
-                    <Route path="/education" element={<EducationPage />} />
+          <Toaster />
+          <Analytics />
+          <LazyMotion features={loadMotionFeatures}>
+            <BrowserRouter>
+              <ScrollToTop />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+                  <Route path="/experience" element={<ExperiencePage />} />
+                  <Route path="/skills" element={<SkillsOnlyPage />} />
+                  <Route path="/certifications" element={<CertificationsPage />} />
+                  <Route path="/certifications/:id" element={<CertificateDetailPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/blog" element={<BlogsPage />} />
+                  <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                  <Route path="/newsletters" element={<NewslettersPage />} />
+                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/events/:id" element={<EventDetailPage />} />
+                  <Route path="/publications" element={<PublicationsPage />} />
+                  <Route path="/education" element={<EducationPage />} />
 
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </BrowserRouter>
-            </LazyMotion>
-          </TooltipProvider>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </LazyMotion>
         </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>

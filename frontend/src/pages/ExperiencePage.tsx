@@ -1,18 +1,28 @@
-import { useState, useRef } from 'react';
-import { m } from 'framer-motion';
-import { Layout } from '@/components/layout/Layout';
-import { SEO } from '@/components/SEO';
-import { PAGE_SEO, BASE_URL } from '@/lib/seo-content';
-import { Building, ExternalLink, MapPin, Trophy, Star, ChevronDown, ChevronUp, X } from 'lucide-react';
-import { useExperience } from '@/shared/hooks/useCommon';
-import { Experience, ExperienceMedia } from '@/types';
-import { useModalA11y } from '@/shared/hooks/useModalA11y';
+import { useState, useRef } from "react";
+import { m } from "framer-motion";
+import { Layout } from "@/components/layout/Layout";
+import { SEO } from "@/components/SEO";
+import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
+import { Building, ExternalLink, MapPin, Trophy, Star, ChevronDown, ChevronUp, X } from "lucide-react";
+import { useExperience } from "@/hooks/useContent";
+import { Experience, ExperienceMedia } from "@/types";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const MONTHS = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December',
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // ─── Normalized types ─────────────────────────────────────────────────────────
@@ -54,8 +64,11 @@ interface NormalizedCompany {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function parseDate(month?: string, year?: number, legacy?: string): Date | null {
-  if (year) { const m = month ? MONTHS.indexOf(month) : 0; return new Date(year, m < 0 ? 0 : m, 1); }
-  if (legacy && legacy !== 'Present') {
+  if (year) {
+    const m = month ? MONTHS.indexOf(month) : 0;
+    return new Date(year, m < 0 ? 0 : m, 1);
+  }
+  if (legacy && legacy !== "Present") {
     const p = legacy.trim().split(/\s+/);
     const y = parseInt(p[p.length - 1]);
     const m = MONTHS.indexOf(p[0]);
@@ -65,19 +78,21 @@ function parseDate(month?: string, year?: number, legacy?: string): Date | null 
 }
 
 function calcDuration(start: Date | null, end: Date | null, isCurrent: boolean): string {
-  if (!start) return '';
+  if (!start) return "";
   const e = isCurrent ? new Date() : (end ?? new Date());
   let months = (e.getFullYear() - start.getFullYear()) * 12 + (e.getMonth() - start.getMonth());
   if (months < 1) months = 1;
   const yrs = Math.floor(months / 12);
   const mos = months % 12;
-  return [yrs > 0 && `${yrs} yr${yrs > 1 ? 's' : ''}`, mos > 0 && `${mos} mo${mos > 1 ? 's' : ''}`].filter(Boolean).join(' ');
+  return [yrs > 0 && `${yrs} yr${yrs > 1 ? "s" : ""}`, mos > 0 && `${mos} mo${mos > 1 ? "s" : ""}`]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function fmtDate(month?: string, year?: number, legacy?: string): string {
   if (month && year) return `${month.slice(0, 3)} ${year}`;
   if (year) return String(year);
-  return legacy ?? '';
+  return legacy ?? "";
 }
 
 // ─── Data normalizer ──────────────────────────────────────────────────────────
@@ -87,14 +102,16 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
   const legMap = new Map<string, NormalizedCompany>();
 
   for (const exp of experiences) {
-    const name = exp.company_name ?? exp.company ?? '';
+    const name = exp.company_name ?? exp.company ?? "";
     const logo = exp.company_logo ?? exp.companyLogo;
 
     if (exp.roles && exp.roles.length > 0) {
       const key = String(exp.id ?? name);
       if (!newMap.has(key)) {
         newMap.set(key, {
-          key, name, logo,
+          key,
+          name,
+          logo,
           companyUrl: exp.companyUrl,
           employmentType: exp.employment_type ?? exp.employmentType,
           location: exp.location,
@@ -112,8 +129,10 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
       for (const r of exp.roles) {
         g.roles.push({
           title: r.role_title,
-          startMonth: r.role_start_month, startYear: r.role_start_year,
-          endMonth: r.role_end_month, endYear: r.role_end_year,
+          startMonth: r.role_start_month,
+          startYear: r.role_start_year,
+          endMonth: r.role_end_month,
+          endYear: r.role_end_year,
           isCurrent: r.role_is_current,
           description: r.description,
           skills: r.skills ?? [],
@@ -124,7 +143,9 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
       const key = name;
       if (!legMap.has(key)) {
         legMap.set(key, {
-          key, name, logo,
+          key,
+          name,
+          logo,
           companyUrl: exp.companyUrl,
           employmentType: exp.employment_type ?? exp.employmentType,
           location: exp.location,
@@ -139,8 +160,9 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
         });
       }
       legMap.get(key)!.roles.push({
-        title: exp.position ?? '',
-        startDate: exp.startDate, endDate: exp.endDate,
+        title: exp.position ?? "",
+        startDate: exp.startDate,
+        endDate: exp.endDate,
         isCurrent: exp.is_current ?? exp.isCurrent ?? false,
         description: exp.description,
         skills: exp.skills ?? exp.technologies ?? [],
@@ -167,8 +189,12 @@ function normalize(experiences: Experience[]): NormalizedCompany[] {
     if (a.displayOrder !== undefined && b.displayOrder !== undefined) return a.displayOrder - b.displayOrder;
     if (a.displayOrder !== undefined) return -1;
     if (b.displayOrder !== undefined) return 1;
-    const aD = a.roles[0] ? parseDate(a.roles[0].startMonth, a.roles[0].startYear, a.roles[0].startDate) : null;
-    const bD = b.roles[0] ? parseDate(b.roles[0].startMonth, b.roles[0].startYear, b.roles[0].startDate) : null;
+    const aD = a.roles[0]
+      ? parseDate(a.roles[0].startMonth, a.roles[0].startYear, a.roles[0].startDate)
+      : null;
+    const bD = b.roles[0]
+      ? parseDate(b.roles[0].startMonth, b.roles[0].startYear, b.roles[0].startDate)
+      : null;
     return (bD?.getTime() ?? 0) - (aD?.getTime() ?? 0);
   });
   return all;
@@ -187,36 +213,55 @@ function MediaStrip({ items }: { items: ExperienceMedia[] }) {
         {items.map((m, i) => (
           <button
             key={i}
-            onClick={() => m.media_type === 'Image' ? setLb(m) : window.open(m.media_url, '_blank', 'noopener')}
+            onClick={() =>
+              m.media_type === "Image" ? setLb(m) : window.open(m.media_url, "_blank", "noopener")
+            }
             className="snap-start flex-shrink-0 group w-28 h-20 rounded-xl overflow-hidden bg-secondary border border-border hover:border-accent/40 transition-all"
             title={m.media_caption ?? m.media_url}
           >
-            {m.media_type === 'Image'
-              ? <img src={m.media_url} alt={m.media_caption ?? ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-muted-foreground group-hover:text-accent transition-colors">
-                  <span className="text-2xl">{m.media_type === 'Document' ? '📄' : m.media_type === 'Presentation' ? '📊' : '🔗'}</span>
-                  {m.media_caption && <span className="text-[10px] px-2 truncate w-full text-center">{m.media_caption}</span>}
-                </div>
-              )
-            }
+            {m.media_type === "Image" ? (
+              <img
+                src={m.media_url}
+                alt={m.media_caption ?? ""}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-muted-foreground group-hover:text-accent transition-colors">
+                <span className="text-2xl">
+                  {m.media_type === "Document" ? "📄" : m.media_type === "Presentation" ? "📊" : "🔗"}
+                </span>
+                {m.media_caption && (
+                  <span className="text-[10px] px-2 truncate w-full text-center">{m.media_caption}</span>
+                )}
+              </div>
+            )}
           </button>
         ))}
       </div>
       {lb && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- backdrop click is a mouse shortcut; Escape (useModalA11y) and the close button serve keyboard users
         <div
           ref={lightboxRef}
           role="dialog"
           aria-modal="true"
-          aria-label={lb.media_caption ?? 'Media preview'}
+          aria-label={lb.media_caption ?? "Media preview"}
           className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setLb(null)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setLb(null);
+          }}
         >
-          <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
-            <button className="absolute -top-10 right-0 text-white/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" onClick={() => setLb(null)}>
+          <div className="relative max-w-4xl w-full">
+            <button
+              className="absolute -top-10 right-0 text-white/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onClick={() => setLb(null)}
+            >
               <X className="w-6 h-6" />
             </button>
-            <img src={lb.media_url} alt={lb.media_caption ?? ''} className="rounded-xl max-h-[80vh] object-contain mx-auto" />
+            <img
+              src={lb.media_url}
+              alt={lb.media_caption ?? ""}
+              className="rounded-xl max-h-[80vh] object-contain mx-auto"
+            />
             {lb.media_caption && <p className="text-center text-sm text-white/60 mt-3">{lb.media_caption}</p>}
           </div>
         </div>
@@ -233,7 +278,7 @@ function RoleCard({ role }: { role: NormalizedRole }) {
   const end = role.isCurrent ? null : parseDate(role.endMonth, role.endYear, role.endDate);
   const duration = calcDuration(start, end, role.isCurrent);
   const startLabel = fmtDate(role.startMonth, role.startYear, role.startDate);
-  const endLabel = role.isCurrent ? 'Present' : fmtDate(role.endMonth, role.endYear, role.endDate);
+  const endLabel = role.isCurrent ? "Present" : fmtDate(role.endMonth, role.endYear, role.endDate);
 
   const allMedia = role.media ?? [];
 
@@ -254,22 +299,50 @@ function RoleCard({ role }: { role: NormalizedRole }) {
         )}
       </div>
       <p className="text-sm text-muted-foreground mb-3">
-        {[startLabel, endLabel].filter(Boolean).join(' – ')}
-        {duration && <> · <span className="font-medium">{duration}</span></>}
-        {role.location && (
-          <> · <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{role.location}</span></>
+        {[startLabel, endLabel].filter(Boolean).join(" – ")}
+        {duration && (
+          <>
+            {" "}
+            · <span className="font-medium">{duration}</span>
+          </>
         )}
-        {role.locationType && <> · <span className="px-1.5 py-0.5 rounded bg-secondary text-xs">{role.locationType}</span></>}
+        {role.location && (
+          <>
+            {" "}
+            ·{" "}
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              {role.location}
+            </span>
+          </>
+        )}
+        {role.locationType && (
+          <>
+            {" "}
+            · <span className="px-1.5 py-0.5 rounded bg-secondary text-xs">{role.locationType}</span>
+          </>
+        )}
       </p>
 
       {role.description && (
         <div className="mb-4">
-          <p className={`text-muted-foreground text-sm leading-relaxed ${expanded ? '' : 'line-clamp-4'}`}>
+          <p className={`text-muted-foreground text-sm leading-relaxed ${expanded ? "" : "line-clamp-4"}`}>
             {role.description}
           </p>
           {role.description.length > 300 && (
-            <button onClick={() => setExpanded(v => !v)} className="mt-1 flex items-center gap-1 text-xs text-accent hover:underline">
-              {expanded ? <><ChevronUp className="w-3 h-3" /> Show less</> : <><ChevronDown className="w-3 h-3" /> Show more</>}
+            <button
+              onClick={() => setExpanded((v) => !v)}
+              className="mt-1 flex items-center gap-1 text-xs text-accent hover:underline"
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp className="w-3 h-3" /> Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-3 h-3" /> Show more
+                </>
+              )}
             </button>
           )}
         </div>
@@ -277,7 +350,11 @@ function RoleCard({ role }: { role: NormalizedRole }) {
 
       {role.skills.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
-          {role.skills.map(s => <span key={s} className="tech-chip">{s}</span>)}
+          {role.skills.map((s) => (
+            <span key={s} className="tech-chip">
+              {s}
+            </span>
+          ))}
         </div>
       )}
 
@@ -289,15 +366,30 @@ function RoleCard({ role }: { role: NormalizedRole }) {
 // ─── Company card ─────────────────────────────────────────────────────────────
 
 function CompanyCard({ company, index }: { company: NormalizedCompany; index: number }) {
-  const { name, logo, companyUrl, employmentType, location, locationType, isFeatured, roles, achievements, topSkills, topMedia, responsibilities } = company;
+  const {
+    name,
+    logo,
+    companyUrl,
+    employmentType,
+    location,
+    locationType,
+    isFeatured,
+    roles,
+    achievements,
+    topSkills,
+    topMedia,
+    responsibilities,
+  } = company;
 
-  const allStarts = roles.map(r => parseDate(r.startMonth, r.startYear, r.startDate)).filter(Boolean) as Date[];
-  const hasCurrentRole = roles.some(r => r.isCurrent);
-  const companyStart = allStarts.length ? new Date(Math.min(...allStarts.map(d => d.getTime()))) : null;
+  const allStarts = roles
+    .map((r) => parseDate(r.startMonth, r.startYear, r.startDate))
+    .filter(Boolean) as Date[];
+  const hasCurrentRole = roles.some((r) => r.isCurrent);
+  const companyStart = allStarts.length ? new Date(Math.min(...allStarts.map((d) => d.getTime()))) : null;
   const companyDuration = calcDuration(companyStart, hasCurrentRole ? null : null, hasCurrentRole);
 
-  const allSkills = topSkills.length > 0 ? topSkills : [...new Set(roles.flatMap(r => r.skills))];
-  const showTopSkills = allSkills.length > 0 && roles.every(r => r.skills.length === 0);
+  const allSkills = topSkills.length > 0 ? topSkills : [...new Set(roles.flatMap((r) => r.skills))];
+  const showTopSkills = allSkills.length > 0 && roles.every((r) => r.skills.length === 0);
   const allMedia = topMedia?.length ? topMedia : [];
 
   return (
@@ -313,11 +405,26 @@ function CompanyCard({ company, index }: { company: NormalizedCompany; index: nu
         <div className="w-16 h-16 rounded-xl overflow-hidden bg-secondary border border-border flex-shrink-0 flex items-center justify-center">
           {logo ? (
             companyUrl ? (
-              <a href={companyUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full block hover:opacity-80 transition-opacity">
-                <img src={logo} alt={`${name} logo`} loading="lazy" className="w-full h-full object-contain p-1" />
+              <a
+                href={companyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-full block hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src={logo}
+                  alt={`${name} logo`}
+                  loading="lazy"
+                  className="w-full h-full object-contain p-1"
+                />
               </a>
             ) : (
-              <img src={logo} alt={`${name} logo`} loading="lazy" className="w-full h-full object-contain p-1" />
+              <img
+                src={logo}
+                alt={`${name} logo`}
+                loading="lazy"
+                className="w-full h-full object-contain p-1"
+              />
             )
           ) : (
             <Building className="w-8 h-8 text-muted-foreground" />
@@ -328,8 +435,12 @@ function CompanyCard({ company, index }: { company: NormalizedCompany; index: nu
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 flex-wrap">
             {companyUrl ? (
-              <a href={companyUrl} target="_blank" rel="noopener noreferrer"
-                className="font-display text-xl font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1.5">
+              <a
+                href={companyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display text-xl font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1.5"
+              >
                 {name} <ExternalLink className="w-4 h-4 text-muted-foreground" />
               </a>
             ) : (
@@ -343,14 +454,24 @@ function CompanyCard({ company, index }: { company: NormalizedCompany; index: nu
           </div>
           <p className="text-sm text-muted-foreground mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
             {employmentType && <span>{employmentType}</span>}
-            {companyDuration && <><span className="text-border">·</span><span>{companyDuration}</span></>}
+            {companyDuration && (
+              <>
+                <span className="text-border">·</span>
+                <span>{companyDuration}</span>
+              </>
+            )}
             {location && (
-              <><span className="text-border">·</span>
-                <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{location}</span>
+              <>
+                <span className="text-border">·</span>
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  {location}
+                </span>
               </>
             )}
             {locationType && (
-              <><span className="text-border">·</span>
+              <>
+                <span className="text-border">·</span>
                 <span className="px-1.5 py-0.5 rounded bg-secondary text-xs">{locationType}</span>
               </>
             )}
@@ -360,7 +481,9 @@ function CompanyCard({ company, index }: { company: NormalizedCompany; index: nu
 
       {/* Roles */}
       <div className="space-y-6">
-        {roles.map((role, i) => <RoleCard key={i} role={role} />)}
+        {roles.map((role, i) => (
+          <RoleCard key={i} role={role} />
+        ))}
       </div>
 
       {/* Key Responsibilities (legacy / top-level) */}
@@ -381,7 +504,11 @@ function CompanyCard({ company, index }: { company: NormalizedCompany; index: nu
       {/* Company-level skills (shown when per-role skills are empty) */}
       {showTopSkills && (
         <div className="flex flex-wrap gap-2 mt-6">
-          {allSkills.map(s => <span key={s} className="tech-chip">{s}</span>)}
+          {allSkills.map((s) => (
+            <span key={s} className="tech-chip">
+              {s}
+            </span>
+          ))}
         </div>
       )}
 
@@ -413,7 +540,7 @@ const ExperiencePage = () => {
       <Layout>
         <section className="section-padding">
           <div className="section-container space-y-6">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-64 rounded-2xl bg-secondary/30 animate-pulse" />
             ))}
           </div>
@@ -428,7 +555,6 @@ const ExperiencePage = () => {
         title={PAGE_SEO["/experience"].title}
         description={PAGE_SEO["/experience"].description}
         url={`${BASE_URL}/experience`}
-        keywords="full-stack developer experience Sri Lanka, startup founder Colombo, software engineer career Sri Lanka"
       />
       <section className="section-padding">
         <div className="section-container">
@@ -444,8 +570,8 @@ const ExperiencePage = () => {
               My Professional Journey
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              A timeline of my professional experience, from internships to founding startups.
-              Each role has shaped my approach to building products.
+              A timeline of my professional experience, from internships to founding startups. Each role has
+              shaped my approach to building products.
             </p>
           </m.div>
 

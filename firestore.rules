@@ -3,10 +3,9 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // IMPORTANT: Replace the placeholder below with the email address you use
-    // to log in at /admin/dashboard (the one you entered in Firebase Auth).
-    // Keeping this as "request.auth != null" allows ANY authenticated Firebase
-    // user to write to your database — that is a security hole.
+    // Only this account may write portfolio data (used by the admin app).
+    // Never relax this to "request.auth != null" - that lets ANY signed-in
+    // Firebase user write to the database.
     function isAdmin() {
       return request.auth != null
           && request.auth.token.email == "saadmazaa@gmail.com";
@@ -34,9 +33,12 @@ service cloud.firestore {
     match /causes/{id}               { allow read: if true; allow write: if isAdmin(); }
     match /hosting/{id}              { allow read: if true; allow write: if isAdmin(); }
 
-    // ── Contact form — anyone can submit, only admin can read/delete ─
+    // ── Contact form — written ONLY by /api/contact ─────────────────
+    // The Admin SDK bypasses these rules; the API validates and
+    // rate-limits. Clients can't create, so the collection can't be
+    // spammed directly.
     match /contact_messages/{id} {
-      allow create: if true;
+      allow create: if false;
       allow read, update, delete: if isAdmin();
     }
 

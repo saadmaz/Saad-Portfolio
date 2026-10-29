@@ -25,10 +25,10 @@ export interface Project {
   heroImage: string;
   /** Alt text for heroImage. Falls back to the project title when unset - never derived from free-text fields like tagline/description. */
   altText?: string;
-  image?: string;           // legacy alias for heroImage
-  images?: string[];        // legacy gallery
+  image?: string; // legacy alias for heroImage
+  images?: string[]; // legacy gallery
   screenshots?: string[];
-  video?: string;           // YouTube / video URL
+  video?: string; // YouTube / video URL
   videoDemo?: string;
 
   // Tech
@@ -37,9 +37,9 @@ export interface Project {
 
   // Links
   githubUrl?: string;
-  github?: string;          // legacy alias for githubUrl
+  github?: string; // legacy alias for githubUrl
   liveUrl?: string;
-  live_preview?: string;    // legacy alias for liveUrl
+  live_preview?: string; // legacy alias for liveUrl
   pdfReport?: string;
 
   // Content
@@ -53,6 +53,18 @@ export interface Project {
   gradientStart?: string;
   gradientEnd?: string;
 
+  // Technical deep-dive (case-study sections on the detail page)
+  architecture?: { description?: string; diagramUrl?: string };
+  stackDeepDive?: { frontend?: string; backend?: string; aiIntegration?: string };
+  databaseSchema?: string;
+  apiDocs?: string;
+  metrics?: {
+    users?: number;
+    lighthouseScore?: { performance?: number; accessibility?: number; seo?: number };
+    testCoverage?: number;
+    cicd?: string;
+  };
+
   // Cross-entity linking (source of truth for education/experience associations)
   linked_education_ids?: string[];
   linked_experience_ids?: string[];
@@ -60,7 +72,7 @@ export interface Project {
 
 export interface Skill {
   name: string;
-  level: 'Beginner' | 'Intermediate' | 'Advance' | 'Expert';
+  level: "Beginner" | "Intermediate" | "Advance" | "Expert";
   startYear: number;
   icon?: string;
 }
@@ -71,7 +83,7 @@ export interface SkillSet {
 }
 
 export interface ExperienceMedia {
-  media_type: 'Image' | 'Document' | 'Link' | 'Presentation';
+  media_type: "Image" | "Document" | "Link" | "Presentation";
   media_url: string;
   media_caption?: string;
 }
@@ -95,7 +107,7 @@ export interface Experience {
   company_name?: string;
   company_logo?: string;
   employment_type?: string;
-  location_type?: 'On-site' | 'Remote' | 'Hybrid';
+  location_type?: "On-site" | "Remote" | "Hybrid";
   is_current?: boolean;
   start_month?: string;
   start_year?: number;
@@ -175,10 +187,10 @@ export interface BlogPost {
 
   /* SEO */
   metaDescription?: string;
-  keywords?: string;          // comma-separated
+  keywords?: string; // comma-separated
 
   /* Publishing */
-  scheduledDate?: string;     // ISO string; empty = not scheduled
+  scheduledDate?: string; // ISO string; empty = not scheduled
   publishedAt?: string;
   lastUpdatedAt?: string;
 
@@ -254,7 +266,7 @@ export interface EducationProject {
 }
 
 export interface EducationMedia {
-  media_type: 'Image' | 'Document' | 'Link' | 'Presentation';
+  media_type: "Image" | "Document" | "Link" | "Presentation";
   media_url: string;
   media_caption: string;
   media_description?: string;
@@ -320,34 +332,7 @@ export interface Education {
   logo?: string;
 }
 
-export type FirestoreLikeTimestamp =
-  | { toDate: () => Date }
-  | Date
-  | string
-  | number
-  | null
-  | undefined;
-
-export interface ActivityLog {
-  id: string;
-  action: 'CREATE' | 'UPDATE' | 'DELETE';
-  entityType: string;
-  entityId: string;
-  adminId: string;
-  adminEmail: string;
-  details?: string;
-  timestamp: FirestoreLikeTimestamp;
-}
-
-export interface Message {
-  id: string;
-  name: string;
-  email: string;
-  subject?: string;
-  message: string;
-  created_at: FirestoreLikeTimestamp;
-  read: boolean;
-}
+export type FirestoreLikeTimestamp = { toDate: () => Date } | Date | string | number | null | undefined;
 
 export interface Event {
   id: string;
@@ -356,14 +341,14 @@ export interface Event {
   date: string;
   location: string;
   description: string;
-  role?: string;         // Your participation role: Speaker, Host, Organizer, etc.
-  attendees?: string;    // e.g. "500+", "2,000+"
+  role?: string; // Your participation role: Speaker, Host, Organizer, etc.
+  attendees?: string; // e.g. "500+", "2,000+"
   highlights?: string[];
   image?: string;
   images?: string[];
   link?: string;
   tags?: string[];
-  type: string;          // Event category: Conference, Workshop, Summit, etc.
+  type: string; // Event category: Conference, Workshop, Summit, etc.
 }
 
 export interface Newsletter {
@@ -373,7 +358,7 @@ export interface Newsletter {
   date: string;
   content_url: string;
   image?: string;
-  type: 'founder' | 'cse' | string;
+  type: "founder" | "cse" | string;
   tags?: string[];
 }
 
@@ -434,11 +419,4 @@ export interface Cause {
   id: string;
   name: string;
   description?: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: string;
 }

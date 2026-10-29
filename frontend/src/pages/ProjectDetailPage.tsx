@@ -1,17 +1,34 @@
 import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useProject } from "@/shared/hooks/useProjects";
-import { useModalA11y } from "@/shared/hooks/useModalA11y";
+import { useProject } from "@/hooks/useProjects";
+import { useModalA11y } from "@/hooks/useModalA11y";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { BASE_URL } from "@/lib/seo-content.js";
 import { Skeleton } from "@/components/ui/skeleton";
 import { m, AnimatePresence } from "framer-motion";
-import { 
-  ExternalLink, Github, ChevronLeft, PlayCircle, 
-  FileText, CheckCircle2, Zap, Trophy, Target, AlertCircle,
-  Lightbulb, Rocket, ShieldCheck, Database, Code2, 
-  Cpu, Layers, Calendar, Clock, User, BarChart3, Check, X
+import {
+  ExternalLink,
+  Github,
+  ChevronLeft,
+  PlayCircle,
+  FileText,
+  Zap,
+  Target,
+  AlertCircle,
+  Lightbulb,
+  Rocket,
+  ShieldCheck,
+  Database,
+  Code2,
+  Cpu,
+  Layers,
+  Calendar,
+  Clock,
+  User,
+  BarChart3,
+  Check,
+  X,
 } from "lucide-react";
 
 /**
@@ -63,7 +80,10 @@ const ProjectDetailPage = () => {
         <section className="min-h-[70vh] flex flex-col items-center justify-center text-center">
           <h1 className="text-3xl font-bold text-foreground mb-3">Project Not Found</h1>
           <p className="text-muted-foreground mb-6">The requested case study could not be located.</p>
-          <Link to="/projects" className="px-5 py-2.5 bg-accent text-accent-foreground rounded-lg font-medium text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+          <Link
+            to="/projects"
+            className="px-5 py-2.5 bg-accent text-accent-foreground rounded-lg font-medium text-sm flex items-center gap-2 hover:opacity-90 transition-opacity"
+          >
             <ChevronLeft className="w-4 h-4" /> Back to Gallery
           </Link>
         </section>
@@ -72,7 +92,8 @@ const ProjectDetailPage = () => {
   }
 
   // Helper function to validate non-empty strings from JSON
-  const hasValue = (val?: string) => val && val.trim() !== "" && val.toLowerCase() !== "n/a" && val.toLowerCase() !== "none";
+  const hasValue = (val?: string) =>
+    val && val.trim() !== "" && val.toLowerCase() !== "n/a" && val.toLowerCase() !== "none";
 
   const projectSchema = {
     "@context": "https://schema.org",
@@ -90,7 +111,7 @@ const ProjectDetailPage = () => {
       address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
     },
     keywords: project.technologies?.join(", "),
-    dateCreated: project.startDate,
+    dateCreated: project.date,
   };
 
   return (
@@ -101,8 +122,8 @@ const ProjectDetailPage = () => {
           project.tagline
             ? `${project.tagline}${project.technologies?.length ? ` Built with ${project.technologies.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar, full-stack developer in Colombo, Sri Lanka.`
             : project.overview
-            ? `${project.overview.slice(0, 140)} - case study by Saad Mazhar, full-stack developer in Sri Lanka.`
-            : `${project.title} - a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
+              ? `${project.overview.slice(0, 140)} - case study by Saad Mazhar, full-stack developer in Sri Lanka.`
+              : `${project.title} - a software project by Saad Mazhar, full-stack developer in Sri Lanka.`
         }
         image={project.heroImage}
         url={`${BASE_URL}/projects/${project.slug}`}
@@ -115,12 +136,18 @@ const ProjectDetailPage = () => {
       {/* Background container: Neutral, sleek tones */}
       <section className="pt-8 pb-24 bg-background transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
           {/* --- BREADCRUMB --- */}
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground mb-10">
-            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+          <nav
+            aria-label="Breadcrumb"
+            className="flex items-center gap-1.5 text-xs text-muted-foreground mb-10"
+          >
+            <Link to="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
             <ChevronLeft className="w-3 h-3 rotate-180 opacity-40" />
-            <Link to="/projects" className="hover:text-foreground transition-colors">Projects</Link>
+            <Link to="/projects" className="hover:text-foreground transition-colors">
+              Projects
+            </Link>
             <ChevronLeft className="w-3 h-3 rotate-180 opacity-40" />
             <span className="text-foreground font-semibold truncate max-w-[200px]">{project.title}</span>
           </nav>
@@ -138,16 +165,17 @@ const ProjectDetailPage = () => {
                     {project.title}
                   </h1>
                   {project.tagline && (
-                    <p className="text-lg md:text-xl text-muted-foreground font-medium">
-                      {project.tagline}
-                    </p>
+                    <p className="text-lg md:text-xl text-muted-foreground font-medium">{project.tagline}</p>
                   )}
-                  
+
                   {/* Tech Stack Pills */}
                   {project.techStack && project.techStack.length > 0 && (
                     <div className="mt-6 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
-                        <span key={tech} className="px-3 py-1.5 rounded-md text-xs font-semibold bg-card border border-border text-card-foreground">
+                        <span
+                          key={tech}
+                          className="px-3 py-1.5 rounded-md text-xs font-semibold bg-card border border-border text-card-foreground"
+                        >
                           {tech}
                         </span>
                       ))}
@@ -159,8 +187,12 @@ const ProjectDetailPage = () => {
                 {project.status && (
                   <div className="shrink-0">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border shadow-sm">
-                      <div className={`w-2 h-2 rounded-full animate-pulse ${project.status.toLowerCase() === 'live' ? 'bg-success shadow-[0_0_8px_hsl(var(--success)/0.45)]' : 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.45)]'}`} />
-                      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{project.status}</span>
+                      <div
+                        className={`w-2 h-2 rounded-full animate-pulse ${project.status.toLowerCase() === "live" ? "bg-success shadow-[0_0_8px_hsl(var(--success)/0.45)]" : "bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.45)]"}`}
+                      />
+                      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                        {project.status}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -169,12 +201,10 @@ const ProjectDetailPage = () => {
 
             {/* --- MAIN SPLIT LAYOUT --- */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-              
               {/* ========================================== */}
               {/* LEFT COLUMN: PROJECT NARRATIVE (8 Cols)      */}
               {/* ========================================== */}
               <div className="lg:col-span-8 space-y-16">
-                
                 {/* 1. HERO IMAGE (Interactive) */}
                 {/* ADDED: cursor-zoom-in, onClick handler, and a group-hover scale animation */}
                 {project.heroImage && (
@@ -183,7 +213,12 @@ const ProjectDetailPage = () => {
                     tabIndex={0}
                     aria-label={`View full-size ${project.title} cover image`}
                     onClick={() => setSelectedImage(project!.heroImage!)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(project!.heroImage!); } }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedImage(project!.heroImage!);
+                      }
+                    }}
                     className="group rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <img
@@ -200,12 +235,12 @@ const ProjectDetailPage = () => {
                 {project.overview && (
                   <section>
                     <div className="flex items-center gap-4 mb-6">
-                      <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Project Overview</h2>
+                      <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                        Project Overview
+                      </h2>
                       <div className="h-px flex-1 bg-border" />
                     </div>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                      {project.overview}
-                    </p>
+                    <p className="text-lg text-muted-foreground leading-relaxed">{project.overview}</p>
                   </section>
                 )}
 
@@ -215,21 +250,27 @@ const ProjectDetailPage = () => {
                     {project.problem && (
                       <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
                         <Lightbulb className="w-5 h-5 text-warning mb-4" />
-                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">The Problem</h3>
+                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">
+                          The Problem
+                        </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">{project.problem}</p>
                       </div>
                     )}
                     {project.solution && (
                       <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
                         <Rocket className="w-5 h-5 text-accent mb-4" />
-                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">The Solution</h3>
+                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">
+                          The Solution
+                        </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">{project.solution}</p>
                       </div>
                     )}
                     {project.impact && (
                       <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
                         <ShieldCheck className="w-5 h-5 text-success mb-4" />
-                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">The Impact</h3>
+                        <h3 className="text-sm font-bold text-foreground mb-2 uppercase tracking-wide">
+                          The Impact
+                        </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">{project.impact}</p>
                       </div>
                     )}
@@ -253,7 +294,12 @@ const ProjectDetailPage = () => {
                         tabIndex={0}
                         aria-label={`View full-size ${project.title} architecture diagram`}
                         onClick={() => setSelectedImage(project!.architecture!.diagramUrl!)}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(project!.architecture!.diagramUrl!); } }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setSelectedImage(project!.architecture!.diagramUrl!);
+                          }
+                        }}
                         className="group p-2 rounded-2xl bg-card border border-border cursor-zoom-in overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <img
@@ -278,20 +324,32 @@ const ProjectDetailPage = () => {
                     <div className="p-6 grid gap-6">
                       {hasValue(project.stackDeepDive.frontend) && (
                         <div className="grid md:grid-cols-4 gap-2 md:gap-6 items-start">
-                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">Frontend</span>
-                          <p className="md:col-span-3 text-sm text-muted-foreground">{project.stackDeepDive.frontend}</p>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">
+                            Frontend
+                          </span>
+                          <p className="md:col-span-3 text-sm text-muted-foreground">
+                            {project.stackDeepDive.frontend}
+                          </p>
                         </div>
                       )}
                       {hasValue(project.stackDeepDive.backend) && (
                         <div className="grid md:grid-cols-4 gap-2 md:gap-6 items-start pt-6 border-t border-border/50">
-                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">Backend</span>
-                          <p className="md:col-span-3 text-sm text-muted-foreground">{project.stackDeepDive.backend}</p>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">
+                            Backend
+                          </span>
+                          <p className="md:col-span-3 text-sm text-muted-foreground">
+                            {project.stackDeepDive.backend}
+                          </p>
                         </div>
                       )}
                       {hasValue(project.stackDeepDive.aiIntegration) && (
                         <div className="grid md:grid-cols-4 gap-2 md:gap-6 items-start pt-6 border-t border-border/50">
-                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">AI Logic</span>
-                          <p className="md:col-span-3 text-sm text-muted-foreground">{project.stackDeepDive.aiIntegration}</p>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground md:text-right md:mt-1">
+                            AI Logic
+                          </span>
+                          <p className="md:col-span-3 text-sm text-muted-foreground">
+                            {project.stackDeepDive.aiIntegration}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -304,9 +362,9 @@ const ProjectDetailPage = () => {
                     <h2 className="text-2xl font-bold text-foreground">Technical Challenges</h2>
                     <div className="grid gap-4">
                       {project.challenges.map((c, i) => {
-                        const wall   = typeof c === 'string' ? c : c.wall;
-                        const fix    = typeof c === 'string' ? undefined : c.fix;
-                        const lesson = typeof c === 'string' ? undefined : c.lesson;
+                        const wall = typeof c === "string" ? c : c.wall;
+                        const fix = typeof c === "string" ? undefined : c.fix;
+                        const lesson = typeof c === "string" ? undefined : c.lesson;
                         return (
                           <div key={i} className="p-6 rounded-2xl border border-border bg-card shadow-sm">
                             <div className="flex gap-4 items-start">
@@ -317,7 +375,8 @@ const ProjectDetailPage = () => {
                                 <h4 className="text-base font-bold text-foreground">{wall}</h4>
                                 {fix && (
                                   <div className="text-sm text-muted-foreground">
-                                    <strong className="text-foreground">The Fix: </strong>{fix}
+                                    <strong className="text-foreground">The Fix: </strong>
+                                    {fix}
                                   </div>
                                 )}
                                 {hasValue(lesson) && (
@@ -337,14 +396,17 @@ const ProjectDetailPage = () => {
                 {/* 7. CORE FEATURES */}
                 {project.features && project.features.length > 0 && (
                   <section className="space-y-6">
-                      <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-                        <Zap className="w-6 h-6 text-muted-foreground" /> Core Features
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {project.features.map((feature, i) => (
-                          <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
-                            <Check className="w-4 h-4 text-success shrink-0" />
-                            <span className="text-sm font-medium text-muted-foreground">{feature}</span>
+                    <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                      <Zap className="w-6 h-6 text-muted-foreground" /> Core Features
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {project.features.map((feature, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border"
+                        >
+                          <Check className="w-4 h-4 text-success shrink-0" />
+                          <span className="text-sm font-medium text-muted-foreground">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -364,7 +426,12 @@ const ProjectDetailPage = () => {
                           tabIndex={0}
                           aria-label={`View full-size screenshot ${i + 1}`}
                           onClick={() => setSelectedImage(shot)}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage(shot); } }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setSelectedImage(shot);
+                            }
+                          }}
                           className="group rounded-xl overflow-hidden border border-border bg-card cursor-zoom-in relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         >
                           <img
@@ -388,22 +455,26 @@ const ProjectDetailPage = () => {
               {/* REMOVED sticky classes so this scrolls normally */}
               {/* ========================================== */}
               <aside className="lg:col-span-4 space-y-6">
-                
                 {/* 1. PROJECT DETAILS & LINKS CARD */}
                 <div className="p-6 md:p-8 rounded-2xl bg-card border border-border shadow-sm">
-                  
                   {/* Basic Meta (Date, Role, Duration) */}
                   <div className="space-y-4 mb-8">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground flex items-center gap-2"><Calendar className="w-4 h-4" /> Date</span>
+                      <span className="text-muted-foreground flex items-center gap-2">
+                        <Calendar className="w-4 h-4" /> Date
+                      </span>
                       <span className="font-semibold text-foreground">{project.date}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground flex items-center gap-2"><Clock className="w-4 h-4" /> Duration</span>
+                      <span className="text-muted-foreground flex items-center gap-2">
+                        <Clock className="w-4 h-4" /> Duration
+                      </span>
                       <span className="font-semibold text-foreground">{project.duration}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground flex items-center gap-2"><User className="w-4 h-4" /> Role</span>
+                      <span className="text-muted-foreground flex items-center gap-2">
+                        <User className="w-4 h-4" /> Role
+                      </span>
                       <span className="font-semibold text-foreground">{project.role}</span>
                     </div>
                   </div>
@@ -412,44 +483,44 @@ const ProjectDetailPage = () => {
                   <div className="space-y-3">
                     {/* ADDED: Hover -translate-y animation and shadow pop for Live Site */}
                     {hasValue(project.liveUrl) && (
-                      <a 
-                        href={project.liveUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-accent text-accent-foreground text-sm font-bold shadow-md hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
                       >
                         <ExternalLink className="w-4 h-4" /> Visit Live Site
                       </a>
                     )}
-                    
+
                     {/* ADDED: Hover scale effect for secondary buttons */}
                     {hasValue(project.videoDemo) && (
-                      <a 
-                        href={project.videoDemo} 
-                        target="_blank" 
-                        rel="noreferrer" 
+                      <a
+                        href={project.videoDemo}
+                        target="_blank"
+                        rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-accent/10 text-accent border border-accent/20 text-sm font-bold hover:bg-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                       >
                         <PlayCircle className="w-4 h-4" /> Watch Demo Video
                       </a>
                     )}
-                    
+
                     {hasValue(project.githubUrl) && (
-                      <a 
-                        href={project.githubUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-secondary text-secondary-foreground text-sm font-semibold hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                       >
                         <Github className="w-4 h-4" /> View Source Code
                       </a>
                     )}
-                    
+
                     {hasValue(project.pdfReport) && (
-                      <a 
-                        href={project.pdfReport} 
-                        target="_blank" 
-                        rel="noreferrer" 
+                      <a
+                        href={project.pdfReport}
+                        target="_blank"
+                        rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-secondary text-secondary-foreground text-sm font-semibold hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                       >
                         <FileText className="w-4 h-4" /> Download PDF Report
@@ -461,12 +532,22 @@ const ProjectDetailPage = () => {
                   {(hasValue(project.databaseSchema) || hasValue(project.apiDocs)) && (
                     <div className="mt-6 pt-6 border-t border-border space-y-3">
                       {hasValue(project.databaseSchema) && (
-                        <a href={project.databaseSchema} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        <a
+                          href={project.databaseSchema}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
                           <Database className="w-4 h-4" /> Database Schema Docs
                         </a>
                       )}
                       {hasValue(project.apiDocs) && (
-                        <a href={project.apiDocs} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        <a
+                          href={project.apiDocs}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
                           <Code2 className="w-4 h-4" /> API Documentation
                         </a>
                       )}
@@ -480,14 +561,23 @@ const ProjectDetailPage = () => {
                     <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-muted-foreground" /> Analytics & Audit
                     </h3>
-                    
+
                     {/* Compact Lighthouse Scores */}
                     {project.metrics.lighthouseScore && (
                       <div className="flex gap-2 mb-6">
                         {Object.entries(project.metrics.lighthouseScore).map(([label, score]) => (
-                          <div key={label} className="flex-1 flex flex-col items-center justify-center py-3 rounded-xl bg-card border border-border/50">
-                            <span className={`text-sm font-bold ${Number(score) >= 90 ? 'text-success' : 'text-warning'}`}>{score}</span>
-                            <span className="text-[9px] uppercase font-bold text-muted-foreground mt-0.5">{label.substring(0, 4)}</span>
+                          <div
+                            key={label}
+                            className="flex-1 flex flex-col items-center justify-center py-3 rounded-xl bg-card border border-border/50"
+                          >
+                            <span
+                              className={`text-sm font-bold ${Number(score) >= 90 ? "text-success" : "text-warning"}`}
+                            >
+                              {score}
+                            </span>
+                            <span className="text-[9px] uppercase font-bold text-muted-foreground mt-0.5">
+                              {label.substring(0, 4)}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -498,7 +588,9 @@ const ProjectDetailPage = () => {
                       {project.metrics.testCoverage !== undefined && (
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Test Coverage</span>
-                          <span className="font-semibold text-foreground">{project.metrics.testCoverage}%</span>
+                          <span className="font-semibold text-foreground">
+                            {project.metrics.testCoverage}%
+                          </span>
                         </div>
                       )}
                       {hasValue(project.metrics.cicd) && (
@@ -510,7 +602,9 @@ const ProjectDetailPage = () => {
                       {project.metrics.users !== undefined && project.metrics.users > 0 && (
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Active Users</span>
-                          <span className="font-semibold text-foreground">{project.metrics.users.toLocaleString()}</span>
+                          <span className="font-semibold text-foreground">
+                            {project.metrics.users.toLocaleString()}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -533,7 +627,6 @@ const ProjectDetailPage = () => {
                     </ul>
                   </div>
                 )}
-
               </aside>
             </div>
           </m.div>
@@ -564,7 +657,7 @@ const ProjectDetailPage = () => {
             >
               <X className="w-6 h-6" />
             </button>
-            
+
             {/* The Enlarged Image */}
             <m.img
               initial={{ scale: 0.9, opacity: 0 }}

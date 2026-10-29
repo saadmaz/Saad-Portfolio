@@ -1,12 +1,10 @@
 import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { m } from "framer-motion";
-import { useBlogPost } from "../shared/hooks/useBlog";
-import { ArrowLeft, Calendar, User, Edit, ChevronRight } from "lucide-react";
+import { useBlogPost } from "@/hooks/useBlog";
+import { Calendar, User, ChevronRight } from "lucide-react";
 import { Layout } from "../components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { BASE_URL } from "@/lib/seo-content.js";
-
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -29,7 +27,11 @@ export default function BlogDetailPage() {
               <div className="h-4 w-1/2 rounded bg-secondary/30 animate-pulse" />
               <div className="space-y-3 pt-4">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="h-4 rounded bg-secondary/30 animate-pulse" style={{ width: `${85 + (i % 3) * 5}%` }} />
+                  <div
+                    key={i}
+                    className="h-4 rounded bg-secondary/30 animate-pulse"
+                    style={{ width: `${85 + (i % 3) * 5}%` }}
+                  />
                 ))}
               </div>
             </div>
@@ -73,7 +75,10 @@ export default function BlogDetailPage() {
     <Layout>
       <SEO
         title={title}
-        description={excerpt || `Read "${title}" by ${author} on Saad Mazhar's blog - AI, startups, and full-stack development from Colombo, Sri Lanka.`}
+        description={
+          excerpt ||
+          `Read "${title}" by ${author} on Saad Mazhar's blog - AI, startups, and full-stack development from Colombo, Sri Lanka.`
+        }
         image={coverImage}
         url={`${BASE_URL}/blog/${slug}`}
         type="article"
@@ -92,9 +97,13 @@ export default function BlogDetailPage() {
             aria-label="Breadcrumb"
             className="blog-back-button flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+            <Link to="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
             <ChevronRight className="w-3 h-3 opacity-40" />
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            <Link to="/blog" className="hover:text-foreground transition-colors">
+              Blog
+            </Link>
             <ChevronRight className="w-3 h-3 opacity-40" />
             <span className="text-foreground font-semibold truncate max-w-[220px]">{title}</span>
           </m.nav>
@@ -111,7 +120,9 @@ export default function BlogDetailPage() {
                 src={coverImage}
                 alt={title}
                 className="blog-cover-image"
-                onError={(e) => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = "none"; }}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).parentElement!.style.display = "none";
+                }}
               />
             </m.div>
           )}
@@ -123,9 +134,7 @@ export default function BlogDetailPage() {
             transition={{ delay: 0.2 }}
             className="blog-header-section"
           >
-            <h1 className="blog-title">
-              {title}
-            </h1>
+            <h1 className="blog-title">{title}</h1>
 
             {/* Metadata */}
             <div className="blog-metadata">
@@ -143,12 +152,7 @@ export default function BlogDetailPage() {
             {tags && tags.length > 0 && (
               <div className="blog-tags">
                 {tags.map((tag: string) => (
-                  <button
-                    key={tag}
-                    className="blog-tag"
-                    onClick={() => handleTagClick(tag)}
-                    type="button"
-                  >
+                  <button key={tag} className="blog-tag" onClick={() => handleTagClick(tag)} type="button">
                     {tag}
                   </button>
                 ))}
@@ -163,10 +167,7 @@ export default function BlogDetailPage() {
             transition={{ delay: 0.3 }}
             className="blog-content-wrapper"
           >
-            <div
-              className="blog-content"
-              dangerouslySetInnerHTML={{ __html: content ?? "" }}
-            />
+            <div className="blog-content" dangerouslySetInnerHTML={{ __html: content ?? "" }} />
           </m.div>
         </div>
       </article>

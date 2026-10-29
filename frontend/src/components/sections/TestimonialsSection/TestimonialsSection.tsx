@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { m } from "framer-motion";
-import { Quote, Linkedin, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Quote, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTestimonials } from "@/shared/hooks/useCommon";
+import { useTestimonials } from "@/hooks/useContent";
 
 export function TestimonialsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -22,8 +22,11 @@ export function TestimonialsSection() {
       <section className="section-padding">
         <div className="section-container">
           <div className="flex gap-6 overflow-hidden">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex-shrink-0 w-[85vw] max-w-[350px] h-52 rounded-xl bg-card animate-pulse" />
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[85vw] max-w-[350px] h-52 rounded-xl bg-card animate-pulse"
+              />
             ))}
           </div>
         </div>
@@ -44,7 +47,10 @@ export function TestimonialsSection() {
           className="text-center mb-12"
         >
           <span className="section-title">Testimonials</span>
-          <h2 id="testimonials-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2
+            id="testimonials-heading"
+            className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4"
+          >
             What People Say
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">

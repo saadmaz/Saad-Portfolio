@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { m } from "framer-motion";
 import { ArrowRight, Mic2, Users, Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEvents } from "@/shared/hooks/useCommon";
+import { useEvents } from "@/hooks/useContent";
 import { Event } from "@/types";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 
 const getRoleColor = (role?: string): string => {
   const r = role?.toLowerCase() ?? "";
@@ -23,7 +23,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
   const startCycle = () => {
     if (images.length <= 1) return;
     intervalRef.current = setInterval(() => {
-      setImgIndex(i => (i + 1) % images.length);
+      setImgIndex((i) => (i + 1) % images.length);
     }, 1200);
   };
 
@@ -32,7 +32,12 @@ function EventCard({ event, index }: { event: Event; index: number }) {
     setImgIndex(0);
   };
 
-  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
+  useEffect(
+    () => () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    },
+    [],
+  );
 
   return (
     <m.div
@@ -44,8 +49,14 @@ function EventCard({ event, index }: { event: Event; index: number }) {
       <Link
         to={`/events/${event.id}`}
         className="group block h-full"
-        onMouseEnter={() => { startCycle(); setDateBadgeVisible(true); }}
-        onMouseLeave={() => { stopCycle(); setDateBadgeVisible(false); }}
+        onMouseEnter={() => {
+          startCycle();
+          setDateBadgeVisible(true);
+        }}
+        onMouseLeave={() => {
+          stopCycle();
+          setDateBadgeVisible(false);
+        }}
       >
         <div
           className="bg-card rounded-xl border border-border overflow-hidden h-full transition-all duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:-translate-y-[5px]"
@@ -59,25 +70,26 @@ function EventCard({ event, index }: { event: Event; index: number }) {
         >
           {/* Image container */}
           <div className="relative h-52 overflow-hidden bg-muted">
-            {images.length > 0 && images.map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt={event.title}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                style={{
-                  opacity: i === imgIndex ? 1 : 0,
-                  transform: i === imgIndex ? "scale(1.06)" : "scale(1)",
-                }}
-              />
-            ))}
+            {images.length > 0 &&
+              images.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={event.title}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  style={{
+                    opacity: i === imgIndex ? 1 : 0,
+                    transform: i === imgIndex ? "scale(1.06)" : "scale(1)",
+                  }}
+                />
+              ))}
 
             {/* Date badge — top-left, fully opaque on hover */}
             <div
               className={cn(
                 "absolute top-3 left-3 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm text-xs font-semibold text-white shadow-lg transition-all duration-300",
-                dateBadgeVisible ? "opacity-100 bg-black/75" : "opacity-60 bg-black/50"
+                dateBadgeVisible ? "opacity-100 bg-black/75" : "opacity-60 bg-black/50",
               )}
             >
               <Calendar className="w-3 h-3" />
@@ -87,16 +99,16 @@ function EventCard({ event, index }: { event: Event; index: number }) {
             {/* Role badge — top-right */}
             {event.role && (
               <div className="absolute top-3 right-3 z-10">
-                <span className={cn(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg",
-                  getRoleColor(event.role)
-                )}>
-                  {(event.role.toLowerCase() === "host" || event.role.toLowerCase() === "compere" || event.role.toLowerCase() === "speaker") && (
-                    <Mic2 className="w-3 h-3" />
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg",
+                    getRoleColor(event.role),
                   )}
-                  {event.role.toLowerCase() === "organizer" && (
-                    <Users className="w-3 h-3" />
-                  )}
+                >
+                  {(event.role.toLowerCase() === "host" ||
+                    event.role.toLowerCase() === "compere" ||
+                    event.role.toLowerCase() === "speaker") && <Mic2 className="w-3 h-3" />}
+                  {event.role.toLowerCase() === "organizer" && <Users className="w-3 h-3" />}
                   {event.role}
                 </span>
               </div>
@@ -150,12 +162,15 @@ export function EventsPreview() {
           <span className="section-title">Public Presence</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 id="events-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              <h2
+                id="events-heading"
+                className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2"
+              >
                 Events &amp; Hosting
               </h2>
               <p className="text-muted-foreground max-w-xl">
-                From hosting tech conferences to speaking at industry events —
-                building community and sharing knowledge.
+                From hosting tech conferences to speaking at industry events — building community and sharing
+                knowledge.
               </p>
             </div>
             <Link to="/events" className="btn-view-all shrink-0">
@@ -167,7 +182,7 @@ export function EventsPreview() {
 
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="rounded-xl bg-secondary/30 animate-pulse aspect-[4/3]" />
             ))}
           </div>

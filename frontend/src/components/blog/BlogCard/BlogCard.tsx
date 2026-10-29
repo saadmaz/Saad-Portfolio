@@ -2,24 +2,25 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/shared/utils/dateUtils";
-import type { Blog } from "@/shared/lib/dataManager";
+import { formatDate } from "@/lib/dateUtils";
+import type { BlogPost } from "@/types";
 
 interface BlogCardProps {
-  slug: string;
-  metadata: Blog;
+  post: Pick<BlogPost, "id" | "slug" | "title" | "excerpt" | "date" | "image" | "tags">;
 }
 
-export const BlogCard: React.FC<BlogCardProps> = ({ slug, metadata }) => {
+export const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
+  const slug = post.slug || post.id;
+
   return (
     <Link to={`/blog/${slug}`} className="group block h-full">
       <Card className="overflow-hidden border-border/50 bg-secondary/20 hover:bg-secondary/40 transition-colors h-full flex flex-col">
         {/* Cover image */}
         <div className="relative aspect-video overflow-hidden flex-shrink-0">
-          {metadata.coverImage ? (
+          {post.image ? (
             <img
-              src={metadata.coverImage}
-              alt={metadata.title}
+              src={post.image}
+              alt={post.title}
               loading="lazy"
               className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
               onError={(e) => {
@@ -36,29 +37,29 @@ export const BlogCard: React.FC<BlogCardProps> = ({ slug, metadata }) => {
         <CardContent className="p-5 flex flex-col flex-grow">
           {/* Meta: date · primary tag */}
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
-            <span>{formatDate(metadata.date)}</span>
-            {metadata.tags?.[0] && (
+            <span>{formatDate(post.date)}</span>
+            {post.tags?.[0] && (
               <>
                 <span className="opacity-40">·</span>
-                <span className="text-accent">{metadata.tags[0]}</span>
+                <span className="text-accent">{post.tags[0]}</span>
               </>
             )}
           </div>
 
           {/* Title */}
           <h3 className="font-display text-lg font-bold leading-snug group-hover:text-accent transition-colors line-clamp-2 mb-2">
-            {metadata.title}
+            {post.title}
           </h3>
 
           {/* Excerpt */}
           <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-grow leading-relaxed">
-            {metadata.excerpt}
+            {post.excerpt}
           </p>
 
           {/* Footer: tags + read more */}
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
             <div className="flex gap-1.5 flex-wrap">
-              {(metadata.tags || []).slice(0, 2).map(tag => (
+              {(post.tags || []).slice(0, 2).map((tag) => (
                 <Badge key={tag} variant="secondary" className="text-[10px] capitalize font-medium">
                   {tag}
                 </Badge>

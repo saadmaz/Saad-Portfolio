@@ -3,35 +3,27 @@ import { m, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import {
-  Mic2,
-  Users,
-  Calendar,
-  MapPin,
-  ChevronDown,
-  Image as ImageIcon,
-} from "lucide-react";
-import { cn } from "@/shared/lib/utils";
-import { useEvents } from "@/shared/hooks/useCommon";
+import { Mic2, Users, Calendar, MapPin, ChevronDown, Image as ImageIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useEvents } from "@/hooks/useContent";
 
 const roleFilters = [
-  { label: "All",           value: "all" },
+  { label: "All", value: "all" },
   { label: "Host / Compere", value: "host" },
-  { label: "Speaker",       value: "speaker" },
-  { label: "Organizer",     value: "organizer" },
-  { label: "Attended",      value: "attended" },
+  { label: "Speaker", value: "speaker" },
+  { label: "Organizer", value: "organizer" },
+  { label: "Attended", value: "attended" },
 ];
 
 const roleColors: Record<string, string> = {
-  host:      "bg-accent text-accent-foreground",
-  compere:   "bg-accent text-accent-foreground",
-  speaker:   "bg-success text-success-foreground",
+  host: "bg-accent text-accent-foreground",
+  compere: "bg-accent text-accent-foreground",
+  speaker: "bg-success text-success-foreground",
   organizer: "bg-secondary text-secondary-foreground",
-  attended:  "bg-muted text-muted-foreground",
+  attended: "bg-muted text-muted-foreground",
 };
 
-const getRoleColor = (role: string) =>
-  roleColors[role?.toLowerCase()] ?? roleColors.attended;
+const getRoleColor = (role: string) => roleColors[role?.toLowerCase()] ?? roleColors.attended;
 
 const EventsPage = () => {
   const { data: events = [], isLoading } = useEvents();
@@ -50,7 +42,7 @@ const EventsPage = () => {
       <Layout>
         <section className="section-padding">
           <div className="section-container space-y-6">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-64 rounded-xl bg-secondary/30 animate-pulse" />
             ))}
           </div>
@@ -80,8 +72,8 @@ const EventsPage = () => {
               Events &amp; Hosting
             </h1>
             <p className="text-muted-foreground max-w-2xl">
-              From hosting tech conferences to speaking at industry events -
-              building community, sharing knowledge, and connecting with brilliant minds.
+              From hosting tech conferences to speaking at industry events - building community, sharing
+              knowledge, and connecting with brilliant minds.
             </p>
           </m.div>
 
@@ -100,7 +92,7 @@ const EventsPage = () => {
                   "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
                   activeFilter === filter.value
                     ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
                 )}
               >
                 {filter.label}
@@ -156,16 +148,16 @@ const EventsPage = () => {
                           {/* Role badge */}
                           {event.role && (
                             <div className="absolute top-4 left-4">
-                              <span className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg",
-                                getRoleColor(event.role)
-                              )}>
-                                {(event.role.toLowerCase() === "host" || event.role.toLowerCase() === "compere" || event.role.toLowerCase() === "speaker") && (
-                                  <Mic2 className="w-3 h-3" />
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg",
+                                  getRoleColor(event.role),
                                 )}
-                                {event.role.toLowerCase() === "organizer" && (
-                                  <Users className="w-3 h-3" />
-                                )}
+                              >
+                                {(event.role.toLowerCase() === "host" ||
+                                  event.role.toLowerCase() === "compere" ||
+                                  event.role.toLowerCase() === "speaker") && <Mic2 className="w-3 h-3" />}
+                                {event.role.toLowerCase() === "organizer" && <Users className="w-3 h-3" />}
                                 {event.role}
                               </span>
                             </div>
@@ -185,9 +177,7 @@ const EventsPage = () => {
                             <h3 className="font-display text-xl lg:text-2xl font-semibold text-foreground mb-3">
                               {event.title}
                             </h3>
-                            <p className="text-muted-foreground mb-4 leading-relaxed">
-                              {event.description}
-                            </p>
+                            <p className="text-muted-foreground mb-4 leading-relaxed">{event.description}</p>
                           </div>
 
                           {/* Meta */}
@@ -212,10 +202,12 @@ const EventsPage = () => {
                                 className="flex items-center gap-2 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
                               >
                                 View Gallery
-                                <ChevronDown className={cn(
-                                  "w-4 h-4 transition-transform duration-300",
-                                  expandedEvent === event.id && "rotate-180"
-                                )} />
+                                <ChevronDown
+                                  className={cn(
+                                    "w-4 h-4 transition-transform duration-300",
+                                    expandedEvent === event.id && "rotate-180",
+                                  )}
+                                />
                               </button>
 
                               <AnimatePresence>

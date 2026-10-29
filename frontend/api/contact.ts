@@ -1,18 +1,17 @@
 /**
  * api/contact.ts
  * ─────────────────────────────────────────────────────────────
- * Vercel serverless function - the ONLY server-side code in the project.
- *
- * Why this needs to be a server function (not browser code):
- *   • The SendGrid API key must never be shipped in the browser bundle.
- *   • Firebase Admin SDK (service-account credentials) must stay server-side.
+ * Vercel serverless function - the ONLY server-side code in the project,
+ * and the only path through which contact messages are written.
+ * (Firestore rules deny client-side writes to `contact_messages`.)
  *
  * What it does:
- *   1. Validates the incoming request body
- *   2. Saves the message to Firestore via Firebase Admin SDK
- *   3. Sends an email notification via SendGrid
+ *   1. Rejects non-POST requests, bots (honeypot) and floods (rate limit)
+ *   2. Validates and normalises the request body
+ *   3. Saves the message to Firestore via Firebase Admin SDK
+ *   4. Sends an email notification via SendGrid
  *
- * Deployed URL: POST /api/contact
+ * Responds 200 if at least one of (3) or (4) succeeded, 500 otherwise.
  *
  * Required environment variables (set in Vercel dashboard):
  *   FIREBASE_PROJECT_ID    – e.g. saadportfolio03
@@ -28,116 +27,194 @@ import sgMail from "@sendgrid/mail";
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
-// ─── Firebase Admin initialisation ───────────────────────────────
-// getApps() prevents re-initialisation on warm function invocations.
-if (!getApps().length) {
-  initializeApp({
-    credential: cert({
-      projectId:   process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      // Vercel stores multi-line secrets with escaped \n - unescape them
-      privateKey:  process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    }),
-  });
+// ─── Validation ──────────────────────────────────────────────────
+
+export const CONTACT_LIMITS = {
+  name: { min: 1, max: 100 },
+  email: { min: 3, max: 254 },
+  subject: { min: 0, max: 200 },
+  message: { min: 10, max: 5000 },
+} as const;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export interface ContactMessage {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export type ValidationResult = { ok: true; value: ContactMessage } | { ok: false; error: string };
+
+/** Validates and trims an untrusted request body. */
+export function validateContact(body: unknown): ValidationResult {
+  const input = (body && typeof body === "object" ? body : {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const value: ContactMessage = {
+    name: str(input.name),
+    email: str(input.email),
+    subject: str(input.subject),
+    message: str(input.message),
+  };
+
+  if (value.name.length < CONTACT_LIMITS.name.min || value.name.length > CONTACT_LIMITS.name.max) {
+    return { ok: false, error: `Name is required (max ${CONTACT_LIMITS.name.max} characters)` };
+  }
+  if (!EMAIL_RE.test(value.email) || value.email.length > CONTACT_LIMITS.email.max) {
+    return { ok: false, error: "Valid email is required" };
+  }
+  if (value.subject.length > CONTACT_LIMITS.subject.max) {
+    return { ok: false, error: `Subject must be at most ${CONTACT_LIMITS.subject.max} characters` };
+  }
+  if (
+    value.message.length < CONTACT_LIMITS.message.min ||
+    value.message.length > CONTACT_LIMITS.message.max
+  ) {
+    return {
+      ok: false,
+      error: `Message must be ${CONTACT_LIMITS.message.min}-${CONTACT_LIMITS.message.max} characters`,
+    };
+  }
+  return { ok: true, value };
+}
+
+// ─── Rate limiting ───────────────────────────────────────────────
+// Best-effort, per warm instance. Stops casual floods; a distributed
+// attacker needs an edge rate limit (Vercel Firewall) or a captcha.
+
+const RATE_LIMIT = { windowMs: 10 * 60 * 1000, max: 5 };
+const hits = new Map<string, number[]>();
+
+export function isRateLimited(key: string, now = Date.now()): boolean {
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < RATE_LIMIT.windowMs);
+  recent.push(now);
+  hits.set(key, recent);
+  return recent.length > RATE_LIMIT.max;
+}
+
+function clientIp(req: VercelRequest): string {
+  const forwarded = req.headers["x-forwarded-for"];
+  const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
+  return first?.split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
+}
+
+// ─── Firebase Admin (lazy) ───────────────────────────────────────
+// Initialised on first use so a misconfigured key can't crash module load.
+
+function adminDb() {
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        // Vercel stores multi-line secrets with escaped \n - unescape them
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      }),
+    });
+  }
+  return getFirestore();
 }
 
 // ─── Request handler ──────────────────────────────────────────────
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  // Only accept POST
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // ── 1. Validate input ────────────────────────────────────────────
-  const { name, email, subject, message } = req.body ?? {};
-
-  if (!name || typeof name !== "string" || name.trim().length === 0) {
-    return res.status(400).json({ error: "Name is required" });
-  }
-  if (!email || typeof email !== "string" || !email.includes("@")) {
-    return res.status(400).json({ error: "Valid email is required" });
-  }
-  if (!message || typeof message !== "string" || message.trim().length < 10) {
-    return res.status(400).json({ error: "Message must be at least 10 characters" });
+  // Honeypot: real users never see or fill the `website` field.
+  // Pretend success so bots don't learn they were filtered.
+  if (typeof req.body?.website === "string" && req.body.website.length > 0) {
+    return res.status(200).json({ success: true });
   }
 
-  // ── 2. Save to Firestore ─────────────────────────────────────────
-  // Using Admin SDK so this bypasses Firestore Security Rules
-  // (the function itself is the trusted server).
-  const db = getFirestore();
-  let docRef: FirebaseFirestore.DocumentReference | null = null;
+  if (isRateLimited(clientIp(req))) {
+    return res.status(429).json({ error: "Too many messages. Please try again later." });
+  }
+
+  const result = validateContact(req.body);
+  if (!result.ok) {
+    return res.status(400).json({ error: result.error });
+  }
+  const { name, email, subject, message } = result.value;
+
+  let saved = false;
+  let emailed = false;
 
   try {
-    docRef = await db.collection("contact_messages").add({
-      name:       name.trim(),
-      email:      email.trim(),
-      subject:    subject?.trim() ?? "",
-      message:    message.trim(),
+    await adminDb().collection("contact_messages").add({
+      name,
+      email,
+      subject,
+      message,
       created_at: new Date(),
-      read:       false,
+      read: false,
     });
+    saved = true;
   } catch (dbErr) {
-    // Log but don't fail the request - still try to send the email
     console.error("[contact] Firestore write failed:", dbErr);
   }
 
-  // ── 3. Send email via SendGrid ───────────────────────────────────
   const apiKey = process.env.SENDGRID_API_KEY ?? "";
-  if (!apiKey.startsWith("SG.")) {
-    // Email is misconfigured - still return 200 since the message was saved
-    console.warn("[contact] SENDGRID_API_KEY not set or invalid - email skipped");
-    return res.status(200).json({ success: true, message: "Message saved (email skipped)" });
+  if (!apiKey.startsWith("SG.") || !process.env.TO_EMAIL) {
+    console.warn("[contact] SendGrid not configured - email skipped");
+  } else {
+    try {
+      sgMail.setApiKey(apiKey);
+      await sgMail.send({
+        to: process.env.TO_EMAIL,
+        from: process.env.FROM_EMAIL ?? "noreply@saadmaz.com",
+        replyTo: email,
+        subject: `Portfolio Contact: ${subject || "New Message"}`,
+        html: renderEmail(result.value),
+      });
+      emailed = true;
+    } catch (emailErr) {
+      console.error("[contact] SendGrid send failed:", emailErr);
+    }
   }
 
-  try {
-    sgMail.setApiKey(apiKey);
-
-    // Build a clean HTML email body
-    const htmlBody = `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">New Portfolio Contact</h2>
-        <table style="border-collapse: collapse; width: 100%;">
-          <tr><td style="padding: 8px; font-weight: bold;">Name:</td>
-              <td style="padding: 8px;">${escapeHtml(name)}</td></tr>
-          <tr><td style="padding: 8px; font-weight: bold;">Email:</td>
-              <td style="padding: 8px;"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>
-          ${subject ? `<tr><td style="padding: 8px; font-weight: bold;">Subject:</td>
-              <td style="padding: 8px;">${escapeHtml(subject)}</td></tr>` : ""}
-        </table>
-        <h3 style="color: #333; margin-top: 20px;">Message:</h3>
-        <p style="background: #f5f5f5; padding: 16px; border-radius: 4px; white-space: pre-wrap;">${escapeHtml(message)}</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin-top: 24px;" />
-        <p style="font-size: 12px; color: #999;">Sent from your portfolio contact form</p>
-      </div>
-    `;
-
-    await sgMail.send({
-      to:       process.env.TO_EMAIL!,
-      from:     process.env.FROM_EMAIL ?? "noreply@saadmaz.com",
-      replyTo:  email.trim(),
-      subject:  `Portfolio Contact: ${subject?.trim() ?? "New Message"}`,
-      html:     htmlBody,
-    });
-  } catch (emailErr) {
-    // Email failed - the message is already in Firestore so we don't surface
-    // this error to the user (they don't need to know about SendGrid internals)
-    console.error("[contact] SendGrid send failed:", emailErr);
+  if (!saved && !emailed) {
+    return res.status(500).json({ error: "Could not deliver your message. Please try again later." });
   }
-
   return res.status(200).json({ success: true });
 }
 
-// ─── Utility ─────────────────────────────────────────────────────
+// ─── Email rendering ─────────────────────────────────────────────
+
+function renderEmail({ name, email, subject, message }: ContactMessage): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">New Portfolio Contact</h2>
+      <table style="border-collapse: collapse; width: 100%;">
+        <tr><td style="padding: 8px; font-weight: bold;">Name:</td>
+            <td style="padding: 8px;">${escapeHtml(name)}</td></tr>
+        <tr><td style="padding: 8px; font-weight: bold;">Email:</td>
+            <td style="padding: 8px;"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>
+        ${
+          subject
+            ? `<tr><td style="padding: 8px; font-weight: bold;">Subject:</td>
+            <td style="padding: 8px;">${escapeHtml(subject)}</td></tr>`
+            : ""
+        }
+      </table>
+      <h3 style="color: #333; margin-top: 20px;">Message:</h3>
+      <p style="background: #f5f5f5; padding: 16px; border-radius: 4px; white-space: pre-wrap;">${escapeHtml(message)}</p>
+      <hr style="border: none; border-top: 1px solid #eee; margin-top: 24px;" />
+      <p style="font-size: 12px; color: #999;">Sent from your portfolio contact form</p>
+    </div>
+  `;
+}
 
 /** Escape user-supplied strings before injecting into HTML. */
-function escapeHtml(str: string): string {
+export function escapeHtml(str: string): string {
   return str
-    .replace(/&/g,  "&amp;")
-    .replace(/</g,  "&lt;")
-    .replace(/>/g,  "&gt;")
-    .replace(/"/g,  "&quot;")
-    .replace(/'/g,  "&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

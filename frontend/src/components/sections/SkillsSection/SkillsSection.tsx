@@ -17,13 +17,13 @@ import { m, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useSkills } from "@/shared/hooks/useCommon";
+import { useSkills } from "@/hooks/useContent";
 
 const levelColors: Record<string, { badge: string; bar: string }> = {
-  Beginner:     { badge: "bg-red-500/10    text-red-500    border-red-500/20",    bar: "bg-red-500" },
-  Intermediate: { badge: "bg-amber-500/10  text-amber-500  border-amber-500/20",  bar: "bg-amber-500" },
-  Advance:      { badge: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", bar: "bg-emerald-500" },
-  Expert:       { badge: "bg-accent/10     text-accent     border-accent/20",     bar: "bg-accent" },
+  Beginner: { badge: "bg-red-500/10    text-red-500    border-red-500/20", bar: "bg-red-500" },
+  Intermediate: { badge: "bg-amber-500/10  text-amber-500  border-amber-500/20", bar: "bg-amber-500" },
+  Advance: { badge: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", bar: "bg-emerald-500" },
+  Expert: { badge: "bg-accent/10     text-accent     border-accent/20", bar: "bg-accent" },
 };
 
 const levelToPercent: Record<string, number> = {
@@ -63,7 +63,6 @@ export function SkillsSection() {
   return (
     <section aria-labelledby="skills-heading" className="section-padding bg-secondary/30 overflow-hidden">
       <div className="section-container">
-
         {/* ── Section header ─────────────────────────────────────── */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -75,7 +74,10 @@ export function SkillsSection() {
           <span className="section-title">Technical Skills</span>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 id="skills-heading" className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              <h2
+                id="skills-heading"
+                className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2"
+              >
                 Tech Stack & Skills
               </h2>
               <p className="text-muted-foreground max-w-xl">
@@ -99,7 +101,11 @@ export function SkillsSection() {
           className="relative mb-8"
         >
           {/* Scrollable tab bar */}
-          <div role="tablist" aria-label="Skill categories" className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
+          <div
+            role="tablist"
+            aria-label="Skill categories"
+            className="flex gap-1 overflow-x-auto pb-1 scrollbar-none"
+          >
             {skillCategories.map((cat, i) => (
               <button
                 key={cat.category}
@@ -110,9 +116,10 @@ export function SkillsSection() {
                 onClick={() => setActiveTab(i)}
                 className={`
                   relative shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200
-                  ${activeTab === i
-                    ? "text-accent-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-accent/30"
+                  ${
+                    activeTab === i
+                      ? "text-accent-foreground"
+                      : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-accent/30"
                   }
                 `}
               >
@@ -149,7 +156,7 @@ export function SkillsSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {activeCategory.skills.map((skill, i) => {
                 const colors = levelColors[skill.level] || levelColors.Advance;
-                const pct    = levelToPercent[skill.level] || 75;
+                const pct = levelToPercent[skill.level] || 75;
 
                 return (
                   <m.div
@@ -171,7 +178,9 @@ export function SkillsSection() {
                           </span>
                         )}
                       </div>
-                      <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border ${colors.badge}`}>
+                      <span
+                        className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold border ${colors.badge}`}
+                      >
                         {skill.level}
                       </span>
                     </div>

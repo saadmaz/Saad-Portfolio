@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { FileText, ExternalLink, Calendar, Tag } from "lucide-react";
-import { usePublications } from "@/shared/hooks/useCommon";
+import { usePublications } from "@/hooks/useContent";
 
 const PublicationsPage = () => {
   const { data: publications = [], isLoading } = usePublications();
@@ -14,7 +14,7 @@ const PublicationsPage = () => {
         <section className="section-padding">
           <div className="section-container">
             <div className="space-y-6">
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="h-40 rounded-xl bg-secondary/30 animate-pulse" />
               ))}
             </div>
@@ -111,8 +111,11 @@ const PublicationsPage = () => {
                       {pub.tags && pub.tags.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5">
                           <Tag className="w-3.5 h-3.5 text-muted-foreground" />
-                          {pub.tags.map(tag => (
-                            <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                          {pub.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground"
+                            >
                               {tag}
                             </span>
                           ))}

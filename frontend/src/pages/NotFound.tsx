@@ -7,19 +7,18 @@
  *  - Quick-nav links so visitors don't bounce
  *  - Logs the bad path to console for debugging
  */
-
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { m } from "framer-motion";
-import { Home, Briefcase, Mail, BookOpen, ArrowRight } from "lucide-react";
+import { Home, Briefcase, Mail, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 
 const quickLinks = [
-  { icon: Home,      label: "Home",       href: "/" },
-  { icon: Briefcase, label: "Projects",   href: "/projects" },
-  { icon: BookOpen,  label: "Blog",       href: "/blog" },
-  { icon: Mail,      label: "Contact",    href: "/contact" },
+  { icon: Home, label: "Home", href: "/" },
+  { icon: Briefcase, label: "Projects", href: "/projects" },
+  { icon: BookOpen, label: "Blog", href: "/blog" },
+  { icon: Mail, label: "Contact", href: "/contact" },
 ];
 
 const NotFound = () => {
@@ -31,17 +30,19 @@ const NotFound = () => {
 
   return (
     <>
-      <SEO title="404 - Page Not Found" description="This page doesn't exist. Head back to Saad Mazhar's portfolio." noIndex />
+      <SEO
+        title="404 - Page Not Found"
+        description="This page doesn't exist. Head back to Saad Mazhar's portfolio."
+        noIndex
+      />
 
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 relative overflow-hidden">
-
         {/* ── Background ambient blobs ────────────────────────────── */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="hidden dark:block absolute top-1/4 right-1/4 w-72 h-72 bg-accent/8 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Main content ────────────────────────────────────────── */}
         <div className="relative z-10 text-center max-w-lg w-full">
-
           {/* Giant 404 */}
           <m.div
             initial={{ opacity: 0, scale: 0.85 }}
@@ -52,7 +53,8 @@ const NotFound = () => {
             <span
               className="font-display text-[8rem] sm:text-[10rem] font-black leading-none tracking-tighter select-none"
               style={{
-                background: "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--accent)) 60%, hsl(var(--accent)/0.5) 100%)",
+                background:
+                  "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--accent)) 60%, hsl(var(--accent)/0.5) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
