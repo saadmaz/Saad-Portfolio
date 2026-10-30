@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
@@ -259,28 +261,38 @@ function Capabilities() {
   const { data: certs = [] } = useCertificates();
   const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
+  const issuers = [...new Set(certs.map((c) => c.issuer).filter(Boolean))];
   return (
-    <section className="section" aria-labelledby="capabilities-heading">
+    <section
+      className="flex min-h-[100svh] flex-col justify-center border-t border-line py-[clamp(48px,9svh,112px)]"
+      aria-labelledby="capabilities-heading"
+    >
       <div className="wrap">
-        <Reveal>
-          <SectionHeader index="05" label="Capabilities" title="What I" soft="bring" />
+        <Reveal className="mb-[clamp(24px,5svh,56px)] flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-[clamp(16px,3svh,28px)]">
+            <Eyebrow index="05">Capabilities</Eyebrow>
+            <h2 id="capabilities-heading" className="text-display-m font-medium">
+              What I <span className="soft">bring</span> to a team
+            </h2>
+          </div>
+          {certs.length > 0 && (
+            <Link
+              to="/certifications"
+              className="group flex items-center gap-4 self-start rounded-full border border-line-2 py-2 pl-5 pr-2 transition-colors duration-200 hover:border-line-3 hover:bg-surface lg:self-auto"
+            >
+              <span className="flex flex-col">
+                <span className="text-sm font-medium">
+                  {certs.length} <span className="font-light text-fg-2">certifications</span>
+                </span>
+                <span className="font-mono text-[12px] text-fg-3">{issuers.slice(0, 3).join(" · ")}</span>
+              </span>
+              <span className="flex size-9 items-center justify-center rounded-full bg-surface-2 text-fg-2 transition-colors duration-200 group-hover:bg-accent group-hover:text-fg-inverse">
+                <ArrowUpRight className="size-4" aria-hidden />
+              </span>
+            </Link>
+          )}
         </Reveal>
         <SkillsShowcase groups={groups} />
-        {certs.length > 0 && (
-          <div className="mt-16 flex flex-col gap-5 rounded-media border border-line bg-surface p-6 md:flex-row md:items-center md:justify-between md:px-8">
-            <div>
-              <p className="text-h3 font-medium">
-                {certs.length} <span className="soft">certifications</span> across AI, security & cloud
-              </p>
-              <p className="mt-1.5 font-mono text-meta text-fg-3">
-                {[...new Set(certs.map((c) => c.issuer).filter(Boolean))].slice(0, 5).join(" · ")}
-              </p>
-            </div>
-            <Button to="/certifications" variant="secondary">
-              View credentials
-            </Button>
-          </div>
-        )}
       </div>
     </section>
   );
