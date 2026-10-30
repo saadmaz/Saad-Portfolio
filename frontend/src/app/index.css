@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Graphite theme. Single dark palette, values match the Figma variables. */
+:root {
+  --bg: 25 25 27;
+  --surface: 33 33 36;
+  --surface-2: 41 41 45;
+  --surface-3: 50 50 55;
+  --fg: 237 237 234;
+  --fg-2: 163 163 158;
+  --fg-3: 142 142 137;
+  --fg-inverse: 20 20 22;
+  --accent: 255 106 61;
+  --accent-hover: 255 130 89;
+  --live: 74 222 128;
+  --danger: 242 85 90;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    @apply bg-base text-fg antialiased;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-base font-sans text-[1rem] leading-relaxed text-fg;
+  }
+  ::selection {
+    @apply bg-accent/30 text-fg;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-base;
+  }
+  img {
+    @apply max-w-full;
+  }
+  /* Keep #anchors clear of the fixed header. */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-wrap px-5 md:px-8 xl:px-0;
+  }
+  .section {
+    @apply border-t border-line py-24 md:py-32;
+  }
+  .label {
+    @apply font-mono text-label uppercase;
+  }
+  /* Two-tone headline: the light half of a heading. */
+  .soft {
+    @apply font-light text-fg-3;
+  }
+}
+
+/* Fade-up on scroll, driven by <Reveal>. */
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Long-form HTML from the CMS (blog posts). */
+.prose-cms {
+  @apply text-body-l text-fg-2;
+}
+.prose-cms > * + * {
+  @apply mt-6;
+}
+.prose-cms h2 {
+  @apply mt-14 text-h2 text-fg;
+}
+.prose-cms h3 {
+  @apply mt-10 text-h3 text-fg;
+}
+.prose-cms a {
+  @apply text-fg underline decoration-accent underline-offset-4;
+}
+.prose-cms strong {
+  @apply font-medium text-fg;
+}
+.prose-cms ul,
+.prose-cms ol {
+  @apply space-y-2 pl-6;
+}
+.prose-cms ul {
+  @apply list-disc marker:text-accent;
+}
+.prose-cms ol {
+  @apply list-decimal marker:text-fg-3;
+}
+.prose-cms blockquote {
+  @apply border-l-2 border-accent pl-6 text-h3 font-light text-fg;
+}
+.prose-cms img {
+  @apply rounded-media border border-line;
+}
+.prose-cms code {
+  @apply rounded bg-surface px-1.5 py-0.5 font-mono text-meta text-fg;
+}
+.prose-cms pre {
+  @apply overflow-x-auto rounded-card border border-line bg-surface p-5 font-mono text-meta;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
