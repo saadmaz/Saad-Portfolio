@@ -29,6 +29,8 @@ export default {
         "display-xl": ["clamp(3.25rem, 8.6vw, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.05em" }],
         // Home hero: scales with height too, so the whole hero fits one screen.
         hero: ["min(12.5vw, 9.5svh, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.05em" }],
+        // Desktop hero shares the row with the portrait, so it is also capped by column width.
+        "hero-lg": ["min(7.2vw, 9.5svh, 6rem)", { lineHeight: "0.92", letterSpacing: "-0.05em" }],
         "display-l": ["clamp(3rem, 6.6vw, 6rem)", { lineHeight: "0.95", letterSpacing: "-0.045em" }],
         "display-m": ["clamp(2.25rem, 4.4vw, 4rem)", { lineHeight: "1", letterSpacing: "-0.035em" }],
         h1: ["clamp(2rem, 3.4vw, 3rem)", { lineHeight: "1.05", letterSpacing: "-0.03em" }],

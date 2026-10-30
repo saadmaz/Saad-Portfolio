@@ -41,47 +41,49 @@ function Hero({
 
       {/* Everything above the stats band; the portrait and copy share it so nothing spills below the fold. */}
       <div className="relative flex min-h-0 flex-1 flex-col">
-        <img
-          src={portrait}
-          alt=""
-          aria-hidden
-          fetchPriority="high"
-          className="pointer-events-none absolute right-[-20%] top-[48px] aspect-square h-[min(46%,96vw)] w-auto max-w-none opacity-75 mix-blend-lighten [mask-image:linear-gradient(to_bottom,black_35%,transparent_80%)] sm:right-[-4%] sm:opacity-90 sm:[mask-image:linear-gradient(to_bottom,black_50%,transparent_92%)] sm:h-[min(70%,80vw)] lg:right-[max(0px,calc(50vw-660px))] lg:top-[88px] lg:h-[calc(100%-88px)] lg:[mask-image:linear-gradient(to_bottom,black_60%,transparent)]"
-        />
-        <div className="wrap relative flex min-h-0 flex-1 flex-col justify-end pb-[clamp(16px,4svh,56px)] pt-[72px] lg:justify-center lg:pt-[88px]">
-          <span className="mb-[clamp(12px,2.6svh,24px)] inline-flex w-fit items-center gap-2.5 rounded-full border border-line-2 bg-surface px-3 py-2 font-mono text-meta text-fg-2 [@media(max-height:719px)]:hidden">
-            <span className="size-2 rounded-full bg-live shadow-[0_0_8px_rgb(74_222_128/0.6)]" />
-            Currently building TankSudda & Stopwash
-          </span>
-          <h1 id="hero-heading" className="text-hero font-medium">
-            Building
-            <br />
-            products that
-            <br />
-            solve <span className="font-light text-accent">real</span>
-            <br />
-            problems.
-          </h1>
-          <p className="mt-[clamp(12px,3svh,32px)] max-w-[520px] text-[clamp(15px,2.2svh,19px)] leading-[1.55] text-fg-2 [@media(max-height:620px)]:hidden">
-            Founder, full-stack engineer and tech speaker from Colombo. I turn rough ideas into products
-            people pay for, then go on stage and explain how.
-          </p>
-          <div className="mt-[clamp(14px,3.4svh,36px)] flex flex-wrap gap-3">
-            <Button to="/projects" size="lg" className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6">
-              <span className="sm:hidden">See my work</span>
-              <span className="hidden sm:inline">See selected work</span>
-            </Button>
-            <Button
-              href={myResume}
-              download="Saad_Mazhar_Resume.pdf"
-              variant="secondary"
-              size="lg"
-              icon={false}
-              className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6"
-            >
-              <span className="sm:hidden">Résumé</span>
-              <span className="hidden sm:inline">Download résumé</span>
-            </Button>
+        <div className="wrap relative flex min-h-0 flex-1 flex-col justify-end pb-[clamp(16px,4svh,56px)] pt-[72px] lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-x-12 lg:pb-0 lg:pt-[88px]">
+          <img
+            src={portrait}
+            alt=""
+            aria-hidden
+            fetchPriority="high"
+            className="pointer-events-none absolute right-[-24%] top-[48px] aspect-square h-[min(46%,96vw)] w-auto max-w-none opacity-75 mix-blend-lighten [mask-image:linear-gradient(to_bottom,black_35%,transparent_80%)] sm:right-[-8%] sm:h-[min(70%,80vw)] sm:opacity-90 sm:[mask-image:linear-gradient(to_bottom,black_50%,transparent_92%)] lg:static lg:col-start-2 lg:row-start-1 lg:h-full lg:min-h-0 lg:w-full lg:max-w-full lg:self-end lg:origin-bottom lg:scale-[1.32] lg:object-contain lg:object-bottom lg:[mask-image:linear-gradient(to_bottom,black_62%,transparent_98%)]"
+          />
+          <div className="relative lg:col-start-1 lg:row-start-1 lg:self-center lg:pb-[clamp(16px,3svh,40px)]">
+            <span className="mb-[clamp(12px,2.6svh,24px)] inline-flex w-fit items-center gap-2.5 rounded-full border border-line-2 bg-surface px-3 py-2 font-mono text-meta text-fg-2 [@media(max-height:719px)]:hidden">
+              <span className="size-2 rounded-full bg-live shadow-[0_0_8px_rgb(74_222_128/0.6)]" />
+              Currently building TankSudda & Stopwash
+            </span>
+            <h1 id="hero-heading" className="text-hero font-medium lg:text-hero-lg">
+              Building
+              <br />
+              products that
+              <br />
+              solve <span className="font-light text-accent">real</span>
+              <br />
+              problems.
+            </h1>
+            <p className="mt-[clamp(12px,3svh,32px)] max-w-[520px] text-[clamp(15px,2.2svh,19px)] leading-[1.55] text-fg-2 [@media(max-height:620px)]:hidden">
+              Founder, full-stack engineer and tech speaker from Colombo. I turn rough ideas into products
+              people pay for, then go on stage and explain how.
+            </p>
+            <div className="mt-[clamp(14px,3.4svh,36px)] flex flex-wrap gap-3">
+              <Button to="/projects" size="lg" className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6">
+                <span className="sm:hidden">See my work</span>
+                <span className="hidden sm:inline">See selected work</span>
+              </Button>
+              <Button
+                href={myResume}
+                download="Saad_Mazhar_Resume.pdf"
+                variant="secondary"
+                size="lg"
+                icon={false}
+                className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6"
+              >
+                <span className="sm:hidden">Résumé</span>
+                <span className="hidden sm:inline">Download résumé</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
