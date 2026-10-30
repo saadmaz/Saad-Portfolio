@@ -1,0 +1,53 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="980" height="660" viewBox="0 0 980 660" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Window" filter="url(#filter0_d_0_83)">
+<g clip-path="url(#clip0_0_83)">
+<rect x="70" y="30" width="840" height="520" rx="14" fill="#1E1E21" fill-opacity="0.92"/>
+<rect id="Rectangle" x="70" y="30" width="840" height="40" fill="white" fill-opacity="0.03"/>
+<circle id="Ellipse" cx="93" cy="50" r="5" fill="white" fill-opacity="0.18"/>
+<circle id="Ellipse_2" cx="111" cy="50" r="5" fill="white" fill-opacity="0.18"/>
+<circle id="Ellipse_3" cx="129" cy="50" r="5" fill="white" fill-opacity="0.18"/>
+<rect id="Rectangle_2" x="70" y="70" width="180" height="480" fill="white" fill-opacity="0.02"/>
+<rect id="Rectangle_3" x="94" y="102" width="90" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+<rect id="Rectangle_4" x="94" y="132" width="110" height="8" rx="4" fill="#FF6B3D" fill-opacity="0.9"/>
+<rect id="Rectangle_5" x="94" y="162" width="114" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+<rect id="Rectangle_6" x="94" y="192" width="101" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+<rect id="Rectangle_7" x="94" y="222" width="138" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+<rect id="Rectangle_8" x="94" y="252" width="125" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+<rect id="Rectangle_9" x="282" y="102" width="260" height="16" rx="6" fill="white" fill-opacity="0.7"/>
+<rect id="Rectangle_10" x="282" y="130" width="180" height="8" rx="4" fill="white" fill-opacity="0.15"/>
+<g id="Rectangle_11">
+<rect x="282" y="166" width="190" height="100" rx="10" fill="white" fill-opacity="0.04"/>
+<rect x="282.5" y="166.5" width="189" height="99" rx="9.5" stroke="white" stroke-opacity="0.07"/>
+</g>
+<rect id="Rectangle_12" x="300" y="222" width="70" height="14" rx="4" fill="white" fill-opacity="0.6"/>
+<g id="Rectangle_13">
+<rect x="488" y="166" width="190" height="100" rx="10" fill="white" fill-opacity="0.04"/>
+<rect x="488.5" y="166.5" width="189" height="99" rx="9.5" stroke="white" stroke-opacity="0.07"/>
+</g>
+<rect id="Rectangle_14" x="506" y="222" width="70" height="14" rx="4" fill="white" fill-opacity="0.6"/>
+<g id="Rectangle_15">
+<rect x="694" y="166" width="190" height="100" rx="10" fill="white" fill-opacity="0.04"/>
+<rect x="694.5" y="166.5" width="189" height="99" rx="9.5" stroke="white" stroke-opacity="0.07"/>
+</g>
+<rect id="Rectangle_16" x="712" y="222" width="70" height="14" rx="4" fill="white" fill-opacity="0.6"/>
+<path id="Vector" d="M282 420C342 400 382 410 432 380C482 350 522 370 582 340C642 310 702 330 762 312L872 300" stroke-width="2.5" stroke="#FF6B3D"/>
+<rect id="Rectangle_17" x="282.5" y="290.5" width="599" height="199" rx="9.5" stroke="white" stroke-opacity="0.07"/>
+</g>
+<rect x="70.5" y="30.5" width="839" height="519" rx="13.5" stroke="white" stroke-opacity="0.11"/>
+</g>
+<defs>
+<filter id="filter0_d_0_83" x="0" y="0" width="980" height="660" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="10" operator="erode" in="SourceAlpha" result="effect1_dropShadow_0_83"/>
+<feOffset dy="40"/>
+<feGaussianBlur stdDeviation="40"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_83"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_83" result="shape"/>
+</filter>
+<clipPath id="clip0_0_83">
+<rect x="70" y="30" width="840" height="520" rx="14" fill="white"/>
+</clipPath>
+</defs>
+</svg>

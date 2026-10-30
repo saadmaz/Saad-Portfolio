@@ -27,6 +27,8 @@ export interface NavItem {
 export interface NavMenu {
   label: string;
   items: NavItem[];
+  /** Mono footnote under the links (Figma Nav/Dropdown "Footer note"). */
+  note?: string;
 }
 
 export const NAV_MENUS: NavMenu[] = [
@@ -48,6 +50,7 @@ export const NAV_MENUS: NavMenu[] = [
       { title: "Work Experience", href: "/experience", description: "Professional journey and roles" },
       { title: "Featured Projects", href: "/projects", description: "Highlighted work and ventures" },
     ],
+    note: "20+ products shipped since 2021",
   },
   {
     label: "Skills",
@@ -59,13 +62,14 @@ export const NAV_MENUS: NavMenu[] = [
         description: "Professional certifications",
       },
     ],
+    note: "Updated monthly",
   },
   {
     label: "Insights",
     items: [
       { title: "Blog / Thoughts", href: "/blog", description: "Articles and perspectives" },
       { title: "Newsletters", href: "/newsletters", description: "Knowledge hub subscriptions" },
-      { title: "Publications", href: "/publications", description: "Published work" },
     ],
+    note: "New article every month",
   },
 ];
