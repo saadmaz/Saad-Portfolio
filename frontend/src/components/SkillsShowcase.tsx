@@ -11,40 +11,60 @@ const yearsOf = (skill: Skill) => {
   return years < 1 ? "New" : `${years} yr${years === 1 ? "" : "s"}`;
 };
 
-function SkillGlyph({ skill, className }: { skill: Skill; className?: string }) {
+/** Brand icon when the skill has one; nothing otherwise (no fake monograms). */
+function SkillIcon({ skill, className }: { skill: Skill; className?: string }) {
+  if (!skill.icon) return null;
   return (
-    <span
-      className={cn(
-        "label flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line-2 bg-surface-2 text-fg-2",
-        className,
-      )}
-    >
-      {skill.icon ? (
-        <img src={skill.icon} alt="" className="size-[55%] object-contain" loading="lazy" />
-      ) : (
-        skill.name.slice(0, 2)
-      )}
-    </span>
+    <img src={skill.icon} alt="" className={cn("size-5 shrink-0 object-contain", className)} loading="lazy" />
   );
 }
 
-/** Level meter whose filled segments sweep in, staggered after the tile itself. */
-function LiveMeter({ value, delay }: { value: number; delay: number }) {
+/** Continuous level track (quarters marked) that sweeps in after its row. */
+function LevelTrack({ value, delay }: { value: number; delay: number }) {
   return (
-    <span className="inline-flex gap-[3px]" role="img" aria-label={`${value} of 4`}>
-      {[0, 1, 2, 3].map((i) => (
-        <span key={i} className="h-1 w-3 overflow-hidden rounded-full bg-line-3">
-          {i < value && (
-            <span
-              className="block h-full origin-left animate-fill-x rounded-full bg-accent"
-              style={{ animationDelay: `${delay + i * 80}ms` }}
-            />
-          )}
-        </span>
+    <span
+      className="relative block h-1.5 w-full overflow-hidden rounded-full bg-line-2"
+      role="img"
+      aria-label={`Level ${value} of 4`}
+    >
+      <span
+        className="absolute inset-y-0 left-0 origin-left animate-fill-x rounded-full bg-gradient-to-r from-accent/50 to-accent transition-[filter] duration-300 group-hover/row:brightness-125"
+        style={{ width: `${(value / 4) * 100}%`, animationDelay: `${delay}ms`, animationDuration: "900ms" }}
+      />
+      {[1, 2, 3].map((q) => (
+        <span
+          key={q}
+          className="absolute inset-y-0 w-0.5 bg-surface"
+          style={{ left: `calc(${q * 25}% - 1px)` }}
+        />
       ))}
     </span>
   );
 }
+
+const LEVEL_PLURAL: Record<string, [string, string]> = {
+  "Daily driver": ["daily driver", "daily drivers"],
+  Proficient: ["proficient", "proficient"],
+  Familiar: ["familiar", "familiar"],
+  Learning: ["learning", "learning"],
+};
+
+/** "3 daily drivers · 1 proficient · 1 learning", strongest first. */
+const levelSummary = (skills: Skill[]) => {
+  const counts = new Map<string, { n: number; v: number }>();
+  for (const sk of skills) {
+    const lvl = SKILL_LEVEL[sk.level] ?? SKILL_LEVEL.Intermediate;
+    const c = counts.get(lvl.label) ?? { n: 0, v: lvl.value };
+    counts.set(lvl.label, { n: c.n + 1, v: lvl.value });
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1].v - a[1].v)
+    .map(([label, { n }]) => {
+      const [one, many] = LEVEL_PLURAL[label] ?? [label.toLowerCase(), label.toLowerCase()];
+      return `${n} ${n === 1 ? one : many}`;
+    })
+    .join(" · ");
+};
 
 function Marquee({ skills, reverse }: { skills: Skill[]; reverse?: boolean }) {
   if (skills.length === 0) return null;
@@ -61,9 +81,18 @@ function Marquee({ skills, reverse }: { skills: Skill[]; reverse?: boolean }) {
         {loop.map((s, i) => (
           <li
             key={`${s.name}-${i}`}
-            className="flex items-center gap-2.5 rounded-full border border-line-2 bg-surface py-1.5 pl-1.5 pr-4 text-sm text-fg-2 transition-colors duration-200 hover:border-accent/60 hover:text-fg"
+            className="flex items-center gap-2.5 rounded-full border border-line-2 bg-surface px-4 py-2 text-sm text-fg-2 transition-colors duration-200 hover:border-accent/60 hover:text-fg"
           >
-            <SkillGlyph skill={s} className="size-7 rounded-full text-[10px]" />
+            {s.icon ? (
+              <SkillIcon skill={s} className="size-4" />
+            ) : (
+              <span
+                className="size-1.5 shrink-0 rounded-full bg-accent"
+                style={{
+                  opacity: [0.3, 0.5, 0.75, 1][(SKILL_LEVEL[s.level] ?? SKILL_LEVEL.Intermediate).value - 1],
+                }}
+              />
+            )}
             {s.name}
           </li>
         ))}
@@ -232,7 +261,7 @@ export function SkillsShowcase({ groups }: { groups: SkillSet[] }) {
           role="tabpanel"
           aria-labelledby={`skill-tab-${active}`}
           onPointerMove={onPanelMove}
-          className="relative overflow-hidden rounded-media border border-line bg-surface p-5 [--x:50%] [--y:0%] md:p-7 lg:min-h-[340px]"
+          className="relative overflow-hidden rounded-media border border-line bg-surface p-5 [--x:50%] [--y:0%] md:p-8"
         >
           <div
             aria-hidden
@@ -245,37 +274,51 @@ export function SkillsShowcase({ groups }: { groups: SkillSet[] }) {
             {autoplay && <span ref={barRef} className="block h-full origin-left scale-x-0 bg-accent" />}
           </div>
 
-          <div className="relative mb-6 flex items-baseline justify-between gap-4">
-            <h3 key={group.category} className="animate-rise text-h3 font-medium">
-              {group.category}
-            </h3>
-            <span className="shrink-0 font-mono text-meta text-fg-3">
-              {group.skills.length} tool{group.skills.length === 1 ? "" : "s"}
-            </span>
+          <div key={group.category} className="relative mb-5 flex flex-col md:mb-6">
+            <div>
+              <p className="label animate-rise">
+                <span className="text-accent">{String(active + 1).padStart(2, "0")}</span>
+                <span className="text-fg-3"> / {String(groups.length).padStart(2, "0")}</span>
+              </p>
+              <h3 className="mt-3 animate-rise text-h2 font-medium [animation-delay:60ms]">
+                {group.category}
+              </h3>
+            </div>
+            <p className="mt-2.5 animate-rise font-mono text-meta text-fg-3 [animation-delay:120ms]">
+              {levelSummary(group.skills)}
+            </p>
           </div>
 
-          <ul className="relative grid gap-2.5 sm:grid-cols-2">
+          <ul className="relative border-t border-line-2 pt-1">
             {group.skills.map((s, i) => {
               const lvl = SKILL_LEVEL[s.level] ?? SKILL_LEVEL.Intermediate;
-              const delay = i * 55;
+              const delay = 140 + i * 70;
               const years = yearsOf(s);
               return (
                 <li
                   key={`${group.category}-${s.name}`}
                   style={{ animationDelay: `${delay}ms` }}
-                  className="group/tile flex animate-rise items-center gap-3.5 rounded-card border border-line bg-base/60 p-3.5 transition-[border-color,transform,background-color] duration-300 ease-out hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface-2"
+                  className="group/row relative -mx-3 grid animate-rise grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-3 rounded-xl px-3 py-4 after:absolute after:inset-x-3 after:bottom-0 after:h-px after:bg-line last:after:hidden transition-colors duration-300 hover:bg-surface-2/70 md:grid-cols-[minmax(0,1fr)_minmax(140px,200px)_108px] md:py-[18px]"
                 >
-                  <SkillGlyph
-                    skill={s}
-                    className="size-10 transition-transform duration-300 ease-out group-hover/tile:-rotate-6 group-hover/tile:scale-105"
+                  <span
+                    aria-hidden
+                    className="absolute inset-y-3 left-0 w-0.5 origin-center scale-y-0 rounded-full bg-accent transition-transform duration-300 ease-out group-hover/row:scale-y-100"
                   />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-medium">{s.name}</span>
-                    <span className="mt-1.5 flex items-center gap-2 font-mono text-[12px] text-fg-3">
-                      <LiveMeter value={lvl.value} delay={delay + 180} />
-                      <span className="truncate">{lvl.label}</span>
-                      {years && <span className="ml-auto shrink-0">{years}</span>}
-                    </span>
+                  <span className="flex min-w-0 items-center gap-3 transition-transform duration-300 ease-out group-hover/row:translate-x-1">
+                    <SkillIcon skill={s} />
+                    <span className="truncate text-[1.0625rem] font-medium tracking-[-0.01em]">{s.name}</span>
+                    {years && <span className="shrink-0 font-mono text-[12px] text-fg-3">{years}</span>}
+                  </span>
+                  <span className="col-span-2 row-start-2 md:col-span-1 md:row-start-auto">
+                    <LevelTrack value={lvl.value} delay={delay + 120} />
+                  </span>
+                  <span
+                    className={cn(
+                      "text-right font-mono text-[12px] uppercase tracking-[0.06em] transition-colors duration-300",
+                      lvl.value === 4 ? "text-accent" : "text-fg-3 group-hover/row:text-fg-2",
+                    )}
+                  >
+                    {lvl.label}
                   </span>
                 </li>
               );
