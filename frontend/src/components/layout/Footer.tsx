@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
-import { CONTACT, SOCIALS } from "@/lib/site";
+import { CONTACT } from "@/lib/site";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
-const COLUMNS = [
+type FooterLink = { label: string; to?: string; href?: string; download?: string };
+
+const COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: "About",
     links: [
@@ -19,6 +22,7 @@ const COLUMNS = [
       { label: "Projects", to: "/projects" },
       { label: "Skills", to: "/skills" },
       { label: "Certificates", to: "/certifications" },
+      { label: "Résumé", href: myResume, download: "Saad_Mazhar_Resume.pdf" },
     ],
   },
   {
@@ -48,39 +52,30 @@ export function Footer() {
             >
               {CONTACT.email}
             </a>
+            <SocialLinks size="sm" className="mt-2" />
           </div>
-          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 sm:gap-6">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 sm:gap-6">
             {COLUMNS.map((col) => (
               <div key={col.title} className="flex flex-col gap-3.5 sm:w-40">
                 <span className="label text-fg-3">{col.title}</span>
-                {col.links.map((l) => (
-                  <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
-                    {l.label}
-                  </Link>
-                ))}
+                {col.links.map((l) =>
+                  l.to ? (
+                    <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
+                      {l.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      download={l.download}
+                      className="text-sm text-fg hover:text-accent"
+                    >
+                      {l.label}
+                    </a>
+                  ),
+                )}
               </div>
             ))}
-            <div className="flex flex-col gap-3.5 sm:w-40">
-              <span className="label text-fg-3">Elsewhere</span>
-              {SOCIALS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-fg hover:text-accent"
-                >
-                  {s.label}
-                </a>
-              ))}
-              <a
-                href={myResume}
-                download="Saad_Mazhar_Resume.pdf"
-                className="text-sm text-fg hover:text-accent"
-              >
-                Résumé
-              </a>
-            </div>
           </div>
         </div>
 

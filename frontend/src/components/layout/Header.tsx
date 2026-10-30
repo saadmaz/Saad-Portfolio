@@ -3,7 +3,8 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { ArrowUpRight, ChevronDown, Menu, Minus, Plus, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui";
-import { NAV_MENUS, SOCIALS, type NavMenu } from "@/lib/site";
+import { NAV_MENUS, type NavMenu } from "@/lib/site";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { cn } from "@/lib/utils";
 
 function useScrolled(threshold = 40) {
@@ -209,13 +210,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
         <Button to="/contact" size="lg" className="w-full">
           Let’s talk
         </Button>
-        <div className="flex justify-between font-mono text-meta text-fg-2">
-          {SOCIALS.map((s) => (
-            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
-              {s.label}
-            </a>
-          ))}
-        </div>
+        <SocialLinks className="justify-center gap-3" />
       </div>
     </div>
   );

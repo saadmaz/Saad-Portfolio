@@ -8,11 +8,13 @@ export const CONTACT = {
   bookingUrl: "https://calendly.com/saadmaz/30min",
 };
 
-export const SOCIALS = [
-  { label: "LinkedIn", href: "https://linkedin.com/in/saadmaz/" },
-  { label: "GitHub", href: "https://github.com/saadmaz/" },
-  { label: "Instagram", href: "https://instagram.com/saaadmaz/" },
-  { label: "X", href: "https://x.com/SaadMazhar_" },
+export type SocialId = "linkedin" | "github" | "instagram" | "x";
+
+export const SOCIALS: { id: SocialId; label: string; href: string }[] = [
+  { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com/in/saadmaz/" },
+  { id: "github", label: "GitHub", href: "https://github.com/saadmaz/" },
+  { id: "instagram", label: "Instagram", href: "https://instagram.com/saaadmaz/" },
+  { id: "x", label: "X", href: "https://x.com/SaadMazhar_" },
 ];
 
 export interface NavItem {

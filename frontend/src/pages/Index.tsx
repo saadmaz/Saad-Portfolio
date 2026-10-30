@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Button, Eyebrow, Reveal, SectionHeader, Skeleton, Stat } from "@/components/ui";
+import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectCard, Row } from "@/components/cards";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
 import { useCertificates, useEvents, useExperience, useSkills, useTestimonials } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear, readingTime } from "@/lib/format";
-import { CONTACT, SOCIALS } from "@/lib/site";
+import { CONTACT } from "@/lib/site";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, PERSON_SCHEMA, BASE_URL } from "@/lib/seo-content";
 import portrait from "@/assets/profile-photo.webp";
 import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
@@ -23,63 +24,82 @@ function Hero({
   certificates?: number;
 }) {
   const stats = [
-    { value: "5+", label: "Years building" },
-    { value: projects ? `${projects}` : "20+", label: "Products shipped" },
-    { value: events ? `${events}` : "40+", label: "Stages & events" },
-    { value: certificates ? `${certificates}` : "99", label: "Certifications" },
+    { value: "5+", label: "Years building", short: "Years" },
+    { value: projects ? `${projects}` : "20+", label: "Products shipped", short: "Shipped" },
+    { value: events ? `${events}` : "40+", label: "Stages & events", short: "Stages" },
+    { value: certificates ? `${certificates}` : "99", label: "Certifications", short: "Certs" },
   ];
   return (
-    <section aria-labelledby="hero-heading" className="relative -mt-[72px] overflow-hidden lg:-mt-[88px]">
+    <section
+      aria-labelledby="hero-heading"
+      className="relative -mt-[72px] flex h-[100svh] flex-col overflow-hidden lg:-mt-[88px]"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_78%_35%,rgb(255_106_61/0.16),transparent_70%)]"
       />
-      <img
-        src={portrait}
-        alt=""
-        aria-hidden
-        fetchPriority="high"
-        className="pointer-events-none absolute right-[-10%] top-10 w-[118%] max-w-none opacity-90 mix-blend-lighten [mask-image:linear-gradient(to_bottom,black_55%,transparent)] sm:right-[-4%] sm:w-[80%] lg:right-[-2%] lg:top-[90px] lg:w-[60%] lg:max-w-[860px]"
-      />
-      <div className="wrap relative flex min-h-[860px] flex-col justify-end pb-14 pt-[340px] sm:pt-[420px] lg:min-h-[1000px] lg:justify-center lg:pb-0 lg:pt-[120px]">
-        <span className="mb-6 inline-flex w-fit items-center gap-2.5 rounded-full border border-line-2 bg-surface px-3 py-2 font-mono text-meta text-fg-2">
-          <span className="size-2 rounded-full bg-live shadow-[0_0_8px_rgb(74_222_128/0.6)]" />
-          Currently building TankSudda & Stopwash
-        </span>
-        <h1 id="hero-heading" className="text-display-xl font-medium">
-          Building
-          <br />
-          products that
-          <br />
-          solve <span className="font-light text-accent">real</span>
-          <br />
-          problems.
-        </h1>
-        <p className="mt-8 max-w-[520px] text-body-l text-fg-2">
-          Founder, full-stack engineer and tech speaker from Colombo. I turn rough ideas into products people
-          pay for, then go on stage and explain how.
-        </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <Button to="/projects" size="lg">
-            See selected work
-          </Button>
-          <Button
-            href={myResume}
-            download="Saad_Mazhar_Resume.pdf"
-            variant="secondary"
-            size="lg"
-            icon={false}
-          >
-            Download résumé
-          </Button>
+
+      {/* Everything above the stats band; the portrait and copy share it so nothing spills below the fold. */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <img
+          src={portrait}
+          alt=""
+          aria-hidden
+          fetchPriority="high"
+          className="pointer-events-none absolute right-[-20%] top-[48px] aspect-square h-[min(46%,96vw)] w-auto max-w-none opacity-75 mix-blend-lighten [mask-image:linear-gradient(to_bottom,black_35%,transparent_80%)] sm:right-[-4%] sm:opacity-90 sm:[mask-image:linear-gradient(to_bottom,black_50%,transparent_92%)] sm:h-[min(70%,80vw)] lg:right-[max(0px,calc(50vw-660px))] lg:top-[88px] lg:h-[calc(100%-88px)] lg:[mask-image:linear-gradient(to_bottom,black_60%,transparent)]"
+        />
+        <div className="wrap relative flex min-h-0 flex-1 flex-col justify-end pb-[clamp(16px,4svh,56px)] pt-[72px] lg:justify-center lg:pt-[88px]">
+          <span className="mb-[clamp(12px,2.6svh,24px)] inline-flex w-fit items-center gap-2.5 rounded-full border border-line-2 bg-surface px-3 py-2 font-mono text-meta text-fg-2 [@media(max-height:719px)]:hidden">
+            <span className="size-2 rounded-full bg-live shadow-[0_0_8px_rgb(74_222_128/0.6)]" />
+            Currently building TankSudda & Stopwash
+          </span>
+          <h1 id="hero-heading" className="text-hero font-medium">
+            Building
+            <br />
+            products that
+            <br />
+            solve <span className="font-light text-accent">real</span>
+            <br />
+            problems.
+          </h1>
+          <p className="mt-[clamp(12px,3svh,32px)] max-w-[520px] text-[clamp(15px,2.2svh,19px)] leading-[1.55] text-fg-2 [@media(max-height:620px)]:hidden">
+            Founder, full-stack engineer and tech speaker from Colombo. I turn rough ideas into products
+            people pay for, then go on stage and explain how.
+          </p>
+          <div className="mt-[clamp(14px,3.4svh,36px)] flex flex-wrap gap-3">
+            <Button to="/projects" size="lg" className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6">
+              <span className="sm:hidden">See my work</span>
+              <span className="hidden sm:inline">See selected work</span>
+            </Button>
+            <Button
+              href={myResume}
+              download="Saad_Mazhar_Resume.pdf"
+              variant="secondary"
+              size="lg"
+              icon={false}
+              className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6"
+            >
+              <span className="sm:hidden">Résumé</span>
+              <span className="hidden sm:inline">Download résumé</span>
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="relative border-t border-line">
-        <div className="wrap grid grid-cols-2 gap-y-8 py-10 md:grid-cols-4">
+
+      <div className="relative shrink-0 border-t border-line bg-base/60 backdrop-blur-sm">
+        <dl className="wrap grid grid-cols-4 gap-x-3 py-[clamp(12px,3svh,36px)] sm:gap-x-6">
           {stats.map((s) => (
-            <Stat key={s.label} value={s.value} label={s.label} />
+            <div key={s.label} className="flex flex-col-reverse gap-[clamp(4px,1svh,10px)]">
+              <dt className="label text-fg-3">
+                <span className="sm:hidden">{s.short}</span>
+                <span className="hidden sm:inline">{s.label}</span>
+              </dt>
+              <dd className="text-[clamp(1.375rem,min(6.4vw,5.2svh),4rem)] font-medium leading-none tracking-[-0.035em]">
+                {s.value}
+              </dd>
+            </div>
           ))}
-        </div>
+        </dl>
       </div>
     </section>
   );
@@ -337,19 +357,7 @@ function ContactCTA() {
             </Button>
           </div>
         </div>
-        <div className="mt-12 flex flex-wrap gap-8 font-mono text-meta text-fg-2">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-fg"
-            >
-              {s.label} ↗
-            </a>
-          ))}
-        </div>
+        <SocialLinks className="mt-12" />
       </Reveal>
     </section>
   );

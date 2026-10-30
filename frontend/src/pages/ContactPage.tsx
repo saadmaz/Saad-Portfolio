@@ -4,7 +4,8 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Field, FilterPill } from "@/components/ui";
 import { useContactMutation } from "@/hooks/useContent";
-import { CONTACT, SOCIALS } from "@/lib/site";
+import { CONTACT } from "@/lib/site";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const INTERESTS = ["Product build", "AI integration", "Speaking", "Hosting", "Something else"];
@@ -68,22 +69,7 @@ const ContactPage = () => {
                   </a>,
                 ],
                 ["Based in", CONTACT.location],
-                [
-                  "Elsewhere",
-                  <span key="s" className="flex flex-wrap gap-x-5 gap-y-1">
-                    {SOCIALS.map((s) => (
-                      <a
-                        key={s.label}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-accent"
-                      >
-                        {s.label} ↗
-                      </a>
-                    ))}
-                  </span>,
-                ],
+                ["Elsewhere", <SocialLinks key="s" size="sm" />],
               ].map(([k, v]) => (
                 <div
                   key={k as string}
