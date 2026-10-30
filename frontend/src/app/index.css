@@ -123,6 +123,10 @@
     transform: none;
     transition: none;
   }
+  /* Infinite loops would just flicker at the near-zero duration below. */
+  .animate-marquee {
+    animation: none !important;
+  }
   *,
   *::before,
   *::after {

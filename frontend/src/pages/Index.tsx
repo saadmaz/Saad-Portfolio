@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectCard, Row } from "@/components/cards";
+import { SkillsShowcase } from "@/components/SkillsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
 import { useCertificates, useEvents, useExperience, useSkills, useTestimonials } from "@/hooks/useContent";
@@ -256,7 +257,7 @@ function Speaking() {
 function Capabilities() {
   const { data: skills = [] } = useSkills();
   const { data: certs = [] } = useCertificates();
-  const groups = skills.slice(0, 4);
+  const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
   return (
     <section className="section" aria-labelledby="capabilities-heading">
@@ -264,18 +265,7 @@ function Capabilities() {
         <Reveal>
           <SectionHeader index="05" label="Capabilities" title="What I" soft="bring" />
         </Reveal>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4 md:gap-6">
-          {groups.map((g) => (
-            <div key={g.category} className="flex flex-col gap-4 border-t border-line-3 pt-6">
-              <h3 className="text-h4 font-medium md:text-h3">{g.category}</h3>
-              <ul className="flex flex-col gap-3 text-sm text-fg-2 md:text-[1rem]">
-                {g.skills.slice(0, 4).map((s) => (
-                  <li key={s.name}>{s.name}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <SkillsShowcase groups={groups} />
         {certs.length > 0 && (
           <div className="mt-16 flex flex-col gap-5 rounded-media border border-line bg-surface p-6 md:flex-row md:items-center md:justify-between md:px-8">
             <div>

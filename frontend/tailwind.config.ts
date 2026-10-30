@@ -44,6 +44,19 @@ export default {
       maxWidth: { wrap: "1200px", prose: "680px" },
       borderRadius: { card: "16px", media: "20px" },
       transitionTimingFunction: { out: "cubic-bezier(0.16, 1, 0.3, 1)" },
+      keyframes: {
+        rise: {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "none" },
+        },
+        "fill-x": { from: { transform: "scaleX(0)" }, to: { transform: "scaleX(1)" } },
+        marquee: { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
+      },
+      animation: {
+        rise: "rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fill-x": "fill-x 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        marquee: "marquee 48s linear infinite",
+      },
     },
   },
   plugins: [],
