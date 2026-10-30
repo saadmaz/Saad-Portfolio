@@ -29,7 +29,7 @@ export const PERSON_SCHEMA = {
     "https://linkedin.com/in/saadmaz/",
     "https://github.com/saadmaz/",
     "https://instagram.com/saaadmaz/",
-    "https://facebook.com/saadmazhar",
+    "https://facebook.com/saadmazhar03",
     "https://x.com/SaadMazhar_",
   ],
   jobTitle: "Startup Founder & Full-Stack Developer",

@@ -1,11 +1,10 @@
 import { useMemo } from "react";
-import { ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectCard, Row } from "@/components/cards";
 import { SkillsShowcase } from "@/components/SkillsShowcase";
+import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
 import { useCertificates, useEvents, useExperience, useSkills, useTestimonials } from "@/hooks/useContent";
@@ -15,7 +14,6 @@ import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, PERSON_SCHEMA, BASE_URL } from "@/lib/seo-content";
 import portrait from "@/assets/profile-photo.webp";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 function Hero({
   projects,
@@ -70,22 +68,12 @@ function Hero({
               Founder, full-stack engineer and tech speaker from Colombo. I turn rough ideas into products
               people pay for, then go on stage and explain how.
             </p>
-            <div className="mt-[clamp(14px,3.4svh,36px)] flex flex-wrap gap-3">
+            <div className="mt-[clamp(14px,3.4svh,36px)] flex flex-wrap items-center gap-x-5 gap-y-3">
               <Button to="/projects" size="lg" className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6">
                 <span className="sm:hidden">See my work</span>
                 <span className="hidden sm:inline">See selected work</span>
               </Button>
-              <Button
-                href={myResume}
-                download="Saad_Mazhar_Resume.pdf"
-                variant="secondary"
-                size="lg"
-                icon={false}
-                className="h-[clamp(44px,6svh,52px)] px-5 sm:px-6"
-              >
-                <span className="sm:hidden">Résumé</span>
-                <span className="hidden sm:inline">Download résumé</span>
-              </Button>
+              <SocialLinks size="sm" className="gap-2" />
             </div>
           </div>
         </div>
@@ -94,7 +82,10 @@ function Hero({
       <div className="relative shrink-0 border-t border-line bg-base/60 backdrop-blur-sm">
         <dl className="wrap grid grid-cols-4 gap-x-3 py-[clamp(12px,3svh,36px)] sm:gap-x-6">
           {stats.map((s) => (
-            <div key={s.label} className="flex flex-col-reverse gap-[clamp(4px,1svh,10px)]">
+            <div
+              key={s.label}
+              className="flex flex-col-reverse items-center gap-[clamp(4px,1svh,10px)] text-center"
+            >
               <dt className="label text-fg-3">
                 <span className="sm:hidden">{s.short}</span>
                 <span className="hidden sm:inline">{s.label}</span>
@@ -258,41 +249,47 @@ function Speaking() {
 
 function Capabilities() {
   const { data: skills = [] } = useSkills();
-  const { data: certs = [] } = useCertificates();
   const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
-  const issuers = [...new Set(certs.map((c) => c.issuer).filter(Boolean))];
   return (
     <section
-      className="flex min-h-[100svh] flex-col justify-center border-t border-line py-[clamp(48px,9svh,112px)]"
+      className="flex min-h-[100svh] flex-col justify-center overflow-hidden border-t border-line py-[clamp(48px,9svh,112px)]"
       aria-labelledby="capabilities-heading"
     >
       <div className="wrap">
-        <Reveal className="mb-[clamp(24px,5svh,56px)] flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex flex-col gap-[clamp(16px,3svh,28px)]">
-            <Eyebrow index="05">Capabilities</Eyebrow>
-            <h2 id="capabilities-heading" className="text-display-m font-medium">
-              What I <span className="soft">bring</span> to a team
-            </h2>
-          </div>
-          {certs.length > 0 && (
-            <Link
-              to="/certifications"
-              className="group flex items-center gap-4 self-start rounded-full border border-line-2 py-2 pl-5 pr-2 transition-colors duration-200 hover:border-line-3 hover:bg-surface lg:self-auto"
-            >
-              <span className="flex flex-col">
-                <span className="text-sm font-medium">
-                  {certs.length} <span className="font-light text-fg-2">certifications</span>
-                </span>
-                <span className="font-mono text-[12px] text-fg-3">{issuers.slice(0, 3).join(" · ")}</span>
-              </span>
-              <span className="flex size-9 items-center justify-center rounded-full bg-surface-2 text-fg-2 transition-colors duration-200 group-hover:bg-accent group-hover:text-fg-inverse">
-                <ArrowUpRight className="size-4" aria-hidden />
-              </span>
-            </Link>
-          )}
+        <Reveal className="mb-[clamp(20px,4svh,48px)] flex flex-col gap-[clamp(16px,3svh,28px)]">
+          <Eyebrow index="05">Capabilities</Eyebrow>
+          <h2 id="capabilities-heading" className="text-display-m font-medium">
+            What I <span className="soft">bring</span> to a team
+          </h2>
         </Reveal>
         <SkillsShowcase groups={groups} />
+      </div>
+    </section>
+  );
+}
+
+function Certifications() {
+  const { data: certs = [] } = useCertificates();
+  if (certs.length === 0) return null;
+  return (
+    <section
+      className="flex min-h-[100svh] flex-col justify-center border-t border-line py-[clamp(48px,9svh,112px)]"
+      aria-labelledby="certifications-heading"
+    >
+      <div className="wrap">
+        <Reveal className="mb-[clamp(20px,4svh,48px)] flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-[clamp(16px,3svh,28px)]">
+            <Eyebrow index="06">Credentials</Eyebrow>
+            <h2 id="certifications-heading" className="text-display-m font-medium">
+              {certs.length} <span className="soft">certifications</span>
+            </h2>
+          </div>
+          <Button to="/certifications" variant="secondary" className="self-start md:self-auto">
+            View all credentials
+          </Button>
+        </Reveal>
+        <CertificationsShowcase certs={certs} />
       </div>
     </section>
   );
@@ -307,7 +304,7 @@ function Writing() {
       <div className="wrap">
         <Reveal>
           <SectionHeader
-            index="06"
+            index="07"
             label="Writing"
             title="Notes from"
             soft="the build"
@@ -342,7 +339,7 @@ function ContactCTA() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_106_61/0.18),transparent_70%)]"
       />
       <Reveal className="wrap relative">
-        <Eyebrow index="07">Contact</Eyebrow>
+        <Eyebrow index="08">Contact</Eyebrow>
         <h2 className="mt-12 text-display-xl font-medium">
           Let’s build
           <br />
@@ -385,6 +382,7 @@ const Index = () => {
       <ExperienceList />
       <Speaking />
       <Capabilities />
+      <Certifications />
       <Writing />
       <ContactCTA />
     </Layout>
