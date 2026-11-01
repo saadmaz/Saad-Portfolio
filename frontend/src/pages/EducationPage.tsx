@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Globe } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Empty, PageHeader, Reveal, SectionHeader, Skeleton, Tag } from "@/components/ui";
@@ -64,9 +64,15 @@ function parseRoles(text = "") {
 
 /** School crests are mostly drawn for white paper, so they sit on a light tile. */
 function LogoTile({ src, label }: { src?: string; label: string }) {
-  if (!src) return <Mark label={label} className="size-14 rounded-2xl text-[13px]" />;
+  const size = "size-[72px] rounded-[18px] md:size-28 md:rounded-[26px]";
+  if (!src) return <Mark label={label} className={cn(size, "text-base md:text-xl")} />;
   return (
-    <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#F4F4F1] p-1.5 shadow-[0_8px_24px_-8px_rgb(0_0_0/0.6)] ring-1 ring-white/10">
+    <span
+      className={cn(
+        size,
+        "flex shrink-0 items-center justify-center bg-[#F4F4F1] p-2 shadow-[0_16px_40px_-12px_rgb(0_0_0/0.7)] ring-1 ring-white/10 md:p-3",
+      )}
+    >
       <img src={src} alt="" className="size-full object-contain" loading="lazy" />
     </span>
   );
@@ -81,7 +87,7 @@ function Block({ label, children, className }: { label: string; children: ReactN
   );
 }
 
-function Entry({ edu: e, last }: { edu: Education; last: boolean }) {
+function Entry({ edu: e }: { edu: Education }) {
   const school = e.school_name ?? e.institution ?? "";
   const program = [e.degree, e.field_of_study ?? e.fieldOfStudy].filter(Boolean).join(" in ");
   const current = e.is_current ?? e.isCurrent;
@@ -94,17 +100,41 @@ function Entry({ edu: e, last }: { edu: Education; last: boolean }) {
   const skills = e.skills ?? [];
 
   return (
-    <article className="relative grid gap-6 py-12 md:grid-cols-[260px_minmax(0,1fr)] md:gap-10 md:py-16">
-      {/* Rail: logo node with period and status beside it; the line runs from this node to the next. */}
-      <div className="relative flex items-start gap-4">
-        {!last && (
-          <span
+    <article
+      className={cn(
+        "relative grid gap-7 overflow-hidden rounded-media border bg-surface/50 p-5 sm:p-7 md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:p-10",
+        current ? "border-accent/30" : "border-line",
+      )}
+    >
+      {current && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_100%_0%,rgb(255_106_61/0.08),transparent_70%)]"
+        />
+      )}
+
+      {/* Website: a real button pinned to the card's top-right corner (icon-only on phones). */}
+      {e.school_website_url && (
+        <a
+          href={e.school_website_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${school} website (opens in a new tab)`}
+          className="group absolute right-5 top-5 z-10 inline-flex size-10 items-center justify-center gap-2 rounded-full border border-line-3 bg-base/40 text-sm font-medium text-fg backdrop-blur transition-colors hover:border-fg/40 hover:bg-surface-2 sm:right-7 sm:top-7 md:right-10 md:top-10 md:h-10 md:w-auto md:px-4"
+        >
+          <Globe aria-hidden className="size-4 md:size-3.5" />
+          <span className="hidden md:inline">Website</span>
+          <ArrowUpRight
             aria-hidden
-            className="absolute -bottom-16 left-7 top-[68px] hidden w-px bg-gradient-to-b from-line-3 to-line md:block"
+            className="hidden size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:block"
           />
-        )}
+        </a>
+      )}
+
+      {/* Rail: crest with period and status (beside it on phones, beneath it on desktop). */}
+      <div className="relative flex items-center gap-4 pr-12 md:flex-col md:items-start md:gap-5 md:pr-0">
         <LogoTile src={e.school_logo ?? e.logo} label={school} />
-        <div className="flex flex-col gap-2 pt-2">
+        <div className="flex flex-col gap-2">
           {period && <span className="font-mono text-meta text-fg-2">{period}</span>}
           {current && (
             <span className="flex items-center gap-2 font-mono text-meta text-live">
@@ -115,29 +145,15 @@ function Entry({ edu: e, last }: { edu: Education; last: boolean }) {
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-col gap-8">
-        <header className="flex flex-col gap-3">
+      <div className="relative flex min-w-0 flex-col gap-8">
+        <header className="flex flex-col gap-3 md:pr-36">
           <h2 className="text-h3 font-medium leading-tight md:text-[1.875rem]">{program || school}</h2>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-fg-2">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-fg-2">
             {program && <span>{school}</span>}
             {e.show_grade_publicly && e.grade && (
               <span className="rounded-full border border-accent/30 bg-accent/[0.08] px-2.5 py-1 font-mono text-meta text-accent">
                 {e.grade}
               </span>
-            )}
-            {e.school_website_url && (
-              <a
-                href={e.school_website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1 text-sm text-fg-3 transition-colors hover:text-fg"
-              >
-                Website
-                <ArrowUpRight
-                  aria-hidden
-                  className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                />
-              </a>
             )}
           </div>
         </header>
@@ -245,8 +261,6 @@ const EducationPage = () => {
       (a, b) =>
         (a.display_order ?? 99) - (b.display_order ?? 99) || (b.start_year ?? 0) - (a.start_year ?? 0),
     );
-  const firstYear = Math.min(...education.map((e) => e.start_year ?? Infinity));
-
   return (
     <Layout>
       <SEO
@@ -256,36 +270,21 @@ const EducationPage = () => {
       />
       <PageHeader
         label="Education"
-        title="Where I"
-        soft="learned"
-        aside={
-          education.length > 0 && (
-            <dl className="flex gap-10 md:gap-14">
-              <div className="flex flex-col-reverse gap-2">
-                <dt className="label text-fg-3">Institutions</dt>
-                <dd className="text-h2 font-medium">{education.length}</dd>
-              </div>
-              {Number.isFinite(firstYear) && (
-                <div className="flex flex-col-reverse gap-2">
-                  <dt className="label text-fg-3">Learning since</dt>
-                  <dd className="text-h2 font-medium">{firstYear}</dd>
-                </div>
-              )}
-            </dl>
-          )
-        }
+        title="Classrooms"
+        soft="behind the work"
+        intro="Thirteen years at Isipathana, an IT diploma on the side, and a Computer Science degree in progress. The places that taught me how to think, build and lead."
       />
 
       <section className="wrap pb-24 md:pb-32">
         {isLoading ? (
-          <Skeleton className="h-64 w-full rounded-card" />
+          <Skeleton className="h-64 w-full rounded-media" />
         ) : education.length === 0 ? (
           <Empty>Education details will appear here soon.</Empty>
         ) : (
-          <div className="divide-y divide-line border-y border-line md:divide-y-0 md:border-y-0">
-            {education.map((e, i) => (
+          <div className="flex flex-col gap-4 md:gap-6">
+            {education.map((e) => (
               <Reveal key={e.id}>
-                <Entry edu={e} last={i === education.length - 1} />
+                <Entry edu={e} />
               </Reveal>
             ))}
           </div>
