@@ -21,14 +21,19 @@ function toDate(value: string | undefined | null): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+/** A bare "2021" is a year-only date; don't dress it up as "Jan 2021". */
+const YEAR_ONLY = /^\d{4}$/;
+
 /** "Mar 2026" */
 export function monthYear(value: string | undefined | null): string {
+  if (value && YEAR_ONLY.test(value)) return value;
   const d = toDate(value);
   return d ? d.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : (value ?? "");
 }
 
 /** "14 March 2026" */
 export function fullDate(value: string | undefined | null): string {
+  if (value && YEAR_ONLY.test(value)) return value;
   const d = toDate(value);
   return d
     ? d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })

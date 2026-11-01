@@ -46,6 +46,11 @@ function Split({
   );
 }
 
+/** Date strings here are "YYYY", "YYYY-MM" or ISO, so they sort as text. */
+function newestFirst<T>(items: T[], date: (item: T) => string | undefined) {
+  return [...items].sort((a, b) => (date(b) ?? "").localeCompare(date(a) ?? ""));
+}
+
 const AboutPage = () => {
   const { data: education = [] } = useEducation();
   const { data: awards = [] } = useAwards();
@@ -116,7 +121,7 @@ const AboutPage = () => {
 
       {awards.length > 0 && (
         <Split id="awards" index={idx()} label="Awards" title="Recognition" soft="& honours">
-          {awards.map((a) => (
+          {newestFirst(awards, (a) => a.date).map((a) => (
             <Row key={a.id} href={a.link} title={a.title} sub={a.issuer} trail={year(a.date)} />
           ))}
         </Split>
@@ -138,7 +143,7 @@ const AboutPage = () => {
 
       {volunteer.length > 0 && (
         <Split id="volunteer" index={idx()} label="Volunteer" title="Giving" soft="back">
-          {volunteer.map((v) => (
+          {newestFirst(volunteer, (v) => v.startDate).map((v) => (
             <Row
               key={v.id}
               href={v.link}
