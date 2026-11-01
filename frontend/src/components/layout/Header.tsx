@@ -377,7 +377,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(NAV_MENUS[0].label);
   return (
     <div className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-base pt-[72px] lg:hidden">
-      <nav aria-label="Mobile" className="px-5">
+      <nav aria-label="Mobile" className="gutter">
         {NAV_MENUS.map((menu, i) => {
           const isOpen = expanded === menu.label;
           return (
@@ -433,7 +433,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
           </span>
         </Link>
       </nav>
-      <div className="mt-auto flex flex-col gap-5 px-5 pb-8 pt-10">
+      <div className="gutter mt-auto flex flex-col gap-5 pb-8 pt-10">
         <Button to="/contact" size="lg" className="w-full">
           Let’s talk
         </Button>
@@ -458,7 +458,7 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-3 lg:pt-4">
+      <header className="gutter fixed inset-x-0 top-0 z-50 flex justify-center pt-3 lg:pt-4">
         <div
           className={cn(
             "flex w-full items-center justify-between transition-all duration-300 ease-out",

@@ -45,11 +45,26 @@ export function FilterPill({
   );
 }
 
-/** Section label: optional mono index in accent, a hairline, then the label. */
-export function Eyebrow({ index, children }: { index?: string; children: ReactNode }) {
+/**
+ * Section label: optional mono index in accent, a hairline, then the label.
+ * `counted` numbers it automatically inside a `.counted` container.
+ */
+export function Eyebrow({
+  index,
+  counted,
+  children,
+}: {
+  index?: string;
+  counted?: boolean;
+  children: ReactNode;
+}) {
   return (
     <div className="flex items-center gap-3.5">
-      {index && <span className="label text-accent">{index}</span>}
+      {counted ? (
+        <span className="label eyebrow-count text-accent" />
+      ) : (
+        index && <span className="label text-accent">{index}</span>
+      )}
       <span aria-hidden className="h-px w-8 bg-line-3" />
       <span className="label text-fg-2">{children}</span>
     </div>
@@ -175,23 +190,30 @@ export function PageHeader({
 
 /** Section heading with label, two-tone title and an optional link on the right. */
 export function SectionHeader({
+  id,
   index,
+  counted,
   label,
   title,
   soft,
   action,
 }: {
+  /** Heading id, for the section's aria-labelledby. */
+  id?: string;
   index?: string;
+  counted?: boolean;
   label: string;
   title: string;
   soft?: string;
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-14 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between">
-      <div className="flex flex-col gap-7">
-        <Eyebrow index={index}>{label}</Eyebrow>
-        <h2 className="text-display-m font-medium">
+    <div className="mb-12 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-6 md:gap-7">
+        <Eyebrow index={index} counted={counted}>
+          {label}
+        </Eyebrow>
+        <h2 id={id} className="text-display-m font-medium">
           {title} {soft && <span className="soft">{soft}</span>}
         </h2>
       </div>

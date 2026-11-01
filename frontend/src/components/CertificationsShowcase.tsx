@@ -107,7 +107,7 @@ export function CertificationsShowcase({ certs }: { certs: Certificate[] }) {
             >
               <Link
                 to={`/certifications/${c.id}`}
-                className="flex items-center gap-4 rounded-xl px-3 py-[clamp(10px,1.8svh,14px)] pr-14 transition-colors sm:pr-28 duration-200 hover:bg-surface-2 md:px-4"
+                className="flex items-center gap-4 rounded-xl px-3 py-[clamp(10px,1.8svh,14px)] pr-16 transition-colors duration-200 hover:bg-surface-2 sm:pr-32 md:px-4 md:pr-36"
               >
                 <Mark src={c.issuer_logo} label={c.issuer || c.title} />
                 <span className="min-w-0">

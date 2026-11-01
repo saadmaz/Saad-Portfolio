@@ -44,8 +44,22 @@
 }
 
 @layer components {
+  /* One gutter scale for the whole site (header included); content caps at 1200px. */
+  .gutter {
+    @apply px-5 sm:px-8 lg:px-12;
+  }
   .wrap {
-    @apply mx-auto w-full max-w-wrap px-5 md:px-8 xl:px-0;
+    @apply gutter mx-auto w-full max-w-[calc(theme(maxWidth.wrap)+theme(spacing.24))];
+  }
+  /* Section numbers that stay in sequence when an empty section is skipped. */
+  .counted {
+    counter-reset: section;
+  }
+  .eyebrow-count {
+    counter-increment: section;
+  }
+  .eyebrow-count::before {
+    content: counter(section, decimal-leading-zero);
   }
   .section {
     @apply border-t border-line py-24 md:py-32;

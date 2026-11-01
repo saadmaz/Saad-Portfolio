@@ -118,7 +118,7 @@ export function Row({
 }) {
   const body = (
     <>
-      {lead && <span className="font-mono text-meta text-fg-3 md:w-[200px] md:shrink-0">{lead}</span>}
+      {lead && <span className="font-mono text-meta text-fg-3 md:w-[160px] md:shrink-0">{lead}</span>}
       <div className="flex min-w-0 flex-1 items-center gap-4">
         {mark}
         <div className="min-w-0">
@@ -129,15 +129,17 @@ export function Row({
         </div>
       </div>
       {(trail || to || href) && (
-        <div className="flex items-center gap-6 md:gap-8">
-          {trail && <span className="font-mono text-meta text-fg-3">{trail}</span>}
-          {(to || href) && arrow}
+        <div className="flex items-center justify-between gap-6 md:shrink-0 md:justify-end md:gap-8">
+          {trail && (
+            <span className="font-mono text-meta text-fg-3 md:min-w-[128px] md:text-right">{trail}</span>
+          )}
+          {(to || href) && <span className="ml-auto md:ml-0">{arrow}</span>}
         </div>
       )}
     </>
   );
   const cls =
-    "group flex flex-col gap-3 border-t border-line-2 py-6 md:flex-row md:items-center md:gap-0 md:py-8";
+    "group flex flex-col gap-3 border-t border-line-2 py-6 md:flex-row md:items-center md:gap-10 md:py-8";
   if (to)
     return (
       <Link to={to} className={cls}>

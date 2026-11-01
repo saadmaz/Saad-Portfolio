@@ -103,16 +103,16 @@ function Hero({
 
 function Statement() {
   return (
-    <section className="section">
+    <section className="section" aria-label="About">
       <Reveal className="wrap">
-        <Eyebrow index="01">About</Eyebrow>
-        <p className="mt-12 text-h1 font-medium text-fg-3">
+        <Eyebrow counted>About</Eyebrow>
+        <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
           <span className="text-fg">I’m Saad, a founder who still writes the code.</span> Five years, two
           startups and twenty-odd products in,{" "}
           <span className="font-light text-fg">I care about one thing:</span> shipping work that feels
           considered, fast and honest.
         </p>
-        <div className="mt-12">
+        <div className="mt-10 md:mt-12">
           <Button to="/about" variant="secondary">
             More about me
           </Button>
@@ -133,7 +133,8 @@ function SelectedWork() {
       <div className="wrap">
         <Reveal>
           <SectionHeader
-            index="02"
+            counted
+            id="work-heading"
             label="Selected work"
             title="Things I’ve"
             soft="built"
@@ -189,7 +190,8 @@ function ExperienceList() {
       <div className="wrap">
         <Reveal>
           <SectionHeader
-            index="03"
+            counted
+            id="experience-heading"
             label="Experience"
             title="Where I’ve"
             soft="worked"
@@ -226,7 +228,8 @@ function Speaking() {
       <div className="wrap">
         <Reveal>
           <SectionHeader
-            index="04"
+            counted
+            id="speaking-heading"
             label="Speaking & hosting"
             title="On stage,"
             soft="behind the mic"
@@ -237,7 +240,7 @@ function Speaking() {
             }
           />
         </Reveal>
-        <div className="-mx-5 flex snap-x gap-4 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0">
+        <div className="-mx-5 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:scroll-px-8 sm:px-8 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0">
           {events.map((e) => (
             <EventCard key={e.id} event={e} className="w-[78%] shrink-0 snap-start md:w-auto" />
           ))}
@@ -252,13 +255,10 @@ function Capabilities() {
   const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
   return (
-    <section
-      className="flex min-h-[100svh] flex-col justify-center overflow-hidden border-t border-line py-[clamp(48px,9svh,112px)]"
-      aria-labelledby="capabilities-heading"
-    >
+    <section className="section overflow-hidden" aria-labelledby="capabilities-heading">
       <div className="wrap">
-        <Reveal className="mb-[clamp(20px,4svh,48px)] flex flex-col gap-[clamp(16px,3svh,28px)]">
-          <Eyebrow index="05">Capabilities</Eyebrow>
+        <Reveal className="mb-12 flex flex-col gap-6 md:mb-16 md:gap-7">
+          <Eyebrow counted>Capabilities</Eyebrow>
           <h2 id="capabilities-heading" className="text-display-m font-medium">
             What I <span className="soft">bring</span> to a team
           </h2>
@@ -273,21 +273,21 @@ function Certifications() {
   const { data: certs = [] } = useCertificates();
   if (certs.length === 0) return null;
   return (
-    <section
-      className="flex min-h-[100svh] flex-col justify-center border-t border-line py-[clamp(48px,9svh,112px)]"
-      aria-labelledby="certifications-heading"
-    >
+    <section className="section" aria-labelledby="certifications-heading">
       <div className="wrap">
-        <Reveal className="mb-[clamp(20px,4svh,48px)] flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-[clamp(16px,3svh,28px)]">
-            <Eyebrow index="06">Credentials</Eyebrow>
-            <h2 id="certifications-heading" className="text-display-m font-medium">
-              {certs.length} <span className="soft">certifications</span>
-            </h2>
-          </div>
-          <Button to="/certifications" variant="secondary" className="self-start md:self-auto">
-            View all credentials
-          </Button>
+        <Reveal>
+          <SectionHeader
+            id="certifications-heading"
+            counted
+            label="Credentials"
+            title={`${certs.length}`}
+            soft="certifications"
+            action={
+              <Button to="/certifications" variant="secondary">
+                View all credentials
+              </Button>
+            }
+          />
         </Reveal>
         <CertificationsShowcase certs={certs} />
       </div>
@@ -304,7 +304,8 @@ function Writing() {
       <div className="wrap">
         <Reveal>
           <SectionHeader
-            index="07"
+            counted
+            id="writing-heading"
             label="Writing"
             title="Notes from"
             soft="the build"
@@ -333,14 +334,14 @@ function Writing() {
 
 function ContactCTA() {
   return (
-    <section className="section relative overflow-hidden py-32 md:py-48">
+    <section className="section relative overflow-hidden md:py-44" aria-labelledby="contact-heading">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_106_61/0.18),transparent_70%)]"
       />
       <Reveal className="wrap relative">
-        <Eyebrow index="08">Contact</Eyebrow>
-        <h2 className="mt-12 text-display-xl font-medium">
+        <Eyebrow counted>Contact</Eyebrow>
+        <h2 id="contact-heading" className="mt-8 text-display-xl font-medium md:mt-10">
           Let’s build
           <br />
           <span className="soft">something good.</span>
@@ -377,14 +378,17 @@ const Index = () => {
         structuredData={PERSON_SCHEMA}
       />
       <Hero projects={projects?.length} events={events?.length} certificates={certs?.length} />
-      <Statement />
-      <SelectedWork />
-      <ExperienceList />
-      <Speaking />
-      <Capabilities />
-      <Certifications />
-      <Writing />
-      <ContactCTA />
+      {/* Sections hide when their data is empty; the counter keeps the numbering gapless. */}
+      <div className="counted">
+        <Statement />
+        <SelectedWork />
+        <ExperienceList />
+        <Speaking />
+        <Capabilities />
+        <Certifications />
+        <Writing />
+        <ContactCTA />
+      </div>
     </Layout>
   );
 };

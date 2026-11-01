@@ -106,7 +106,7 @@ export function SkillsShowcase({ groups }: { groups: SkillSet[] }) {
       <div
         role="group"
         aria-label="Highlight a discipline"
-        className="-mx-5 mb-[clamp(14px,2.6svh,24px)] flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] md:-mx-8 md:px-8 lg:mx-0 lg:flex-wrap lg:px-0"
+        className="-mx-5 mb-[clamp(14px,2.6svh,24px)] flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:-mx-8 sm:px-8 lg:mx-0 lg:flex-wrap lg:px-0"
       >
         {tabs.map(({ category, count }) => {
           const active = focus === category;
