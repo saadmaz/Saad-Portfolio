@@ -459,12 +459,17 @@ export function Header() {
   return (
     <>
       <header className="gutter fixed inset-x-0 top-0 z-50 flex justify-center pt-3 lg:pt-4">
+        {/*
+          Shape and inner padding stay the same in both states; only width, spacing and
+          the surface fade. At the top the pill is invisible and pulled out by its own
+          padding plus border (-ml-[13px]/-mr-[9px]) so the logo and button sit on the page gutter.
+        */}
         <div
           className={cn(
-            "flex w-full items-center justify-between transition-all duration-300 ease-out",
+            "flex items-center justify-between rounded-full border pl-3 pr-2 transition-[width,max-width,margin,padding,background-color,border-color,box-shadow] duration-300 ease-out",
             scrolled && !mobileOpen
-              ? "max-w-[920px] rounded-full border border-line-2 bg-surface/75 py-2 pl-3 pr-2 shadow-[0_12px_40px_-8px_rgb(0_0_0/0.4)] backdrop-blur-xl"
-              : "max-w-wrap py-3 lg:py-4",
+              ? "mx-0 w-full max-w-[920px] border-line-2 bg-surface/75 py-2 shadow-[0_12px_40px_-8px_rgb(0_0_0/0.4)] backdrop-blur-xl"
+              : "-ml-[13px] -mr-[9px] w-[calc(100%+22px)] max-w-[calc(theme(maxWidth.wrap)+22px)] border-transparent bg-transparent py-3 shadow-none lg:py-4",
           )}
         >
           <Wordmark />
