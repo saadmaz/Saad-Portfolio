@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
 import { Row } from "@/components/cards";
+import { CmsContent } from "@/components/CmsContent";
 import { useBlogPost, useBlogPosts } from "@/hooks/useBlog";
 import { fullDate, monthYear, readingTime } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
@@ -72,7 +73,7 @@ const BlogDetailPage = () => {
       )}
 
       <article className="mx-auto max-w-prose px-5 py-20 md:py-24">
-        <div className="prose-cms" dangerouslySetInnerHTML={{ __html: post.content ?? "" }} />
+        <CmsContent className="prose-cms" html={post.content ?? ""} />
         {(post.tags?.length || post.ctaUrl) && (
           <div className="mt-16 flex flex-col gap-6 border-t border-line-2 pt-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">

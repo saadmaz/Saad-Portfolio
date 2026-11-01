@@ -127,6 +127,16 @@
 .prose-cms pre {
   @apply overflow-x-auto rounded-card border border-line bg-surface p-5 font-mono text-meta;
 }
+/* Copyable prompt from the admin editor; <CmsContent> adds the .prompt-bar. */
+.prose-cms [data-prompt] {
+  @apply overflow-hidden rounded-card border border-accent/25 bg-surface shadow-[0_0_0_4px_rgb(255_106_61/0.04)];
+}
+.prose-cms .prompt-bar {
+  @apply flex items-center justify-between gap-4 border-b border-line py-2.5 pl-5 pr-2.5;
+}
+.prose-cms [data-prompt] pre {
+  @apply m-0 overflow-visible whitespace-pre-wrap break-words rounded-none border-0 bg-transparent text-[0.9375rem] leading-relaxed text-fg;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
