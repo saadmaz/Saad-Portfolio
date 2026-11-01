@@ -17,8 +17,6 @@ import {
   Minus,
   PenLine,
   Plus,
-  Star,
-  Trophy,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -69,8 +67,6 @@ const ITEM_ICONS: Record<string, LucideIcon> = {
   Education: GraduationCap,
   "Events & Hosting": Mic,
   Volunteer: Heart,
-  "Extra-Curricular": Star,
-  Sports: Trophy,
   Languages: Globe,
   Awards: Award,
   "Work Experience": Briefcase,

@@ -38,8 +38,6 @@ export const NAV_MENUS: NavMenu[] = [
       { title: "Education", href: "/education", description: "Academic background" },
       { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" },
       { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" },
-      { title: "Extra-Curricular", href: "/about#extracurricular", description: "Activities and interests" },
-      { title: "Sports", href: "/about#extracurricular", description: "Athletic pursuits" },
       { title: "Languages", href: "/languages", description: "Communication abilities" },
       { title: "Awards", href: "/about#awards", description: "Recognition and honors" },
     ],
