@@ -157,8 +157,9 @@ export function Row({
 
 /** Initials tile for issuers/companies without a logo. */
 export function Mark({ src, label, className }: { src?: string; label: string; className?: string }) {
-  const initials = label
-    .split(/\s+/)
+  // Skip "of", "and", "(IIT)" etc. so "University of Westminster" reads UW, not UO.
+  const words = label.split(/\s+/).filter((w) => /^[A-Z0-9]/.test(w));
+  const initials = (words.length ? words : label.split(/\s+/))
     .map((w) => w[0])
     .join("")
     .slice(0, 2)
