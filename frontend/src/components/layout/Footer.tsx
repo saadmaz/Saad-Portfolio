@@ -79,19 +79,22 @@ export function Footer() {
           </div>
         </div>
 
-        <p
-          aria-hidden
-          className="mt-16 select-none whitespace-nowrap text-[clamp(3.6rem,15.6vw,13.5rem)] font-medium leading-[0.8] tracking-[-0.06em] text-fg/[0.06] md:mt-24"
-        >
-          Saad Mazhar
-        </p>
+        {/* Sized off the container's width (text is ~5.5em wide), so it always fits and centres. */}
+        <div className="mt-16 [container-type:inline-size] md:mt-24">
+          <p
+            aria-hidden
+            className="select-none whitespace-nowrap text-center text-[calc(100cqi/5.6)] font-medium leading-[0.8] tracking-[-0.06em] text-fg/[0.06]"
+          >
+            Saad Mazhar
+          </p>
+        </div>
 
-        <div className="mt-10 flex flex-col gap-2.5 border-t border-line pt-6 font-mono text-meta text-fg-3 sm:grid sm:grid-cols-3">
+        <div className="mt-10 flex flex-col items-center gap-1.5 border-t border-line pt-6 text-center font-mono text-meta text-fg-3 sm:flex-row sm:justify-center sm:gap-3">
           <span>© {new Date().getFullYear()} Saad Mazhar</span>
-          <span className="sm:text-center">{CONTACT.location}</span>
-          <a href="#top" className="hover:text-fg sm:text-right">
-            Back to top ↑
-          </a>
+          <span aria-hidden className="hidden sm:inline">
+            ·
+          </span>
+          <span>{CONTACT.location}</span>
         </div>
       </div>
     </footer>
