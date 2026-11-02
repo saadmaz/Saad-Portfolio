@@ -61,7 +61,15 @@ function layout(count: number): Tile[] {
   return tiles;
 }
 
-export function Gallery({ images, title }: { images: string[]; title: string }) {
+export function Gallery({
+  images,
+  title,
+  alts,
+}: {
+  images: string[];
+  title: string;
+  /** Per-photo alt text, aligned with `images`. */ alts?: string[];
+}) {
   const [open, setOpen] = useState<number | null>(null);
   const tiles = layout(images.length);
   const single = images.length === 1;
@@ -109,7 +117,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
                 >
                   <Media
                     src={src}
-                    alt={`${title} (${i + 1} of ${images.length})`}
+                    alt={alts?.[i] || `${title} (${i + 1} of ${images.length})`}
                     className={cn(
                       "transition-colors duration-300 group-hover:border-line-3",
                       single ? "aspect-video" : "aspect-[4/3]",
@@ -138,6 +146,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
         <Lightbox
           images={images}
           title={title}
+          alts={alts}
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
@@ -150,12 +159,14 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
 function Lightbox({
   images,
   title,
+  alts,
   index,
   onIndex,
   onClose,
 }: {
   images: string[];
   title: string;
+  alts?: string[];
   index: number;
   onIndex: (i: number) => void;
   onClose: () => void;
@@ -249,7 +260,7 @@ function Lightbox({
         <img
           key={images[index]}
           src={images[index]}
-          alt={`${title} (${index + 1} of ${count})`}
+          alt={alts?.[index] || `${title} (${index + 1} of ${count})`}
           className="max-h-full max-w-full animate-rise select-none rounded-xl object-contain shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] [animation-duration:400ms]"
           draggable={false}
         />

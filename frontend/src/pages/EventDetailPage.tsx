@@ -6,6 +6,7 @@ import { EventCard } from "@/components/cards";
 import { Gallery } from "@/components/Gallery";
 import { useEvents } from "@/hooks/useContent";
 import { fullDate } from "@/lib/format";
+import { eventPhotoAlt } from "@/lib/imageAlt";
 import { BASE_URL } from "@/lib/seo-content";
 import { eventPath, matchesKey } from "@/lib/paths";
 
@@ -27,11 +28,10 @@ const EventDetailPage = () => {
   // Old ID links land on the readable URL.
   if (event.slug && id !== event.slug) return <Navigate to={eventPath(event)} replace />;
 
-  const gallery = (event.images ?? []).filter((src) => src !== event.image);
-  const more = [...data]
-    .reverse()
-    .filter((e) => e.id !== event.id)
-    .slice(0, 3);
+  const cover = event.image || event.images?.[0];
+  const gallery = (event.images ?? []).filter((src) => src !== cover);
+  // data is newest-first.
+  const more = data.filter((e) => e.id !== event.id).slice(0, 3);
   const details = [
     ["Role", event.role],
     ["Date", fullDate(event.date)],
@@ -62,8 +62,8 @@ const EventDetailPage = () => {
       <div className="wrap">
         {/* Capped to the viewport so the photo never fills a laptop screen; crop leans high to keep faces. */}
         <Media
-          src={event.image || event.images?.[0]}
-          alt={event.title}
+          src={cover}
+          alt={cover ? eventPhotoAlt(event, cover) : event.title}
           className="aspect-[4/3] max-h-[70svh] w-full sm:aspect-[2/1] [&_img]:object-[50%_30%]"
           priority
         />
@@ -104,7 +104,13 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      {gallery.length > 0 && <Gallery images={gallery} title={event.title} />}
+      {gallery.length > 0 && (
+        <Gallery
+          images={gallery}
+          title={event.title}
+          alts={gallery.map((src) => eventPhotoAlt(event, src))}
+        />
+      )}
 
       {more.length > 0 && (
         <section className="section">

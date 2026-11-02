@@ -24,6 +24,7 @@ import { readFileSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from "../src/lib/seo-content.js";
+import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import { renderOg, loadPhoto, OG_WIDTH, OG_HEIGHT } from "./og/render.mjs";
 import { ogVersion } from "./og/version.mjs";
 
@@ -71,6 +72,18 @@ const stripHtml = (html) =>
 const keyOf = (item) => item.slug || item.id;
 const list = (items, render) =>
   items.length ? `<ul>\n${items.map((i) => `  <li>${render(i)}</li>`).join("\n")}\n</ul>` : "";
+/** A real <img> in the crawler copy, so image search finds the photo without running JS. */
+const img = (src, alt) =>
+  `<figure><img src="${escape(src)}" alt="${escape(alt)}" loading="lazy" decoding="async" /></figure>`;
+/** schema.org ImageObject with the page owner credited. */
+const imageObject = (src, caption) => ({
+  "@type": "ImageObject",
+  contentUrl: src,
+  url: src,
+  caption,
+  creditText: SITE_NAME,
+});
+
 const paras = (text) =>
   String(text ?? "")
     .split(/\n\s*\n/)
@@ -591,12 +604,16 @@ function prerenderProjects(shell, projects) {
     const description = p.tagline
       ? `${p.tagline}${tech.length ? ` Built with ${tech.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar.`
       : truncate(p.overview || `${p.title} - a software project by Saad Mazhar.`, 160);
+    const shots = (p.screenshots ?? []).filter((src) => src && src !== p.heroImage);
     const bodyHtml = [
+      p.heroImage && img(p.heroImage, p.altText || `${p.title}, a project by ${SITE_NAME}`),
       paras(p.overview),
       paras(p.description),
       paras(p.long_description),
       tech.length && `<p>Built with: ${escape(tech.join(", "))}</p>`,
       p.liveUrl && `<p><a href="${escape(p.liveUrl)}">Live site</a></p>`,
+      shots.length &&
+        `<h2>Screenshots</h2>\n${shots.map((src, i) => img(src, `${p.title} screenshot ${i + 1}`)).join("\n")}`,
       '<p><a href="/projects">All projects</a></p>',
     ]
       .filter(Boolean)
@@ -651,7 +668,7 @@ function prerenderPosts(shell, posts) {
       articleSection: p.category,
     };
     // The full article, not just the excerpt: it's the content worth indexing.
-    const bodyHtml = `<article>\n<p>${escape(joinMeta(p.author, dateLabel(p.date), p.category))}</p>\n${p.content ?? ""}\n</article>\n<p><a href="/blog">All writing</a></p>`;
+    const bodyHtml = `<article>\n<p>${escape(joinMeta(p.author, dateLabel(p.date), p.category))}</p>\n${p.image ? `${img(p.image, p.title)}\n` : ""}${p.content ?? ""}\n</article>\n<p><a href="/blog">All writing</a></p>`;
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -679,6 +696,7 @@ function prerenderEvents(shell, events) {
   for (const e of events) {
     const routePath = `/events/${keyOf(e)}`;
     const cover = e.image || e.images?.[0];
+    const photos = eventPhotos(e);
     const description = truncate(
       e.description || `${e.role ?? "Participant"} at ${e.title}, ${e.organizer}.`,
       160,
@@ -694,12 +712,13 @@ function prerenderEvents(shell, events) {
       location: { "@type": "Place", name: e.location, address: e.location },
       organizer: { "@type": "Organization", name: e.organizer },
       [e.role === "Speaker" ? "performer" : "contributor"]: author,
-      ...(cover ? { image: cover } : {}),
+      ...(photos.length ? { image: photos.map((src) => imageObject(src, eventPhotoAlt(e, src))) } : {}),
     };
     const bodyHtml = [
       `<p>${escape(joinMeta(e.role && `Role: ${e.role}`, dateLabel(e.date), e.location, e.organizer && `Organiser: ${e.organizer}`))}</p>`,
       paras(e.description),
       e.highlights?.length && `<h2>Highlights</h2>\n${list(e.highlights, escape)}`,
+      photos.length && `<h2>Photos</h2>\n${photos.map((src) => img(src, eventPhotoAlt(e, src))).join("\n")}`,
       '<p><a href="/events">All events</a></p>',
     ]
       .filter(Boolean)
@@ -797,8 +816,12 @@ async function renderCards() {
 
 // ── Sitemaps ─────────────────────────────────────────────────────────────
 
-function urlEntry(loc, lastmod, changefreq, priority) {
-  return `  <url>\n    <loc>${escape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+/** `images`: photo URLs on the page, listed for Google Images (image sitemap extension). */
+function urlEntry(loc, lastmod, changefreq, priority, images = []) {
+  const imageTags = [...new Set(images.filter(Boolean))]
+    .map((src) => `\n    <image:image>\n      <image:loc>${escape(src)}</image:loc>\n    </image:image>`)
+    .join("");
+  return `  <url>\n    <loc>${escape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>${imageTags}\n  </url>`;
 }
 
 function toDateString(value) {
@@ -808,7 +831,7 @@ function toDateString(value) {
 }
 
 const buildUrlset = (entries) =>
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entries.join("\n")}\n</urlset>\n`;
 
 /** Always submitted; the rest only once they have content (an empty page isn't worth Google's time). */
 const ALWAYS_INDEXED_ROUTES = ["/", "/about", "/experience", "/skills", "/certifications", "/contact"];
@@ -834,13 +857,18 @@ function writeSitemaps(data) {
     "projects.xml": [
       urlEntry(`${BASE_URL}/projects`, today, "weekly", "0.9"),
       ...data.projects.map((p) =>
-        urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), "monthly", "0.8"),
+        urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), "monthly", "0.8", [
+          p.heroImage,
+          ...(p.screenshots ?? []),
+        ]),
       ),
     ],
     "blog.xml": [
       urlEntry(`${BASE_URL}/blog`, today, "weekly", "0.9"),
       ...data.posts.map((p) =>
-        urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.lastUpdatedAt || p.date), "monthly", "0.8"),
+        urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.lastUpdatedAt || p.date), "monthly", "0.8", [
+          p.image,
+        ]),
       ),
     ],
   };
@@ -848,7 +876,13 @@ function writeSitemaps(data) {
     files["events.xml"] = [
       urlEntry(`${BASE_URL}/events`, today, "weekly", "0.8"),
       ...data.events.map((e) =>
-        urlEntry(`${BASE_URL}/events/${keyOf(e)}`, toDateString(e.updated_at), "yearly", "0.6"),
+        urlEntry(
+          `${BASE_URL}/events/${keyOf(e)}`,
+          toDateString(e.updated_at),
+          "yearly",
+          "0.6",
+          eventPhotos(e),
+        ),
       ),
     ];
   if (data.certificates.length)

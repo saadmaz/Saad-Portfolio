@@ -350,6 +350,8 @@ export interface Event {
   highlights?: string[];
   image?: string;
   images?: string[];
+  /** Optional alt text per photo, aligned with `images` (see lib/imageAlt.js). */
+  imageCaptions?: string[];
   link?: string;
   tags?: string[];
   type: string; // Event category: Conference, Workshop, Summit, etc.

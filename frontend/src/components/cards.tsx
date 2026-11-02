@@ -6,6 +6,7 @@ import { Media, Tag } from "@/components/ui";
 import { monthYear, year } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { eventPath } from "@/lib/paths";
+import { eventPhotoAlt } from "@/lib/imageAlt";
 
 const arrow = (
   <ArrowUpRight
@@ -81,7 +82,7 @@ export function EventCard({ event, className }: { event: Event; className?: stri
     <Link to={eventPath(event)} className={cn("group flex flex-col gap-[18px]", className)}>
       <div className="relative">
         {cover ? (
-          <Media src={cover} alt={event.title} className="aspect-video" />
+          <Media src={cover} alt={eventPhotoAlt(event, cover)} className="aspect-video" />
         ) : (
           // No photo yet: a typographic poster (year + tags) instead of an empty frame.
           <div className="relative flex aspect-video flex-col justify-end gap-2 overflow-hidden rounded-media border border-line bg-surface p-5">
