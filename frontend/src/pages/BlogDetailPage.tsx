@@ -45,7 +45,6 @@ const BlogDetailPage = () => {
         title={post.title}
         description={post.metaDescription || post.excerpt}
         url={url}
-        image={post.image}
         type="article"
         structuredData={schema}
         breadcrumbs={[

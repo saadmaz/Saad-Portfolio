@@ -24,6 +24,7 @@ import { readFileSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from "../src/lib/seo-content.js";
+import { renderOg, loadPhoto, OG_WIDTH, OG_HEIGHT } from "./og/render.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, "..", "dist");
@@ -112,7 +113,12 @@ function pageSchemas(routePath, title) {
  * inside <div id="root">. Function replacers throughout, because CMS text
  * may contain "$&"-style sequences a string replacement would expand.
  */
-function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", image }) {
+/** Social cards queued while pages are written, drawn at the end (see renderCards). */
+const OG_JOBS = [];
+/** "/" → /og/home.png, "/events/48th-big-debate" → /og/events/48th-big-debate.png (matches SEO.tsx). */
+const ogFile = (routePath) => `og/${routePath === "/" ? "home" : routePath.replace(/^\//, "")}.png`;
+
+function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", og }) {
   const canonicalUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
   const fullTitle = `${title} - ${SITE_NAME}`;
   const et = escape(fullTitle);
@@ -134,10 +140,18 @@ function injectContent(shell, { path: routePath, title, description, schemas, bo
     meta(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, ed),
   ])
     html = apply(html);
-  if (image) {
-    html = meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, escape(image))(html);
-    html = meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, escape(image))(html);
-  }
+  // Every page gets its own 1200×630 card as og:image / twitter:image.
+  OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
+  const card = escape(`${BASE_URL}/${ogFile(routePath)}`);
+  for (const apply of [
+    meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, card),
+    meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, card),
+    meta(/(<meta\s+property="og:image:width"\s+content=")[^"]*(")/i, String(OG_WIDTH)),
+    meta(/(<meta\s+property="og:image:height"\s+content=")[^"]*(")/i, String(OG_HEIGHT)),
+    meta(/(<meta\s+property="og:image:alt"\s+content=")[^"]*(")/i, et),
+    meta(/(<meta\s+name="twitter:card"\s+content=")[^"]*(")/i, "summary_large_image"),
+  ])
+    html = apply(html);
 
   const schemaScripts = (schemas || [])
     .map((s) => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, "\\u003c")}</script>`)
@@ -457,6 +471,76 @@ function staticBody(routePath, data) {
   }
 }
 
+/** Card copy per static page: the same two-tone headline the page shows. */
+function staticCard(routePath, data) {
+  const firstYear = Math.min(...data.education.map((e) => e.start_year ?? Infinity));
+  const cards = {
+    "/": {
+      eyebrow: "Founder · Engineer · Host",
+      title: "Building products that solve",
+      soft: "real problems.",
+      meta: "Colombo, Sri Lanka",
+      visual: { kind: "portrait" },
+    },
+    "/about": {
+      eyebrow: "About",
+      title: "Founder by trade,",
+      soft: "engineer by habit, host by accident.",
+      meta: "Colombo, Sri Lanka",
+      visual: { kind: "portrait" },
+    },
+    "/contact": {
+      eyebrow: "Contact",
+      title: "Let's build",
+      soft: "something good.",
+      meta: "saadmazaa@gmail.com",
+      visual: { kind: "portrait" },
+    },
+    "/education": {
+      eyebrow: "Education",
+      title: "Classrooms",
+      soft: "behind the work",
+      meta: joinMeta(
+        data.education.length && `${data.education.length} institutions`,
+        Number.isFinite(firstYear) && `Since ${firstYear}`,
+      ),
+    },
+    "/events": {
+      eyebrow: "Events & Hosting",
+      title: "On stage,",
+      soft: "behind the mic",
+      meta: joinMeta(data.events.length && `${data.events.length} events`, "Host · Speaker · Organiser"),
+    },
+    "/experience": { eyebrow: "Experience", title: "Where I've", soft: "worked" },
+    "/skills": {
+      eyebrow: "Capabilities",
+      title: "What I bring",
+      soft: "to a team",
+      meta: data.skills
+        .map((g) => g.category)
+        .slice(0, 3)
+        .join(" · "),
+    },
+    "/certifications": {
+      eyebrow: "Credentials",
+      title: `${data.certificates.length || ""}`.trim() || "Certifications",
+      soft: data.certificates.length ? "certifications" : "",
+      meta: "AI · Security · Cloud · Leadership",
+    },
+    "/projects": { eyebrow: "Selected work", title: "Things I've", soft: "built" },
+    "/blog": {
+      eyebrow: "Writing",
+      title: "Notes from",
+      soft: "the build",
+      meta: data.posts.length ? `${data.posts.length} articles` : "",
+    },
+    "/languages": { eyebrow: "Languages", title: "Languages I", soft: "speak and host in" },
+    "/publications": { eyebrow: "Publications", title: "Published", soft: "work" },
+    "/newsletters": { eyebrow: "Newsletter", title: "Notes, straight", soft: "to your inbox" },
+  };
+  return cards[routePath] ?? { eyebrow: PAGE_SEO[routePath]?.title };
+}
+
 function prerenderStaticRoutes(shell, data) {
   const person = personSchema(data);
   for (const [routePath, { title, description }] of Object.entries(PAGE_SEO)) {
@@ -474,6 +558,7 @@ function prerenderStaticRoutes(shell, data) {
         description,
         schemas,
         bodyHtml: staticBody(routePath, data),
+        og: staticCard(routePath, data),
       }),
     );
   }
@@ -521,7 +606,12 @@ function prerenderProjects(shell, projects) {
         description,
         schemas: [schema],
         bodyHtml,
-        image: p.heroImage,
+        og: {
+          eyebrow: "Project",
+          title: p.title,
+          meta: joinMeta(p.role, p.date && dateLabel(p.date), tech.slice(0, 3).join(", ")),
+          photo: p.heroImage,
+        },
       }),
     );
   }
@@ -555,7 +645,16 @@ function prerenderPosts(shell, posts) {
         description,
         schemas: [schema],
         bodyHtml,
-        image: p.image,
+        og: {
+          eyebrow: "Writing",
+          title: p.title,
+          meta: joinMeta(
+            p.category,
+            dateLabel(p.date),
+            `${Math.max(1, Math.round(stripHtml(p.content).split(" ").length / 220))} min read`,
+          ),
+          photo: p.image,
+        },
       }),
     );
   }
@@ -598,7 +697,13 @@ function prerenderEvents(shell, events) {
         description,
         schemas: [schema],
         bodyHtml,
-        image: cover,
+        og: {
+          eyebrow: "Events & Hosting",
+          title: e.title,
+          meta: joinMeta(e.role, dateLabel(e.date), e.location),
+          photo: cover,
+          figure: String(dateLabel(e.date)).slice(-4),
+        },
       }),
     );
   }
@@ -634,9 +739,45 @@ function prerenderCertificates(shell, certificates) {
       .join("\n");
     writeRoute(
       routePath,
-      injectContent(shell, { path: routePath, title: c.title, description, schemas: [schema], bodyHtml }),
+      injectContent(shell, {
+        path: routePath,
+        title: c.title,
+        description,
+        schemas: [schema],
+        bodyHtml,
+        og: {
+          eyebrow: "Certification",
+          title: c.title,
+          meta: joinMeta(c.issuer, c.platform !== c.issuer && c.platform, dateLabel(c.issue_date)),
+        },
+      }),
     );
   }
+}
+
+// ── Social cards ─────────────────────────────────────────────────────────
+
+/** Draws every queued card. Photos (event/blog/project covers) are fetched first; on any failure the card falls back to type only. */
+async function renderCards() {
+  const started = Date.now();
+  let failed = 0;
+  for (const { file, spec } of OG_JOBS) {
+    const { photo, figure, visual, ...rest } = spec;
+    const src = photo ? await loadPhoto(photo) : null;
+    const chosen =
+      visual ?? (src ? { kind: "photo", src } : figure ? { kind: "figure", text: figure } : undefined);
+    try {
+      const png = await renderOg({ ...rest, visual: chosen });
+      mkdirSync(dirname(join(DIST_DIR, file)), { recursive: true });
+      writeFileSync(join(DIST_DIR, file), png);
+    } catch (err) {
+      failed++;
+      console.warn(`⚠️  Card failed for ${file}: ${err.message}`);
+    }
+  }
+  console.log(
+    `✅ Social cards rendered: ${OG_JOBS.length - failed}/${OG_JOBS.length} in ${Math.round((Date.now() - started) / 1000)}s.`,
+  );
 }
 
 // ── Sitemaps ─────────────────────────────────────────────────────────────
@@ -852,6 +993,7 @@ async function main() {
   );
   writeSitemaps(data);
   writeLlmsFull(data);
+  await renderCards();
 }
 
 main().catch((err) => {

@@ -40,13 +40,15 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
-// logo.png is a 500x500 square - not the 1200x630 card summary_large_image
-// expects. Keep these three in sync with whatever `image` actually is;
-// pass a real 1200x630 asset + imageWidth={1200} imageHeight={630} once one
-// exists to get "summary_large_image" treatment on that page.
-const DEFAULT_OG = `${BASE_URL}/logo.png`;
-const DEFAULT_OG_WIDTH = 500;
-const DEFAULT_OG_HEIGHT = 500;
+// Every prerendered route gets a 1200×630 card at /og/<path>.png, drawn at
+// build time by scripts/og/render.mjs (home is /og/home.png). Pages only pass
+// `image` to override it, with that image's real dimensions.
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+const ogCardFor = (url: string) => {
+  const path = url.replace(BASE_URL, "").replace(/^\/|\/$/g, "");
+  return `${BASE_URL}/og/${path || "home"}.png`;
+};
 
 const DEFAULT_DESCRIPTION =
   "Saad Mazhar - Startup Founder, Tech Speaker & Full-Stack Developer based in Colombo, Sri Lanka. Building products at the intersection of technology and impact.";
@@ -54,9 +56,9 @@ const DEFAULT_DESCRIPTION =
 export function SEO({
   title,
   description = DEFAULT_DESCRIPTION,
-  image = DEFAULT_OG,
-  imageWidth = DEFAULT_OG_WIDTH,
-  imageHeight = DEFAULT_OG_HEIGHT,
+  image,
+  imageWidth = OG_WIDTH,
+  imageHeight = OG_HEIGHT,
   url = BASE_URL,
   structuredData,
   type = "website",
@@ -64,6 +66,7 @@ export function SEO({
   noIndex = false,
 }: SEOProps) {
   const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
+  const ogImage = image ?? ogCardFor(url);
   const isLargeImage = imageWidth / imageHeight >= 1.9 && imageWidth >= 1200;
 
   const breadcrumbSchema = breadcrumbs
@@ -87,40 +90,29 @@ export function SEO({
       {/* ── Primary ──────────────────────────────────────────────── */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      {noIndex
-        ? <meta name="robots" content="noindex, nofollow" />
-        : <link rel="canonical" href={url} />
-      }
+      {noIndex ? <meta name="robots" content="noindex, nofollow" /> : <link rel="canonical" href={url} />}
 
       {/* ── Open Graph ───────────────────────────────────────────── */}
-      <meta property="og:site_name"   content={SITE_NAME} />
-      <meta property="og:title"       content={fullTitle} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:type"        content={type} />
-      <meta property="og:url"         content={url} />
-      <meta property="og:image"       content={image} />
-      <meta property="og:image:alt"   content={`${SITE_NAME} preview`} />
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:image:alt" content={fullTitle} />
       <meta property="og:image:width" content={String(imageWidth)} />
       <meta property="og:image:height" content={String(imageHeight)} />
 
       {/* ── Twitter / X Card ─────────────────────────────────────── */}
-      <meta name="twitter:card"        content={isLargeImage ? "summary_large_image" : "summary"} />
-      <meta name="twitter:site"        content="@SaadMazhar_" />
-      <meta name="twitter:title"       content={fullTitle} />
+      <meta name="twitter:card" content={isLargeImage ? "summary_large_image" : "summary"} />
+      <meta name="twitter:site" content="@SaadMazhar_" />
+      <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image"       content={image} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* ── JSON-LD Structured Data ───────────────────────────────── */}
-      {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}  
-        </script>
-      )}
-      {breadcrumbSchema && (
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
-      )}
+      {structuredData && <script type="application/ld+json">{JSON.stringify(structuredData)}</script>}
+      {breadcrumbSchema && <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>}
     </Helmet>
   );
 }

@@ -83,7 +83,6 @@ const ProjectDetailPage = () => {
         title={project.title}
         description={project.tagline}
         url={`${BASE_URL}/projects/${project.slug}`}
-        image={project.heroImage}
         breadcrumbs={[
           { name: "Projects", url: `${BASE_URL}/projects` },
           { name: project.title, url: `${BASE_URL}/projects/${project.slug}` },

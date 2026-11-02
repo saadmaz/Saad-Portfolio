@@ -45,7 +45,6 @@ const EventDetailPage = () => {
         title={event.title}
         description={event.description?.slice(0, 160)}
         url={`${BASE_URL}${eventPath(event)}`}
-        image={event.image}
       />
       <header className="wrap pb-14 pt-12 md:pt-20">
         <Link to="/events" className="text-sm text-fg-2 hover:text-fg">
