@@ -5,6 +5,7 @@
  * plus the contact form mutation.
  */
 
+import { matchesKey } from "@/lib/paths";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ContentService } from "@/services/content-service";
 import { ContactService, type ContactPayload } from "@/services/contact-service";
@@ -27,7 +28,7 @@ export const useCertificate = (id: string | undefined) =>
   useQuery({
     queryKey: queryKeys.certificates.all,
     queryFn: ContentService.getCertificates,
-    select: (certs) => certs.find((c) => String(c.id) === String(id)) ?? null,
+    select: (certs) => certs.find((c) => matchesKey(c, id)) ?? null,
     enabled: !!id,
   });
 

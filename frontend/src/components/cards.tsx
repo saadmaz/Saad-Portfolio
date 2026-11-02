@@ -5,6 +5,7 @@ import type { Event, Project } from "@/types";
 import { Media, Tag } from "@/components/ui";
 import { monthYear, year } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { eventPath } from "@/lib/paths";
 
 const arrow = (
   <ArrowUpRight
@@ -77,7 +78,7 @@ export function ProjectCard({
 export function EventCard({ event, className }: { event: Event; className?: string }) {
   const cover = event.image || event.images?.[0];
   return (
-    <Link to={`/events/${event.id}`} className={cn("group flex flex-col gap-[18px]", className)}>
+    <Link to={eventPath(event)} className={cn("group flex flex-col gap-[18px]", className)}>
       <div className="relative">
         {cover ? (
           <Media src={cover} alt={event.title} className="aspect-video" />

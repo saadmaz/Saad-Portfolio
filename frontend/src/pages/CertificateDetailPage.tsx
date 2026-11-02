@@ -6,6 +6,7 @@ import { Mark, Row } from "@/components/cards";
 import { useCertificate, useCertificates } from "@/hooks/useContent";
 import { monthYear, year } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
+import { certificatePath } from "@/lib/paths";
 
 const CertificateDetailPage = () => {
   const { id } = useParams();
@@ -21,6 +22,8 @@ const CertificateDetailPage = () => {
       </Layout>
     );
   if (!cert) return <Navigate to="/certifications" replace />;
+  // Old ID links land on the readable URL.
+  if (cert.slug && id !== cert.slug) return <Navigate to={certificatePath(cert)} replace />;
 
   const related = all.filter((c) => c.id !== cert.id && c.issuer === cert.issuer).slice(0, 4);
   const pdf = cert.pdf_document_link;
@@ -39,7 +42,7 @@ const CertificateDetailPage = () => {
       <SEO
         title={cert.title}
         description={cert.description || `${cert.title}, issued by ${cert.issuer}.`}
-        url={`${BASE_URL}/certifications/${cert.id}`}
+        url={`${BASE_URL}${certificatePath(cert)}`}
       />
       <header className="wrap pb-14 pt-12 md:pt-20">
         <Link to="/certifications" className="text-sm text-fg-2 hover:text-fg">
@@ -110,7 +113,7 @@ const CertificateDetailPage = () => {
               {related.map((c) => (
                 <Row
                   key={c.id}
-                  to={`/certifications/${c.id}`}
+                  to={certificatePath(c)}
                   mark={<Mark src={c.issuer_logo} label={c.issuer} />}
                   title={<span className="block text-[1rem] md:text-h4">{c.title}</span>}
                   sub={c.issuer}

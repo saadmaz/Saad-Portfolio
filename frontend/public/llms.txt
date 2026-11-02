@@ -11,10 +11,15 @@ This is the personal site of Saad Mazhar. Content below is organized by section;
 - [Projects](https://www.saadmaz.com/projects): software projects, with individual case study pages under /projects/{slug}.
 - [Work Experience](https://www.saadmaz.com/experience): career history.
 - [Skills](https://www.saadmaz.com/skills): technical skill set.
-- [Certifications](https://www.saadmaz.com/certifications): professional certifications.
+- [Education](https://www.saadmaz.com/education): degrees, schools, qualifications, and school leadership roles.
+- [Certifications](https://www.saadmaz.com/certifications): professional certifications, each with its own page under /certifications/{slug}.
 - [Blog](https://www.saadmaz.com/blog): articles, with individual posts under /blog/{slug}.
-- [Events](https://www.saadmaz.com/events): speaking, hosting, and organizing engagements.
+- [Events](https://www.saadmaz.com/events): speaking, hosting, and organizing engagements, each with its own page under /events/{slug}.
 - [Contact](https://www.saadmaz.com/contact): contact form and direct contact details.
+
+## Full text
+
+- [llms-full.txt](https://www.saadmaz.com/llms-full.txt): every section above as plain text in one file (experience, education, events, awards, volunteering, skills, certifications and full blog posts), regenerated on each deploy.
 
 ## Notes for automated readers
 

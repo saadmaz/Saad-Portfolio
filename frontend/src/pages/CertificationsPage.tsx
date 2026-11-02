@@ -6,6 +6,7 @@ import { Empty, FilterPill, PageHeader, Skeleton, Stat } from "@/components/ui";
 import { Mark, Row } from "@/components/cards";
 import { useCertificates } from "@/hooks/useContent";
 import { year } from "@/lib/format";
+import { certificatePath } from "@/lib/paths";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const PAGE = 24;
@@ -94,7 +95,7 @@ const CertificationsPage = () => {
               {shown.slice(0, limit).map((c) => (
                 <Row
                   key={c.id}
-                  to={`/certifications/${c.id}`}
+                  to={certificatePath(c)}
                   mark={<Mark src={c.issuer_logo} label={c.issuer} />}
                   title={<span className="block text-[1rem] md:text-h4">{c.title}</span>}
                   sub={c.issuer}

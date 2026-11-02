@@ -6,6 +6,7 @@ import { EventCard } from "@/components/cards";
 import { useEvents } from "@/hooks/useContent";
 import { fullDate } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
+import { eventPath, matchesKey } from "@/lib/paths";
 
 const EventDetailPage = () => {
   const { id } = useParams();
@@ -20,8 +21,10 @@ const EventDetailPage = () => {
         </div>
       </Layout>
     );
-  const event = data.find((e) => String(e.id) === String(id));
+  const event = data.find((e) => matchesKey(e, id));
   if (!event) return <Navigate to="/events" replace />;
+  // Old ID links land on the readable URL.
+  if (event.slug && id !== event.slug) return <Navigate to={eventPath(event)} replace />;
 
   const gallery = (event.images ?? []).filter((src) => src !== event.image);
   const more = [...data]
@@ -41,7 +44,7 @@ const EventDetailPage = () => {
       <SEO
         title={event.title}
         description={event.description?.slice(0, 160)}
-        url={`${BASE_URL}/events/${event.id}`}
+        url={`${BASE_URL}${eventPath(event)}`}
         image={event.image}
       />
       <header className="wrap pb-14 pt-12 md:pt-20">

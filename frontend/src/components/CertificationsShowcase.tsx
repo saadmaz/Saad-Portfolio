@@ -5,6 +5,7 @@ import type { Certificate } from "@/types";
 import { Mark } from "@/components/cards";
 import { monthYear } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { certificatePath } from "@/lib/paths";
 
 const time = (c: Certificate) => {
   const t = new Date(c.issue_date).getTime();
@@ -106,7 +107,7 @@ export function CertificationsShowcase({ certs }: { certs: Certificate[] }) {
               style={{ animationDelay: `${150 + i * 80}ms` }}
             >
               <Link
-                to={`/certifications/${c.id}`}
+                to={certificatePath(c)}
                 className="flex items-center gap-4 rounded-xl px-3 py-[clamp(10px,1.8svh,14px)] pr-16 transition-colors duration-200 hover:bg-surface-2 sm:pr-32 md:px-4 md:pr-36"
               >
                 <Mark src={c.issuer_logo} label={c.issuer || c.title} />

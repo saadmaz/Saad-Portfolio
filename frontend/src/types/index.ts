@@ -152,6 +152,8 @@ export interface Experience {
 
 export interface Certificate {
   id: string;
+  /** Readable URL segment (see lib/paths.ts). */
+  slug?: string;
   title: string;
   issuer: string;
   platform: string;
@@ -336,6 +338,8 @@ export type FirestoreLikeTimestamp = { toDate: () => Date } | Date | string | nu
 
 export interface Event {
   id: string;
+  /** Readable URL segment (see lib/paths.ts). */
+  slug?: string;
   title: string;
   organizer: string;
   date: string;
