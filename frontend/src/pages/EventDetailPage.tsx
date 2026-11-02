@@ -16,7 +16,7 @@ const EventDetailPage = () => {
       <Layout>
         <div className="wrap flex flex-col gap-8 py-24">
           <Skeleton className="h-24 w-2/3" />
-          <Skeleton className="aspect-[2/1] w-full rounded-media" />
+          <Skeleton className="aspect-video w-full rounded-media" />
         </div>
       </Layout>
     );
@@ -50,19 +50,14 @@ const EventDetailPage = () => {
         </Link>
         <div className="mt-10 flex flex-wrap gap-2">
           {event.role && <Tag active>{event.role}</Tag>}
-          {event.type && <Tag>{event.type}</Tag>}
+          {event.type && event.type !== "Other" && <Tag>{event.type}</Tag>}
         </div>
         <h1 className="mt-6 max-w-[1000px] text-display-l font-medium">{event.title}</h1>
         <p className="mt-6 text-h2 font-light text-fg-2">{event.organizer}</p>
       </header>
 
       <div className="wrap">
-        <Media
-          src={event.image || event.images?.[0]}
-          alt={event.title}
-          className="aspect-[4/3] md:aspect-[2/1]"
-          priority
-        />
+        <Media src={event.image || event.images?.[0]} alt={event.title} className="aspect-video" priority />
       </div>
 
       <section className="wrap grid gap-14 py-24 md:grid-cols-[320px_1fr] md:gap-24">
@@ -106,7 +101,7 @@ const EventDetailPage = () => {
             <Eyebrow>Gallery</Eyebrow>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
               {gallery.map((src, i) => (
-                <Media key={src} src={src} alt={`${event.title}, photo ${i + 2}`} className="aspect-[4/3]" />
+                <Media key={src} src={src} alt={`${event.title}, photo ${i + 2}`} className="aspect-video" />
               ))}
             </div>
           </div>

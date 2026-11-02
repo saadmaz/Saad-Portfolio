@@ -39,7 +39,7 @@ const EventsPage = () => {
 
       <section className="wrap pb-24">
         {isLoading ? (
-          <Skeleton className="aspect-[3/2] w-full rounded-media" />
+          <Skeleton className="aspect-video w-full rounded-media" />
         ) : shown.length === 0 ? (
           <Empty>No events here yet.</Empty>
         ) : (

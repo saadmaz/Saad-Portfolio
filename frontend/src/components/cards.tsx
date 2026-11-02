@@ -80,10 +80,10 @@ export function EventCard({ event, className }: { event: Event; className?: stri
     <Link to={`/events/${event.id}`} className={cn("group flex flex-col gap-[18px]", className)}>
       <div className="relative">
         {cover ? (
-          <Media src={cover} alt={event.title} className="aspect-[4/5]" />
+          <Media src={cover} alt={event.title} className="aspect-video" />
         ) : (
           // No photo yet: a typographic poster (year + tags) instead of an empty frame.
-          <div className="relative flex aspect-[4/5] flex-col justify-end gap-3 overflow-hidden rounded-media border border-line bg-surface p-6">
+          <div className="relative flex aspect-video flex-col justify-end gap-2 overflow-hidden rounded-media border border-line bg-surface p-5">
             <div
               aria-hidden
               className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_106_61/0.28),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_106_61/0.08),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
@@ -91,7 +91,7 @@ export function EventCard({ event, className }: { event: Event; className?: stri
             {event.tags?.length ? (
               <span className="label relative text-fg-3">{event.tags.slice(0, 2).join(" · ")}</span>
             ) : null}
-            <span className="relative text-[clamp(4rem,9vw,6.5rem)] font-medium leading-[0.85] tracking-[-0.05em] text-fg/90">
+            <span className="relative text-[clamp(2.25rem,3.6vw,3.25rem)] font-medium leading-[0.85] tracking-[-0.05em] text-fg/90">
               {year(event.date)}
             </span>
           </div>
