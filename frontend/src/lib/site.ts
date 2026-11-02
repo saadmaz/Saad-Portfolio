@@ -1,7 +1,7 @@
 // Contact details and navigation, defined once for the header, footer and pages.
 
 export const CONTACT = {
-  email: "saadmazaa@gmail.com",
+  email: "hello@saadmaz.com",
   phone: "+94 72 013 5801",
   phoneHref: "tel:+94720135801",
   location: "Colombo, Sri Lanka",

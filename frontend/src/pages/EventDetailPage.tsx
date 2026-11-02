@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
 import { EventCard } from "@/components/cards";
+import { Gallery } from "@/components/Gallery";
 import { useEvents } from "@/hooks/useContent";
 import { fullDate } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
@@ -97,18 +98,7 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      {gallery.length > 0 && (
-        <section className="section">
-          <div className="wrap">
-            <Eyebrow>Gallery</Eyebrow>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              {gallery.map((src, i) => (
-                <Media key={src} src={src} alt={`${event.title}, photo ${i + 2}`} className="aspect-video" />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {gallery.length > 0 && <Gallery images={gallery} title={event.title} />}
 
       {more.length > 0 && (
         <section className="section">

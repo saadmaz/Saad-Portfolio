@@ -467,7 +467,7 @@ function staticBody(routePath, data) {
           `<a href="${escape(n.content_url)}">${escape(n.title)}</a> - ${escape(joinMeta(dateLabel(n.date), n.description))}`,
       );
     case "/contact":
-      return `<p>Email: <a href="mailto:saadmazaa@gmail.com">saadmazaa@gmail.com</a></p>\n<p>Based in Colombo, Sri Lanka.</p>\n${list(PERSON_SCHEMA.sameAs, (u) => `<a href="${escape(u)}">${escape(u)}</a>`)}`;
+      return `<p>Email: <a href="mailto:hello@saadmaz.com">hello@saadmaz.com</a></p>\n<p>Based in Colombo, Sri Lanka.</p>\n${list(PERSON_SCHEMA.sameAs, (u) => `<a href="${escape(u)}">${escape(u)}</a>`)}`;
     default:
       return "";
   }
@@ -495,7 +495,7 @@ function staticCard(routePath, data) {
       eyebrow: "Contact",
       title: "Let's build",
       soft: "something good.",
-      meta: "saadmazaa@gmail.com",
+      meta: "hello@saadmaz.com",
       visual: { kind: "portrait" },
     },
     "/education": {
@@ -970,7 +970,7 @@ function writeLlmsFull(data) {
       );
   }
   h("Contact");
-  item(`Email: saadmazaa@gmail.com`);
+  item(`Email: hello@saadmaz.com`);
   item(`Location: Colombo, Sri Lanka`);
   for (const u of PERSON_SCHEMA.sameAs) item(u);
   writeFileSync(join(DIST_DIR, "llms-full.txt"), `${md.join("\n")}\n`, "utf-8");
