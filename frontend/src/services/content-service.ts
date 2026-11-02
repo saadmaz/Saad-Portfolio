@@ -8,6 +8,7 @@
  * field, so ordered collections only return documents that have it.
  */
 
+import { byEventDateDesc } from "@/lib/eventDates";
 import { COLLECTIONS, fetchCollection, fetchOrdered } from "@/lib/firestore";
 import type {
   Award,
@@ -39,7 +40,8 @@ export const ContentService = {
   getTestimonials: () => fetchCollection<Testimonial>(COLLECTIONS.testimonials),
   getVolunteerExperience: () => fetchCollection<VolunteerExperience>(COLLECTIONS.volunteer),
   getEducation: () => fetchCollection<Education>(COLLECTIONS.education),
-  getEvents: () => fetchOrdered<Event>(COLLECTIONS.events, "date"),
+  // Dates are free text ("2023", "Apr 27, 2022"), so sort on the parsed date, newest first.
+  getEvents: async () => (await fetchOrdered<Event>(COLLECTIONS.events, "date")).sort(byEventDateDesc),
   getNewsletters: () => fetchOrdered<Newsletter>(COLLECTIONS.newsletters, "date"),
   getCourses: () => fetchCollection<Course>(COLLECTIONS.courses),
   getPublications: () => fetchOrdered<Publication>(COLLECTIONS.publications, "date"),

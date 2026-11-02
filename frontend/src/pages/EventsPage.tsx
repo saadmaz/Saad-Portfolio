@@ -4,14 +4,24 @@ import { SEO } from "@/components/SEO";
 import { Button, Empty, FilterPill, PageHeader, Reveal, Skeleton, Stat } from "@/components/ui";
 import { EventCard } from "@/components/cards";
 import { useEvents } from "@/hooks/useContent";
+import { parseEventDate } from "@/lib/eventDates";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const EventsPage = () => {
   const { data = [], isLoading } = useEvents();
   const [role, setRole] = useState("All");
-  const events = useMemo(() => [...data].reverse(), [data]);
+  // Already newest-first from the service.
+  const events = data;
   const roles = useMemo(() => [...new Set(events.map((e) => e.role).filter(Boolean) as string[])], [events]);
-  const shown = role === "All" ? events : events.filter((e) => e.role === role);
+  const groups = useMemo(() => {
+    const shown = role === "All" ? events : events.filter((e) => e.role === role);
+    const byYear = new Map<string, typeof events>();
+    for (const e of shown) {
+      const key = String(parseEventDate(e.date).year ?? "Undated");
+      byYear.set(key, [...(byYear.get(key) ?? []), e]);
+    }
+    return [...byYear];
+  }, [events, role]);
 
   return (
     <Layout>
@@ -22,8 +32,8 @@ const EventsPage = () => {
       />
       <PageHeader
         label="Events & hosting"
-        title="On stage,"
-        soft="behind the mic"
+        title="Holding the room,"
+        soft="one stage at a time"
         aside={events.length > 0 && <Stat value={events.length} label="Events" />}
       >
         {roles.length > 1 && (
@@ -40,14 +50,29 @@ const EventsPage = () => {
       <section className="wrap pb-24">
         {isLoading ? (
           <Skeleton className="aspect-video w-full rounded-media" />
-        ) : shown.length === 0 ? (
+        ) : groups.length === 0 ? (
           <Empty>No events here yet.</Empty>
         ) : (
-          <div className="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-            {shown.map((e) => (
-              <Reveal key={e.id}>
-                <EventCard event={e} />
-              </Reveal>
+          <div className="flex flex-col gap-20">
+            {groups.map(([year, list]) => (
+              <section key={year} aria-labelledby={`events-${year}`}>
+                <div className="mb-10 flex items-center gap-4">
+                  <h2 id={`events-${year}`} className="text-h2 font-medium tabular-nums">
+                    {year}
+                  </h2>
+                  <span className="label text-fg-3">
+                    {list.length} {list.length === 1 ? "event" : "events"}
+                  </span>
+                  <div className="h-px flex-1 bg-line-2" aria-hidden="true" />
+                </div>
+                <div className="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+                  {list.map((e) => (
+                    <Reveal key={e.id}>
+                      <EventCard event={e} />
+                    </Reveal>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         )}

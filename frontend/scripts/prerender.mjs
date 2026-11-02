@@ -222,6 +222,19 @@ async function loadData() {
   const db = getFirestore();
   const all = async (name) => (await db.collection(name).get()).docs.map((d) => ({ id: d.id, ...d.data() }));
   const byDateDesc = (field) => (a, b) => String(b[field] ?? "").localeCompare(String(a[field] ?? ""));
+  // Event dates are free text ("2023", "Apr 27, 2022"); compare parsed times, undated last
+  // (mirrors byEventDateDesc in src/lib/eventDates.ts).
+  const eventTime = (v) => {
+    const t = String(v ?? "").trim();
+    return /^\d{4}$/.test(t) ? Date.UTC(Number(t), 0, 1) : Date.parse(t);
+  };
+  const byEventDateDesc = (a, b) => {
+    const ta = eventTime(a.date);
+    const tb = eventTime(b.date);
+    if (Number.isNaN(ta)) return Number.isNaN(tb) ? 0 : 1;
+    if (Number.isNaN(tb)) return -1;
+    return tb - ta;
+  };
 
   const [
     projects,
@@ -258,7 +271,7 @@ async function loadData() {
       .filter((p) => p.slug && p.published !== false)
       .sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)),
     posts: posts.filter((p) => p.slug && p.published === true).sort(byDateDesc("date")),
-    events: events.sort(byDateDesc("date")),
+    events: events.sort(byEventDateDesc),
     certificates: certificates.sort(byDateDesc("issue_date")),
     education: education
       .filter((e) => e.is_published !== false)
@@ -509,8 +522,8 @@ function staticCard(routePath, data) {
     },
     "/events": {
       eyebrow: "Events & Hosting",
-      title: "On stage,",
-      soft: "behind the mic",
+      title: "Holding the room,",
+      soft: "one stage at a time",
       meta: joinMeta(data.events.length && `${data.events.length} events`, "Host · Speaker · Organiser"),
     },
     "/experience": { eyebrow: "Experience", title: "Where I've", soft: "worked" },

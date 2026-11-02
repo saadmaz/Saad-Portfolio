@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
@@ -219,9 +220,32 @@ function ExperienceList() {
   );
 }
 
+const scrollBtn =
+  "flex size-11 items-center justify-center rounded-full border border-line-2 text-fg-2 transition-colors hover:border-line-3 hover:text-fg disabled:pointer-events-none disabled:opacity-30";
+
 function Speaking() {
-  const { data = [] } = useEvents();
-  const events = [...data].reverse().slice(0, 3);
+  // Every event, newest first (sorted by the service), in one horizontal rail.
+  const { data: events = [] } = useEvents();
+  const railRef = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
+
+  const updateEdges = useCallback(() => {
+    const el = railRef.current;
+    if (!el) return;
+    setEdges({ start: el.scrollLeft <= 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
+  }, []);
+
+  useEffect(() => {
+    updateEdges();
+    window.addEventListener("resize", updateEdges);
+    return () => window.removeEventListener("resize", updateEdges);
+  }, [updateEdges, events.length]);
+
+  const scroll = (dir: 1 | -1) => {
+    const el = railRef.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
+  };
+
   if (events.length === 0) return null;
   return (
     <section className="section" aria-labelledby="speaking-heading">
@@ -231,18 +255,48 @@ function Speaking() {
             counted
             id="speaking-heading"
             label="Speaking & hosting"
-            title="On stage,"
-            soft="behind the mic"
+            title="Holding the room,"
+            soft="one stage at a time"
             action={
-              <Button to="/events" variant="ghost">
-                All events
-              </Button>
+              <div className="flex items-center gap-3">
+                <div className="hidden gap-2 md:flex">
+                  <button
+                    type="button"
+                    onClick={() => scroll(-1)}
+                    disabled={edges.start}
+                    aria-label="Previous events"
+                    className={scrollBtn}
+                  >
+                    <ChevronLeft className="size-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scroll(1)}
+                    disabled={edges.end}
+                    aria-label="Next events"
+                    className={scrollBtn}
+                  >
+                    <ChevronRight className="size-5" />
+                  </button>
+                </div>
+                <Button to="/events" variant="ghost">
+                  All events
+                </Button>
+              </div>
             }
           />
         </Reveal>
-        <div className="-mx-5 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:scroll-px-8 sm:px-8 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0">
+        <div
+          ref={railRef}
+          onScroll={updateEdges}
+          className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 md:mx-0 md:scroll-px-0 md:gap-6 md:px-0 [&::-webkit-scrollbar]:hidden"
+        >
           {events.map((e) => (
-            <EventCard key={e.id} event={e} className="w-[78%] shrink-0 snap-start md:w-auto" />
+            <EventCard
+              key={e.id}
+              event={e}
+              className="w-[78%] shrink-0 snap-start md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+            />
           ))}
         </div>
       </div>
