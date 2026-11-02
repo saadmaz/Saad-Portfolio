@@ -42,12 +42,15 @@ interface SEOProps {
 
 // Every prerendered route gets a 1200×630 card at /og/<path>.png, drawn at
 // build time by scripts/og/render.mjs (home is /og/home.png). Pages only pass
-// `image` to override it, with that image's real dimensions.
+// `image` to override it, with that image's real dimensions. ?v= is the same
+// design hash prerender.mjs writes, so platforms refetch after a redesign.
+// Cards missing at build time (e.g. a post published since) fall back to
+// home.png via vercel.json, so the URL always resolves to a real PNG.
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 const ogCardFor = (url: string) => {
   const path = url.replace(BASE_URL, "").replace(/^\/|\/$/g, "");
-  return `${BASE_URL}/og/${path || "home"}.png`;
+  return `${BASE_URL}/og/${path || "home"}.png?v=${__OG_VERSION__}`;
 };
 
 const DEFAULT_DESCRIPTION =
@@ -66,7 +69,8 @@ export function SEO({
   noIndex = false,
 }: SEOProps) {
   const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
-  const ogImage = image ?? ogCardFor(url);
+  // noIndex pages (404s) have no card of their own: share the home card.
+  const ogImage = image ?? ogCardFor(noIndex ? BASE_URL : url);
   const isLargeImage = imageWidth / imageHeight >= 1.9 && imageWidth >= 1200;
 
   const breadcrumbSchema = breadcrumbs

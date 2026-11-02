@@ -2,6 +2,10 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/og/:path*",
+      "destination": "/og/home.png"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -55,6 +59,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/og/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
     },

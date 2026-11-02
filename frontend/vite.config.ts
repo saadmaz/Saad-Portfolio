@@ -2,10 +2,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { ogVersion } from "./scripts/og/version.mjs";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "/",
+  // Same ?v= on og:image as prerender.mjs writes (see SEO.tsx).
+  define: { __OG_VERSION__: JSON.stringify(ogVersion()) },
   server: {
     host: "::",
     port: 8080,

@@ -13,3 +13,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Social card design hash (scripts/og/version.mjs), injected by vite.config.ts. */
+declare const __OG_VERSION__: string;

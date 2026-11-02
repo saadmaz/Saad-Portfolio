@@ -2,12 +2,13 @@
  * og/render.mjs
  * ─────────────────────────────────────────────────────────────
  * 1200×630 social preview images (Open Graph / Twitter cards), drawn with
- * satori (layout → SVG) and resvg (SVG → PNG). Same graphite + ember system
- * as the site: tokens below mirror src/app/index.css, type is Geist.
+ * satori (layout → SVG) and resvg (SVG → PNG). Built from the Figma file's
+ * "06 - Socials" templates (Social/Header, Social/Footer, FB/Cover): the same
+ * variables, Geist type scale and segmented S mark, re-proportioned for 1200×630.
  *
  *   renderOg({ eyebrow, title, soft, meta, visual }) → PNG Buffer
  *
- * visual: { kind: "portrait" } | { kind: "photo", src } | { kind: "figure", text }
+ * visual: { kind: "portrait" } | { kind: "photo", src } | { kind: "figure", text } | undefined (type only)
  */
 
 import { readFileSync } from "fs";
@@ -22,15 +23,19 @@ const font = (file) => readFileSync(join(here, "fonts", file));
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 
+// Figma variables (01 - Design System), identical to src/app/index.css.
 const C = {
   bg: "#19191B",
-  surface: "#212124",
   fg: "#EDEDEA",
   fg2: "#A3A39E",
   fg3: "#8E8E89",
   accent: "#FF6A3D",
-  line: "rgba(255,255,255,0.08)",
+  line: "rgba(255,255,255,0.11)",
 };
+
+const PAD = 64; // space/64
+const HEADER = 56;
+const FOOTER = 2 + 24 + 26; // rule + space/24 + one mono line
 
 const FONTS = [
   { name: "Geist", data: font("Geist-Light.ttf"), weight: 300, style: "normal" },
@@ -38,10 +43,48 @@ const FONTS = [
   { name: "Geist Mono", data: font("GeistMono-Medium.ttf"), weight: 500, style: "normal" },
 ];
 
-// The segmented "S" mark from src/components/brand/Logo.tsx.
-const LOGO = `data:image/svg+xml;base64,${Buffer.from(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#202023"/><path fill="#EDEDEA" d="M229.179 290.556C209.639 286.984 191.33 279.558 175.696 268.863C160.061 258.168 147.529 244.496 139.086 228.925C130.644 213.355 126.521 196.31 127.044 179.136C127.567 161.962 132.721 145.126 142.1 129.957L218.033 164.679C214.907 169.735 213.189 175.347 213.015 181.072C212.84 186.797 214.215 192.478 217.029 197.669C219.843 202.859 224.02 207.416 229.232 210.981C234.443 214.546 240.546 217.021 247.06 218.212L229.179 290.556ZM157.18 110.729C171.49 96.0627 189.97 84.8307 210.823 78.1257C231.676 71.4207 254.192 69.4709 276.18 72.466C298.169 75.461 318.881 83.299 336.304 95.2175C353.727 107.136 367.267 122.73 375.607 140.481L295.869 168.187C293.089 162.27 288.576 157.072 282.768 153.099C276.96 149.126 270.056 146.514 262.727 145.515C255.397 144.517 247.892 145.167 240.941 147.402C233.99 149.637 227.83 153.381 223.06 158.27L157.18 110.729Z"/><path fill="#FF6A3D" d="M282.821 221.444C302.361 225.016 320.67 232.442 336.304 243.137C351.939 253.832 364.471 267.504 372.914 283.075C381.356 298.645 385.479 315.69 384.956 332.864C384.433 350.039 379.279 366.874 369.9 382.043L293.967 347.321C297.093 342.265 298.811 336.653 298.985 330.928C299.16 325.203 297.785 319.522 294.971 314.332C292.157 309.141 287.98 304.584 282.768 301.019C277.557 297.454 271.454 294.979 264.94 293.788L282.821 221.444ZM354.82 401.271C340.51 415.937 322.029 427.169 301.177 433.874C280.324 440.579 257.808 442.529 235.82 439.534C213.831 436.539 193.118 428.701 175.696 416.783C158.273 404.864 144.733 389.271 136.393 371.519L216.131 343.813C218.911 349.73 223.424 354.928 229.232 358.901C235.039 362.874 241.944 365.486 249.273 366.485C256.603 367.483 264.108 366.833 271.059 364.598C278.01 362.363 284.17 358.619 288.94 353.73L354.82 401.271Z"/></svg>`,
-).toString("base64")}`;
+const svgUri = (svg) => `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
+
+// Brand/Mark from Figma (node 27:2913), in its 420px frame. This is the current
+// mark, also in public/app-icon.svg; favicon.svg still has the older geometry.
+const MARK = `
+  <path fill="#EDEDEA" d="M192.404 234.82C176.508 232.409 161.512 226.768 148.664 218.366C135.816 209.964 125.487 199.044 118.539 186.515C111.59 173.986 108.222 160.211 108.715 146.336C109.207 132.462 113.547 118.889 121.372 106.748L174.549 132.098C171.419 136.954 169.683 142.383 169.486 147.933C169.289 153.483 170.636 158.993 173.415 164.005C176.195 169.016 180.326 173.384 185.466 176.745C190.605 180.106 196.603 182.362 202.961 183.327L192.404 234.82Z"/>
+  <path fill="#EDEDEA" d="M131.25 94.1549C142.349 82.3668 156.835 73.2744 173.273 67.7768C189.712 62.2792 207.534 60.5668 224.978 62.8088C242.422 65.0508 258.883 71.1697 272.734 80.5604C286.586 89.951 297.347 102.288 303.954 116.352L247.582 135.939C244.939 130.314 240.634 125.379 235.094 121.623C229.553 117.866 222.969 115.419 215.991 114.522C209.014 113.625 201.885 114.31 195.309 116.509C188.734 118.708 182.94 122.345 178.5 127.061L131.25 94.1549Z"/>
+  <path fill="#FF6A3D" d="M227.596 185.18C243.492 187.591 258.488 193.232 271.336 201.634C284.184 210.036 294.513 220.956 301.461 233.485C308.41 246.014 311.778 259.789 311.285 273.664C310.793 287.538 306.453 301.111 298.628 313.252L245.451 287.902C248.581 283.046 250.317 277.617 250.514 272.067C250.711 266.517 249.364 261.007 246.585 255.995C243.805 250.984 239.674 246.616 234.534 243.255C229.395 239.894 223.397 237.638 217.038 236.673L227.596 185.18Z"/>
+  <path fill="#FF6A3D" d="M288.75 325.845C277.651 337.633 263.165 346.726 246.727 352.223C230.288 357.721 212.466 359.433 195.022 357.191C177.578 354.949 161.117 348.83 147.266 339.44C133.414 330.049 122.653 317.712 116.046 303.648L172.418 284.06C175.061 289.686 179.366 294.621 184.906 298.377C190.447 302.133 197.031 304.581 204.009 305.478C210.986 306.375 218.115 305.69 224.691 303.491C231.266 301.292 237.06 297.655 241.5 292.939L288.75 325.845Z"/>`;
+
+// Brand/App icon (27:2923): graphite squircle, ember glow top-right, mark at 72%.
+const APP_ICON = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#333337"/><stop offset="1" stop-color="#19191B"/></linearGradient>
+    <radialGradient id="g" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="matrix(28 0 0 28 39.2 16.8)"><stop offset="0" stop-color="#FF6B3D" stop-opacity="0.28"/><stop offset="1" stop-color="#FF6B3D" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect x="0.33" y="0.33" width="55.34" height="55.34" rx="12.69" fill="url(#f)" stroke="rgba(255,255,255,0.1)" stroke-width="0.66"/>
+  <rect x="0.33" y="0.33" width="55.34" height="55.34" rx="12.69" fill="url(#g)"/>
+  <g transform="translate(7.3 7.3) scale(0.09636)">${MARK}</g>
+</svg>`);
+
+// FB/Cover's watermark: the mark at 4% over the glow.
+const WATERMARK = svgUri(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420"><g opacity="0.04">${MARK.replace(/fill="#[0-9A-F]+"/g, 'fill="#EDEDEA"')}</g></svg>`,
+);
+
+/**
+ * Figma's social glow: an elliptical radial (45% wide, 75% tall) centred at
+ * 78% / 45%, 28% ember fading through 6% at 60%. Drawn in SVG because satori's
+ * radial-gradient can't express separate radii and a three-stop falloff.
+ */
+const BACKGROUND = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${OG_WIDTH}" height="${OG_HEIGHT}">
+  <defs>
+    <radialGradient id="g" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="matrix(540 0 0 472 936 284)">
+      <stop offset="0" stop-color="#FF6B3D" stop-opacity="0.28"/>
+      <stop offset="0.6" stop-color="#FF6B3D" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#FF6B3D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="${C.bg}"/>
+  <rect width="100%" height="100%" fill="url(#g)"/>
+</svg>`);
 
 /**
  * The portrait sits on black; the site blends it with mix-blend-lighten. Here the
@@ -61,101 +104,181 @@ const PORTRAIT = (() => {
 
 /** Minimal element factory: satori takes React-shaped objects. */
 const h = (type, style, children, extra = {}) => ({ type, props: { style, children, ...extra } });
+const img = (src, width, height, style = {}) =>
+  h("img", { width, height, ...style }, undefined, { src, width, height });
 
-/** Bigger type for short titles; long ones step down so they fit three lines. */
-function titleSize(text, narrow) {
-  const n = text.length;
-  const steps = narrow
-    ? [
-        [22, 72],
-        [40, 60],
-        [64, 50],
-        [Infinity, 42],
-      ]
-    : [
-        [24, 84],
-        [44, 70],
-        [72, 58],
-        [Infinity, 48],
-      ];
-  return steps.find(([max]) => n <= max)[1];
-}
+// satori 0.33 ignores `inset`; without explicit edges, absolute layers start inside the padding.
+const fill = { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex" };
 
 const clip = (s, n) => (s && s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s || "");
 
 /** Fetch a remote cover and inline it; satori can't decode WebP, so only PNG/JPEG are used. */
 export async function loadPhoto(url) {
   if (!url) return null;
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    const type = res.headers.get("content-type") || "";
-    if (!res.ok || !/image\/(png|jpe?g)/.test(type)) return null;
-    return `data:${type.split(";")[0]};base64,${Buffer.from(await res.arrayBuffer()).toString("base64")}`;
-  } catch {
-    return null;
+  // Firebase Storage is sometimes slow from build machines; retry once so a
+  // cover isn't silently swapped for the type-only card.
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      const type = res.headers.get("content-type") || "";
+      if (!res.ok || !/image\/(png|jpe?g)/.test(type)) return null;
+      return `data:${type.split(";")[0]};base64,${Buffer.from(await res.arrayBuffer()).toString("base64")}`;
+    } catch (err) {
+      if (attempt === 2) console.warn(`⚠️  Cover skipped (${err.name}): ${url.slice(0, 80)}…`);
+    }
   }
+  return null;
 }
 
+/**
+ * Greedy word wrap with Geist's average advance (~0.52em at -0.045em tracking).
+ * Only picks the type size; satori does the real wrapping and lineClamp catches
+ * anything the estimate gets wrong.
+ */
+function lineCount(text, size, width) {
+  const perLine = Math.floor(width / (size * 0.52));
+  let lines = 1;
+  let used = 0;
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const n = used ? used + 1 + word.length : word.length;
+    if (n <= perLine) used = n;
+    else {
+      lines++;
+      used = word.length;
+    }
+  }
+  return lines;
+}
+
+// Display/XL, Display/L, Display/M, Mobile/Display, Heading/H1.
+const SIZES = [136, 96, 64, 56, 48];
+const MAX_LINES = 4;
+
+/** Cut at a word boundary so an over-long title never ends mid-word. */
+function clipWords(s, n) {
+  if (s.length <= n) return s;
+  const cut = s.slice(0, n - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : cut.length).replace(/[\s,:;·–—-]+$/, "")}…`;
+}
+
+/** Largest token size where title + soft fit the space between header and footer; else the smallest, trimmed. */
+function fitTitle(title, soft, width) {
+  const room = OG_HEIGHT - PAD * 2 - HEADER - FOOTER - 64;
+  for (const size of SIZES) {
+    const t = lineCount(title, size, width);
+    const s = soft ? lineCount(soft, size, width) : 0;
+    const gap = soft ? Math.round(size / 6) : 0;
+    if (t + s <= MAX_LINES && (t + s) * size * 0.95 + gap <= room) return { size, gap, title };
+  }
+  const size = SIZES.at(-1);
+  const lines = MAX_LINES - (soft ? lineCount(soft, size, width) : 0);
+  return { size, gap: 8, title: clipWords(title, Math.floor(width / (size * 0.52)) * lines - 4) };
+}
+
+const mono = (color, extra = {}) => ({
+  display: "flex",
+  fontFamily: "Geist Mono",
+  fontWeight: 500,
+  fontSize: 22,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color,
+  ...extra,
+});
+
 function visualLayer(visual) {
-  if (!visual) return null;
-  if (visual.kind === "portrait")
-    return h("div", { position: "absolute", right: -30, bottom: 0, display: "flex" }, [
-      h("img", { width: 560, height: 560 }, undefined, { src: PORTRAIT, width: 560, height: 560 }),
-      // Melt the portrait's left and bottom edges into the background.
-      h("div", {
-        position: "absolute",
-        inset: 0,
-        backgroundImage: `linear-gradient(90deg, ${C.bg} 0%, rgba(25,25,27,0) 38%), linear-gradient(0deg, ${C.bg} 0%, rgba(25,25,27,0) 30%)`,
-      }),
+  if (!visual)
+    return h("div", { position: "absolute", right: -40, top: 84, display: "flex" }, [
+      img(WATERMARK, 520, 520),
     ]);
-  if (visual.kind === "photo")
+  if (visual.kind === "portrait")
+    // Fade the left and bottom edges to transparent (not to bg colour, which would seam against the glow).
     return h(
       "div",
       {
         position: "absolute",
-        right: 64,
-        top: 150,
-        width: 420,
-        height: 330,
+        right: -20,
+        bottom: 0,
         display: "flex",
-        borderRadius: 24,
-        overflow: "hidden",
-        border: `1px solid ${C.line}`,
-        boxShadow: "0 30px 60px rgba(0,0,0,0.5)",
+        maskImage: "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 36%)",
       },
       [
-        h("img", { width: 420, height: 330, objectFit: "cover" }, undefined, {
-          src: visual.src,
-          width: 420,
-          height: 330,
-        }),
+        h(
+          "div",
+          { display: "flex", maskImage: "linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 26%)" },
+          [img(PORTRAIT, 580, 580)],
+        ),
       ],
     );
-  if (visual.kind === "figure")
+  if (visual.kind === "photo") {
+    const w = 456;
+    const ht = 342;
     return h(
       "div",
       {
         position: "absolute",
-        right: 56,
-        bottom: 96,
+        right: PAD,
+        top: PAD + HEADER + (OG_HEIGHT - PAD * 2 - HEADER - FOOTER - ht) / 2,
         display: "flex",
-        fontFamily: "Geist",
-        fontWeight: 500,
-        fontSize: 230,
-        letterSpacing: "-0.06em",
-        lineHeight: 0.8,
-        color: "rgba(237,237,234,0.06)",
+        borderRadius: 24, // radius/xl: media
+        overflow: "hidden",
+        border: `1px solid ${C.line}`,
+        boxShadow: "0 32px 64px rgba(0,0,0,0.45)",
       },
-      visual.text,
+      [img(visual.src, w, ht, { objectFit: "cover" })],
+    );
+  }
+  if (visual.kind === "figure")
+    // FB/Cover's name row: big type closed by an ember dot, here as a faint year.
+    return h(
+      "div",
+      {
+        position: "absolute",
+        right: PAD,
+        bottom: PAD + FOOTER + 36,
+        display: "flex",
+        alignItems: "flex-end",
+      },
+      [
+        h(
+          "div",
+          {
+            display: "flex",
+            fontFamily: "Geist",
+            fontWeight: 500,
+            fontSize: 280,
+            letterSpacing: "-0.05em",
+            lineHeight: 0.8,
+            color: "rgba(237,237,234,0.06)",
+          },
+          visual.text,
+        ),
+        h("div", {
+          width: 30,
+          height: 30,
+          marginLeft: 10,
+          marginBottom: 4,
+          borderRadius: 30,
+          backgroundColor: C.accent,
+        }),
+      ],
     );
   return null;
 }
 
 export async function renderOg({ eyebrow, title, soft, meta, visual }) {
   const narrow = visual?.kind === "portrait" || visual?.kind === "photo";
-  const full = soft ? `${title} ${soft}` : title;
-  const size = titleSize(full, narrow);
-  const maxChars = narrow ? 70 : 96;
+  const width = narrow ? 600 : OG_WIDTH - PAD * 2;
+  const softText = clip(soft, 48);
+  const { size, gap, title: heading } = fitTitle(clipWords(title || "", 120), softText, width);
+  const type = {
+    display: "block",
+    width,
+    fontFamily: "Geist",
+    fontSize: size,
+    lineHeight: 0.95,
+    letterSpacing: "-0.045em",
+  };
 
   const tree = h(
     "div",
@@ -166,103 +289,43 @@ export async function renderOg({ eyebrow, title, soft, meta, visual }) {
       flexDirection: "column",
       justifyContent: "space-between",
       position: "relative",
-      padding: "60px 72px 56px",
+      padding: PAD,
       backgroundColor: C.bg,
-      backgroundImage:
-        "radial-gradient(circle at 92% 0%, rgba(255,106,61,0.30), rgba(255,106,61,0) 52%), radial-gradient(circle at 0% 100%, rgba(255,106,61,0.08), rgba(255,106,61,0) 45%)",
       fontFamily: "Geist",
       color: C.fg,
     },
     [
+      h("div", fill, [img(BACKGROUND, OG_WIDTH, OG_HEIGHT)]),
       visualLayer(visual),
-      // Top bar: brand + section label
-      h("div", { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }, [
-        h("div", { display: "flex", alignItems: "center", gap: 16 }, [
-          h("img", { width: 44, height: 44 }, undefined, { src: LOGO, width: 44, height: 44 }),
-          h(
-            "div",
-            { display: "flex", fontSize: 26, fontWeight: 500, letterSpacing: "-0.01em" },
-            "Saad Mazhar",
-          ),
-        ]),
-        eyebrow
-          ? h(
-              "div",
-              {
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                fontFamily: "Geist Mono",
-                fontSize: 17,
-                letterSpacing: "0.12em",
-                color: C.fg2,
-                textTransform: "uppercase",
-                padding: "10px 18px",
-                borderRadius: 999,
-                border: `1px solid ${C.line}`,
-                backgroundColor: "rgba(33,33,36,0.7)",
-              },
-              [h("div", { width: 8, height: 8, borderRadius: 8, backgroundColor: C.accent }), eyebrow],
-            )
-          : h("div", {}),
+      // Social/Header
+      h("div", { display: "flex", alignItems: "center", height: HEADER, gap: 20, width: "100%" }, [
+        img(APP_ICON, 56, 56),
+        h("div", mono(C.fg), "Saad Mazhar"),
+        h("div", { flexGrow: 1 }),
+        eyebrow ? h("div", mono(C.accent), clip(eyebrow, 40)) : null,
       ]),
-      // Title
-      h(
-        "div",
-        {
-          display: "flex",
-          flexWrap: "wrap",
-          maxWidth: narrow ? 640 : 1000,
-          fontSize: size,
-          lineHeight: 1.04,
-          letterSpacing: "-0.04em",
-          fontWeight: 500,
-        },
-        // One span per word so the two tones wrap together like a single line of text.
-        [
-          ...clip(title, maxChars)
-            .split(/\s+/)
-            .map((w) => ({ w, soft: false })),
-          ...(soft
-            ? clip(soft, 40)
-                .split(/\s+/)
-                .map((w) => ({ w, soft: true }))
-            : []),
-        ].map(({ w, soft: isSoft }) =>
-          h("span", { marginRight: size * 0.24, ...(isSoft ? { fontWeight: 300, color: C.fg3 } : {}) }, w),
+      // Title: Display in primary, the soft half in Accent (Light) muted, as in Post/Statement.
+      h("div", { display: "flex", flexDirection: "column", gap }, [
+        h(
+          "div",
+          { ...type, fontWeight: 500, color: C.fg, lineClamp: softText ? MAX_LINES - 1 : MAX_LINES },
+          heading,
         ),
-      ),
-      // Footer: meta + domain
-      h(
-        "div",
-        {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          paddingTop: 24,
-          borderTop: `1px solid ${C.line}`,
-        },
-        [
+        softText ? h("div", { ...type, fontWeight: 300, color: C.fg3, lineClamp: 2 }, softText) : null,
+      ]),
+      // Social/Footer
+      h("div", { display: "flex", flexDirection: "column", gap: 24, width: "100%" }, [
+        h("div", { height: 2, width: "100%", backgroundColor: C.line }),
+        h("div", { display: "flex", alignItems: "center", width: "100%" }, [
           h(
             "div",
-            {
-              display: "flex",
-              maxWidth: 820,
-              fontFamily: "Geist Mono",
-              fontSize: 18,
-              letterSpacing: "0.06em",
-              color: C.fg3,
-              textTransform: "uppercase",
-            },
-            clip(meta || "Founder · Engineer · Host", 64),
+            mono(C.fg2, { maxWidth: 780, whiteSpace: "nowrap", overflow: "hidden" }),
+            clip(meta || "Founder · Engineer · Host", 50),
           ),
-          h("div", { display: "flex", alignItems: "center", gap: 10, fontSize: 22, fontWeight: 500 }, [
-            "saadmaz.com",
-            h("div", { display: "flex", color: C.accent }, "↗"),
-          ]),
-        ],
-      ),
+          h("div", { flexGrow: 1 }),
+          h("div", mono(C.fg2), "saadmaz.com ↗"),
+        ]),
+      ]),
     ].filter(Boolean),
   );
 

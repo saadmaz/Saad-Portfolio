@@ -25,6 +25,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from "../src/lib/seo-content.js";
 import { renderOg, loadPhoto, OG_WIDTH, OG_HEIGHT } from "./og/render.mjs";
+import { ogVersion } from "./og/version.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, "..", "dist");
@@ -117,6 +118,7 @@ function pageSchemas(routePath, title) {
 const OG_JOBS = [];
 /** "/" → /og/home.png, "/events/48th-big-debate" → /og/events/48th-big-debate.png (matches SEO.tsx). */
 const ogFile = (routePath) => `og/${routePath === "/" ? "home" : routePath.replace(/^\//, "")}.png`;
+const OG_VERSION = ogVersion();
 
 function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", og }) {
   const canonicalUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
@@ -142,7 +144,7 @@ function injectContent(shell, { path: routePath, title, description, schemas, bo
     html = apply(html);
   // Every page gets its own 1200×630 card as og:image / twitter:image.
   OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
-  const card = escape(`${BASE_URL}/${ogFile(routePath)}`);
+  const card = escape(`${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`);
   for (const apply of [
     meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, card),
     meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, card),

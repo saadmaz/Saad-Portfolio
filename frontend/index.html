@@ -79,24 +79,21 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.saadmaz.com" />
-    <!-- TODO(og-image): /logo.png is a 500x500 square, not a 1200x630 share card.
-         Declared truthfully as 500x500 for now; replace with a real 1200x630
-         asset (name + one-line positioning + photo) and update src + the two
-         dimensions below together. -->
-    <meta property="og:image" content="https://www.saadmaz.com/logo.png" />
+    <!-- Fallback card; scripts/prerender.mjs rewrites these per route (with ?v=). -->
+    <meta property="og:image" content="https://www.saadmaz.com/og/home.png" />
     <meta property="og:image:alt" content="Saad Mazhar - Startup Founder &amp; Full-Stack Developer" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="500" />
-    <meta property="og:image:height" content="500" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@SaadMazhar_" />
     <meta name="twitter:title" content="Full-Stack Developer &amp; Startup Founder - Saad Mazhar" />
     <meta
       name="twitter:description"
       content="Saad Mazhar - startup founder, tech speaker, and full-stack developer in Colombo, Sri Lanka."
     />
-    <meta name="twitter:image" content="https://www.saadmaz.com/logo.png" />
+    <meta name="twitter:image" content="https://www.saadmaz.com/og/home.png" />
   </head>
 
   <body>
