@@ -255,8 +255,8 @@ function Speaking() {
             counted
             id="speaking-heading"
             label="Speaking & hosting"
-            title="Holding the room,"
-            soft="one stage at a time"
+            title="Every stage,"
+            soft="a new story"
             action={
               <div className="flex items-center gap-3">
                 <div className="hidden gap-2 md:flex">

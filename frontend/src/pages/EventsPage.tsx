@@ -32,8 +32,8 @@ const EventsPage = () => {
       />
       <PageHeader
         label="Events & hosting"
-        title="Holding the room,"
-        soft="one stage at a time"
+        title="Every stage,"
+        soft="a new story"
         aside={events.length > 0 && <Stat value={events.length} label="Events" />}
       >
         {roles.length > 1 && (

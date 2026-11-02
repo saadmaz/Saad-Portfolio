@@ -522,8 +522,8 @@ function staticCard(routePath, data) {
     },
     "/events": {
       eyebrow: "Events & Hosting",
-      title: "Holding the room,",
-      soft: "one stage at a time",
+      title: "Every stage,",
+      soft: "a new story",
       meta: joinMeta(data.events.length && `${data.events.length} events`, "Host · Speaker · Organiser"),
     },
     "/experience": { eyebrow: "Experience", title: "Where I've", soft: "worked" },
