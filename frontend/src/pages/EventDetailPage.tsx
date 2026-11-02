@@ -18,7 +18,7 @@ const EventDetailPage = () => {
       <Layout>
         <div className="wrap flex flex-col gap-8 py-24">
           <Skeleton className="h-24 w-2/3" />
-          <Skeleton className="aspect-video w-full rounded-media" />
+          <Skeleton className="aspect-[4/3] max-h-[70svh] w-full rounded-media sm:aspect-[2/1]" />
         </div>
       </Layout>
     );
@@ -60,7 +60,13 @@ const EventDetailPage = () => {
       </header>
 
       <div className="wrap">
-        <Media src={event.image || event.images?.[0]} alt={event.title} className="aspect-video" priority />
+        {/* Capped to the viewport so the photo never fills a laptop screen; crop leans high to keep faces. */}
+        <Media
+          src={event.image || event.images?.[0]}
+          alt={event.title}
+          className="aspect-[4/3] max-h-[70svh] w-full sm:aspect-[2/1] [&_img]:object-[50%_30%]"
+          priority
+        />
       </div>
 
       <section className="wrap grid gap-14 py-24 md:grid-cols-[320px_1fr] md:gap-24">
