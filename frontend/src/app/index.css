@@ -127,12 +127,25 @@
 .prose-cms pre {
   @apply overflow-x-auto rounded-card border border-line bg-surface p-5 font-mono text-meta;
 }
-/* Copyable prompt from the admin editor; <CmsContent> adds the .prompt-bar. */
+/* Copyable prompt from the admin editor; <CmsContent> adds the .prompt-bar
+   and .prompt-foot. Reads like a chat message: sans text, generous leading. */
 .prose-cms [data-prompt] {
-  @apply overflow-hidden rounded-card border border-accent/25 bg-surface shadow-[0_0_0_4px_rgb(255_106_61/0.04)];
+  @apply overflow-hidden rounded-card border border-line-2 bg-surface;
 }
 .prose-cms .prompt-bar {
-  @apply flex items-center justify-between gap-4 border-b border-line py-2.5 pl-5 pr-2.5;
+  @apply flex items-center justify-between gap-4 border-b border-line py-2 pl-5 pr-2;
+}
+.prose-cms .prompt-foot {
+  @apply flex justify-center border-t border-line py-2;
+}
+.prose-cms .prompt-foot:empty {
+  @apply hidden;
+}
+.prose-cms [data-prompt].is-collapsed pre,
+.prose-cms [data-prompt].is-collapsed .prompt-body {
+  @apply max-h-[26rem] overflow-hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent);
+  mask-image: linear-gradient(to bottom, black 65%, transparent);
 }
 /* Code block; <CmsContent> wraps each <pre> and adds the .code-bar. */
 .prose-cms .code-block {
@@ -148,7 +161,36 @@
   @apply rounded-none bg-transparent p-0;
 }
 .prose-cms [data-prompt] pre {
-  @apply m-0 overflow-visible whitespace-pre-wrap break-words rounded-none border-0 bg-transparent text-[0.9375rem] leading-relaxed text-fg;
+  @apply m-0 overflow-visible whitespace-pre-wrap break-words rounded-none border-0 bg-transparent px-5 py-5 font-sans text-[0.9375rem] leading-[1.75] text-fg md:px-6;
+}
+/* Structured prompt (headings, lists) rebuilt from inline-code paragraphs:
+   same chat-message reading size as a plain prompt, smaller headings. */
+.prose-cms .prompt-body {
+  @apply break-words px-5 py-5 text-[0.9375rem] leading-[1.75] text-fg md:px-6;
+}
+.prose-cms .prompt-body > * + * {
+  @apply mt-3;
+}
+.prose-cms .prompt-body h1,
+.prose-cms .prompt-body h2 {
+  @apply mt-7 text-[1.0625rem] font-medium leading-snug text-fg;
+}
+.prose-cms .prompt-body h3,
+.prose-cms .prompt-body h4 {
+  @apply mt-5 text-[0.9375rem] font-medium text-fg;
+}
+.prose-cms .prompt-body ul,
+.prose-cms .prompt-body ol {
+  @apply space-y-1 pl-5;
+}
+.prose-cms .prompt-body li > p {
+  @apply m-0;
+}
+.prose-cms .prompt-body hr {
+  @apply my-6 border-line;
+}
+.prose-cms .prompt-body > :first-child {
+  @apply mt-0;
 }
 
 @media (prefers-reduced-motion: reduce) {

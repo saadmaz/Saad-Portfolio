@@ -133,7 +133,10 @@ const OG_JOBS = [];
 const ogFile = (routePath) => `og/${routePath === "/" ? "home" : routePath.replace(/^\//, "")}.png`;
 const OG_VERSION = ogVersion();
 
-function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", og, noIndex = false }) {
+function injectContent(
+  shell,
+  { path: routePath, title, description, schemas, bodyHtml = "", og, noIndex = false },
+) {
   const canonicalUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
   const fullTitle = `${title} - ${SITE_NAME}`;
   const et = escape(fullTitle);
@@ -146,7 +149,8 @@ function injectContent(shell, { path: routePath, title, description, schemas, bo
     ? html.replace(/<link\s[^>]*rel=["']canonical["'][^>]*>/i, () => `<link rel="canonical" href="${eu}" />`)
     : html.replace("</head>", () => `  <link rel="canonical" href="${eu}" />\n</head>`);
   // Unlisted pages: reachable by link, but search engines must not index them.
-  if (noIndex) html = html.replace("</head>", () => `  <meta name="robots" content="noindex, nofollow" />\n</head>`);
+  if (noIndex)
+    html = html.replace("</head>", () => `  <meta name="robots" content="noindex, nofollow" />\n</head>`);
 
   for (const apply of [
     meta(/(<meta\s+name="description"\s+content=")[^"]*(")/i, ed),
