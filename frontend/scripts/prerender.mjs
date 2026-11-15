@@ -133,7 +133,7 @@ const OG_JOBS = [];
 const ogFile = (routePath) => `og/${routePath === "/" ? "home" : routePath.replace(/^\//, "")}.png`;
 const OG_VERSION = ogVersion();
 
-function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", og }) {
+function injectContent(shell, { path: routePath, title, description, schemas, bodyHtml = "", og, noIndex = false }) {
   const canonicalUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
   const fullTitle = `${title} - ${SITE_NAME}`;
   const et = escape(fullTitle);
@@ -145,6 +145,8 @@ function injectContent(shell, { path: routePath, title, description, schemas, bo
   html = /<link\s[^>]*rel=["']canonical["'][^>]*>/i.test(html)
     ? html.replace(/<link\s[^>]*rel=["']canonical["'][^>]*>/i, () => `<link rel="canonical" href="${eu}" />`)
     : html.replace("</head>", () => `  <link rel="canonical" href="${eu}" />\n</head>`);
+  // Unlisted pages: reachable by link, but search engines must not index them.
+  if (noIndex) html = html.replace("</head>", () => `  <meta name="robots" content="noindex, nofollow" />\n</head>`);
 
   for (const apply of [
     meta(/(<meta\s+name="description"\s+content=")[^"]*(")/i, ed),
@@ -200,6 +202,7 @@ function writeRoute(routePath, html) {
 const EMPTY = {
   projects: [],
   posts: [],
+  unlistedPosts: [],
   events: [],
   certificates: [],
   education: [],
@@ -283,7 +286,10 @@ async function loadData() {
     projects: projects
       .filter((p) => p.slug && p.published !== false)
       .sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)),
-    posts: posts.filter((p) => p.slug && p.published === true).sort(byDateDesc("date")),
+    // Unlisted posts are live but only reachable by direct link: they get a
+    // (noindex) page so shared links preview properly, and nothing else.
+    posts: posts.filter((p) => p.slug && p.published === true && !p.unlisted).sort(byDateDesc("date")),
+    unlistedPosts: posts.filter((p) => p.slug && p.published === true && p.unlisted),
     events: events.sort(byEventDateDesc),
     certificates: certificates.sort(byDateDesc("issue_date")),
     education: education
@@ -649,7 +655,7 @@ function prerenderProjects(shell, projects) {
   }
 }
 
-function prerenderPosts(shell, posts) {
+function prerenderPosts(shell, posts, { noIndex = false } = {}) {
   for (const p of posts) {
     const routePath = `/blog/${p.slug}`;
     const description = p.metaDescription || p.excerpt || `"${p.title}" by ${p.author || SITE_NAME}.`;
@@ -677,6 +683,7 @@ function prerenderPosts(shell, posts) {
         description,
         schemas: [schema],
         bodyHtml,
+        noIndex,
         og: {
           eyebrow: "Writing",
           title: p.title,
@@ -1035,6 +1042,7 @@ async function main() {
   prerenderStaticRoutes(shell, data);
   prerenderProjects(shell, data.projects);
   prerenderPosts(shell, data.posts);
+  prerenderPosts(shell, data.unlistedPosts, { noIndex: true });
   prerenderEvents(shell, data.events);
   prerenderCertificates(shell, data.certificates);
   console.log(

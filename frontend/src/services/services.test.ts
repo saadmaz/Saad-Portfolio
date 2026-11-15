@@ -50,7 +50,23 @@ describe("ProjectService", () => {
   });
 });
 
+describe("BlogService.getPublished", () => {
+  it("leaves unlisted posts out of listings", async () => {
+    mocked.fetchCollection.mockResolvedValue([
+      { id: "a", published: true },
+      { id: "b", published: true, unlisted: true },
+      { id: "c", published: true, unlisted: false },
+    ]);
+    expect((await BlogService.getPublished()).map((p) => p.id)).toEqual(["a", "c"]);
+  });
+});
+
 describe("BlogService.getBySlugOrId", () => {
+  it("returns an unlisted post to someone with the link", async () => {
+    mocked.fetchFirstWhere.mockResolvedValue({ id: "1", slug: "secret", published: true, unlisted: true });
+    expect(await BlogService.getBySlugOrId("secret")).toMatchObject({ id: "1" });
+  });
+
   it("returns a published post found by slug", async () => {
     mocked.fetchFirstWhere.mockResolvedValue({ id: "1", slug: "hello", published: true });
     expect(await BlogService.getBySlugOrId("hello")).toMatchObject({ id: "1" });

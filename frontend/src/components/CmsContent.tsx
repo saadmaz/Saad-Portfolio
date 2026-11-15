@@ -21,12 +21,12 @@ async function copyText(text: string) {
   }
 }
 
-function PromptHeader({ block }: { block: HTMLElement }) {
+/** Label + copy button bar shown above a prompt or code block. */
+function CopyBar({ block, label }: { block: HTMLElement; label: string }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number>();
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  const label = block.dataset.label?.trim() || "Prompt";
   const onCopy = async () => {
     const text = block.querySelector("pre")?.textContent ?? "";
     if (!(await copyText(text))) return;
@@ -56,31 +56,56 @@ function PromptHeader({ block }: { block: HTMLElement }) {
   );
 }
 
+/** `language-ts` → "ts"; plain code blocks are just "Code". */
+function codeLabel(pre: HTMLElement) {
+  const lang = pre.querySelector("code")?.className.match(/language-([\w+#-]+)/)?.[1];
+  return lang && lang !== "plaintext" ? lang : "Code";
+}
+
+type Slot = { block: HTMLElement; host: HTMLElement; label: string; undo: () => void };
+
 /**
- * Renders CMS HTML. Prompt blocks (`<div data-prompt data-label>…<pre>`) from
- * the admin editor get a label bar with a copy button.
+ * Renders CMS HTML. Prompt blocks (`<div data-prompt data-label>…<pre>`) and
+ * plain code blocks (`<pre>`) from the admin editor get a label bar with a
+ * copy button.
  */
 export function CmsContent({ html, className }: { html: string; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [slots, setSlots] = useState<{ block: HTMLElement; host: HTMLElement }[]>([]);
+  const [slots, setSlots] = useState<Slot[]>([]);
 
   useLayoutEffect(() => {
     const root = ref.current;
     if (!root) return;
-    const next = [...root.querySelectorAll<HTMLElement>("[data-prompt]")].map((block) => {
+
+    const prompts = [...root.querySelectorAll<HTMLElement>("[data-prompt]")].map((block): Slot => {
       const host = document.createElement("div");
       host.className = "prompt-bar";
       block.prepend(host);
-      return { block, host };
+      return { block, host, label: block.dataset.label?.trim() || "Prompt", undo: () => host.remove() };
     });
+
+    // Wrap each code block so the bar sits outside the horizontally-scrolling <pre>.
+    const codes = [...root.querySelectorAll<HTMLElement>("pre")]
+      .filter((pre) => !pre.closest("[data-prompt]"))
+      .map((pre): Slot => {
+        const block = document.createElement("div");
+        block.className = "code-block";
+        const host = document.createElement("div");
+        host.className = "code-bar";
+        pre.replaceWith(block);
+        block.append(host, pre);
+        return { block, host, label: codeLabel(pre), undo: () => block.replaceWith(pre) };
+      });
+
+    const next = [...prompts, ...codes];
     setSlots(next);
-    return () => next.forEach(({ host }) => host.remove());
+    return () => next.forEach(({ undo }) => undo());
   }, [html]);
 
   return (
     <>
       <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: html }} />
-      {slots.map(({ block, host }, i) => createPortal(<PromptHeader block={block} />, host, String(i)))}
+      {slots.map(({ block, host, label }, i) => createPortal(<CopyBar block={block} label={label} />, host, String(i)))}
     </>
   );
 }

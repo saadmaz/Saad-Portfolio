@@ -134,6 +134,19 @@
 .prose-cms .prompt-bar {
   @apply flex items-center justify-between gap-4 border-b border-line py-2.5 pl-5 pr-2.5;
 }
+/* Code block; <CmsContent> wraps each <pre> and adds the .code-bar. */
+.prose-cms .code-block {
+  @apply overflow-hidden rounded-card border border-line bg-surface;
+}
+.prose-cms .code-bar {
+  @apply flex items-center justify-between gap-4 border-b border-line py-2.5 pl-5 pr-2.5;
+}
+.prose-cms .code-block pre {
+  @apply m-0 rounded-none border-0 bg-transparent p-5 leading-relaxed text-fg;
+}
+.prose-cms pre code {
+  @apply rounded-none bg-transparent p-0;
+}
 .prose-cms [data-prompt] pre {
   @apply m-0 overflow-visible whitespace-pre-wrap break-words rounded-none border-0 bg-transparent text-[0.9375rem] leading-relaxed text-fg;
 }

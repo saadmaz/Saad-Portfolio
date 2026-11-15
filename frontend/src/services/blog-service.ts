@@ -2,7 +2,8 @@
  * services/blog-service.ts
  * ─────────────────────────────────────────────────────────────
  * Read-only blog queries. Only `published === true` posts are ever
- * returned to the public site.
+ * returned to the public site. Unlisted posts are published but only
+ * reachable by direct link, so they're left out of every listing.
  */
 
 import { orderBy, where } from "firebase/firestore";
@@ -12,13 +13,16 @@ import type { BlogPost } from "@/types";
 const publishedOnly = (post: BlogPost | null) => (post?.published ? post : null);
 
 export const BlogService = {
-  /** All published posts, latest first. */
-  getPublished(): Promise<BlogPost[]> {
-    return fetchCollection<BlogPost>(
+  /** All published, listed posts, latest first. */
+  async getPublished(): Promise<BlogPost[]> {
+    // Filtered here rather than in the query: `unlisted != true` would drop
+    // every older post that has no `unlisted` field at all.
+    const posts = await fetchCollection<BlogPost>(
       COLLECTIONS.blogPosts,
       where("published", "==", true),
       orderBy("date", "desc"),
     );
+    return posts.filter((p) => !p.unlisted);
   },
 
   /** The single most recent published post. */
@@ -27,7 +31,7 @@ export const BlogService = {
     return posts[0] ?? null;
   },
 
-  /** A published post by slug, falling back to its document ID. */
+  /** A published post (listed or unlisted) by slug, falling back to its document ID. */
   async getBySlugOrId(slugOrId: string): Promise<BlogPost | null> {
     const bySlug = publishedOnly(await fetchFirstWhere<BlogPost>(COLLECTIONS.blogPosts, "slug", slugOrId));
     // A "/" can't appear in a document ID, so don't attempt the lookup.

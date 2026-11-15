@@ -1,4 +1,5 @@
 import { Link, Navigate, useParams } from "react-router-dom";
+import { EyeOff } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
@@ -46,7 +47,8 @@ const BlogDetailPage = () => {
         description={post.metaDescription || post.excerpt}
         url={url}
         type="article"
-        structuredData={schema}
+        noIndex={post.unlisted}
+        structuredData={post.unlisted ? undefined : schema}
         breadcrumbs={[
           { name: "Blog", url: `${BASE_URL}/blog` },
           { name: post.title, url },
@@ -56,6 +58,12 @@ const BlogDetailPage = () => {
         <Link to="/blog" className="text-sm text-fg-2 hover:text-fg">
           ← All writing
         </Link>
+        {post.unlisted && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-[13px] text-fg-3">
+            <EyeOff aria-hidden className="size-3.5" />
+            Unlisted · only people with the link can see this
+          </span>
+        )}
         <span className="font-mono text-meta text-fg-3">
           {[post.category, fullDate(post.date), `${readingTime(post.content)} read`]
             .filter(Boolean)
