@@ -15,28 +15,41 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
+import { createHash } from "node:crypto";
 import { allowMethods } from "./_lib/http.js";
+import { findPublishedPost, type Post } from "./_lib/posts.js";
 import { canonicalOf, coverOf, SLUG_RE, seoDescriptionOf, seoTitleOf } from "../src/lib/article-core.js";
 import { BASE_URL, SITE_NAME } from "../src/lib/seo-content.js";
 import { applyHeadMeta, escapeHtml, POST_PAGES_DIR } from "../src/lib/share-meta.js";
 import type { HeadMeta, ShareImage } from "../src/lib/share-meta.js";
-import type { BlogPost } from "../src/types/blog.js";
 
 const CACHE_OK = "public, max-age=0, s-maxage=60, stale-while-revalidate=86400";
 const CACHE_MISS = "public, max-age=0, s-maxage=60";
 /** Generic blog card, drawn by every build. */
 const BLOG_CARD = `${BASE_URL}/og/blog.png`;
 
-type Post = Partial<BlogPost> & { id: string; title: string };
+/**
+ * A post image re-served by api/share-image as a 1200×630 JPEG on our own
+ * domain. ?v= changes with the source URL (uploads get a new token), so a
+ * replaced image gets a new URL that link-preview caches must fetch again.
+ */
+export function shareImageUrl(slug: string, sourceUrl: string): string {
+  const v = createHash("sha256").update(sourceUrl).digest("hex").slice(0, 12);
+  return `${BASE_URL}/share-image/${slug}.jpg?v=${v}`;
+}
 
 /** Share image: the uploaded social image, else (only when the build has no card for this post) the cover. */
 export function shareImageOf(post: Post, hasBuiltCard: boolean): ShareImage | null {
-  const alt = (img: { alt?: string } | undefined) => img?.alt || post.title;
-  if (post.socialImage?.url) return { ...post.socialImage, alt: alt(post.socialImage) };
+  const source = post.socialImage?.url ? post.socialImage : hasBuiltCard ? null : coverOf(post);
+  if (source?.url && post.slug) {
+    return {
+      url: shareImageUrl(post.slug, source.url),
+      width: 1200,
+      height: 630,
+      alt: source.alt || post.title,
+    };
+  }
   if (hasBuiltCard) return null; // keep the prerendered page's generated card
-  const cover = coverOf(post);
-  if (cover?.url) return { url: cover.url, width: cover.width, height: cover.height, alt: alt(cover) };
   return { url: BLOG_CARD, width: 1200, height: 630, alt: post.title };
 }
 
@@ -64,19 +77,6 @@ export function injectArticle(shell: string, post: Post): string {
   );
 }
 
-/** Published post by slug: the post, null when there's none, undefined when the lookup failed. */
-async function findPost(slug: string): Promise<Post | null | undefined> {
-  if (!hasAdminCredentials()) return undefined;
-  try {
-    const snap = await adminDb().collection("blog_posts").where("slug", "==", slug).limit(5).get();
-    const doc = snap.docs.find((d) => d.get("published") === true);
-    return doc ? ({ ...doc.data(), id: doc.id } as Post) : null;
-  } catch (err) {
-    console.error("[blog-page] Firestore lookup failed:", err);
-    return undefined;
-  }
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!allowMethods(req, res, ["GET", "HEAD"])) return;
 
@@ -101,7 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const slug = String(req.query.slug ?? "").toLowerCase();
   const valid = SLUG_RE.test(slug);
   const [prerendered, post] = valid
-    ? await Promise.all([loadStatic(`/${POST_PAGES_DIR}/${slug}.html`), findPost(slug)])
+    ? await Promise.all([loadStatic(`/${POST_PAGES_DIR}/${slug}.html`), findPublishedPost(slug)])
     : [null, null];
 
   const send = (status: number, html: string, cache: string) => {

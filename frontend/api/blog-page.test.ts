@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { injectArticle, postHeadMeta, shareImageOf } from "./blog-page";
+import { injectArticle, postHeadMeta, shareImageOf, shareImageUrl } from "./blog-page";
 import { applyHeadMeta, imageMimeOf } from "../src/lib/share-meta.js";
 
 const SHELL = `<html><head>
@@ -38,12 +38,23 @@ const post = {
   published: true,
   content: "<p>Body & more</p>",
   cover: { url: "https://cdn/cover.webp", width: 1672, height: 940 },
-  socialImage: { url: "https://cdn/social.jpg?alt=media", width: 1200, height: 630 },
+  socialImage: { url: "https://cdn/social.webp?alt=media&token=a", width: 1734, height: 907 },
 };
 
 describe("share image", () => {
+  it("gives a replaced image a new URL", () => {
+    expect(shareImageUrl("a", "https://cdn/x.webp?token=1")).not.toBe(
+      shareImageUrl("a", "https://cdn/x.webp?token=2"),
+    );
+  });
+
   it("prefers the uploaded social image, with the title as alt", () => {
-    expect(shareImageOf(post, true)).toEqual({ ...post.socialImage, alt: post.title });
+    expect(shareImageOf(post, true)).toEqual({
+      url: shareImageUrl(post.slug, post.socialImage.url),
+      width: 1200,
+      height: 630,
+      alt: post.title,
+    });
   });
 
   it("keeps the build's generated card when there is no social image", () => {
@@ -51,7 +62,9 @@ describe("share image", () => {
   });
 
   it("falls back to the cover, then the blog card, for posts the build hasn't seen", () => {
-    expect(shareImageOf({ ...post, socialImage: undefined }, false)?.url).toBe("https://cdn/cover.webp");
+    expect(shareImageOf({ ...post, socialImage: undefined }, false)?.url).toBe(
+      shareImageUrl(post.slug, "https://cdn/cover.webp"),
+    );
     expect(shareImageOf({ id: "x", title: "T" }, false)?.url).toBe("https://www.saadmaz.com/og/blog.png");
   });
 });
@@ -67,8 +80,13 @@ describe("live head meta", () => {
     expect(html).toContain(
       '<link rel="canonical" href="https://www.saadmaz.com/blog/wso2-to-choreo-labs" />',
     );
-    expect(og(html, "og:image")).toBe("https://cdn/social.jpg?alt=media");
-    expect(og(html, "twitter:image")).toBe("https://cdn/social.jpg?alt=media");
+    const jpeg = shareImageUrl(post.slug, post.socialImage.url);
+    expect(jpeg).toMatch(
+      /^https:\/\/www\.saadmaz\.com\/share-image\/wso2-to-choreo-labs\.jpg\?v=[0-9a-f]{12}$/,
+    );
+    expect(og(html, "og:image")).toBe(jpeg);
+    expect(og(html, "twitter:image")).toBe(jpeg);
+    expect(og(html, "og:image:width")).toBe("1200");
     expect(og(html, "og:image:type")).toBe("image/jpeg");
     expect(og(html, "twitter:card")).toBe("summary_large_image");
     expect(og(html, "robots")).toBe("index, follow");
