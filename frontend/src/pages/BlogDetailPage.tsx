@@ -1,20 +1,85 @@
-import { Link, Navigate, useParams } from "react-router-dom";
-import { EyeOff } from "lucide-react";
+import { Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
-import { Row } from "@/components/cards";
-import { CmsContent } from "@/components/CmsContent";
-import { useBlogPost, useBlogPosts } from "@/hooks/useBlog";
-import { fullDate, monthYear, readingTime } from "@/lib/format";
-import { BASE_URL } from "@/lib/seo-content";
+import { Skeleton } from "@/components/ui";
+import { ArticleView } from "@/components/article/ArticleView";
+import { useAuthorOf, useBlogPost, useBlogPosts, useRedirectFor, useSeries } from "@/hooks/useBlog";
+import {
+  articleSchema,
+  canonicalOf,
+  countWords,
+  publishedAtOf,
+  seoDescriptionOf,
+  seoTitleOf,
+  slugify,
+  socialImageOf,
+  stripHtml,
+  updatedAtOf,
+} from "@/lib/article-core";
+import { BASE_URL, SITE_NAME } from "@/lib/seo-content";
+import type { BlogPost } from "@/types";
+import NotFound from "./NotFound";
+
+/** Head tags for a live article: canonical, OG/Twitter card, BlogPosting + breadcrumbs. */
+export function ArticleSeo({ post }: { post: BlogPost }) {
+  const author = useAuthorOf(post);
+  const { data: allSeries = [] } = useSeries();
+  const url = `${BASE_URL}/blog/${post.slug || post.id}`;
+  const image = socialImageOf(post);
+  const hidden = post.unlisted || post.noIndex;
+  const series = allSeries.find((s) => s.id === post.seriesId);
+  const schema = articleSchema(post, {
+    baseUrl: BASE_URL,
+    author,
+    publisher: { name: SITE_NAME, logo: "/logo.png" },
+    series,
+    wordCount: countWords(stripHtml(post.content)),
+  });
+
+  return (
+    <SEO
+      title={seoTitleOf(post)}
+      description={seoDescriptionOf(post)}
+      url={url}
+      canonical={canonicalOf(post, BASE_URL)}
+      type="article"
+      noIndex={hidden}
+      // Uploaded images carry their real size; the generated card is used otherwise.
+      {...(image?.url
+        ? {
+            image: image.url,
+            imageWidth: image.width ?? 1200,
+            imageHeight: image.height ?? 630,
+            imageAlt: image.alt,
+          }
+        : {})}
+      article={{
+        publishedTime: publishedAtOf(post),
+        modifiedTime: updatedAtOf(post),
+        author: author?.name || post.author,
+        section: post.category,
+        tags: post.tags,
+      }}
+      structuredData={hidden ? undefined : schema}
+      breadcrumbs={[
+        { name: "Blog", url: `${BASE_URL}/blog` },
+        ...(post.category
+          ? [{ name: post.category, url: `${BASE_URL}/blog/category/${slugify(post.category)}` }]
+          : []),
+        { name: post.title, url },
+      ]}
+    />
+  );
+}
 
 const BlogDetailPage = () => {
   const { slug = "" } = useParams();
   const { data: post, isLoading } = useBlogPost(slug);
   const { data: all = [] } = useBlogPosts();
+  // Only consulted when the article doesn't exist (e.g. its slug changed since the last build).
+  const redirect = useRedirectFor(`/blog/${slug}`, !isLoading && !post);
 
-  if (isLoading)
+  if (isLoading || (!post && redirect.isLoading))
     return (
       <Layout>
         <div className="mx-auto flex max-w-prose flex-col gap-6 px-5 py-24">
@@ -24,93 +89,16 @@ const BlogDetailPage = () => {
         </div>
       </Layout>
     );
-  if (!post) return <Navigate to="/blog" replace />;
-
-  const url = `${BASE_URL}/blog/${post.slug || post.id}`;
-  const related = all.filter((p) => p.id !== post.id).slice(0, 2);
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.metaDescription || post.excerpt,
-    image: post.image,
-    datePublished: post.publishedAt || post.date,
-    dateModified: post.lastUpdatedAt || post.date,
-    author: { "@type": "Person", name: post.author || "Saad Mazhar", url: BASE_URL },
-    mainEntityOfPage: url,
-  };
+  if (!post) {
+    const to = redirect.data?.to;
+    if (to && to !== `/blog/${slug}`) return <Navigate to={to} replace />;
+    return <NotFound />;
+  }
 
   return (
     <Layout>
-      <SEO
-        title={post.title}
-        description={post.metaDescription || post.excerpt}
-        url={url}
-        type="article"
-        noIndex={post.unlisted}
-        structuredData={post.unlisted ? undefined : schema}
-        breadcrumbs={[
-          { name: "Blog", url: `${BASE_URL}/blog` },
-          { name: post.title, url },
-        ]}
-      />
-      <header className="mx-auto flex max-w-[760px] flex-col items-center gap-7 px-5 pb-14 pt-12 text-center md:pt-20">
-        <Link to="/blog" className="text-sm text-fg-2 hover:text-fg">
-          ← All writing
-        </Link>
-        {post.unlisted && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-[13px] text-fg-3">
-            <EyeOff aria-hidden className="size-3.5" />
-            Unlisted · only people with the link can see this
-          </span>
-        )}
-        <span className="font-mono text-meta text-fg-3">
-          {[post.category, fullDate(post.date), `${readingTime(post.content)} read`]
-            .filter(Boolean)
-            .join(" · ")}
-        </span>
-        <h1 className="text-display-m font-medium">{post.title}</h1>
-        {post.excerpt && <p className="text-body-l text-fg-2">{post.excerpt}</p>}
-      </header>
-
-      {post.image && (
-        <div className="wrap">
-          <Media src={post.image} alt={post.title} className="aspect-[2/1]" priority />
-        </div>
-      )}
-
-      <article className="mx-auto max-w-prose px-5 py-20 md:py-24">
-        <CmsContent className="prose-cms" html={post.content ?? ""} />
-        {(post.tags?.length || post.ctaUrl) && (
-          <div className="mt-16 flex flex-col gap-6 border-t border-line-2 pt-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-2">
-              {post.tags?.map((t) => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
-            {post.ctaUrl && <Button href={post.ctaUrl}>{post.ctaText || "Learn more"}</Button>}
-          </div>
-        )}
-      </article>
-
-      {related.length > 0 && (
-        <section className="section">
-          <div className="wrap">
-            <Eyebrow>Keep reading</Eyebrow>
-            <div className="mt-8 border-b border-line-2">
-              {related.map((p) => (
-                <Row
-                  key={p.id}
-                  to={`/blog/${p.slug || p.id}`}
-                  lead={monthYear(p.date)}
-                  title={p.title}
-                  trail={[p.category, readingTime(p.content)].filter(Boolean).join(" · ")}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <ArticleSeo post={post} />
+      <ArticleView post={post} livePosts={all} />
     </Layout>
   );
 };

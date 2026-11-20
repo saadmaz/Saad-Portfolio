@@ -10,7 +10,8 @@ import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
 import { useCertificates, useEvents, useExperience, useSkills, useTestimonials } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
-import { monthYear, readingTime } from "@/lib/format";
+import { monthYear } from "@/lib/format";
+import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, PERSON_SCHEMA, BASE_URL } from "@/lib/seo-content";
@@ -351,7 +352,9 @@ function Certifications() {
 
 function Writing() {
   const { data = [] } = useBlogPosts();
-  const posts = data.slice(0, 3);
+  // Featured picks (CMS order) lead; the latest posts fill the remaining slots.
+  const featured = featuredPosts(data);
+  const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
   if (posts.length === 0) return null;
   return (
     <section className="section" aria-labelledby="writing-heading">
@@ -375,9 +378,11 @@ function Writing() {
             <Row
               key={p.id}
               to={`/blog/${p.slug || p.id}`}
-              lead={monthYear(p.date)}
+              lead={monthYear(p.publishedAt || p.date)}
               title={p.title}
-              trail={[p.category, readingTime(p.content)].filter(Boolean).join(" · ")}
+              trail={[p.featured ? "Featured" : p.category, `${readingMinutesOf(p)} min`]
+                .filter(Boolean)
+                .join(" · ")}
             />
           ))}
         </div>

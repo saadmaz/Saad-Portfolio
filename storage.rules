@@ -9,11 +9,21 @@ service firebase.storage {
           && request.auth.token.email == "saadmazaa@gmail.com";
     }
 
-    // Anyone can read public assets (logos, certificates, images).
-    // Only the admin can upload or delete files.
-    match /{allPaths=**} {
+    // Blog media: images only, at most 15 MB each.
+    match /blog/{allPaths=**} {
       allow read:  if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin()
+                   && request.resource.size < 15 * 1024 * 1024
+                   && request.resource.contentType.matches('image/(jpeg|png|webp|avif|gif)');
+      allow delete: if isAdmin();
+    }
+
+    // Everything else: anyone can read public assets (logos, certificates,
+    // images); only the admin can upload or delete. Rules OR together, so the
+    // blog folder is excluded here or its restrictions above would be bypassed.
+    match /{folder}/{allPaths=**} {
+      allow read:  if true;
+      allow write: if isAdmin() && folder != 'blog';
     }
   }
 }

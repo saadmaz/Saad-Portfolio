@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+# Draft previews and API endpoints are access-controlled; this only keeps
+# crawlers from wasting requests on them (it is not a security control).
+Disallow: /preview/
+Disallow: /api/
 
 Sitemap: https://www.saadmaz.com/sitemap.xml

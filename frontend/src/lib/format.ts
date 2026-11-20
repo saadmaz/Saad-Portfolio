@@ -1,3 +1,4 @@
+import { readingTimeMinutes } from "./article-core";
 // Date formatting shared by every page. Ranges use an en dash, never an em dash.
 
 const MONTHS = [
@@ -62,10 +63,7 @@ export function monthIndex(month?: string): number {
 }
 
 /** Rough reading time for HTML content. */
+/** "4 min" - same algorithm the CMS uses (see lib/article-core.js). */
 export function readingTime(html: string | undefined): string {
-  const words = (html ?? "")
-    .replace(/<[^>]+>/g, " ")
-    .split(/\s+/)
-    .filter(Boolean).length;
-  return `${Math.max(1, Math.round(words / 230))} min`;
+  return `${readingTimeMinutes(html)} min`;
 }

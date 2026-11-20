@@ -25,6 +25,23 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from "../src/lib/seo-content.js";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
+import {
+  articleSchema,
+  canonicalOf,
+  categoriesOf,
+  countWords,
+  coverOf,
+  isIndexable,
+  normalizePath,
+  personSchema as authorPersonSchema,
+  publishedAtOf,
+  readingMinutesOf,
+  seoDescriptionOf,
+  seriesParts,
+  seoTitleOf,
+  slugify,
+  socialImageOf,
+} from "../src/lib/article-core.js";
 import { renderOg, loadPhoto, OG_WIDTH, OG_HEIGHT } from "./og/render.mjs";
 import { ogVersion } from "./og/version.mjs";
 
@@ -135,9 +152,21 @@ const OG_VERSION = ogVersion();
 
 function injectContent(
   shell,
-  { path: routePath, title, description, schemas, bodyHtml = "", og, noIndex = false },
+  {
+    path: routePath,
+    title,
+    description,
+    schemas,
+    bodyHtml = "",
+    og,
+    noIndex = false,
+    canonical,
+    type,
+    image,
+  },
 ) {
-  const canonicalUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
+  const pageUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
+  const canonicalUrl = canonical || pageUrl;
   const fullTitle = `${title} - ${SITE_NAME}`;
   const et = escape(fullTitle);
   const ed = escape(truncate(description, 300));
@@ -156,20 +185,27 @@ function injectContent(
     meta(/(<meta\s+name="description"\s+content=")[^"]*(")/i, ed),
     meta(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i, et),
     meta(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, ed),
-    meta(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i, eu),
+    meta(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i, escape(pageUrl)),
+    meta(/(<meta\s+property="og:type"\s+content=")[^"]*(")/i, escape(type || "website")),
     meta(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i, et),
     meta(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, ed),
   ])
     html = apply(html);
-  // Every page gets its own 1200×630 card as og:image / twitter:image.
+  // Every page gets its own 1200×630 card as og:image / twitter:image, unless
+  // the author uploaded a dedicated social image for it.
   OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
   const card = escape(`${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`);
+  const shareUrl = image?.url ? escape(image.url) : card;
+  const ext = image?.url ? String(image.url).split("?")[0].split(".").pop()?.toLowerCase() : "png";
+  const mime =
+    { webp: "image/webp", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif" }[ext] ?? "image/png";
   for (const apply of [
-    meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, card),
-    meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, card),
-    meta(/(<meta\s+property="og:image:width"\s+content=")[^"]*(")/i, String(OG_WIDTH)),
-    meta(/(<meta\s+property="og:image:height"\s+content=")[^"]*(")/i, String(OG_HEIGHT)),
-    meta(/(<meta\s+property="og:image:alt"\s+content=")[^"]*(")/i, et),
+    meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, shareUrl),
+    meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, shareUrl),
+    meta(/(<meta\s+property="og:image:type"\s+content=")[^"]*(")/i, mime),
+    meta(/(<meta\s+property="og:image:width"\s+content=")[^"]*(")/i, String(image?.width || OG_WIDTH)),
+    meta(/(<meta\s+property="og:image:height"\s+content=")[^"]*(")/i, String(image?.height || OG_HEIGHT)),
+    meta(/(<meta\s+property="og:image:alt"\s+content=")[^"]*(")/i, image?.alt ? escape(image.alt) : et),
     meta(/(<meta\s+name="twitter:card"\s+content=")[^"]*(")/i, "summary_large_image"),
   ])
     html = apply(html);
@@ -217,6 +253,10 @@ const EMPTY = {
   languages: [],
   publications: [],
   newsletters: [],
+  authors: [],
+  series: [],
+  redirects: [],
+  settings: {},
 };
 
 async function loadData() {
@@ -269,6 +309,10 @@ async function loadData() {
     languages,
     publications,
     newsletters,
+    authors,
+    series,
+    redirects,
+    settingsSnap,
   ] = await Promise.all([
     all("projects"),
     all("blog_posts"),
@@ -282,6 +326,10 @@ async function loadData() {
     all("languages"),
     all("publications"),
     all("newsletters"),
+    all("authors"),
+    all("blog_series"),
+    all("redirects"),
+    db.collection("blog_settings").doc("config").get(),
   ]);
 
   return {
@@ -313,6 +361,10 @@ async function loadData() {
     languages,
     publications: publications.sort(byDateDesc("date")),
     newsletters: newsletters.sort(byDateDesc("date")),
+    authors,
+    series: series.filter((s) => s.published === true),
+    redirects,
+    settings: settingsSnap.exists ? settingsSnap.data() : {},
   };
 }
 
@@ -659,48 +711,150 @@ function prerenderProjects(shell, projects) {
   }
 }
 
-function prerenderPosts(shell, posts, { noIndex = false } = {}) {
+/** The post's author profile (authorId, else the default author), or null for legacy name-only posts. */
+const authorOf = (p, data) =>
+  data.authors.find((a) => a.id === p.authorId) ??
+  data.authors.find((a) => a.id === data.settings.defaultAuthorId) ??
+  data.authors.find((a) => a.isDefault) ??
+  null;
+
+function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
   for (const p of posts) {
     const routePath = `/blog/${p.slug}`;
-    const description = p.metaDescription || p.excerpt || `"${p.title}" by ${p.author || SITE_NAME}.`;
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: p.title,
-      description,
-      image: p.image,
-      author: { "@type": "Person", name: p.author || SITE_NAME, url: BASE_URL },
-      publisher: author,
-      datePublished: p.publishedAt || p.date,
-      dateModified: p.lastUpdatedAt || p.date,
-      mainEntityOfPage: `${BASE_URL}${routePath}`,
-      keywords: p.keywords || p.tags?.join(", "),
-      articleSection: p.category,
-    };
+    const postAuthor = authorOf(p, data);
+    const authorName = postAuthor?.name || p.author || SITE_NAME;
+    const description = seoDescriptionOf(p) || `"${p.title}" by ${authorName}.`;
+    const cover = coverOf(p);
+    const social = socialImageOf(p);
+    const hidden = noIndex || !!p.noIndex;
+    const schema = articleSchema(p, {
+      baseUrl: BASE_URL,
+      author: postAuthor,
+      publisher: { name: SITE_NAME, logo: "/logo.png" },
+      series: data.series.find((s) => s.id === p.seriesId),
+      wordCount: countWords(stripHtml(p.content)),
+    });
+    const published = publishedAtOf(p);
     // The full article, not just the excerpt: it's the content worth indexing.
-    const bodyHtml = `<article>\n<p>${escape(joinMeta(p.author, dateLabel(p.date), p.category))}</p>\n${p.image ? `${img(p.image, p.title)}\n` : ""}${p.content ?? ""}\n</article>\n<p><a href="/blog">All writing</a></p>`;
+    const bodyHtml = [
+      "<article>",
+      p.subtitle && `<p><strong>${escape(p.subtitle)}</strong></p>`,
+      `<p>${escape(joinMeta(authorName, dateLabel(published), p.category, `${readingMinutesOf(p, data.settings.readingWpm)} min read`))}</p>`,
+      postAuthor &&
+        `<p><a href="/authors/${escape(postAuthor.slug)}">About ${escape(postAuthor.name)}</a></p>`,
+      cover && img(cover.url, cover.alt || p.title),
+      p.content ?? "",
+      (p.sources ?? []).length &&
+        `<h2>Sources &amp; references</h2>\n<ol>${p.sources
+          .map(
+            (s) =>
+              `<li>${s.url ? `<a href="${escape(s.url)}">${escape(s.title)}</a>` : escape(s.title)}</li>`,
+          )
+          .join("")}</ol>`,
+      "</article>",
+      '<p><a href="/blog">All writing</a></p>',
+    ]
+      .filter(Boolean)
+      .join("\n");
     writeRoute(
       routePath,
       injectContent(shell, {
         path: routePath,
-        title: p.title,
+        title: seoTitleOf(p),
         description,
-        schemas: [schema],
+        schemas: hidden ? [] : [schema],
         bodyHtml,
-        noIndex,
+        noIndex: hidden,
+        canonical: canonicalOf(p, BASE_URL),
+        type: "article",
+        // A dedicated social image wins over the generated card.
+        image: p.socialImage?.url ? social : null,
         og: {
           eyebrow: "Writing",
           title: p.title,
           meta: joinMeta(
             p.category,
-            dateLabel(p.date),
-            `${Math.max(1, Math.round(stripHtml(p.content).split(" ").length / 220))} min read`,
+            dateLabel(published),
+            `${readingMinutesOf(p, data.settings.readingWpm)} min read`,
           ),
-          photo: p.image,
+          photo: cover?.url,
         },
       }),
     );
   }
+}
+
+function prerenderBlogIndexes(shell, data) {
+  // Category pages.
+  for (const c of categoriesOf(data.posts.filter(isIndexable))) {
+    const label = data.settings.categories?.find((s) => s.slug === c.slug)?.label ?? c.label;
+    const inCat = data.posts.filter((p) => slugify(p.category) === c.slug);
+    const routePath = `/blog/category/${c.slug}`;
+    writeRoute(
+      routePath,
+      injectContent(shell, {
+        path: routePath,
+        title: `${label} articles`,
+        description: `Articles about ${label} by ${SITE_NAME}.`,
+        bodyHtml: list(inCat, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+        og: { eyebrow: "Writing", title: `${label} articles` },
+      }),
+    );
+  }
+  // Author pages.
+  for (const a of data.authors.filter((a) => a.slug)) {
+    const byAuthor = data.posts.filter((p) => authorOf(p, data)?.id === a.id);
+    const routePath = `/authors/${a.slug}`;
+    writeRoute(
+      routePath,
+      injectContent(shell, {
+        path: routePath,
+        title: `${a.name}${a.title ? `, ${a.title}` : ""}`,
+        description: a.bio || `Articles by ${a.name}.`,
+        schemas: [
+          {
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: authorPersonSchema(a, BASE_URL),
+          },
+        ],
+        bodyHtml: [
+          paras(a.bio),
+          list(byAuthor, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+        ]
+          .filter(Boolean)
+          .join("\n"),
+        og: { eyebrow: "Author", title: a.name, meta: a.title },
+      }),
+    );
+  }
+  // Series pages.
+  const byId = new Map(data.posts.map((p) => [p.id, p]));
+  for (const s of data.series.filter((s) => s.slug)) {
+    const parts = seriesParts(s, byId);
+    const routePath = `/blog/series/${s.slug}`;
+    writeRoute(
+      routePath,
+      injectContent(shell, {
+        path: routePath,
+        title: `${s.title} - series`,
+        description: s.description || `A ${parts.length}-part series by ${SITE_NAME}.`,
+        bodyHtml: list(parts, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+        og: { eyebrow: "Series", title: s.title, meta: `${parts.length} parts` },
+      }),
+    );
+  }
+}
+
+/** Redirect map for middleware.ts: { "/blog/old": { to, statusCode } }. */
+function writeRedirects(data) {
+  const map = {};
+  for (const r of data.redirects) {
+    const from = normalizePath(r.from);
+    if (from && r.to) map[from] = { to: r.to, statusCode: r.statusCode === 302 ? 302 : 301 };
+  }
+  writeFileSync(join(DIST_DIR, "redirects.json"), JSON.stringify(map), "utf-8");
+  console.log(`✅ redirects.json (${Object.keys(map).length} rules)`);
 }
 
 function prerenderEvents(shell, events) {
@@ -874,15 +1028,11 @@ function writeSitemaps(data) {
         ]),
       ),
     ],
-    "blog.xml": [
-      urlEntry(`${BASE_URL}/blog`, today, "weekly", "0.9"),
-      ...data.posts.map((p) =>
-        urlEntry(`${BASE_URL}/blog/${p.slug}`, toDateString(p.lastUpdatedAt || p.date), "monthly", "0.8", [
-          p.image,
-        ]),
-      ),
-    ],
   };
+  // blog.xml is served live by api/feed.ts (vercel.json rewrite), so it
+  // follows publishing without a rebuild. It's only listed in the index here;
+  // writing a static file would shadow the rewrite.
+  const dynamic = ["blog.xml"];
   if (data.events.length)
     files["events.xml"] = [
       urlEntry(`${BASE_URL}/events`, today, "weekly", "0.8"),
@@ -903,7 +1053,7 @@ function writeSitemaps(data) {
 
   for (const [name, entries] of Object.entries(files))
     writeFileSync(join(DIST_DIR, "sitemaps", name), buildUrlset(entries), "utf-8");
-  const index = Object.keys(files)
+  const index = [...Object.keys(files), ...dynamic]
     .map(
       (f) =>
         `  <sitemap>\n    <loc>${BASE_URL}/sitemaps/${f}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`,
@@ -1045,14 +1195,16 @@ async function main() {
 
   prerenderStaticRoutes(shell, data);
   prerenderProjects(shell, data.projects);
-  prerenderPosts(shell, data.posts);
-  prerenderPosts(shell, data.unlistedPosts, { noIndex: true });
+  prerenderPosts(shell, data.posts, data);
+  prerenderPosts(shell, data.unlistedPosts, data, { noIndex: true });
+  prerenderBlogIndexes(shell, data);
   prerenderEvents(shell, data.events);
   prerenderCertificates(shell, data.certificates);
   console.log(
     `✅ Detail pages prerendered: ${data.projects.length} projects, ${data.posts.length} posts, ${data.events.length} events, ${data.certificates.length} certificates.`,
   );
   writeSitemaps(data);
+  writeRedirects(data);
   writeLlmsFull(data);
   await renderCards();
 }

@@ -24,9 +24,17 @@ Content is edited in a separate admin app (`Saad-Portfolio-Admin`). This reposit
 ## Architecture
 
 ```
-browser ──read──▶ Firestore            (rules: public read, admin-only write)
+browser ──read──▶ Firestore            (rules: public read of live content, admin-only write)
 browser ──POST──▶ /api/contact ──▶ Firestore contact_messages + SendGrid email
+browser ──POST──▶ /api/reactions, /api/track   (reactions, first-party analytics, 404 log)
+CMS     ──POST──▶ /api/admin              (preview links, rebuilds, scheduler; admin token)
+cron    ──GET───▶ /api/cron/publish-scheduled   (scheduled publishing)
+crawler ──GET───▶ /rss.xml, /sitemaps/blog.xml  (live, via /api/feed)
 ```
+
+The blog's editorial CMS (statuses, scheduling, revisions, previews, authors,
+series, redirects, SEO) is documented in **[docs/editorial-cms.md](docs/editorial-cms.md)**:
+architecture, data model, API, environment variables, deployment order and tests.
 
 - **Reads** go straight from the browser to Firestore through one typed layer:
   `lib/firestore.ts` (helpers) → `services/*` (queries) → `hooks/*` (TanStack Query).
@@ -99,7 +107,8 @@ firebase deploy --only firestore:rules,firestore:indexes,storage
 ```
 
 > Deploy the site **before** the rules whenever both change: the rules deny
-> client-side contact writes, which older site builds relied on.
+> client-side contact writes, which older site builds relied on, and only allow
+> public reads of published blog posts, which older builds' slug lookup didn't filter on.
 
 ## Security notes
 

@@ -15,5 +15,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["api", "src/**/*.test.ts"]
+  "include": ["api", "middleware.ts", "src/**/*.test.ts"]
 }

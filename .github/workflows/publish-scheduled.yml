@@ -1,0 +1,35 @@
+name: Publish scheduled posts
+
+# Vercel's Hobby plan only allows daily cron jobs, so this calls the
+# scheduler endpoint every 10 minutes. Overlapping runs are safe: each post
+# is published inside a Firestore transaction (see api/_lib/scheduler.ts).
+#
+# Repository secrets:
+#   SITE_URL     e.g. https://www.saadmaz.com
+#   CRON_SECRET  same value as the CRON_SECRET env var on Vercel
+# Without them the job exits quietly.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Trigger scheduler
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$SITE_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "SITE_URL / CRON_SECRET not configured; skipping."
+            exit 0
+          fi
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/cron/publish-scheduled"

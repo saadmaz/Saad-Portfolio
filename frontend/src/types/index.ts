@@ -173,42 +173,17 @@ export interface Certificate {
   is_featured: boolean;
 }
 
-export interface BlogPost {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  date: string;
-  category: string;
-  author: string;
-  image?: string;
-  tags?: string[];
-  published: boolean;
-  /** Live, but only reachable by direct link: hidden from lists, feeds and search. */
-  unlisted?: boolean;
-  is_latest?: boolean;
-
-  /* SEO */
-  metaDescription?: string;
-  keywords?: string; // comma-separated
-
-  /* Publishing */
-  scheduledDate?: string; // ISO string; empty = not scheduled
-  publishedAt?: string;
-  lastUpdatedAt?: string;
-
-  /* Content extras */
-  tableOfContents?: boolean;
-  socialShareEnabled?: boolean;
-
-  /* CTA */
-  ctaText?: string;
-  ctaUrl?: string;
-
-  /* Related */
-  relatedPostSlugs?: string[];
-}
+export type {
+  ArticleSource,
+  ArticleStatus,
+  Author,
+  BlogPost,
+  BlogSeries,
+  BlogSettings,
+  ImageAsset,
+  ReactionCounts,
+  Redirect,
+} from "./blog";
 
 export interface Award {
   id: string;

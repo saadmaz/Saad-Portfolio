@@ -1,7 +1,18 @@
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronDown, Copy, Sparkles } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { assignHeadingIds } from "@/lib/article-core";
+import { sanitizeArticle, sanitizeHtmlBlock } from "@/lib/sanitize";
+import { embedSrc, EMBED_PROVIDERS } from "@/lib/embeds";
+import { Chart } from "@/components/article/Chart";
+import { parseChartData, type ChartData } from "@/lib/chart";
+
+export interface ContentHeading {
+  id: string;
+  text: string;
+  level: 2 | 3;
+}
 
 async function copyText(text: string) {
   try {
@@ -210,19 +221,199 @@ type Slot = {
   undo: () => void;
 };
 
+type Extra =
+  | { kind: "chart"; host: HTMLElement; chartType: "bar" | "line"; data: ChartData; title: string }
+  | { kind: "carousel"; host: HTMLElement; track: HTMLElement }
+  | { kind: "toc"; host: HTMLElement }
+  | { kind: "sources"; host: HTMLElement };
+
+/** Wraps `el` in a new element and returns a function that unwraps it. */
+function wrap(el: Element, className: string) {
+  const wrapper = document.createElement("div");
+  wrapper.className = className;
+  el.replaceWith(wrapper);
+  wrapper.append(el);
+  return () => wrapper.replaceWith(el);
+}
+
+/** Scroll-snap carousel controls; the track itself works with touch/trackpad alone. */
+function CarouselControls({ track }: { track: HTMLElement }) {
+  const step = (dir: 1 | -1) => track.scrollBy({ left: dir * track.clientWidth * 0.85, behavior: "smooth" });
+  const cls =
+    "inline-flex size-9 items-center justify-center rounded-full border border-line-2 text-fg-2 transition-colors hover:border-line-3 hover:text-fg";
+  return (
+    <>
+      <button type="button" className={cls} onClick={() => step(-1)} aria-label="Previous image">
+        <ChevronLeft aria-hidden className="size-4" />
+      </button>
+      <button type="button" className={cls} onClick={() => step(1)} aria-label="Next image">
+        <ChevronRight aria-hidden className="size-4" />
+      </button>
+    </>
+  );
+}
+
 /**
- * Renders CMS HTML. Prompt blocks (`<div data-prompt data-label>…<pre>`) and
- * plain code blocks (`<pre>`) from the admin editor get a label bar with a
- * copy button; long prompts collapse behind a "Show full prompt" toggle.
+ * Enhances the CMS editor's structured blocks in place: heading ids, lazy
+ * images, scrollable tables, trusted embeds, custom HTML, charts, carousels
+ * and the inline TOC / sources placeholders. Returns extra portal slots and
+ * an undo function.
  */
-export function CmsContent({ html, className }: { html: string; className?: string }) {
+function enhanceBlocks(root: HTMLElement, onHeadings?: (h: ContentHeading[]) => void) {
+  const undo: (() => void)[] = [];
+  const extras: Extra[] = [];
+
+  // Headings: stable ids for the TOC and deep links; author anchors win.
+  const headingEls = [...root.querySelectorAll<HTMLElement>("h2, h3")];
+  const reserved = [...root.querySelectorAll<HTMLElement>("[id]")]
+    .filter((el) => !headingEls.includes(el))
+    .map((el) => el.id);
+  const ids = assignHeadingIds(
+    headingEls.map((h) => ({ text: h.textContent ?? "", id: h.id || null })),
+    reserved,
+  );
+  headingEls.forEach((h, i) => {
+    if (!h.id) {
+      h.id = ids[i];
+      undo.push(() => h.removeAttribute("id"));
+    }
+  });
+  onHeadings?.(
+    headingEls
+      .map((h, i) => ({
+        id: ids[i],
+        text: (h.textContent ?? "").trim(),
+        level: (h.tagName === "H2" ? 2 : 3) as 2 | 3,
+      }))
+      .filter((h) => h.text),
+  );
+
+  // Images below the fold never block the first paint.
+  root.querySelectorAll("img").forEach((img) => {
+    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
+    img.setAttribute("decoding", "async");
+    if (img.hasAttribute("srcset") && !img.hasAttribute("sizes"))
+      img.setAttribute("sizes", "(min-width: 760px) 680px, 100vw");
+  });
+
+  // Tables scroll sideways on small screens instead of breaking the layout.
+  root.querySelectorAll("table").forEach((table) => {
+    if (!table.closest("[data-chart]")) undo.push(wrap(table, "table-wrap"));
+  });
+
+  // Embeds: iframes are rebuilt from provider + id, never taken from content.
+  root.querySelectorAll<HTMLElement>("[data-embed]").forEach((fig) => {
+    const provider = fig.dataset.provider ?? "";
+    const src = embedSrc(provider, fig.dataset.embedId);
+    if (!src) return;
+    const frame = document.createElement("div");
+    frame.className = "embed-frame";
+    const iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.title = fig.dataset.title || `${EMBED_PROVIDERS[provider]?.label ?? "Embedded"} content`;
+    iframe.loading = "lazy";
+    iframe.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-popups");
+    iframe.allowFullscreen = true;
+    frame.append(iframe);
+    fig.prepend(frame);
+    fig.classList.add("is-enhanced");
+    undo.push(() => (frame.remove(), fig.classList.remove("is-enhanced")));
+  });
+
+  // Custom HTML blocks: stored escaped in data-html, sanitised strictly here.
+  root.querySelectorAll<HTMLElement>("[data-html-block]").forEach((el) => {
+    const before = el.innerHTML;
+    el.innerHTML = sanitizeHtmlBlock(el.dataset.html ?? "");
+    undo.push(() => (el.innerHTML = before));
+  });
+
+  // Charts: SVG over the fallback table, which stays for screen readers.
+  root.querySelectorAll<HTMLElement>("[data-chart]").forEach((fig) => {
+    const data = parseChartData(fig.dataset.chart);
+    if (!data) return;
+    const host = document.createElement("div");
+    fig.prepend(host);
+    const table = fig.querySelector("table");
+    table?.classList.add("sr-only");
+    extras.push({
+      kind: "chart",
+      host,
+      data,
+      chartType: fig.dataset.chartType === "line" ? "line" : "bar",
+      title: fig.querySelector("figcaption")?.textContent?.trim() ?? "",
+    });
+    undo.push(() => (host.remove(), table?.classList.remove("sr-only")));
+  });
+
+  // Carousels: native scroll-snap plus previous/next buttons.
+  root.querySelectorAll<HTMLElement>('[data-gallery][data-layout="carousel"]').forEach((track) => {
+    const host = document.createElement("div");
+    host.className = "carousel-controls";
+    track.after(host);
+    extras.push({ kind: "carousel", host, track });
+    undo.push(() => host.remove());
+  });
+
+  // Placeholders the author dropped into the body.
+  root.querySelectorAll<HTMLElement>("[data-toc]").forEach((host) => extras.push({ kind: "toc", host }));
+  root
+    .querySelectorAll<HTMLElement>("[data-sources]")
+    .forEach((host) => extras.push({ kind: "sources", host }));
+
+  return { extras, undo: () => undo.reverse().forEach((fn) => fn()) };
+}
+
+/** Lazy-loads highlight.js (article pages only) and colours declared-language code blocks. */
+function highlightCode(root: HTMLElement) {
+  const blocks = [...root.querySelectorAll<HTMLElement>('pre code[class*="language-"]')].filter(
+    (code) => !/language-(plaintext|text)\b/.test(code.className) && !code.closest("[data-prompt]"),
+  );
+  if (!blocks.length) return;
+  import("highlight.js/lib/common")
+    .then(({ default: hljs }) => {
+      for (const code of blocks) {
+        if (!code.isConnected || code.dataset.highlighted) continue;
+        const lang = code.className.match(/language-([\w+#-]+)/)?.[1];
+        if (lang && hljs.getLanguage(lang)) hljs.highlightElement(code);
+      }
+    })
+    .catch(() => undefined);
+}
+
+interface CmsContentProps {
+  html: string;
+  className?: string;
+  /** Headings found in the content (h2/h3), with the ids assigned to them. */
+  onHeadings?: (headings: ContentHeading[]) => void;
+  /** Rendered where the author placed a "Table of contents" block. */
+  toc?: ReactNode;
+  /** Rendered where the author placed a "Sources & references" block. */
+  sources?: ReactNode;
+}
+
+/**
+ * Renders CMS HTML, sanitised. Prompt blocks (`<div data-prompt data-label>…<pre>`)
+ * and plain code blocks (`<pre>`) from the admin editor get a label bar with a
+ * copy button; long prompts collapse behind a "Show full prompt" toggle. The
+ * editor's structured blocks are enhanced by enhanceBlocks().
+ */
+export function CmsContent({ html, className, onHeadings, toc, sources }: CmsContentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [slots, setSlots] = useState<Slot[]>([]);
+  const [extras, setExtras] = useState<Extra[]>([]);
+  const safeHtml = useMemo(() => sanitizeArticle(html), [html]);
+  const headingsCb = useRef(onHeadings);
+  useEffect(() => {
+    headingsCb.current = onHeadings;
+  });
 
   useLayoutEffect(() => {
     const root = ref.current;
     if (!root) return;
     const restoreParagraphs = upgradeCodeRuns(root);
+    const enhanced = enhanceBlocks(root, (h) => headingsCb.current?.(h));
 
     const prompts = [...root.querySelectorAll<HTMLElement>("[data-prompt]")].map((block): Slot => {
       const host = document.createElement("div");
@@ -254,23 +445,41 @@ export function CmsContent({ html, className }: { html: string; className?: stri
         return { kind: "code", block, host, label: codeLabel(pre), undo: () => block.replaceWith(pre) };
       });
 
+    highlightCode(root);
     const next = [...prompts, ...codes];
     setSlots(next);
+    setExtras(enhanced.extras);
     return () => {
       next.forEach(({ undo }) => undo());
+      enhanced.undo();
       restoreParagraphs();
     };
-  }, [html]);
+  }, [safeHtml]);
 
   return (
     <>
-      <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: html }} />
+      <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: safeHtml }} />
       {slots.map(({ kind, block, host, foot, label }, i) => (
         <Fragment key={i}>
           {createPortal(<CopyBar block={block} label={label} kind={kind} />, host)}
           {foot && createPortal(<PromptToggle block={block} />, foot)}
         </Fragment>
       ))}
+      {extras.map((x, i) => {
+        const key = `x${i}`;
+        if (x.kind === "chart")
+          return (
+            <Fragment key={key}>
+              {createPortal(<Chart type={x.chartType} data={x.data} title={x.title} />, x.host)}
+            </Fragment>
+          );
+        if (x.kind === "carousel")
+          return <Fragment key={key}>{createPortal(<CarouselControls track={x.track} />, x.host)}</Fragment>;
+        if (x.kind === "toc" && toc) return <Fragment key={key}>{createPortal(toc, x.host)}</Fragment>;
+        if (x.kind === "sources" && sources)
+          return <Fragment key={key}>{createPortal(sources, x.host)}</Fragment>;
+        return null;
+      })}
     </>
   );
 }

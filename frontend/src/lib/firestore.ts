@@ -45,6 +45,11 @@ export const COLLECTIONS = {
   testScores: "test_scores",
   organizations: "organizations",
   causes: "causes",
+  authors: "authors",
+  blogSeries: "blog_series",
+  blogSettings: "blog_settings",
+  blogReactions: "blog_reactions",
+  redirects: "redirects",
 } as const;
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS];
@@ -76,6 +81,15 @@ export function fetchOrdered<T>(name: CollectionName, field: string, direction: 
 export async function fetchById<T>(name: CollectionName, id: string): Promise<T | null> {
   const snap = await getDoc(doc(db, name, id));
   return snap.exists() ? toEntity<T>(snap) : null;
+}
+
+/** Fetch the first document matching every constraint, or `null`. */
+export async function fetchFirst<T>(
+  name: CollectionName,
+  ...constraints: QueryConstraint[]
+): Promise<T | null> {
+  const snap = await getDocs(query(collection(db, name), ...constraints, limit(1)));
+  return snap.empty ? null : toEntity<T>(snap.docs[0]);
 }
 
 /** Fetch the first document where `field == value`, or `null`. */
