@@ -16,8 +16,8 @@
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { FieldValue, type Firestore } from "firebase-admin/firestore";
-import { adminDb, hasAdminCredentials } from "./_lib/firebase";
-import { allowMethods, BOT_UA, clientIp, createRateLimiter, hmac, jsonBody, sha256 } from "./_lib/http";
+import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
+import { allowMethods, BOT_UA, clientIp, createRateLimiter, hmac, jsonBody, sha256 } from "./_lib/http.js";
 
 const limited = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 150 });
 const POST_ID_RE = /^[A-Za-z0-9_-]{1,128}$/;

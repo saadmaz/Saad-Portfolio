@@ -11,12 +11,12 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { requireAdmin } from "./_lib/auth";
-import { adminDb, hasAdminCredentials } from "./_lib/firebase";
-import { adminCors, createRateLimiter, jsonBody } from "./_lib/http";
-import { PREVIEW_TTL_MS, previewSecret, signPreviewToken } from "./_lib/preview-token";
-import { triggerRebuild } from "./_lib/rebuild";
-import { runScheduler } from "./_lib/scheduler";
+import { requireAdmin } from "./_lib/auth.js";
+import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
+import { adminCors, createRateLimiter, jsonBody } from "./_lib/http.js";
+import { PREVIEW_TTL_MS, previewSecret, signPreviewToken } from "./_lib/preview-token.js";
+import { triggerRebuild } from "./_lib/rebuild.js";
+import { runScheduler } from "./_lib/scheduler.js";
 import { BASE_URL } from "../src/lib/seo-content.js";
 
 const limited = createRateLimiter({ windowMs: 60_000, max: 60 });

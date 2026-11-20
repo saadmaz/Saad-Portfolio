@@ -8,7 +8,7 @@
  */
 
 import type { VercelRequest } from "@vercel/node";
-import { adminAuth } from "./firebase";
+import { adminAuth } from "./firebase.js";
 
 export type AdminCheck = { ok: true; email: string } | { ok: false; status: 401 | 403 | 500; error: string };
 
