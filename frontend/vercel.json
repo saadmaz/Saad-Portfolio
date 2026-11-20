@@ -18,6 +18,10 @@
       "destination": "/og/home.png"
     },
     {
+      "source": "/share-image/:slug",
+      "destination": "/api/share-image?slug=:slug"
+    },
+    {
       "source": "/blog/:slug",
       "destination": "/api/blog-page?slug=:slug"
     },
