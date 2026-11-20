@@ -28,10 +28,22 @@ interface SEOProps {
   /** Actual pixel dimensions of `image` - must match reality or the OG/Twitter card renders cropped. */
   imageWidth?: number;
   imageHeight?: number;
-  /** Canonical URL for this page */
+  /** This page's URL (og:url, and the canonical unless `canonical` is set) */
   url?: string;
-  /** JSON-LD structured data object - passed as-is to <script type="application/ld+json"> */
-  structuredData?: object;
+  /** Canonical URL when it differs from `url` (e.g. an article first published elsewhere) */
+  canonical?: string;
+  /** Alt text for the share image */
+  imageAlt?: string;
+  /** JSON-LD structured data - one object or several, each in its own <script type="application/ld+json"> */
+  structuredData?: object | object[];
+  /** Open Graph article metadata (type="article") */
+  article?: {
+    publishedTime?: string | null;
+    modifiedTime?: string | null;
+    author?: string;
+    section?: string;
+    tags?: string[];
+  };
   /** "website" | "article" - defaults to "website" */
   type?: string;
   /** Breadcrumb trail - renders a BreadcrumbList JSON-LD block for rich results */
@@ -63,7 +75,10 @@ export function SEO({
   imageWidth = OG_WIDTH,
   imageHeight = OG_HEIGHT,
   url = BASE_URL,
+  canonical,
+  imageAlt,
   structuredData,
+  article,
   type = "website",
   breadcrumbs,
   noIndex = false,
@@ -94,7 +109,11 @@ export function SEO({
       {/* ── Primary ──────────────────────────────────────────────── */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      {noIndex ? <meta name="robots" content="noindex, nofollow" /> : <link rel="canonical" href={url} />}
+      {noIndex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <link rel="canonical" href={canonical || url} />
+      )}
 
       {/* ── Open Graph ───────────────────────────────────────────── */}
       <meta property="og:site_name" content={SITE_NAME} />
@@ -103,7 +122,7 @@ export function SEO({
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:image:alt" content={fullTitle} />
+      <meta property="og:image:alt" content={imageAlt || fullTitle} />
       <meta property="og:image:width" content={String(imageWidth)} />
       <meta property="og:image:height" content={String(imageHeight)} />
 
@@ -113,9 +132,25 @@ export function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content={imageAlt || fullTitle} />
+
+      {/* ── Article ──────────────────────────────────────────────── */}
+      {article?.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+      {article?.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+      {article?.author && <meta property="article:author" content={article.author} />}
+      {article?.section && <meta property="article:section" content={article.section} />}
+      {article?.tags?.map((tag) => (
+        <meta key={tag} property="article:tag" content={tag} />
+      ))}
 
       {/* ── JSON-LD Structured Data ───────────────────────────────── */}
-      {structuredData && <script type="application/ld+json">{JSON.stringify(structuredData)}</script>}
+      {(Array.isArray(structuredData) ? structuredData : structuredData ? [structuredData] : []).map(
+        (data, i) => (
+          <script key={i} type="application/ld+json">
+            {JSON.stringify(data).replace(/</g, "\\u003c")}
+          </script>
+        ),
+      )}
       {breadcrumbSchema && <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>}
     </Helmet>
   );

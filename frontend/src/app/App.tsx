@@ -19,6 +19,9 @@ const EducationPage = lazy(() => import("../pages/EducationPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
 const BlogsPage = lazy(() => import("../pages/BlogsPage"));
 const BlogDetailPage = lazy(() => import("../pages/BlogDetailPage"));
+const SeriesPage = lazy(() => import("../pages/SeriesPage"));
+const AuthorPage = lazy(() => import("../pages/AuthorPage"));
+const PreviewPage = lazy(() => import("../pages/PreviewPage"));
 const NewslettersPage = lazy(() => import("../pages/NewslettersPage"));
 const PublicationsPage = lazy(() => import("../pages/PublicationsPage"));
 const EventsPage = lazy(() => import("../pages/EventsPage"));
@@ -50,7 +53,11 @@ const App = () => (
               <Route path="/education" element={<EducationPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogsPage />} />
+              <Route path="/blog/category/:category" element={<BlogsPage />} />
+              <Route path="/blog/series/:slug" element={<SeriesPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
+              <Route path="/authors/:slug" element={<AuthorPage />} />
+              <Route path="/preview/:id" element={<PreviewPage />} />
               <Route path="/newsletters" element={<NewslettersPage />} />
               <Route path="/publications" element={<PublicationsPage />} />
               <Route path="/events" element={<EventsPage />} />

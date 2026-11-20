@@ -2,6 +2,18 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/rss.xml",
+      "destination": "/api/feed?type=rss"
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/api/feed?type=rss"
+    },
+    {
+      "source": "/sitemaps/blog.xml",
+      "destination": "/api/feed?type=sitemap"
+    },
+    {
       "source": "/og/:path*",
       "destination": "/og/home.png"
     },
@@ -12,7 +24,7 @@
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/((?!preview/).*)",
       "headers": [
         {
           "key": "X-Frame-Options",
@@ -40,7 +52,53 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-38+K9MPSU4N7Ohk+jz/7ovdBkYDynRGXXHkCS9Ym8x8=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+          "value": "default-src 'self'; script-src 'self' 'sha256-38+K9MPSU4N7Ohk+jz/7ovdBkYDynRGXXHkCS9Ym8x8=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.loom.com https://codepen.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+        }
+      ]
+    },
+    {
+      "source": "/preview/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-38+K9MPSU4N7Ohk+jz/7ovdBkYDynRGXXHkCS9Ym8x8=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.loom.com https://codepen.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors https://admin.saadmaz.com http://localhost:8081; upgrade-insecure-requests;"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     },
@@ -79,6 +137,12 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/publish-scheduled",
+      "schedule": "0 6 * * *"
     }
   ]
 }

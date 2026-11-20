@@ -7,8 +7,9 @@ vi.mock("@/lib/firestore", () => ({
   fetchOrdered: vi.fn(),
   fetchById: vi.fn(),
   fetchFirstWhere: vi.fn(),
+  fetchFirst: vi.fn(),
 }));
-vi.mock("firebase/firestore", () => ({ where: vi.fn(), orderBy: vi.fn() }));
+vi.mock("firebase/firestore", () => ({ where: vi.fn((...args) => args), orderBy: vi.fn() }));
 
 import * as firestore from "@/lib/firestore";
 import { BlogService } from "./blog-service";
@@ -62,31 +63,53 @@ describe("BlogService.getPublished", () => {
 });
 
 describe("BlogService.getBySlugOrId", () => {
+  it("only queries published posts by slug (required by the Firestore rules)", async () => {
+    mocked.fetchFirst.mockResolvedValue({ id: "1", slug: "hello", published: true });
+    await BlogService.getBySlugOrId("hello");
+    expect(mocked.fetchFirst).toHaveBeenCalledWith(
+      "blog_posts",
+      ["slug", "==", "hello"],
+      ["published", "==", true],
+    );
+  });
+
   it("returns an unlisted post to someone with the link", async () => {
-    mocked.fetchFirstWhere.mockResolvedValue({ id: "1", slug: "secret", published: true, unlisted: true });
+    mocked.fetchFirst.mockResolvedValue({ id: "1", slug: "secret", published: true, unlisted: true });
     expect(await BlogService.getBySlugOrId("secret")).toMatchObject({ id: "1" });
   });
 
   it("returns a published post found by slug", async () => {
-    mocked.fetchFirstWhere.mockResolvedValue({ id: "1", slug: "hello", published: true });
+    mocked.fetchFirst.mockResolvedValue({ id: "1", slug: "hello", published: true });
     expect(await BlogService.getBySlugOrId("hello")).toMatchObject({ id: "1" });
     expect(mocked.fetchById).not.toHaveBeenCalled();
   });
 
   it("falls back to the document ID", async () => {
-    mocked.fetchFirstWhere.mockResolvedValue(null);
+    mocked.fetchFirst.mockResolvedValue(null);
     mocked.fetchById.mockResolvedValue({ id: "doc123", published: true });
     expect(await BlogService.getBySlugOrId("doc123")).toMatchObject({ id: "doc123" });
   });
 
   it("never returns drafts", async () => {
-    mocked.fetchFirstWhere.mockResolvedValue({ id: "1", published: false });
+    mocked.fetchFirst.mockResolvedValue(null);
     mocked.fetchById.mockResolvedValue({ id: "1", published: false });
     expect(await BlogService.getBySlugOrId("1")).toBeNull();
   });
 
+  it("treats a rules denial (unpublished doc) as not found", async () => {
+    mocked.fetchFirst.mockResolvedValue(null);
+    mocked.fetchById.mockRejectedValue(Object.assign(new Error("denied"), { code: "permission-denied" }));
+    expect(await BlogService.getBySlugOrId("draft-id")).toBeNull();
+  });
+
+  it("still propagates other errors", async () => {
+    mocked.fetchFirst.mockResolvedValue(null);
+    mocked.fetchById.mockRejectedValue(Object.assign(new Error("offline"), { code: "unavailable" }));
+    await expect(BlogService.getBySlugOrId("x")).rejects.toThrow("offline");
+  });
+
   it("skips the ID lookup for values that can't be document IDs", async () => {
-    mocked.fetchFirstWhere.mockResolvedValue(null);
+    mocked.fetchFirst.mockResolvedValue(null);
     expect(await BlogService.getBySlugOrId("a/b")).toBeNull();
     expect(mocked.fetchById).not.toHaveBeenCalled();
   });

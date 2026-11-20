@@ -193,6 +193,239 @@
   @apply mt-0;
 }
 
+/* ── Editorial blocks from the CMS editor (see CmsContent.tsx) ─────────── */
+.prose-cms h1 {
+  @apply mt-16 text-h1 text-fg;
+}
+.prose-cms h4 {
+  @apply mt-8 text-h4 font-medium text-fg;
+}
+.prose-cms s {
+  @apply text-fg-3;
+}
+.prose-cms hr {
+  @apply my-14 border-line-2;
+}
+.prose-cms hr[data-variant="dots"] {
+  @apply border-0 text-center text-fg-3;
+}
+.prose-cms hr[data-variant="dots"]::after {
+  content: "· · ·";
+  @apply font-mono tracking-[0.6em];
+}
+.prose-cms li > p {
+  @apply m-0;
+}
+.prose-cms ul ul,
+.prose-cms ol ol,
+.prose-cms ul ol,
+.prose-cms ol ul {
+  @apply mt-2;
+}
+
+/* Figures: width and alignment come from data attributes (no inline CSS). */
+.prose-cms figure {
+  @apply mx-auto my-10;
+}
+.prose-cms figure img {
+  @apply h-auto w-full;
+}
+.prose-cms figcaption {
+  @apply mt-3 text-center text-sm leading-relaxed text-fg-3;
+}
+.prose-cms figcaption a {
+  @apply text-fg-2 decoration-line-3;
+}
+.prose-cms [data-credit]::before {
+  content: " · ";
+}
+.prose-cms [data-credit]:first-child::before {
+  content: "";
+}
+.prose-cms figure[data-width="75"] {
+  @apply md:w-3/4;
+}
+.prose-cms figure[data-width="50"] {
+  @apply md:w-1/2;
+}
+.prose-cms figure[data-width="33"] {
+  @apply md:w-1/3;
+}
+@screen md {
+  .prose-cms figure[data-align="left"] {
+    @apply float-left mb-4 mr-8 mt-2;
+  }
+  .prose-cms figure[data-align="right"] {
+    @apply float-right mb-4 ml-8 mt-2;
+  }
+  .prose-cms figure[data-align="wide"] {
+    @apply -mx-16 w-[calc(100%+8rem)] max-w-none;
+  }
+}
+.prose-cms h2,
+.prose-cms h3,
+.prose-cms hr,
+.prose-cms [data-callout],
+.prose-cms [data-columns] {
+  clear: both;
+}
+
+/* Pull quote */
+.prose-cms blockquote[data-pull-quote] {
+  @apply my-14 border-l-0 border-y border-line-2 py-10 text-center;
+}
+.prose-cms blockquote[data-pull-quote] p {
+  @apply text-h2 font-light leading-snug text-fg;
+}
+.prose-cms blockquote[data-pull-quote] cite {
+  @apply label mt-5 block not-italic text-accent;
+}
+.prose-cms blockquote[data-pull-quote] cite:empty {
+  @apply hidden;
+}
+
+/* Callouts: info / note / tip / warning / danger */
+.prose-cms [data-callout] {
+  @apply my-10 rounded-card border border-line-2 bg-surface px-6 py-5 text-[1.0625rem];
+  border-left-width: 3px;
+}
+.prose-cms [data-callout] [data-callout-title] {
+  @apply label mb-2 text-fg;
+}
+.prose-cms [data-callout-body] > * + * {
+  @apply mt-3;
+}
+.prose-cms [data-callout="info"] {
+  border-left-color: rgb(96 165 250);
+}
+.prose-cms [data-callout="tip"] {
+  border-left-color: rgb(var(--live));
+}
+.prose-cms [data-callout="note"] {
+  border-left-color: rgb(var(--fg-3));
+}
+.prose-cms [data-callout="warning"] {
+  border-left-color: rgb(250 204 21);
+}
+.prose-cms [data-callout="danger"] {
+  border-left-color: rgb(var(--danger));
+}
+
+/* Galleries and carousels */
+.prose-cms [data-gallery] {
+  @apply my-10 grid gap-3 sm:grid-cols-2;
+}
+.prose-cms [data-gallery][data-columns="3"] {
+  @apply lg:grid-cols-3;
+}
+.prose-cms [data-gallery] figure {
+  @apply m-0;
+}
+.prose-cms [data-gallery] img {
+  @apply aspect-[4/3] object-cover;
+}
+.prose-cms [data-gallery][data-layout="carousel"] {
+  @apply flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3;
+  scrollbar-width: thin;
+}
+.prose-cms [data-gallery][data-layout="carousel"] figure {
+  @apply w-[85%] shrink-0 snap-center sm:w-[70%];
+}
+.prose-cms .carousel-controls {
+  @apply -mt-6 mb-10 flex justify-end gap-2;
+}
+
+/* Image beside text */
+.prose-cms [data-media-text] {
+  @apply my-10 grid items-center gap-6 md:grid-cols-2 md:gap-10;
+}
+.prose-cms [data-media-text] figure {
+  @apply m-0;
+}
+.prose-cms [data-media-text][data-side="right"] figure {
+  @apply md:order-2;
+}
+.prose-cms [data-media-text-body] > * + * {
+  @apply mt-4;
+}
+
+/* Two columns */
+.prose-cms [data-columns] {
+  @apply my-10 grid gap-8 md:grid-cols-2;
+}
+.prose-cms [data-column] > * + * {
+  @apply mt-4;
+}
+
+/* Embeds (iframes are added by CmsContent from trusted providers only) */
+.prose-cms [data-embed] .embed-frame {
+  @apply relative aspect-video overflow-hidden rounded-media border border-line bg-surface;
+}
+.prose-cms [data-embed] iframe {
+  @apply absolute inset-0 size-full border-0;
+}
+.prose-cms [data-embed].is-enhanced > a {
+  @apply sr-only;
+}
+
+/* Charts */
+.prose-cms [data-chart] {
+  @apply rounded-card border border-line-2 bg-surface p-5;
+}
+
+/* Tables scroll horizontally on small screens */
+.prose-cms .table-wrap {
+  @apply my-10 overflow-x-auto rounded-card border border-line-2;
+}
+.prose-cms table {
+  @apply w-full border-collapse text-left text-[0.9375rem];
+}
+.prose-cms th,
+.prose-cms td {
+  @apply border-b border-line-2 px-4 py-3 align-top;
+}
+.prose-cms th {
+  @apply bg-surface font-medium text-fg;
+}
+.prose-cms tr:last-child td {
+  @apply border-b-0;
+}
+.prose-cms td > p,
+.prose-cms th > p {
+  @apply m-0;
+}
+
+/* Syntax highlighting (highlight.js classes, graphite palette) */
+.prose-cms .hljs-keyword,
+.prose-cms .hljs-selector-tag,
+.prose-cms .hljs-built_in {
+  color: rgb(255 130 89);
+}
+.prose-cms .hljs-string,
+.prose-cms .hljs-attr,
+.prose-cms .hljs-template-variable {
+  color: rgb(134 239 172);
+}
+.prose-cms .hljs-number,
+.prose-cms .hljs-literal,
+.prose-cms .hljs-type {
+  color: rgb(147 197 253);
+}
+.prose-cms .hljs-comment,
+.prose-cms .hljs-quote {
+  @apply italic text-fg-3;
+}
+.prose-cms .hljs-title,
+.prose-cms .hljs-function,
+.prose-cms .hljs-section {
+  color: rgb(253 224 71);
+}
+.prose-cms .hljs-variable,
+.prose-cms .hljs-params,
+.prose-cms .hljs-property {
+  @apply text-fg;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

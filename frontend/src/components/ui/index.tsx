@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { responsiveImage } from "@/lib/images";
+import type { ImageAsset } from "@/types";
 
 export { Button } from "./Button";
 
@@ -117,28 +119,42 @@ export function Reveal({ children, className }: { children: ReactNode; className
   );
 }
 
-/** Image with a graphite gradient fallback when there's no source (or it fails). */
+/**
+ * Image with a graphite gradient fallback when there's no source (or it fails).
+ * Pass `asset` (an uploaded ImageAsset) for srcset, intrinsic size and focal point.
+ */
 export function Media({
   src,
   alt,
   className,
   priority,
+  asset,
+  sizes,
 }: {
   src?: string;
   alt: string;
   className?: string;
   priority?: boolean;
+  asset?: ImageAsset | null;
+  sizes?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const img = asset?.url ? responsiveImage(asset, sizes) : src ? { src } : null;
   return (
     <div className={cn("relative overflow-hidden rounded-media border border-line bg-surface", className)}>
-      {src && !failed ? (
+      {img && !failed ? (
         <img
-          src={src}
+          src={img.src}
+          srcSet={img.srcSet}
+          sizes={img.sizes}
+          width={img.width}
+          height={img.height}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           decoding="async"
           onError={() => setFailed(true)}
+          style={img.objectPosition ? { objectPosition: img.objectPosition } : undefined}
           className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
       ) : (
