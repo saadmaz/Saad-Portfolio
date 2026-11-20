@@ -9,10 +9,10 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { adminDb, hasAdminCredentials } from "../_lib/firebase";
-import { safeEqual } from "../_lib/http";
-import { triggerRebuild } from "../_lib/rebuild";
-import { runScheduler } from "../_lib/scheduler";
+import { adminDb, hasAdminCredentials } from "../_lib/firebase.js";
+import { safeEqual } from "../_lib/http.js";
+import { triggerRebuild } from "../_lib/rebuild.js";
+import { runScheduler } from "../_lib/scheduler.js";
 
 export function isAuthorizedCron(authorization: string | undefined, secret: string | undefined): boolean {
   if (!secret || secret.length < 16) return false;

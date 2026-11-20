@@ -6,7 +6,7 @@
  * one post (and its autosave) until it expires. Nothing else.
  */
 
-import { hmac, safeEqual } from "./http";
+import { hmac, safeEqual } from "./http.js";
 
 export const PREVIEW_TTL_MS = 30 * 60 * 1000;
 

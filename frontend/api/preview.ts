@@ -8,9 +8,9 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { adminDb, hasAdminCredentials } from "./_lib/firebase";
-import { allowMethods, clientIp, createRateLimiter } from "./_lib/http";
-import { previewSecret, verifyPreviewToken } from "./_lib/preview-token";
+import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
+import { allowMethods, clientIp, createRateLimiter } from "./_lib/http.js";
+import { previewSecret, verifyPreviewToken } from "./_lib/preview-token.js";
 
 const limited = createRateLimiter({ windowMs: 60_000, max: 60 });
 

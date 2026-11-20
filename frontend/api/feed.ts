@@ -7,11 +7,11 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { adminDb, hasAdminCredentials } from "./_lib/firebase";
-import { allowMethods } from "./_lib/http";
+import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
+import { allowMethods } from "./_lib/http.js";
 import { buildBlogSitemap, buildRss, categoriesOf, isIndexable } from "../src/lib/article-core.js";
 import { BASE_URL, PAGE_SEO, SITE_NAME } from "../src/lib/seo-content.js";
-import type { Author, BlogPost, BlogSeries } from "../src/types/blog";
+import type { Author, BlogPost, BlogSeries } from "../src/types/blog.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!allowMethods(req, res, ["GET", "HEAD"])) return;
