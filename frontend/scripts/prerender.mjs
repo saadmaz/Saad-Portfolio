@@ -42,6 +42,7 @@ import {
   slugify,
   socialImageOf,
 } from "../src/lib/article-core.js";
+import { applyHeadMeta, POST_PAGES_DIR } from "../src/lib/share-meta.js";
 import { renderOg, loadPhoto, OG_WIDTH, OG_HEIGHT } from "./og/render.mjs";
 import { ogVersion } from "./og/version.mjs";
 
@@ -166,49 +167,21 @@ function injectContent(
   },
 ) {
   const pageUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
-  const canonicalUrl = canonical || pageUrl;
-  const fullTitle = `${title} - ${SITE_NAME}`;
-  const et = escape(fullTitle);
-  const ed = escape(truncate(description, 300));
-  const eu = escape(canonicalUrl);
-  const meta = (re, value) => (html) => html.replace(re, (_, a, b) => `${a}${value}${b}`);
-
-  let html = shell.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${et}</title>`);
-  html = /<link\s[^>]*rel=["']canonical["'][^>]*>/i.test(html)
-    ? html.replace(/<link\s[^>]*rel=["']canonical["'][^>]*>/i, () => `<link rel="canonical" href="${eu}" />`)
-    : html.replace("</head>", () => `  <link rel="canonical" href="${eu}" />\n</head>`);
-  // Unlisted pages: reachable by link, but search engines must not index them.
-  if (noIndex)
-    html = html.replace("</head>", () => `  <meta name="robots" content="noindex, nofollow" />\n</head>`);
-
-  for (const apply of [
-    meta(/(<meta\s+name="description"\s+content=")[^"]*(")/i, ed),
-    meta(/(<meta\s+property="og:title"\s+content=")[^"]*(")/i, et),
-    meta(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, ed),
-    meta(/(<meta\s+property="og:url"\s+content=")[^"]*(")/i, escape(pageUrl)),
-    meta(/(<meta\s+property="og:type"\s+content=")[^"]*(")/i, escape(type || "website")),
-    meta(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/i, et),
-    meta(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/i, ed),
-  ])
-    html = apply(html);
   // Every page gets its own 1200×630 card as og:image / twitter:image, unless
   // the author uploaded a dedicated social image for it.
   OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
-  const card = escape(`${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`);
-  const shareUrl = image?.url ? escape(image.url) : card;
-  const ext = image?.url ? String(image.url).split("?")[0].split(".").pop()?.toLowerCase() : "png";
-  const mime =
-    { webp: "image/webp", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif" }[ext] ?? "image/png";
-  for (const apply of [
-    meta(/(<meta\s+property="og:image"\s+content=")[^"]*(")/i, shareUrl),
-    meta(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/i, shareUrl),
-    meta(/(<meta\s+property="og:image:type"\s+content=")[^"]*(")/i, mime),
-    meta(/(<meta\s+property="og:image:width"\s+content=")[^"]*(")/i, String(image?.width || OG_WIDTH)),
-    meta(/(<meta\s+property="og:image:height"\s+content=")[^"]*(")/i, String(image?.height || OG_HEIGHT)),
-    meta(/(<meta\s+property="og:image:alt"\s+content=")[^"]*(")/i, image?.alt ? escape(image.alt) : et),
-    meta(/(<meta\s+name="twitter:card"\s+content=")[^"]*(")/i, "summary_large_image"),
-  ])
-    html = apply(html);
+  const card = `${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`;
+  const html = applyHeadMeta(shell, {
+    title: `${title} - ${SITE_NAME}`,
+    description,
+    url: pageUrl,
+    canonical,
+    type,
+    // Unlisted pages: reachable by link, but search engines must not index them.
+    noIndex,
+    image: image?.url ? image : { url: card },
+    imageFallbackSize: { width: OG_WIDTH, height: OG_HEIGHT },
+  });
 
   const schemaScripts = (schemas || [])
     .map((s) => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, "\\u003c")}</script>`)
@@ -235,6 +208,18 @@ function writeRoute(routePath, html) {
   const routeDir = routePath === "/" ? DIST_DIR : join(DIST_DIR, routePath);
   mkdirSync(routeDir, { recursive: true });
   writeFileSync(join(routeDir, "index.html"), html, "utf-8");
+}
+
+/**
+ * Article pages are served by api/blog-page.ts, which re-applies live title,
+ * description and share image from Firestore, so edits and new posts show up
+ * in link previews without waiting for a rebuild. They're written outside the
+ * route path so the static file doesn't shadow that rewrite.
+ */
+function writePostPage(slug, html) {
+  const dir = join(DIST_DIR, POST_PAGES_DIR);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, `${slug}.html`), html, "utf-8");
 }
 
 // ── Data ─────────────────────────────────────────────────────────────────
@@ -756,8 +741,8 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
     ]
       .filter(Boolean)
       .join("\n");
-    writeRoute(
-      routePath,
+    writePostPage(
+      p.slug,
       injectContent(shell, {
         path: routePath,
         title: seoTitleOf(p),
