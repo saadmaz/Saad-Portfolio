@@ -53,6 +53,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
   const inlineSources = post.content?.includes("data-sources");
   const sources = post.sources?.filter((s) => s.title?.trim()) ?? [];
   const reactionsOn = settings.reactionsEnabled && post.reactionsEnabled !== false;
+  const showShare = post.socialShareEnabled !== false && !post.unlisted;
 
   const series = allSeries.find((s) => s.id === post.seriesId) ?? null;
   const position = useMemo(() => {
@@ -119,10 +120,18 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
           )}
 
           <div className="mt-12 flex flex-col gap-10">
-            {post.socialShareEnabled !== false && !post.unlisted && (
-              <ShareButtons url={url} title={post.title} />
+            {(reactionsOn || showShare) && (
+              <div className="rounded-card border border-line-2 bg-surface/60 p-5 sm:p-7">
+                {reactionsOn && <Reactions postId={post.id} disabled={preview || !post.published} />}
+                {showShare && (
+                  <ShareButtons
+                    url={url}
+                    title={post.title}
+                    className={reactionsOn ? "mt-7 border-t border-line pt-6" : undefined}
+                  />
+                )}
+              </div>
             )}
-            {reactionsOn && <Reactions postId={post.id} disabled={preview || !post.published} />}
             {series && position && <SeriesNav series={series} position={position} current={post} />}
             {author && <AuthorCard author={author} />}
           </div>

@@ -51,11 +51,23 @@ export default {
         },
         "fill-x": { from: { transform: "scaleX(0)" }, to: { transform: "scaleX(1)" } },
         marquee: { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
+        "react-pop": {
+          "0%": { transform: "scale(1) rotate(0deg)" },
+          "35%": { transform: "scale(1.32) rotate(-8deg)" },
+          "65%": { transform: "scale(0.94) rotate(2deg)" },
+          "100%": { transform: "scale(1) rotate(0deg)" },
+        },
+        "count-in": {
+          from: { opacity: "0", transform: "translateY(5px)", filter: "blur(2px)" },
+          to: { opacity: "1", transform: "none", filter: "none" },
+        },
       },
       animation: {
         rise: "rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
         "fill-x": "fill-x 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
         marquee: "marquee 48s linear infinite",
+        "react-pop": "react-pop 450ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "count-in": "count-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },
