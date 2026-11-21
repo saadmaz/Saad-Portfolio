@@ -47,7 +47,7 @@ const ROBOTS = tag("name", "robots");
  * @param {string} html
  * @param {{
  *   title: string; description: string; url: string; canonical?: string;
- *   type?: string; noIndex?: boolean;
+ *   type?: string; noIndex?: boolean | "follow";
  *   image?: { url: string; width?: number; height?: number; alt?: string } | null;
  *   imageFallbackSize?: { width: number; height: number };
  * }} m  `title` is the full title (with the site name). Without `image` the
@@ -66,9 +66,10 @@ export function applyHeadMeta(html, m) {
     ? html.replace(CANONICAL, () => `<link rel="canonical" href="${eu}" />`)
     : html.replace("</head>", () => `  <link rel="canonical" href="${eu}" />\n</head>`);
   if (m.noIndex) {
-    if (ROBOTS.test(html)) set(ROBOTS, "noindex, nofollow");
-    else
-      html = html.replace("</head>", () => `  <meta name="robots" content="noindex, nofollow" />\n</head>`);
+    // "follow": out of the index, but crawlers still follow the page's links.
+    const robots = m.noIndex === "follow" ? "noindex, follow" : "noindex, nofollow";
+    if (ROBOTS.test(html)) set(ROBOTS, robots);
+    else html = html.replace("</head>", () => `  <meta name="robots" content="${robots}" />\n</head>`);
   }
 
   set(tag("name", "description"), ed);

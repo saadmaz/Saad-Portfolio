@@ -204,7 +204,11 @@ function injectContent(
   );
 }
 
+/** Every prerendered path; written to dist/routes.json for the 404 check in middleware.ts. */
+const ROUTES = new Set();
+
 function writeRoute(routePath, html) {
+  ROUTES.add(routePath.toLowerCase());
   const routeDir = routePath === "/" ? DIST_DIR : join(DIST_DIR, routePath);
   mkdirSync(routeDir, { recursive: true });
   writeFileSync(join(routeDir, "index.html"), html, "utf-8");
@@ -217,6 +221,7 @@ function writeRoute(routePath, html) {
  * route path so the static file doesn't shadow that rewrite.
  */
 function writePostPage(slug, html) {
+  ROUTES.add(`/blog/${slug}`.toLowerCase());
   const dir = join(DIST_DIR, POST_PAGES_DIR);
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, `${slug}.html`), html, "utf-8");
@@ -634,6 +639,8 @@ function prerenderStaticRoutes(shell, data) {
         schemas,
         bodyHtml: staticBody(routePath, data),
         og: staticCard(routePath, data),
+        // An empty listing reads as a soft 404 to search engines.
+        noIndex: routePath === "/projects" && !data.projects.length,
       }),
     );
   }
@@ -838,8 +845,32 @@ function writeRedirects(data) {
     const from = normalizePath(r.from);
     if (from && r.to) map[from] = { to: r.to, statusCode: r.statusCode === 302 ? 302 : 301 };
   }
+  // Old id-based URLs (shared before slugs existed) → the slug URL, as a real 301.
+  const alias = (prefix, items) => {
+    for (const item of items) {
+      if (!item.slug || item.slug === item.id) continue;
+      const from = normalizePath(`${prefix}/${item.id}`);
+      if (!map[from]) map[from] = { to: `${prefix}/${item.slug}`, statusCode: 301 };
+    }
+  };
+  alias("/events", data.events);
+  alias("/certifications", data.certificates);
+  alias("/blog", [...data.posts, ...data.unlistedPosts]);
   writeFileSync(join(DIST_DIR, "redirects.json"), JSON.stringify(map), "utf-8");
   console.log(`✅ redirects.json (${Object.keys(map).length} rules)`);
+}
+
+/** The page middleware.ts serves (with HTTP 404) for URLs that don't exist. */
+function writeNotFound(shell) {
+  const html = injectContent(shell, {
+    path: "/404",
+    title: "Page not found",
+    description: "The page you're after moved, or never existed.",
+    bodyHtml: '<p><a href="/">Back home</a> · <a href="/blog">Read the blog</a></p>',
+    noIndex: true,
+    og: { title: "Page not found" },
+  });
+  writeFileSync(join(DIST_DIR, "404.html"), html, "utf-8");
 }
 
 function prerenderEvents(shell, events) {
@@ -929,6 +960,9 @@ function prerenderCertificates(shell, certificates) {
         description,
         schemas: [schema],
         bodyHtml,
+        // Thin, near-identical pages: kept out of the index so search engines spend their
+        // attention on the articles and main pages. Links on them are still followed.
+        noIndex: "follow",
         og: {
           eyebrow: "Certification",
           title: c.title,
@@ -1031,10 +1065,9 @@ function writeSitemaps(data) {
         ),
       ),
     ];
-  if (data.certificates.length)
-    files["certifications.xml"] = data.certificates.map((c) =>
-      urlEntry(`${BASE_URL}/certifications/${keyOf(c)}`, toDateString(c.updated_at), "yearly", "0.5"),
-    );
+  // Certificate detail pages are noindex (see prerenderCertificates), so they're
+  // not listed; /certifications itself is in main.xml.
+  if (!data.projects.length) delete files["projects.xml"];
 
   for (const [name, entries] of Object.entries(files))
     writeFileSync(join(DIST_DIR, "sitemaps", name), buildUrlset(entries), "utf-8");
@@ -1190,6 +1223,9 @@ async function main() {
   );
   writeSitemaps(data);
   writeRedirects(data);
+  writeNotFound(shell);
+  writeFileSync(join(DIST_DIR, "routes.json"), JSON.stringify([...ROUTES].sort()), "utf-8");
+  console.log(`✅ routes.json (${ROUTES.size} pages)`);
   writeLlmsFull(data);
   await renderCards();
 }

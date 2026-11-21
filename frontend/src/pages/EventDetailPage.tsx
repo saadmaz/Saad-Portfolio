@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import NotFound from "./NotFound";
 import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
 import { EventCard } from "@/components/cards";
 import { Gallery } from "@/components/Gallery";
@@ -24,7 +25,8 @@ const EventDetailPage = () => {
       </Layout>
     );
   const event = data.find((e) => matchesKey(e, id));
-  if (!event) return <Navigate to="/events" replace />;
+  // A real "not found" (the server already answered 404), not a silent jump to the list.
+  if (!event) return <NotFound />;
   // Old ID links land on the readable URL.
   if (event.slug && id !== event.slug) return <Navigate to={eventPath(event)} replace />;
 

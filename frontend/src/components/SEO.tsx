@@ -49,7 +49,8 @@ interface SEOProps {
   /** Breadcrumb trail - renders a BreadcrumbList JSON-LD block for rich results */
   breadcrumbs?: BreadcrumbItem[];
   /** Prevent search engines from indexing this page */
-  noIndex?: boolean;
+  /** Keep out of search results; "follow" still lets crawlers follow the page's links. */
+  noIndex?: boolean | "follow";
 }
 
 // Every prerendered route gets a 1200×630 card at /og/<path>.png, drawn at
@@ -110,7 +111,7 @@ export function SEO({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {noIndex ? (
-        <meta name="robots" content="noindex, nofollow" />
+        <meta name="robots" content={noIndex === "follow" ? "noindex, follow" : "noindex, nofollow"} />
       ) : (
         <link rel="canonical" href={canonical || url} />
       )}

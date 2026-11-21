@@ -27,6 +27,8 @@ const ProjectsPage = () => {
         title={PAGE_SEO["/projects"].title}
         description={PAGE_SEO["/projects"].description}
         url={`${BASE_URL}/projects`}
+        // An empty listing reads as a soft 404 to search engines.
+        noIndex={!isLoading && data.length === 0}
       />
       <PageHeader
         label="Projects"

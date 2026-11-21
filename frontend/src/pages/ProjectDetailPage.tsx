@@ -1,6 +1,7 @@
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import NotFound from "./NotFound";
 import { Button, Media, Reveal, Skeleton, Tag } from "@/components/ui";
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { year } from "@/lib/format";
@@ -55,7 +56,8 @@ const ProjectDetailPage = () => {
         </div>
       </Layout>
     );
-  if (!project) return <Navigate to="/projects" replace />;
+  // A real "not found" (the server already answered 404), not a silent jump to the list.
+  if (!project) return <NotFound />;
 
   const live = project.liveUrl || project.live_preview;
   const code = project.githubUrl || project.github;
