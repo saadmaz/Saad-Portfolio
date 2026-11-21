@@ -14,7 +14,7 @@ export interface HeadMeta {
   url: string;
   canonical?: string;
   type?: string;
-  noIndex?: boolean;
+  noIndex?: boolean | "follow";
   /** Omit to keep the page's existing og:image tags. */
   image?: ShareImage | null;
   imageFallbackSize?: { width: number; height: number };

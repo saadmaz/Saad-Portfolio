@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import NotFound from "./NotFound";
 import { Button, Eyebrow, Skeleton, Tag } from "@/components/ui";
 import { Mark, Row } from "@/components/cards";
 import { useCertificate, useCertificates } from "@/hooks/useContent";
@@ -21,7 +22,8 @@ const CertificateDetailPage = () => {
         </div>
       </Layout>
     );
-  if (!cert) return <Navigate to="/certifications" replace />;
+  // A real "not found" (the server already answered 404), not a silent jump to the list.
+  if (!cert) return <NotFound />;
   // Old ID links land on the readable URL.
   if (cert.slug && id !== cert.slug) return <Navigate to={certificatePath(cert)} replace />;
 
@@ -43,6 +45,8 @@ const CertificateDetailPage = () => {
         title={cert.title}
         description={cert.description || `${cert.title}, issued by ${cert.issuer}.`}
         url={`${BASE_URL}${certificatePath(cert)}`}
+        // Thin pages kept out of search; the /certifications list is indexed.
+        noIndex="follow"
       />
       <header className="wrap pb-14 pt-12 md:pt-20">
         <Link to="/certifications" className="text-sm text-fg-2 hover:text-fg">
