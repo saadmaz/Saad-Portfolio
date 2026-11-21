@@ -31,7 +31,7 @@ export function ArticleSeo({ post }: { post: BlogPost }) {
   const schema = articleSchema(post, {
     baseUrl: BASE_URL,
     author,
-    publisher: { name: SITE_NAME, logo: "/logo.png" },
+    publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png" },
     series,
     wordCount: countWords(stripHtml(post.content)),
   });

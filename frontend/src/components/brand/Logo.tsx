@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-// Segmented "S" mark (docs/brand/favicon.svg). Upper pieces are the build,
+// Segmented "S" mark (older geometry; the Figma mark is docs/brand/mark.svg). Upper pieces are the build,
 // lower pieces the ember spark.
 export function LogoMark({ className }: { className?: string }) {
   return (

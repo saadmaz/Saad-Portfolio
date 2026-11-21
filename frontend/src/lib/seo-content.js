@@ -24,7 +24,7 @@ export const PERSON_SCHEMA = {
   "@type": "Person",
   name: "Saad Mazhar",
   url: BASE_URL,
-  image: `${BASE_URL}/logo.png`,
+  image: `${BASE_URL}/profile-photo.png`,
   sameAs: [
     "https://linkedin.com/in/saadmaz/",
     "https://github.com/saadmaz/",
