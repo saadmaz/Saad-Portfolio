@@ -1,5 +1,22 @@
 {
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/logo.png",
+      "destination": "/icons/logo-v2-512.png",
+      "permanent": true
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "/icons/favicon-v2.svg",
+      "permanent": true
+    },
+    {
+      "source": "/app-icon.svg",
+      "destination": "/apple-touch-icon.png",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/rss.xml",
@@ -28,6 +45,12 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/publish-scheduled",
+      "schedule": "0 6 * * *"
     }
   ],
   "headers": [
@@ -163,12 +186,6 @@
           "value": "public, max-age=3600, must-revalidate"
         }
       ]
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/publish-scheduled",
-      "schedule": "0 6 * * *"
     }
   ]
 }
