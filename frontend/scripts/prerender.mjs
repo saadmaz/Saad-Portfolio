@@ -715,7 +715,7 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
     const schema = articleSchema(p, {
       baseUrl: BASE_URL,
       author: postAuthor,
-      publisher: { name: SITE_NAME, logo: "/logo.png" },
+      publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png" },
       series: data.series.find((s) => s.id === p.seriesId),
       wordCount: countWords(stripHtml(p.content)),
     });
