@@ -22,6 +22,8 @@ interface BreadcrumbItem {
 
 interface SEOProps {
   title?: string;
+  /** Complete <title>, used as-is without the " - Saad Mazhar" suffix (the homepage leads with the name). */
+  fullTitle?: string;
   description?: string;
   /** Absolute URL to OG image (1200×630 recommended for summary_large_image) */
   image?: string;
@@ -71,6 +73,7 @@ const DEFAULT_DESCRIPTION =
 
 export function SEO({
   title,
+  fullTitle: fullTitleProp,
   description = DEFAULT_DESCRIPTION,
   image,
   imageWidth = OG_WIDTH,
@@ -84,7 +87,8 @@ export function SEO({
   breadcrumbs,
   noIndex = false,
 }: SEOProps) {
-  const fullTitle = title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`;
+  const fullTitle =
+    fullTitleProp ?? (title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`);
   // noIndex pages (404s) have no card of their own: share the home card.
   const ogImage = image ?? ogCardFor(noIndex ? BASE_URL : url);
   const isLargeImage = imageWidth / imageHeight >= 1.9 && imageWidth >= 1200;

@@ -408,6 +408,9 @@ export function articleSchema(post, { baseUrl, author, publisher, series, wordCo
     name: post.author || publisher.name,
     url: baseUrl,
   };
+  // The site owner's articles point at the homepage Person entity (publisher.id),
+  // so engines credit them to the same "Saad Mazhar" the rest of the site describes.
+  if (publisher.id && authorNode.name === publisher.name) authorNode["@id"] = publisher.id;
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -418,6 +421,7 @@ export function articleSchema(post, { baseUrl, author, publisher, series, wordCo
     author: authorNode,
     publisher: {
       "@type": "Person",
+      ...(publisher.id ? { "@id": publisher.id } : {}),
       name: publisher.name,
       url: baseUrl,
       ...(publisher.logo ? { logo: { "@type": "ImageObject", url: abs(publisher.logo, baseUrl) } } : {}),

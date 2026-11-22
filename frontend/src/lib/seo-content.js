@@ -19,23 +19,81 @@ export const SITE_NAME = "Saad Mazhar";
 // name the URL that returns 200, or Google treats it as a conflicting signal.
 export const BASE_URL = "https://www.saadmaz.com";
 
+/**
+ * Stable identifiers for the site's entity graph. Every schema that means
+ * "Saad Mazhar" or "this website" points at the same @id, so search engines
+ * and AI answer engines merge them into one entity instead of several
+ * loosely related ones.
+ */
+export const PERSON_ID = `${BASE_URL}/#person`;
+export const WEBSITE_ID = `${BASE_URL}/#website`;
+
+/** Use wherever another schema mentions Saad (author, about, performer…). */
+export const PERSON_REF = { "@type": "Person", "@id": PERSON_ID, name: "Saad Mazhar", url: BASE_URL };
+
+/**
+ * The one-line bio. Keep LinkedIn, GitHub and X headlines saying the same
+ * thing: consistent facts across profiles are how engines confirm identity.
+ */
+export const BIO =
+  "Saad Mazhar is a startup founder and full-stack developer from Colombo, Sri Lanka, building TankSudda and Stopwash and studying Computer Science at the University of Westminster.";
+
 export const PERSON_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": PERSON_ID,
   name: "Saad Mazhar",
   url: BASE_URL,
   image: `${BASE_URL}/profile-photo.png`,
+  email: "mailto:hello@saadmaz.com",
   sameAs: [
-    "https://linkedin.com/in/saadmaz/",
-    "https://github.com/saadmaz/",
-    "https://instagram.com/saaadmaz/",
-    "https://facebook.com/saadmazhar03",
+    "https://www.linkedin.com/in/saadmaz/",
+    "https://github.com/saadmaz",
+    "https://www.instagram.com/saaadmaz/",
+    "https://www.facebook.com/saadmazhar03",
     "https://x.com/SaadMazhar_",
   ],
   jobTitle: "Startup Founder & Full-Stack Developer",
-  worksFor: { "@type": "Organization", name: "TankSudda" },
+  // Matches the Experience page and the homepage's "Currently building" line.
+  worksFor: [
+    { "@type": "Organization", name: "TankSudda", url: "https://tanksudda.com" },
+    {
+      "@type": "Organization",
+      name: "Stopwash",
+      legalName: "Stopwash (PVT) Ltd.",
+      url: "https://stopwash.lk",
+    },
+    { "@type": "Organization", name: "Spectrify AI" },
+  ],
   address: { "@type": "PostalAddress", addressLocality: "Colombo", addressCountry: "LK" },
 };
+
+export const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": WEBSITE_ID,
+  name: "Saad Mazhar",
+  url: BASE_URL,
+  inLanguage: "en",
+  publisher: { "@id": PERSON_ID },
+};
+
+/** Homepage graph: the person, the site, and the profile page that is about them. */
+export function homeSchemas(person = PERSON_SCHEMA) {
+  return [
+    person,
+    WEBSITE_SCHEMA,
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "@id": `${BASE_URL}/#profilepage`,
+      url: BASE_URL,
+      name: PAGE_SEO["/"].fullTitle,
+      isPartOf: { "@id": WEBSITE_ID },
+      mainEntity: { "@id": PERSON_ID },
+    },
+  ];
+}
 
 /** Top-level nav used for the crawler-visible <nav> injected by prerender.mjs. */
 export const NAV_LINKS = [
@@ -58,7 +116,11 @@ export const NAV_LINKS = [
  */
 export const PAGE_SEO = {
   "/": {
-    title: "Full-Stack Developer & Startup Founder",
+    title: "Startup Founder & Full-Stack Developer",
+    // Home leads with the name (the query it must win) instead of the usual suffix.
+    fullTitle: "Saad Mazhar | Startup Founder & Full-Stack Developer",
+    // The crawler copy's H1 mirrors the visible hero heading in Index.tsx.
+    h1: "Saad Mazhar: building products that solve real problems.",
     description:
       "Saad Mazhar, startup founder, tech speaker, and full-stack developer in Colombo, Sri Lanka, building AI-powered products and web apps.",
   },

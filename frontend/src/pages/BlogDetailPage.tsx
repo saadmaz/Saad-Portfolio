@@ -16,7 +16,7 @@ import {
   stripHtml,
   updatedAtOf,
 } from "@/lib/article-core";
-import { BASE_URL, SITE_NAME } from "@/lib/seo-content";
+import { BASE_URL, PERSON_ID, SITE_NAME } from "@/lib/seo-content";
 import type { BlogPost } from "@/types";
 import NotFound from "./NotFound";
 
@@ -31,7 +31,7 @@ export function ArticleSeo({ post }: { post: BlogPost }) {
   const schema = articleSchema(post, {
     baseUrl: BASE_URL,
     author,
-    publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png" },
+    publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png", id: PERSON_ID },
     series,
     wordCount: countWords(stripHtml(post.content)),
   });

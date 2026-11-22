@@ -14,7 +14,7 @@ import { monthYear } from "@/lib/format";
 import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
-import { PAGE_SEO, PERSON_SCHEMA, BASE_URL } from "@/lib/seo-content";
+import { PAGE_SEO, BASE_URL, homeSchemas } from "@/lib/seo-content";
 import portrait from "@/assets/profile-photo.webp";
 
 function Hero({
@@ -58,6 +58,10 @@ function Hero({
               Currently building TankSudda & Stopwash
             </span>
             <h1 id="hero-heading" className="text-hero font-medium lg:text-hero-lg">
+              {/* The name leads the H1: it's the query this page has to win. */}
+              <span className="mb-[clamp(8px,1.8svh,16px)] block font-mono text-meta font-normal text-fg-2">
+                Saad Mazhar
+              </span>
               Building
               <br />
               products that
@@ -431,10 +435,10 @@ const Index = () => {
   return (
     <Layout>
       <SEO
-        title={PAGE_SEO["/"].title}
+        fullTitle={PAGE_SEO["/"].fullTitle}
         description={PAGE_SEO["/"].description}
         url={BASE_URL}
-        structuredData={PERSON_SCHEMA}
+        structuredData={homeSchemas()}
       />
       <Hero projects={projects?.length} events={events?.length} certificates={certs?.length} />
       {/* Sections hide when their data is empty; the counter keeps the numbering gapless. */}
