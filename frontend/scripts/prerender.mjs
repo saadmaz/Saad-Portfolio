@@ -23,7 +23,21 @@
 import { readFileSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { PAGE_SEO, PERSON_SCHEMA, NAV_LINKS, SITE_NAME, BASE_URL } from "../src/lib/seo-content.js";
+import { createHash } from "crypto";
+import {
+  PAGE_SEO,
+  PERSON_SCHEMA,
+  PERSON_ID,
+  PERSON_REF,
+  WEBSITE_ID,
+  BIO,
+  homeSchemas,
+  NAV_LINKS,
+  SITE_NAME,
+  BASE_URL,
+} from "../src/lib/seo-content.js";
+import { isEventIndexable } from "../src/lib/indexing.js";
+import { submitChangedUrls } from "./indexnow.mjs";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import {
   articleSchema,
@@ -125,8 +139,8 @@ function pageSchemas(routePath, title) {
       "@type": "WebPage",
       name: title,
       url: `${BASE_URL}${routePath}`,
-      isPartOf: { "@type": "WebSite", name: SITE_NAME, url: BASE_URL },
-      about: { "@type": "Person", name: SITE_NAME, url: BASE_URL },
+      isPartOf: { "@type": "WebSite", "@id": WEBSITE_ID, name: SITE_NAME, url: BASE_URL },
+      about: PERSON_REF,
     },
     {
       "@context": "https://schema.org",
@@ -156,6 +170,8 @@ function injectContent(
   {
     path: routePath,
     title,
+    fullTitle,
+    h1,
     description,
     schemas,
     bodyHtml = "",
@@ -172,7 +188,7 @@ function injectContent(
   OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
   const card = `${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`;
   const html = applyHeadMeta(shell, {
-    title: `${title} - ${SITE_NAME}`,
+    title: fullTitle || `${title} - ${SITE_NAME}`,
     description,
     url: pageUrl,
     canonical,
@@ -188,13 +204,17 @@ function injectContent(
     .join("\n");
 
   const content = [
-    `<header>\n<h1>${escape(title)}</h1>\n<p>${escape(description)}</p>\n</header>`,
+    `<header>\n<h1>${escape(h1 || title)}</h1>\n<p>${escape(description)}</p>\n</header>`,
     bodyHtml && `<main>\n${bodyHtml}\n</main>`,
     navHtml(routePath),
     schemaScripts,
   ]
     .filter(Boolean)
     .join("\n");
+
+  // What crawlers see, hashed per indexable URL so IndexNow only hears about real changes
+  // (not every build's new asset file names).
+  if (!noIndex && !canonical) CONTENT_HASHES[pageUrl] = hash(content);
 
   // data-prerendered: index.html hides this unstyled crawler copy from
   // visitors until React mounts and replaces it (no flash of plain text).
@@ -203,6 +223,10 @@ function injectContent(
     () => `<div id="root"><div data-prerendered>${content}</div></div>`,
   );
 }
+
+/** Indexable page URL → hash of its crawler-visible content (see scripts/indexnow.mjs). */
+const CONTENT_HASHES = {};
+const hash = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 
 /** Every prerendered path; written to dist/routes.json for the 404 check in middleware.ts. */
 const ROUTES = new Set();
@@ -448,7 +472,7 @@ const section = (title, body) => (body ? `<section>\n<h2>${escape(title)}</h2>\n
 
 /** Person JSON-LD enriched with what the site actually knows, so AI and search engines can connect the facts. */
 function personSchema(data) {
-  const schema = { ...PERSON_SCHEMA, description: PAGE_SEO["/"].description };
+  const schema = { ...PERSON_SCHEMA, description: BIO };
   if (data.education.length)
     schema.alumniOf = data.education.map((e) => ({
       "@type": "EducationalOrganization",
@@ -469,6 +493,7 @@ function staticBody(routePath, data) {
   switch (routePath) {
     case "/":
       return [
+        `<p>${escape(BIO)}</p>`,
         `<p>Founder, full-stack engineer and tech speaker from Colombo, Sri Lanka. I turn rough ideas into products people pay for, then go on stage and explain how.</p>`,
         section(
           "Selected projects",
@@ -623,10 +648,10 @@ function staticCard(routePath, data) {
 
 function prerenderStaticRoutes(shell, data) {
   const person = personSchema(data);
-  for (const [routePath, { title, description }] of Object.entries(PAGE_SEO)) {
+  for (const [routePath, { title, fullTitle, h1, description }] of Object.entries(PAGE_SEO)) {
     const schemas =
       routePath === "/"
-        ? [person]
+        ? homeSchemas(person)
         : routePath === "/about"
           ? [person, ...pageSchemas(routePath, title)]
           : pageSchemas(routePath, title);
@@ -635,6 +660,8 @@ function prerenderStaticRoutes(shell, data) {
       injectContent(shell, {
         path: routePath,
         title,
+        fullTitle,
+        h1,
         description,
         schemas,
         bodyHtml: staticBody(routePath, data),
@@ -649,7 +676,7 @@ function prerenderStaticRoutes(shell, data) {
 
 // ── Detail routes ────────────────────────────────────────────────────────
 
-const author = { "@type": "Person", name: SITE_NAME, url: BASE_URL };
+const author = PERSON_REF;
 
 function prerenderProjects(shell, projects) {
   for (const p of projects) {
@@ -722,7 +749,7 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
     const schema = articleSchema(p, {
       baseUrl: BASE_URL,
       author: postAuthor,
-      publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png" },
+      publisher: { name: SITE_NAME, logo: "/icons/logo-v2-512.png", id: PERSON_ID },
       series: data.series.find((s) => s.id === p.seriesId),
       wordCount: countWords(stripHtml(p.content)),
     });
@@ -882,19 +909,47 @@ function prerenderEvents(shell, events) {
       e.description || `${e.role ?? "Participant"} at ${e.title}, ${e.organizer}.`,
       160,
     );
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      name: e.title,
-      description: e.description,
-      startDate: e.date,
-      eventStatus: "https://schema.org/EventScheduled",
-      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      location: { "@type": "Place", name: e.location, address: e.location },
-      organizer: { "@type": "Organization", name: e.organizer },
-      [e.role === "Speaker" ? "performer" : "contributor"]: author,
-      ...(photos.length ? { image: photos.map((src) => imageObject(src, eventPhotoAlt(e, src))) } : {}),
-    };
+    const images = photos.length
+      ? { image: photos.map((src) => imageObject(src, eventPhotoAlt(e, src))) }
+      : {};
+    const indexable = isEventIndexable(e);
+    // Event markup is for upcoming events with a real date; a past event marked
+    // "EventScheduled" (or dated "2023") is invalid structured data. Past events
+    // are described as a page about Saad's part in them instead.
+    const startsAt = /^\d{4}-\d{2}-\d{2}/.test(String(e.date ?? "")) ? Date.parse(e.date) : NaN;
+    const upcoming = startsAt > Date.now();
+    const schemas = upcoming
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: e.title,
+            description: e.description,
+            startDate: e.date,
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            location: { "@type": "Place", name: e.location, address: e.location },
+            organizer: { "@type": "Organization", name: e.organizer },
+            [e.role === "Speaker" ? "performer" : "contributor"]: author,
+            ...images,
+          },
+        ]
+      : [
+          {
+            ...pageSchemas(routePath, e.title)[0],
+            description,
+            ...images,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+              { "@type": "ListItem", position: 2, name: "Events", item: `${BASE_URL}/events` },
+              { "@type": "ListItem", position: 3, name: e.title, item: `${BASE_URL}${routePath}` },
+            ],
+          },
+        ];
     const bodyHtml = [
       `<p>${escape(joinMeta(e.role && `Role: ${e.role}`, dateLabel(e.date), e.location, e.organizer && `Organiser: ${e.organizer}`))}</p>`,
       paras(e.description),
@@ -910,8 +965,10 @@ function prerenderEvents(shell, events) {
         path: routePath,
         title: e.title,
         description,
-        schemas: [schema],
+        schemas,
         bodyHtml,
+        // Thin write-ups (see src/lib/indexing.js) stay reachable but out of the index.
+        noIndex: indexable ? false : "follow",
         og: {
           eyebrow: "Events & Hosting",
           title: e.title,
@@ -1000,19 +1057,30 @@ async function renderCards() {
 
 // ── Sitemaps ─────────────────────────────────────────────────────────────
 
-/** `images`: photo URLs on the page, listed for Google Images (image sitemap extension). */
-function urlEntry(loc, lastmod, changefreq, priority, images = []) {
+/**
+ * `lastmod` only when it's a real content date: stamping every URL with the
+ * build date teaches Google to ignore lastmod for the whole site. No
+ * changefreq/priority: Google ignores both.
+ * `images`: photo URLs on the page, listed for Google Images (image sitemap extension).
+ */
+function urlEntry(loc, lastmod, images = []) {
   const imageTags = [...new Set(images.filter(Boolean))]
     .map((src) => `\n    <image:image>\n      <image:loc>${escape(src)}</image:loc>\n    </image:image>`)
     .join("");
-  return `  <url>\n    <loc>${escape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>${imageTags}\n  </url>`;
+  const mod = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "";
+  return `  <url>\n    <loc>${escape(loc)}</loc>${mod}${imageTags}\n  </url>`;
 }
 
+/** YYYY-MM-DD for a Firestore timestamp / date-ish value, or null when unknown. */
 function toDateString(value) {
   const raw = value?.toDate ? value.toDate() : value;
-  const d = raw ? new Date(raw) : new Date();
-  return Number.isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
+  if (!raw) return null;
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
 }
+
+/** Newest real date in a list (null when none are known). */
+const newest = (dates) => dates.filter(Boolean).sort().pop() ?? null;
 
 const buildUrlset = (entries) =>
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entries.join("\n")}\n</urlset>\n`;
@@ -1021,7 +1089,6 @@ const buildUrlset = (entries) =>
 const ALWAYS_INDEXED_ROUTES = ["/", "/about", "/experience", "/skills", "/certifications", "/contact"];
 
 function writeSitemaps(data) {
-  const today = toDateString();
   mkdirSync(join(DIST_DIR, "sitemaps"), { recursive: true });
 
   const main = [...ALWAYS_INDEXED_ROUTES];
@@ -1029,22 +1096,17 @@ function writeSitemaps(data) {
   if (data.publications.length) main.push("/publications");
   if (data.education.length) main.push("/education");
   if (data.languages.length) main.push("/languages");
+  const projectDates = data.projects.map((p) => toDateString(p.updated_at));
+  // Only events whose pages are indexable (see src/lib/indexing.js).
+  const events = data.events.filter(isEventIndexable);
+  const eventDates = events.map((e) => toDateString(e.updated_at));
   const files = {
-    "main.xml": main.map((p) =>
-      urlEntry(
-        p === "/" ? BASE_URL : `${BASE_URL}${p}`,
-        today,
-        p === "/" ? "weekly" : "monthly",
-        p === "/" ? "1.0" : "0.7",
-      ),
-    ),
+    // Static pages have no reliable "last changed" date, so no lastmod.
+    "main.xml": main.map((p) => urlEntry(p === "/" ? BASE_URL : `${BASE_URL}${p}`, null)),
     "projects.xml": [
-      urlEntry(`${BASE_URL}/projects`, today, "weekly", "0.9"),
-      ...data.projects.map((p) =>
-        urlEntry(`${BASE_URL}/projects/${p.slug}`, toDateString(p.updated_at), "monthly", "0.8", [
-          p.heroImage,
-          ...(p.screenshots ?? []),
-        ]),
+      urlEntry(`${BASE_URL}/projects`, newest(projectDates)),
+      ...data.projects.map((p, i) =>
+        urlEntry(`${BASE_URL}/projects/${p.slug}`, projectDates[i], [p.heroImage, ...(p.screenshots ?? [])]),
       ),
     ],
   };
@@ -1052,18 +1114,10 @@ function writeSitemaps(data) {
   // follows publishing without a rebuild. It's only listed in the index here;
   // writing a static file would shadow the rewrite.
   const dynamic = ["blog.xml"];
-  if (data.events.length)
+  if (events.length)
     files["events.xml"] = [
-      urlEntry(`${BASE_URL}/events`, today, "weekly", "0.8"),
-      ...data.events.map((e) =>
-        urlEntry(
-          `${BASE_URL}/events/${keyOf(e)}`,
-          toDateString(e.updated_at),
-          "yearly",
-          "0.6",
-          eventPhotos(e),
-        ),
-      ),
+      urlEntry(`${BASE_URL}/events`, newest(eventDates)),
+      ...events.map((e, i) => urlEntry(`${BASE_URL}/events/${keyOf(e)}`, eventDates[i], eventPhotos(e))),
     ];
   // Certificate detail pages are noindex (see prerenderCertificates), so they're
   // not listed; /certifications itself is in main.xml.
@@ -1071,11 +1125,12 @@ function writeSitemaps(data) {
 
   for (const [name, entries] of Object.entries(files))
     writeFileSync(join(DIST_DIR, "sitemaps", name), buildUrlset(entries), "utf-8");
+  const fileDates = { "projects.xml": newest(projectDates), "events.xml": newest(eventDates) };
   const index = [...Object.keys(files), ...dynamic]
-    .map(
-      (f) =>
-        `  <sitemap>\n    <loc>${BASE_URL}/sitemaps/${f}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`,
-    )
+    .map((f) => {
+      const mod = fileDates[f] ? `\n    <lastmod>${fileDates[f]}</lastmod>` : "";
+      return `  <sitemap>\n    <loc>${BASE_URL}/sitemaps/${f}</loc>${mod}\n  </sitemap>`;
+    })
     .join("\n");
   writeFileSync(
     join(DIST_DIR, "sitemap.xml"),
@@ -1083,7 +1138,9 @@ function writeSitemaps(data) {
     "utf-8",
   );
   const urls = Object.values(files).reduce((n, e) => n + e.length, 0);
-  console.log(`✅ sitemap.xml + ${Object.keys(files).length} sitemaps (${urls} URLs) regenerated.`);
+  console.log(
+    `✅ sitemap.xml + ${Object.keys(files).length} sitemaps (${urls} URLs; ${data.events.length - events.length} thin events left out).`,
+  );
 }
 
 // ── llms-full.txt: the whole site as plain text, for AI tools ───────────
@@ -1095,7 +1152,7 @@ function writeLlmsFull(data) {
   md.push(
     `# ${SITE_NAME}`,
     "",
-    `> ${PAGE_SEO["/"].description}`,
+    `> ${BIO}`,
     "",
     `Everything published on ${BASE_URL}, as plain text. Each section links to its canonical page. Generated at build time from the same data the site renders.`,
   );
@@ -1228,6 +1285,7 @@ async function main() {
   console.log(`✅ routes.json (${ROUTES.size} pages)`);
   writeLlmsFull(data);
   await renderCards();
+  await submitChangedUrls(CONTENT_HASHES, { baseUrl: BASE_URL });
 }
 
 main().catch((err) => {

@@ -2,6 +2,22 @@
 
 export const SITE_NAME: string;
 export const BASE_URL: string;
+export const PERSON_ID: string;
+export const WEBSITE_ID: string;
+export const PERSON_REF: Record<string, unknown>;
+export const BIO: string;
 export const PERSON_SCHEMA: Record<string, unknown>;
+export const WEBSITE_SCHEMA: Record<string, unknown>;
+export function homeSchemas(person?: Record<string, unknown>): Record<string, unknown>[];
 export const NAV_LINKS: { path: string; label: string }[];
-export const PAGE_SEO: Record<string, { title: string; description: string }>;
+export const PAGE_SEO: Record<
+  string,
+  {
+    title: string;
+    description: string;
+    /** Full <title> used as-is, without the " - Saad Mazhar" suffix. */
+    fullTitle?: string;
+    /** Crawler-copy H1 when it should differ from `title`. */
+    h1?: string;
+  }
+>;

@@ -89,7 +89,8 @@ export function articleSchema(
   opts: {
     baseUrl: string;
     author?: Partial<Author> | null;
-    publisher: { name: string; logo?: string };
+    /** `id`: the site owner's Person @id; the author gets it too when the names match. */
+    publisher: { name: string; logo?: string; id?: string };
     series?: Pick<BlogSeries, "title" | "slug"> | null;
     wordCount?: number;
   },

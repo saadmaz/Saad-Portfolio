@@ -332,6 +332,8 @@ export interface Event {
   link?: string;
   tags?: string[];
   type: string; // Event category: Conference, Workshop, Summit, etc.
+  /** Search visibility set in the CMS; "auto" (default) applies the word-count rule in lib/indexing.js. */
+  seo_visibility?: "auto" | "index" | "noindex";
 }
 
 export interface Newsletter {

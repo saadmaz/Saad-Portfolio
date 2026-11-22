@@ -8,6 +8,7 @@ import { Gallery } from "@/components/Gallery";
 import { useEvents } from "@/hooks/useContent";
 import { fullDate } from "@/lib/format";
 import { eventPhotoAlt } from "@/lib/imageAlt";
+import { isEventIndexable } from "@/lib/indexing";
 import { BASE_URL } from "@/lib/seo-content";
 import { eventPath, matchesKey } from "@/lib/paths";
 
@@ -48,6 +49,8 @@ const EventDetailPage = () => {
         title={event.title}
         description={event.description?.slice(0, 160)}
         url={`${BASE_URL}${eventPath(event)}`}
+        // Thin write-ups stay out of search (same rule as the prerendered copy).
+        noIndex={isEventIndexable(event) ? false : "follow"}
       />
       <header className="wrap pb-14 pt-12 md:pt-20">
         <Link to="/events" className="text-sm text-fg-2 hover:text-fg">
