@@ -202,7 +202,7 @@ export function Row({
     </>
   );
   const cls =
-    "group flex flex-col gap-3 border-t border-line-2 py-6 md:flex-row md:items-center md:gap-10 md:py-8";
+    "group flex flex-col gap-3 border-t border-line-2 py-6 md:flex-row md:items-center md:gap-10 md:py-[clamp(18px,3.6svh,32px)]";
   if (to)
     return (
       <Link to={to} className={cls}>

@@ -108,19 +108,33 @@ function Hero({
 }
 
 function Statement() {
+  // Handwritten note, centred.
   return (
-    <section className="section screen theme-orange border-t-0" aria-label="About">
-      <Reveal className="wrap">
+    <section className="section screen theme-orange border-t-0" aria-labelledby="about-heading">
+      <Reveal className="wrap flex flex-col items-center text-center">
         <Eyebrow counted>About</Eyebrow>
-        <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
-          <span className="text-fg">I’m Saad, a founder who still writes the code.</span> Five years, two
-          startups and twenty-odd products in,{" "}
-          <span className="font-light text-fg">I care about one thing:</span> shipping work that feels
-          considered, fast and honest.
-        </p>
-        <div className="mt-10 md:mt-12">
-          <Button to="/about" variant="secondary">
-            More about me
+        <h2
+          id="about-heading"
+          className="mt-6 font-hand text-[clamp(2.75rem,5.4vw,4.75rem)] font-bold leading-none md:mt-8"
+        >
+          A little about me
+        </h2>
+        <div className="mt-[clamp(20px,3.5svh,40px)] flex max-w-[860px] flex-col gap-[clamp(10px,2svh,20px)] font-hand text-[clamp(1.375rem,min(2.1vw,3.4svh),2.125rem)] leading-[1.25] text-fg">
+          <p>Hey, I’m Saad! I have a habit of turning “wouldn’t it be cool if...” into actual projects.</p>
+          <p>
+            Sometimes it’s a startup, sometimes it’s a random app idea, sometimes it’s 2 AM and I’m wondering
+            if I can build something that probably doesn’t need to exist (yet).
+          </p>
+          <p>
+            I’m into tech, business, AI, and pretty much anything that lets me create, experiment or solve an
+            interesting problem. I’ve started businesses, built products, written code, made mistakes, learned
+            a ridiculous amount and somehow always found another idea to chase.
+          </p>
+          <p>Basically, I like making things happen. And I have a feeling I’m only getting started.</p>
+        </div>
+        <div className="mt-[clamp(24px,4svh,48px)]">
+          <Button to="/about" size="lg">
+            Get to know me a little more
           </Button>
         </div>
       </Reveal>
