@@ -15,7 +15,7 @@ const NotFound = () => {
   return (
     <Layout>
       <SEO title="Page not found" noIndex />
-      <section className="relative -mt-[72px] overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
+      <section className="relative -mt-[72px] flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_50%_45%,rgb(255_95_0/0.16),transparent_70%)]"

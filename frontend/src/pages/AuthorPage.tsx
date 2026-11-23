@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Empty, Eyebrow, Skeleton } from "@/components/ui";
+import { Empty, Eyebrow, PageHero, Skeleton } from "@/components/ui";
 import { ArticleCard } from "@/components/article/ArticleParts";
 import { authorLinks } from "@/lib/authors";
 import { useAuthors, useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
@@ -53,37 +53,39 @@ const AuthorPage = () => {
           { name: author.name, url },
         ]}
       />
-      <header className="wrap flex flex-col gap-8 pb-16 pt-16 md:flex-row md:items-center md:pb-20 md:pt-24">
-        {author.avatar && (
-          <img
-            src={author.avatar}
-            alt=""
-            className="size-28 rounded-full border border-line-2 object-cover md:size-36"
-          />
-        )}
-        <div className="flex max-w-[680px] flex-col gap-4">
-          <Eyebrow>Author</Eyebrow>
-          <h1 className="text-display-m font-medium">{author.name}</h1>
-          {author.title && <p className="text-body-l text-fg-2">{author.title}</p>}
-          {author.bio && <p className="text-fg-2">{author.bio}</p>}
-          {links.length > 0 && (
-            <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-              {links.map((l) => (
-                <li key={l.url}>
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                    className="text-fg-2 underline-offset-4 hover:text-fg hover:underline"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+      <PageHero className="mb-8" band="Saad Mazhar · Authors">
+        <div className="flex flex-col gap-8 md:flex-row md:items-center">
+          {author.avatar && (
+            <img
+              src={author.avatar}
+              alt=""
+              className="size-28 rounded-full border border-line-2 object-cover md:size-36"
+            />
           )}
+          <div className="flex max-w-[680px] flex-col gap-4">
+            <Eyebrow>Author</Eyebrow>
+            <h1 className="text-display-m font-medium">{author.name}</h1>
+            {author.title && <p className="text-body-l text-fg-2">{author.title}</p>}
+            {author.bio && <p className="text-fg-2">{author.bio}</p>}
+            {links.length > 0 && (
+              <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                {links.map((l) => (
+                  <li key={l.url}>
+                    <a
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                      className="text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-      </header>
+      </PageHero>
       <section className="section">
         <div className="wrap">
           <Eyebrow>{`${articles.length} ${articles.length === 1 ? "article" : "articles"}`}</Eyebrow>

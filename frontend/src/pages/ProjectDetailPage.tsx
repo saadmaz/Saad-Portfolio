@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import NotFound from "./NotFound";
-import { Button, Media, Reveal, Skeleton, Tag } from "@/components/ui";
+import { Button, Media, PageHero, Reveal, Skeleton, Tag } from "@/components/ui";
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { year } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
@@ -90,14 +90,24 @@ const ProjectDetailPage = () => {
           { name: project.title, url: `${BASE_URL}/projects/${project.slug}` },
         ]}
       />
-      <header className="wrap pb-16 pt-12 md:pt-20">
+      <PageHero
+        band="Saad Mazhar · Projects"
+        media={
+          <Media
+            src={project.heroImage || project.image}
+            alt={project.altText || project.title}
+            className="absolute inset-0"
+            priority
+          />
+        }
+      >
         <Link to="/projects" className="text-sm text-fg-2 hover:text-fg">
           ← All work
         </Link>
-        <h1 className="mt-10 text-display-xl font-medium">{project.title}</h1>
-        <p className="mt-7 max-w-[860px] text-h2 font-light text-fg-2">{project.tagline}</p>
+        <h1 className="mt-8 text-display-xl font-medium">{project.title}</h1>
+        <p className="mt-6 max-w-[860px] text-h2 font-light text-fg-2">{project.tagline}</p>
         {meta.length > 0 && (
-          <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-line-2 pt-8 md:grid-cols-4">
+          <dl className="mt-10 grid grid-cols-2 gap-6 border-t border-line-2 pt-8 md:grid-cols-4">
             {meta.map(([k, v]) => (
               <div key={k} className="flex flex-col gap-2.5">
                 <dt className="label text-fg-3">{k}</dt>
@@ -106,16 +116,7 @@ const ProjectDetailPage = () => {
             ))}
           </dl>
         )}
-      </header>
-
-      <div className="wrap">
-        <Media
-          src={project.heroImage || project.image}
-          alt={project.altText || project.title}
-          className="aspect-[16/9]"
-          priority
-        />
-      </div>
+      </PageHero>
 
       <div className="wrap grid gap-16 py-24 md:grid-cols-[280px_1fr] md:gap-24 md:py-32">
         <aside className="flex flex-col gap-8 md:sticky md:top-28 md:self-start">

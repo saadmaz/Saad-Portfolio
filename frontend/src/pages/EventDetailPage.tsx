@@ -2,7 +2,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import NotFound from "./NotFound";
-import { Button, Eyebrow, Media, Skeleton, Tag } from "@/components/ui";
+import { Button, Eyebrow, Media, PageHero, Skeleton, Tag } from "@/components/ui";
 import { EventCard } from "@/components/cards";
 import { Gallery } from "@/components/Gallery";
 import { useEvents } from "@/hooks/useContent";
@@ -52,27 +52,29 @@ const EventDetailPage = () => {
         // Thin write-ups stay out of search (same rule as the prerendered copy).
         noIndex={isEventIndexable(event) ? false : "follow"}
       />
-      <header className="wrap pb-14 pt-12 md:pt-20">
+      <PageHero
+        band="Saad Mazhar · Events"
+        media={
+          <Media
+            src={cover}
+            alt={cover ? eventPhotoAlt(event, cover) : event.title}
+            className="absolute inset-0 [&_img]:object-[50%_30%]"
+            priority
+          />
+        }
+      >
         <Link to="/events" className="text-sm text-fg-2 hover:text-fg">
           ← All events
         </Link>
-        <div className="mt-10 flex flex-wrap gap-2">
+        <div className="mt-8 flex flex-wrap gap-2">
           {event.role && <Tag active>{event.role}</Tag>}
           {event.type && event.type !== "Other" && <Tag>{event.type}</Tag>}
         </div>
-        <h1 className="mt-6 max-w-[1000px] text-display-l font-medium">{event.title}</h1>
+        <h1 className="mt-6 max-w-[1100px] text-[clamp(2.25rem,min(5.6vw,6.8svh),6rem)] font-medium leading-[0.95] tracking-[-0.045em]">
+          {event.title}
+        </h1>
         <p className="mt-6 text-h2 font-light text-fg-2">{event.organizer}</p>
-      </header>
-
-      <div className="wrap">
-        {/* Capped to the viewport so the photo never fills a laptop screen; crop leans high to keep faces. */}
-        <Media
-          src={cover}
-          alt={cover ? eventPhotoAlt(event, cover) : event.title}
-          className="aspect-[4/3] max-h-[70svh] w-full sm:aspect-[2/1] [&_img]:object-[50%_30%]"
-          priority
-        />
-      </div>
+      </PageHero>
 
       <section className="wrap grid gap-14 py-24 md:grid-cols-[320px_1fr] md:gap-24">
         <aside className="flex flex-col">
