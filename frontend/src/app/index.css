@@ -21,6 +21,25 @@
   color-scheme: dark;
 }
 
+/* Orange island: near-black text, white takes over as the accent (numbers,
+   primary buttons, hovers) so nothing orange sits on orange. */
+.theme-orange {
+  --bg: 255 95 0;
+  --surface: 255 122 46;
+  --surface-2: 255 138 71;
+  --surface-3: 255 156 99;
+  --fg: 17 17 19;
+  --fg-2: 58 22 2;
+  --fg-3: 92 36 4;
+  --fg-inverse: 17 17 19;
+  --accent: 255 255 255;
+  --accent-hover: 255 236 224;
+  --ink: 0 0 0;
+  color-scheme: light;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
 /* Light island inside the dark page (homepage projects). Tokens flip, so
    components using bg-base / text-fg / border-line adapt untouched. */
 .theme-light {
