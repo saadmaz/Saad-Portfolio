@@ -169,7 +169,7 @@ export function SkillsShowcase({ groups }: { groups: SkillSet[] }) {
                         "flex items-center gap-2 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[14px] tracking-[-0.01em] transition-[opacity,transform,filter,box-shadow] duration-300 ease-out hover:-translate-y-0.5",
                         CHIP[level.value],
                         dim && "scale-[0.97] opacity-20 grayscale",
-                        focus !== null && !dim && "shadow-[0_0_0_1px_rgb(255_122_77/0.35)]",
+                        focus !== null && !dim && "shadow-[0_0_0_1px_rgb(255_106_0/0.35)]",
                       )}
                     >
                       {skill.icon && (

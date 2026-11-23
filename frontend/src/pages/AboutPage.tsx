@@ -70,7 +70,7 @@ const AboutPage = () => {
         url={`${BASE_URL}/about`}
       />
       <section className="wrap grid items-end gap-12 pb-24 pt-12 md:grid-cols-[460px_1fr] md:gap-24 md:pt-24">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-line bg-surface bg-[radial-gradient(ellipse_at_50%_30%,rgb(255_122_77/0.16),transparent_70%)]">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-line bg-surface bg-[radial-gradient(ellipse_at_50%_30%,rgb(255_106_0/0.16),transparent_70%)]">
           <img
             src={portrait}
             alt="Saad Mazhar"

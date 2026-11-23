@@ -88,7 +88,7 @@ export function EventCard({ event, className }: { event: Event; className?: stri
           <div className="relative flex aspect-video flex-col justify-end gap-2 overflow-hidden rounded-media border border-line bg-surface p-5">
             <div
               aria-hidden
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_122_77/0.28),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_122_77/0.08),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_106_0/0.28),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_106_0/0.08),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             />
             {event.tags?.length ? (
               <span className="label relative text-fg-3">{event.tags.slice(0, 2).join(" · ")}</span>
