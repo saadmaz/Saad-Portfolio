@@ -8,12 +8,12 @@
   --surface: 33 33 36;
   --surface-2: 41 41 45;
   --surface-3: 50 50 55;
-  --fg: 237 237 234;
+  --fg: 245 245 242;
   --fg-2: 163 163 158;
   --fg-3: 142 142 137;
   --fg-inverse: 20 20 22;
-  --accent: 255 106 61;
-  --accent-hover: 255 130 89;
+  --accent: 255 122 77;
+  --accent-hover: 255 145 107;
   --live: 74 222 128;
   --danger: 242 85 90;
   color-scheme: dark;
@@ -494,7 +494,7 @@
 .prose-cms .hljs-keyword,
 .prose-cms .hljs-selector-tag,
 .prose-cms .hljs-built_in {
-  color: rgb(255 130 89);
+  color: rgb(255 145 107);
 }
 .prose-cms .hljs-string,
 .prose-cms .hljs-attr,

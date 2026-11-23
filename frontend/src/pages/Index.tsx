@@ -39,7 +39,7 @@ function Hero({
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_78%_35%,rgb(255_106_61/0.16),transparent_70%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_78%_35%,rgb(255_122_77/0.16),transparent_70%)]"
       />
 
       {/* Everything above the stats band; the portrait and copy share it so nothing spills below the fold. */}
@@ -400,7 +400,7 @@ function ContactCTA() {
     <section className="section relative overflow-hidden md:py-44" aria-labelledby="contact-heading">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_106_61/0.18),transparent_70%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_122_77/0.18),transparent_70%)]"
       />
       <Reveal className="wrap relative">
         <Eyebrow counted>Contact</Eyebrow>
