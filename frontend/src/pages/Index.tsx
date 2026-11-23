@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
-import { cn } from "@/lib/utils";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectTile, Row } from "@/components/cards";
@@ -110,7 +109,7 @@ function Hero({
 
 function Statement() {
   return (
-    <section className="section screen theme-orange orange-mesh border-t-0" aria-label="About">
+    <section className="section screen theme-orange border-t-0" aria-label="About">
       <Reveal className="wrap">
         <Eyebrow counted>About</Eyebrow>
         <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
@@ -338,7 +337,7 @@ function Writing() {
   const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
   if (posts.length === 0) return null;
   return (
-    <section className="section screen theme-orange orange-mesh border-t-0" aria-labelledby="writing-heading">
+    <section className="section screen theme-orange border-t-0" aria-labelledby="writing-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -399,13 +398,12 @@ function Magnetic({ children, strength = 0.25 }: { children: ReactNode; strength
 }
 
 /**
- * Contact: the shaded orange surface, plus a lighter glow that follows the
- * cursor, a headline that leans gently with it, and magnetic buttons.
+ * Contact: solid orange, with a headline that leans gently with the cursor
+ * and magnetic buttons.
  */
 function ContactCTA() {
   const ref = useRef<HTMLElement>(null);
   const frame = useRef(0);
-  const [active, setActive] = useState(false);
 
   const onMove = (e: React.PointerEvent<HTMLElement>) => {
     if (e.pointerType !== "mouse") return;
@@ -416,8 +414,6 @@ function ContactCTA() {
     const y = (e.clientY - r.top) / r.height;
     cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(() => {
-      el.style.setProperty("--mx", `${x * 100}%`);
-      el.style.setProperty("--my", `${y * 100}%`);
       el.style.setProperty("--tx", `${(x - 0.5) * 14}px`);
       el.style.setProperty("--ty", `${(y - 0.5) * 10}px`);
     });
@@ -428,16 +424,13 @@ function ContactCTA() {
     <section
       ref={ref}
       onPointerMove={onMove}
-      onPointerEnter={(e) => e.pointerType === "mouse" && setActive(true)}
       onPointerLeave={() => {
-        setActive(false);
         ref.current?.style.setProperty("--tx", "0px");
         ref.current?.style.setProperty("--ty", "0px");
       }}
-      className="section screen theme-orange orange-mesh border-t-0"
+      className="section screen theme-orange border-t-0"
       aria-labelledby="contact-heading"
     >
-      <div aria-hidden className={cn("orange-mesh__spot", active && "is-active")} />
       <Reveal className="wrap relative">
         <Eyebrow counted>Contact</Eyebrow>
         <h2
