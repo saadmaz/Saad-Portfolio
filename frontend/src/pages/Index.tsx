@@ -109,7 +109,7 @@ function Hero({
 
 function Statement() {
   return (
-    <section className="section screen" aria-label="About">
+    <section className="section screen theme-orange border-t-0" aria-label="About">
       <Reveal className="wrap">
         <Eyebrow counted>About</Eyebrow>
         <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
@@ -226,7 +226,7 @@ function Speaking() {
 
   if (events.length === 0) return null;
   return (
-    <section className="section screen" aria-labelledby="speaking-heading">
+    <section className="section screen theme-light border-t-0" aria-labelledby="speaking-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -287,7 +287,10 @@ function Capabilities() {
   const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
   return (
-    <section className="section screen overflow-hidden" aria-labelledby="capabilities-heading">
+    <section
+      className="section screen theme-light overflow-hidden border-t-0"
+      aria-labelledby="capabilities-heading"
+    >
       <div className="wrap">
         <Reveal className="mb-12 flex flex-col gap-6 md:mb-12 md:gap-7 [@media(min-width:768px)_and_(max-height:799px)]:mb-8">
           <Eyebrow counted>Capabilities</Eyebrow>
@@ -334,7 +337,7 @@ function Writing() {
   const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
   if (posts.length === 0) return null;
   return (
-    <section className="section screen" aria-labelledby="writing-heading">
+    <section className="section screen theme-orange border-t-0" aria-labelledby="writing-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -370,7 +373,10 @@ function Writing() {
 
 function ContactCTA() {
   return (
-    <section className="section screen relative overflow-hidden" aria-labelledby="contact-heading">
+    <section
+      className="section screen theme-orange relative overflow-hidden border-t-0"
+      aria-labelledby="contact-heading"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_95_0/0.18),transparent_70%)]"
