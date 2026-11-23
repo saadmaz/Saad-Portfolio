@@ -35,3 +35,6 @@ coverage
 # Firebase Console -> Project Settings -> Service Accounts when needed locally
 serviceAccountKey.json
 *.pem
+
+# TypeScript incremental build cache
+*.tsbuildinfo
