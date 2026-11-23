@@ -4,7 +4,7 @@
 
 /* Graphite theme. Single dark palette, values match the Figma variables. */
 :root {
-  --bg: 25 25 27;
+  --bg: 17 17 19;
   --surface: 33 33 36;
   --surface-2: 41 41 45;
   --surface-3: 50 50 55;
