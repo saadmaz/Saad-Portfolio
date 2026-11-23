@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Rss, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Empty, FilterPill, PageHeader, Reveal, Skeleton, Tag } from "@/components/ui";
@@ -108,11 +108,6 @@ const BlogsPage = () => {
         title={category ? category.label : "Notes from"}
         soft={category ? undefined : "the build"}
         intro={category?.description}
-        aside={
-          <Button href="/rss.xml" variant="ghost" icon={false}>
-            <Rss aria-hidden className="size-4" /> RSS
-          </Button>
-        }
       />
 
       <section className="wrap pb-32">

@@ -7,7 +7,7 @@
  * reachable by direct link, so they're left out of every listing.
  */
 
-import { orderBy, where } from "firebase/firestore";
+import { where } from "firebase/firestore";
 import { COLLECTIONS, fetchById, fetchCollection, fetchFirst } from "@/lib/firestore";
 import { normalizePath } from "@/lib/article-core";
 import type { Author, BlogPost, BlogSeries, BlogSettings, ReactionCounts, Redirect } from "@/types";
@@ -19,16 +19,20 @@ const isPermissionDenied = (err: unknown) =>
   typeof err === "object" && err !== null && (err as { code?: string }).code === "permission-denied";
 
 export const BlogService = {
-  /** All published, listed posts, latest first. */
+  /**
+   * All published, listed posts, latest first. Unlisted posts are excluded
+   * by the query itself so their content never reaches a visitor's browser
+   * from a listing (the CMS always writes `unlisted`, true or false).
+   * Equality filters only, sorted here: no composite index needed.
+   */
   async getPublished(): Promise<BlogPost[]> {
-    // Filtered here rather than in the query: `unlisted != true` would drop
-    // every older post that has no `unlisted` field at all.
     const posts = await fetchCollection<BlogPost>(
       COLLECTIONS.blogPosts,
       where("published", "==", true),
-      orderBy("date", "desc"),
+      where("unlisted", "==", false),
     );
-    return posts.filter((p) => !p.unlisted);
+    const time = (p: BlogPost) => Date.parse(p.publishedAt ?? p.date ?? "") || 0;
+    return posts.filter((p) => !p.unlisted).sort((a, b) => time(b) - time(a));
   },
 
   /** The single most recent published post. */
