@@ -41,7 +41,7 @@ export function ShareButtons({ url, title, className }: { url: string; title: st
           const color = BRAND_COLORS[s.id as BrandId];
           const style = color
             ? ({ "--brand": rgb(color) } as CSSProperties)
-            : ({ "--brand": "237 237 234" } as CSSProperties);
+            : ({ "--brand": "245 245 242" } as CSSProperties);
           return (
             <li key={s.id}>
               <a

@@ -109,7 +109,7 @@ function Entry({ edu: e }: { edu: Education }) {
       {current && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_100%_0%,rgb(255_106_61/0.08),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_100%_0%,rgb(255_122_77/0.08),transparent_70%)]"
         />
       )}
 
