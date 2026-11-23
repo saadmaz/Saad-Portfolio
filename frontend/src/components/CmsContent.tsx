@@ -10,6 +10,8 @@ import { parseChartData, type ChartData } from "@/lib/chart";
 import { copyText } from "@/lib/clipboard";
 import { PROMPT_VARIABLE_RE, promptNumber, promptVariables, type ArticlePrompt } from "@/lib/prompts";
 import { PromptCard, type PromptHosts } from "@/components/article/PromptCard";
+import { VideoCard } from "@/components/article/VideoCard";
+import { isBareUrl, youTubeId } from "@/lib/youtube";
 
 export interface ContentHeading {
   id: string;
@@ -273,6 +275,7 @@ function enhancePrompts(root: HTMLElement): PromptSlot[] {
 type Extra =
   | { kind: "chart"; host: HTMLElement; chartType: "bar" | "line"; data: ChartData; title: string }
   | { kind: "carousel"; host: HTMLElement; track: HTMLElement }
+  | { kind: "video"; host: HTMLElement; id: string; title: string }
   | { kind: "toc"; host: HTMLElement }
   | { kind: "sources"; host: HTMLElement };
 
@@ -420,6 +423,38 @@ function enhanceBlocks(root: HTMLElement, onHeadings?: (h: ContentHeading[]) => 
     undo.push(() => host.remove());
   });
 
+  // YouTube links: each video gets a thumbnail card (played in place) below
+  // the block that links to it, once per article. A paragraph that is only a
+  // pasted URL is replaced by its card. The link itself stays in the HTML.
+  const embedded = new Set(
+    [...root.querySelectorAll<HTMLElement>('[data-embed][data-provider="youtube"]')].map(
+      (e) => e.dataset.embedId,
+    ),
+  );
+  const lastHost = new Map<Element, Element>();
+  root.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((a) => {
+    if (a.closest("[data-embed], [data-prompt], pre, [data-resources], [data-html-block], [data-attachment]"))
+      return;
+    const id = youTubeId(a.getAttribute("href"));
+    if (!id || embedded.has(id)) return;
+    embedded.add(id);
+    let block: Element = a;
+    while (block.parentElement && block.parentElement !== root) block = block.parentElement;
+    if (block.parentElement !== root) return;
+    const text = (a.textContent ?? "").trim();
+    const host = document.createElement("div");
+    host.className = "video-host";
+    (lastHost.get(block) ?? block).after(host);
+    lastHost.set(block, host);
+    const onlyUrl = block.tagName === "P" && isBareUrl(text) && (block.textContent ?? "").trim() === text;
+    if (onlyUrl) (block as HTMLElement).hidden = true;
+    extras.push({ kind: "video", host, id, title: isBareUrl(text) ? "" : text });
+    undo.push(() => {
+      host.remove();
+      if (onlyUrl) (block as HTMLElement).hidden = false;
+    });
+  });
+
   // Placeholders the author dropped into the body.
   root.querySelectorAll<HTMLElement>("[data-toc]").forEach((host) => extras.push({ kind: "toc", host }));
   root
@@ -557,6 +592,10 @@ export function CmsContent({
             <Fragment key={key}>
               {createPortal(<Chart type={x.chartType} data={x.data} title={x.title} />, x.host)}
             </Fragment>
+          );
+        if (x.kind === "video")
+          return (
+            <Fragment key={key}>{createPortal(<VideoCard id={x.id} title={x.title} />, x.host)}</Fragment>
           );
         if (x.kind === "carousel")
           return <Fragment key={key}>{createPortal(<CarouselControls track={x.track} />, x.host)}</Fragment>;
