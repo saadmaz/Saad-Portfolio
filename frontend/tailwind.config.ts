@@ -16,9 +16,9 @@ export default {
         live: rgb("--live"),
         danger: rgb("--danger"),
         line: {
-          DEFAULT: "rgb(255 255 255 / 0.07)",
-          2: "rgb(255 255 255 / 0.11)",
-          3: "rgb(255 255 255 / 0.2)",
+          DEFAULT: "rgb(var(--ink) / 0.07)",
+          2: "rgb(var(--ink) / 0.11)",
+          3: "rgb(var(--ink) / 0.2)",
         },
       },
       fontFamily: {

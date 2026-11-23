@@ -3,13 +3,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
-import { EventCard, ProjectCard, ProjectSpotlight, Row } from "@/components/cards";
-import { cn } from "@/lib/utils";
+import { EventCard, ProjectTile, Row } from "@/components/cards";
 import { SkillsShowcase } from "@/components/SkillsShowcase";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
-import { useCertificates, useEvents, useExperience, useSkills, useTestimonials } from "@/hooks/useContent";
+import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
 import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
@@ -129,34 +128,13 @@ function Statement() {
   );
 }
 
-function Quote({
-  quote,
-  className,
-}: {
-  quote: { content: string; name: string; position?: string; company?: string };
-  className?: string;
-}) {
-  return (
-    <figure className={className}>
-      <blockquote className="line-clamp-4 text-h4 font-light leading-snug">“{quote.content}”</blockquote>
-      <figcaption className="mt-4 text-sm">
-        {quote.name}
-        <span className="ml-3 font-mono text-meta text-fg-3">
-          {[quote.position, quote.company].filter(Boolean).join(", ")}
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
-
 function SelectedWork() {
   const { data: featured = [], isLoading } = useFeaturedProjects();
-  const { data: testimonials = [] } = useTestimonials();
   const projects = [...featured].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)).slice(0, 3);
-  const quote = testimonials[0];
   if (!isLoading && projects.length === 0) return null;
   return (
-    <section className="section screen" aria-labelledby="work-heading">
+    // White section; cards stay square, so the row is capped to what fits one screen.
+    <section className="section screen theme-light border-t-0" aria-labelledby="work-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -165,45 +143,18 @@ function SelectedWork() {
             label="Selected work"
             title="Things I’ve"
             soft="built"
-            action={
-              <Button to="/projects" variant="ghost">
-                All projects
-              </Button>
-            }
+            action={<Button to="/projects">All projects</Button>}
           />
         </Reveal>
-        {isLoading ? (
-          <Skeleton className="aspect-[16/9] w-full rounded-media md:aspect-auto md:h-[min(46svh,40vw)]" />
-        ) : projects.length === 1 ? (
-          // One project: image beside the details, the quote tucked under them.
-          <Reveal>
-            <ProjectSpotlight
-              project={projects[0]}
-              index={0}
-              aside={quote && <Quote quote={quote} className="mt-4 border-t border-line pt-6" />}
-            />
-          </Reveal>
-        ) : (
-          <>
-            <div
-              className={cn(
-                "grid gap-16 md:gap-6",
-                projects.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3",
-              )}
-            >
-              {projects.map((p, i) => (
+        <div className="grid gap-12 sm:grid-cols-2 md:max-w-[calc((100svh-370px)*3+3rem)] md:grid-cols-3 md:gap-6">
+          {isLoading
+            ? [0, 1, 2].map((i) => <Skeleton key={i} className="aspect-square rounded-[24px] bg-surface" />)
+            : projects.map((p) => (
                 <Reveal key={p.id}>
-                  <ProjectCard project={p} index={i} compact />
+                  <ProjectTile project={p} />
                 </Reveal>
               ))}
-            </div>
-            {quote && (
-              <Reveal className="ml-auto mt-12 max-w-[900px] md:mt-10">
-                <Quote quote={quote} />
-              </Reveal>
-            )}
-          </>
-        )}
+        </div>
       </div>
     </section>
   );
