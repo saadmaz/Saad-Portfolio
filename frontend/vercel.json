@@ -43,7 +43,7 @@
       "destination": "/api/blog-page?slug=:slug"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!.*\\.[A-Za-z0-9]+$).*)",
       "destination": "/index.html"
     }
   ],
@@ -184,6 +184,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(_prerendered/.*|routes\\.json|redirects\\.json|404\\.html)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }

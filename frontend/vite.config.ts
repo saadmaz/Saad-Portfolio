@@ -20,9 +20,9 @@ export default defineConfig({
     },
   },
   build: {
-    // Generated for error-monitoring uploads but not referenced from the
-    // bundles, so browsers never download them and source stays private.
-    sourcemap: "hidden",
+    // No source maps: none are uploaded anywhere, and deployed .map files
+    // would publish the original source to anyone who guesses the name.
+    sourcemap: false,
     minify: "terser",
     terserOptions: {
       compress: {

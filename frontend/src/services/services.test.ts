@@ -60,6 +60,30 @@ describe("BlogService.getPublished", () => {
     ]);
     expect((await BlogService.getPublished()).map((p) => p.id)).toEqual(["a", "c"]);
   });
+
+  it("asks Firestore for listed posts only, so unlisted content never reaches the browser", async () => {
+    mocked.fetchCollection.mockResolvedValue([]);
+    await BlogService.getPublished();
+    expect(mocked.fetchCollection).toHaveBeenLastCalledWith(
+      "blog_posts",
+      ["published", "==", true],
+      ["unlisted", "==", false],
+    );
+  });
+
+  it("sorts newest first by publication date", async () => {
+    mocked.fetchCollection.mockResolvedValue([
+      { id: "old", published: true, unlisted: false, date: "2025-01-01T00:00:00Z" },
+      {
+        id: "new",
+        published: true,
+        unlisted: false,
+        date: "2025-03-01T00:00:00Z",
+        publishedAt: "2025-03-01T00:00:00Z",
+      },
+    ]);
+    expect((await BlogService.getPublished()).map((p) => p.id)).toEqual(["new", "old"]);
+  });
 });
 
 describe("BlogService.getBySlugOrId", () => {

@@ -245,8 +245,10 @@ function writeRoute(routePath, html) {
  * in link previews without waiting for a rebuild. They're written outside the
  * route path so the static file doesn't shadow that rewrite.
  */
-function writePostPage(slug, html) {
-  ROUTES.add(`/blog/${slug}`.toLowerCase());
+function writePostPage(slug, html, { listed = true } = {}) {
+  // routes.json is public: unlisted posts are left out (middleware.ts then
+  // confirms them with a live lookup, so their links still work).
+  if (listed) ROUTES.add(`/blog/${slug}`.toLowerCase());
   const dir = join(DIST_DIR, POST_PAGES_DIR);
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, `${slug}.html`), html, "utf-8");
@@ -801,6 +803,8 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
           photo: cover?.url,
         },
       }),
+      // `noIndex` here means the unlisted batch.
+      { listed: !noIndex },
     );
   }
 }
@@ -884,7 +888,8 @@ function writeRedirects(data) {
   };
   alias("/events", data.events);
   alias("/certifications", data.certificates);
-  alias("/blog", [...data.posts, ...data.unlistedPosts]);
+  // Not unlisted posts: redirects.json is public and would reveal their slugs.
+  alias("/blog", data.posts);
   writeFileSync(join(DIST_DIR, "redirects.json"), JSON.stringify(map), "utf-8");
   console.log(`✅ redirects.json (${Object.keys(map).length} rules)`);
 }
