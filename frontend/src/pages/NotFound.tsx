@@ -18,7 +18,7 @@ const NotFound = () => {
       <section className="relative -mt-[72px] overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_50%_45%,rgb(255_106_0/0.16),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_50%_45%,rgb(255_95_0/0.16),transparent_70%)]"
         />
         <div className="wrap relative flex min-h-[70vh] flex-col items-center justify-center gap-8 py-24 text-center">
           <span className="label text-accent">Error 404</span>

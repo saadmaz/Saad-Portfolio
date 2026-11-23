@@ -3,12 +3,12 @@
   "redirects": [
     {
       "source": "/logo.png",
-      "destination": "/icons/logo-v3-512.png",
+      "destination": "/icons/logo-v4-512.png",
       "permanent": true
     },
     {
       "source": "/favicon.svg",
-      "destination": "/icons/favicon-v3.svg",
+      "destination": "/icons/favicon-v4.svg",
       "permanent": true
     },
     {

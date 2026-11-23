@@ -78,7 +78,7 @@ const ITEM_ICONS: Record<string, LucideIcon> = {
 };
 
 const COVER = {
-  ember: { glow: "255 106 0", base: "153 36 15", art: windowEmber },
+  ember: { glow: "255 95 0", base: "153 36 15", art: windowEmber },
   graphite: { glow: "229 229 219", base: "89 89 97", art: windowGraphite },
 };
 
@@ -150,7 +150,7 @@ function useFeature(menu: string): FeatureContent | null {
     const n = certs.length || 99;
     return {
       media: (
-        <div className="absolute inset-0 bg-surface bg-[radial-gradient(50%_43%_at_60%_79%,rgb(255_106_0/0.35),transparent)]">
+        <div className="absolute inset-0 bg-surface bg-[radial-gradient(50%_43%_at_60%_79%,rgb(255_95_0/0.35),transparent)]">
           <span className="absolute left-4 top-6 text-[64px] font-medium leading-none tracking-[-0.035em] text-fg">
             {n}
           </span>

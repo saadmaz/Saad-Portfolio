@@ -177,7 +177,7 @@ export function Media({
       ) : (
         <div
           aria-hidden
-          className="size-full bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_106_0/0.35),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_106_0/0.12),transparent_60%)]"
+          className="size-full bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_95_0/0.35),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.12),transparent_60%)]"
         />
       )}
     </div>
