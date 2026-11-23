@@ -18,6 +18,16 @@ service firebase.storage {
       allow delete: if isAdmin();
     }
 
+    // Downloadable article files (attachment blocks): PDF, Markdown, text,
+    // CSV and ZIP only, at most 25 MB. Name and content type must agree, so
+    // nothing executable or renderable as a page (HTML, SVG) can be uploaded.
+    match /blog/attachments/{file} {
+      allow write: if isAdmin()
+                   && request.resource.size < 25 * 1024 * 1024
+                   && file.matches('[a-z0-9-]+[.](pdf|md|txt|csv|zip)')
+                   && request.resource.contentType.matches('application/pdf|text/markdown|text/plain|text/csv|application/zip');
+    }
+
     // Everything else: anyone can read public assets (logos, certificates,
     // images); only the admin can upload or delete. Rules OR together, so the
     // blog folder is excluded here or its restrictions above would be bypassed.

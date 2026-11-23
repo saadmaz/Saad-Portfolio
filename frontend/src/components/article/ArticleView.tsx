@@ -5,6 +5,7 @@ import { CmsContent, type ContentHeading } from "@/components/CmsContent";
 import { useAuthorOf, useBlogSettings, useSeries } from "@/hooks/useBlog";
 import { useArticleTracking } from "@/hooks/useArticleTracking";
 import {
+  adjacentPosts,
   articleTypeLabel,
   relatedPosts,
   seriesPosition,
@@ -13,9 +14,11 @@ import {
   wasUpdated,
 } from "@/lib/article-core";
 import { BASE_URL } from "@/lib/seo-content";
+import { hasNavigation, type ArticlePrompt } from "@/lib/prompts";
 import type { BlogPost } from "@/types";
 import {
   ArticleCard,
+  ArticlePager,
   AuthorCard,
   Breadcrumbs,
   Byline,
@@ -25,6 +28,7 @@ import {
 } from "./ArticleParts";
 import { ReadingProgress } from "./ReadingProgress";
 import { TableOfContents } from "./TableOfContents";
+import { ArticleActions } from "./ArticleActions";
 import { ShareButtons } from "./ShareButtons";
 import { Reactions } from "./Reactions";
 
@@ -40,6 +44,7 @@ interface ArticleViewProps {
 export function ArticleView({ post, livePosts, preview = false }: ArticleViewProps) {
   const articleRef = useRef<HTMLElement>(null);
   const [headings, setHeadings] = useState<ContentHeading[]>([]);
+  const [prompts, setPrompts] = useState<ArticlePrompt[]>([]);
   const author = useAuthorOf(post);
   const { settings } = useBlogSettings();
   const { data: allSeries = [] } = useSeries();
@@ -49,6 +54,9 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
   const typeLabel = articleTypeLabel(post.articleType, settings.articleTypes);
   const updated = wasUpdated(post) ? updatedAtOf(post) : null;
   const showToc = post.tableOfContents !== false;
+  // Turning the TOC off hides section links; prompt navigation stays.
+  const tocHeadings = showToc ? headings : [];
+  const showNav = hasNavigation(tocHeadings, prompts);
   const inlineToc = post.content?.includes("data-toc");
   const inlineSources = post.content?.includes("data-sources");
   const sources = post.sources?.filter((s) => s.title?.trim()) ?? [];
@@ -64,6 +72,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
     return seriesPosition(series, post, byId);
   }, [series, livePosts, post, preview]);
   const related = useMemo(() => relatedPosts(post, livePosts, 3), [post, livePosts]);
+  const adjacent = useMemo(() => adjacentPosts(post, livePosts), [post, livePosts]);
 
   return (
     <>
@@ -95,15 +104,29 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
       <CoverFigure post={post} />
 
       <div className="wrap grid gap-x-12 py-16 md:py-20 xl:grid-cols-[minmax(0,1fr)_minmax(0,680px)_minmax(0,1fr)]">
-        <article ref={articleRef} className="mx-auto w-full max-w-prose xl:col-start-2">
-          {showToc && !inlineToc && headings.length >= 2 && (
-            <TableOfContents headings={headings} variant="inline" className="mb-12 xl:hidden" />
+        <article ref={articleRef} className="mx-auto w-full min-w-0 max-w-prose xl:col-start-2">
+          {showNav && !(inlineToc && showToc) && (
+            <TableOfContents
+              headings={tocHeadings}
+              prompts={prompts}
+              variant="inline"
+              className="mb-8 xl:hidden"
+            />
           )}
+          <ArticleActions
+            prompts={prompts}
+            title={post.title}
+            author={author?.name || post.author}
+            url={url}
+            shareable={showShare}
+            className="mb-12"
+          />
           <CmsContent
             className="prose-cms"
             html={post.content ?? ""}
             onHeadings={setHeadings}
-            toc={showToc ? <TableOfContents headings={headings} variant="inline" /> : null}
+            onPrompts={setPrompts}
+            toc={showToc ? <TableOfContents headings={headings} prompts={prompts} variant="inline" /> : null}
             sources={<SourcesList sources={sources} />}
           />
           {!inlineSources && sources.length > 0 && <SourcesList sources={sources} className="mt-16" />}
@@ -134,13 +157,15 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
             )}
             {series && position && <SeriesNav series={series} position={position} current={post} />}
             {author && <AuthorCard author={author} />}
+            {!series && !preview && <ArticlePager previous={adjacent.previous} next={adjacent.next} />}
           </div>
         </article>
 
-        {showToc && headings.length >= 2 && (
+        {showNav && (
           <aside className="hidden xl:col-start-3 xl:block">
             <TableOfContents
-              headings={headings}
+              headings={tocHeadings}
+              prompts={prompts}
               variant="sidebar"
               className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto"
             />

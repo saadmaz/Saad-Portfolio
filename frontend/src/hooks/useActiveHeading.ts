@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import type { ContentHeading } from "@/components/CmsContent";
 
-/** Id of the heading the reader is currently in, tracked with one IntersectionObserver. */
-export function useActiveHeading(headings: ContentHeading[]) {
+/**
+ * Id of the section the reader is currently in (headings and prompt cards),
+ * tracked with one IntersectionObserver.
+ */
+export function useActiveHeading(items: { id: string }[]) {
   const [active, setActive] = useState<string | null>(null);
   useEffect(() => {
-    const els = headings.map((h) => document.getElementById(h.id)).filter((el): el is HTMLElement => !!el);
+    const els = items
+      .map((h) => document.getElementById(h.id))
+      .filter((el): el is HTMLElement => !!el)
+      // Headings and prompts arrive as separate lists: track in reading order.
+      .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
     if (!els.length) return;
     const visible = new Map<string, boolean>();
     const io = new IntersectionObserver(
@@ -21,6 +27,6 @@ export function useActiveHeading(headings: ContentHeading[]) {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [headings]);
+  }, [items]);
   return active;
 }

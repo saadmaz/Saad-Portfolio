@@ -47,6 +47,15 @@ const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", 
  * Visible text of CMS HTML: drops tags (and their attributes), script/style
  * bodies, and leftover Markdown syntax, then decodes common entities.
  */
+/**
+ * The page title is an article's only <h1>; any in the body become <h2>s so
+ * the outline (and search engines) see one H1. For sanitised or editor HTML,
+ * where a literal "<h1" can only be a tag (text is always escaped).
+ */
+export function demoteH1(html) {
+  return String(html ?? "").replace(/<(\/?)h1(?=[\s>])/gi, "<$1h2");
+}
+
 export function stripHtml(html) {
   return (
     String(html ?? "")
@@ -241,6 +250,23 @@ export function relatedPosts(post, candidates, limit = 3) {
 }
 
 /** Featured articles in the CMS's order (featuredOrder asc, then newest). */
+/**
+ * The articles published just before and after `post` (by publish date),
+ * for the "Previous / Next article" footer. `previous` is older.
+ */
+export function adjacentPosts(post, candidates) {
+  const time = (p) => Date.parse(publishedAtOf(p) ?? "") || 0;
+  const sorted = candidates
+    .filter((p) => p.id !== post.id && time(p))
+    .sort((x, y) => time(x) - time(y) || String(x.id).localeCompare(String(y.id)));
+  const t = time(post);
+  if (!t) return { previous: null, next: null };
+  return {
+    previous: [...sorted].reverse().find((p) => time(p) <= t) ?? null,
+    next: sorted.find((p) => time(p) > t) ?? null,
+  };
+}
+
 export function featuredPosts(posts) {
   return posts
     .filter((p) => p.featured && isListed(p))

@@ -1,35 +1,20 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Sparkles } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { assignHeadingIds } from "@/lib/article-core";
 import { sanitizeArticle, sanitizeHtmlBlock } from "@/lib/sanitize";
 import { embedSrc, EMBED_PROVIDERS } from "@/lib/embeds";
 import { Chart } from "@/components/article/Chart";
 import { parseChartData, type ChartData } from "@/lib/chart";
+import { copyText } from "@/lib/clipboard";
+import { PROMPT_VARIABLE_RE, promptNumber, promptVariables, type ArticlePrompt } from "@/lib/prompts";
+import { PromptCard, type PromptHosts } from "@/components/article/PromptCard";
 
 export interface ContentHeading {
   id: string;
   text: string;
   level: 2 | 3;
-}
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    // Clipboard API is blocked in some embedded/insecure contexts.
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.setAttribute("readonly", "");
-    ta.style.cssText = "position:fixed;opacity:0";
-    document.body.appendChild(ta);
-    ta.select();
-    const ok = document.execCommand("copy");
-    ta.remove();
-    return ok;
-  }
 }
 
 /** The element holding a block's text: `<pre>`, or `.prompt-body` for structured prompts. */
@@ -71,16 +56,14 @@ function promptText(body: Element): string {
     .join("\n\n");
 }
 
-/** Label + copy button bar shown above a prompt or code block. */
-function CopyBar({ block, label, kind }: { block: HTMLElement; label: string; kind: SlotKind }) {
+/** Label + copy button bar shown above a code block. */
+function CopyBar({ block, label }: { block: HTMLElement; label: string }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number>();
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const onCopy = async () => {
-    const content = contentOf(block);
-    if (!content) return;
-    const text = content.tagName === "PRE" ? (content.textContent ?? "") : promptText(content);
+    const text = block.querySelector("pre")?.textContent ?? "";
     if (!(await copyText(text))) return;
     setCopied(true);
     window.clearTimeout(timer.current);
@@ -89,14 +72,11 @@ function CopyBar({ block, label, kind }: { block: HTMLElement; label: string; ki
 
   return (
     <>
-      <span className="flex min-w-0 items-center gap-2">
-        {kind === "prompt" && <Sparkles aria-hidden className="size-3.5 shrink-0 text-accent" />}
-        <span className="label truncate text-fg-3">{label}</span>
-      </span>
+      <span className="label min-w-0 truncate text-fg-3">{label}</span>
       <button
         type="button"
         onClick={onCopy}
-        aria-label={copied ? `${label} copied` : `Copy ${label.toLowerCase()}`}
+        aria-label={copied ? "Copied to clipboard" : label === "Code" ? "Copy code" : `Copy ${label} code`}
         className={cn(
           "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium leading-none transition-colors duration-200",
           copied ? "bg-accent/[0.12] text-accent" : "text-fg-2 hover:bg-surface-2 hover:text-fg",
@@ -105,43 +85,10 @@ function CopyBar({ block, label, kind }: { block: HTMLElement; label: string; ki
         {copied ? <Check aria-hidden className="size-3.5" /> : <Copy aria-hidden className="size-3.5" />}
         {copied ? "Copied" : "Copy"}
       </button>
+      <span className="sr-only" role="status" aria-live="polite">
+        {copied ? "Copied to clipboard" : ""}
+      </span>
     </>
-  );
-}
-
-/** "Show full prompt" toggle for long prompts; renders nothing when the prompt fits. */
-function PromptToggle({ block }: { block: HTMLElement }) {
-  const [overflows, setOverflows] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  useLayoutEffect(() => {
-    const content = contentOf(block);
-    block.classList.add("is-collapsed");
-    const tall = !!content && content.scrollHeight > content.clientHeight + 8;
-    setOverflows(tall);
-    if (!tall) block.classList.remove("is-collapsed");
-    return () => block.classList.remove("is-collapsed");
-  }, [block]);
-
-  useLayoutEffect(() => {
-    if (overflows) block.classList.toggle("is-collapsed", !open);
-  }, [block, open, overflows]);
-
-  if (!overflows) return null;
-  return (
-    <button
-      type="button"
-      aria-expanded={open}
-      onClick={() => {
-        setOpen((o) => !o);
-        // Collapsing a long prompt would otherwise leave the reader far below it.
-        if (open) block.scrollIntoView({ block: "start", behavior: "smooth" });
-      }}
-      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium text-fg-2 transition-colors hover:bg-surface-2 hover:text-fg"
-    >
-      {open ? "Show less" : "Show full prompt"}
-      <ChevronDown aria-hidden className={cn("size-3.5 transition-transform", open && "rotate-180")} />
-    </button>
   );
 }
 
@@ -211,15 +158,117 @@ function upgradeCodeRuns(root: HTMLElement) {
   return () => undo.reverse().forEach((fn) => fn());
 }
 
-type SlotKind = "prompt" | "code";
-type Slot = {
-  kind: SlotKind;
-  block: HTMLElement;
-  host: HTMLElement;
-  foot?: HTMLElement;
-  label: string;
-  undo: () => void;
-};
+type CodeSlot = { block: HTMLElement; host: HTMLElement; label: string; undo: () => void };
+type PromptSlot = { prompt: ArticlePrompt; hosts: PromptHosts; undo: () => void };
+
+/** Prompt languages that are code: shown monospaced and syntax-highlighted. */
+const CODE_PROMPT_LANGUAGES = new Set(["bash", "json", "yaml", "typescript", "javascript", "python", "sql"]);
+
+/** Wraps every [VARIABLE] in the prompt's text nodes in a <mark> (live fill-in preview). */
+function markVariables(content: HTMLElement) {
+  const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+  const nodes: Text[] = [];
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    PROMPT_VARIABLE_RE.lastIndex = 0;
+    if (PROMPT_VARIABLE_RE.test(n.textContent ?? "")) nodes.push(n as Text);
+  }
+  PROMPT_VARIABLE_RE.lastIndex = 0;
+  for (const node of nodes) {
+    const text = node.textContent ?? "";
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    for (const m of text.matchAll(PROMPT_VARIABLE_RE)) {
+      const at = m.index ?? 0;
+      if (at > last) frag.append(text.slice(last, at));
+      const mark = document.createElement("mark");
+      mark.className = "prompt-var";
+      mark.dataset.var = m[1];
+      mark.textContent = m[0];
+      frag.append(mark);
+      last = at + m[0].length;
+    }
+    if (last < text.length) frag.append(text.slice(last));
+    node.replaceWith(frag);
+  }
+}
+
+/**
+ * Turns each `[data-prompt]` block into a numbered, anchored prompt card:
+ * reads its fields, adds hosts for <PromptCard>, marks variables and, for
+ * code-language prompts, prepares syntax highlighting.
+ */
+function enhancePrompts(root: HTMLElement): PromptSlot[] {
+  const taken = new Set([...root.querySelectorAll<HTMLElement>("[id]")].map((el) => el.id));
+  return [...root.querySelectorAll<HTMLElement>("[data-prompt]")].flatMap((block, i): PromptSlot[] => {
+    const content = contentOf(block);
+    if (!content) return [];
+    const before = content.innerHTML;
+    const field = (name: string) => block.querySelector(`[data-prompt-${name}]`)?.textContent?.trim() ?? "";
+    const text = content.tagName === "PRE" ? (content.textContent ?? "") : promptText(content);
+    const number = i + 1;
+    const language = block.dataset.language ?? "";
+    const label = block.dataset.label?.trim();
+
+    const hadId = !!block.id;
+    if (!hadId) {
+      let id = `prompt-${promptNumber(number)}`;
+      for (let n = 2; taken.has(id); n++) id = `prompt-${promptNumber(number)}-${n}`;
+      taken.add(id);
+      block.id = id;
+    }
+
+    const isCode =
+      CODE_PROMPT_LANGUAGES.has(language) && content.tagName === "PRE" && !content.children.length;
+    if (isCode) {
+      const code = document.createElement("code");
+      code.className = `language-${language}`;
+      code.textContent = text;
+      content.replaceChildren(code);
+      block.classList.add("is-code");
+    } else {
+      markVariables(content);
+    }
+
+    const make = (className: string) => {
+      const el = document.createElement("div");
+      el.className = className;
+      return el;
+    };
+    const head = make("prompt-head");
+    const vars = make("prompt-vars");
+    const foot = make("prompt-foot");
+    block.prepend(head);
+    content.before(vars);
+    content.after(foot);
+
+    const prompt: ArticlePrompt = {
+      id: block.id,
+      number,
+      title: label && label !== "Prompt" ? label : `Prompt ${promptNumber(number)}`,
+      stage: block.dataset.stage?.trim() ?? "",
+      language,
+      text,
+      description: field("description"),
+      usage: field("usage"),
+      note: field("note"),
+      variables: promptVariables(text),
+    };
+    return [
+      {
+        prompt,
+        hosts: { block, content, head, vars, foot },
+        undo: () => {
+          head.remove();
+          vars.remove();
+          foot.remove();
+          content.innerHTML = before;
+          block.classList.remove("is-code");
+          if (!hadId) block.removeAttribute("id");
+        },
+      },
+    ];
+  });
+}
 
 type Extra =
   | { kind: "chart"; host: HTMLElement; chartType: "bar" | "line"; data: ChartData; title: string }
@@ -368,7 +417,8 @@ function enhanceBlocks(root: HTMLElement, onHeadings?: (h: ContentHeading[]) => 
 /** Lazy-loads highlight.js (article pages only) and colours declared-language code blocks. */
 function highlightCode(root: HTMLElement) {
   const blocks = [...root.querySelectorAll<HTMLElement>('pre code[class*="language-"]')].filter(
-    (code) => !/language-(plaintext|text)\b/.test(code.className) && !code.closest("[data-prompt]"),
+    (code) =>
+      !/language-(plaintext|text)\b/.test(code.className) && !code.closest("[data-prompt]:not(.is-code)"),
   );
   if (!blocks.length) return;
   import("highlight.js/lib/common")
@@ -387,6 +437,8 @@ interface CmsContentProps {
   className?: string;
   /** Headings found in the content (h2/h3), with the ids assigned to them. */
   onHeadings?: (headings: ContentHeading[]) => void;
+  /** Prompt blocks found in the content, numbered in reading order. */
+  onPrompts?: (prompts: ArticlePrompt[]) => void;
   /** Rendered where the author placed a "Table of contents" block. */
   toc?: ReactNode;
   /** Rendered where the author placed a "Sources & references" block. */
@@ -394,19 +446,22 @@ interface CmsContentProps {
 }
 
 /**
- * Renders CMS HTML, sanitised. Prompt blocks (`<div data-prompt data-label>…<pre>`)
- * and plain code blocks (`<pre>`) from the admin editor get a label bar with a
- * copy button; long prompts collapse behind a "Show full prompt" toggle. The
- * editor's structured blocks are enhanced by enhanceBlocks().
+ * Renders CMS HTML, sanitised. Prompt blocks (`<div data-prompt>…<pre>`) become
+ * numbered prompt cards (<PromptCard>); code blocks (`<pre>`) get a label bar
+ * with a copy button and their wrap / line-number options. The editor's other
+ * structured blocks are enhanced by enhanceBlocks().
  */
-export function CmsContent({ html, className, onHeadings, toc, sources }: CmsContentProps) {
+export function CmsContent({ html, className, onHeadings, onPrompts, toc, sources }: CmsContentProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [slots, setSlots] = useState<Slot[]>([]);
+  const [codeSlots, setCodeSlots] = useState<CodeSlot[]>([]);
+  const [promptSlots, setPromptSlots] = useState<PromptSlot[]>([]);
   const [extras, setExtras] = useState<Extra[]>([]);
   const safeHtml = useMemo(() => sanitizeArticle(html), [html]);
   const headingsCb = useRef(onHeadings);
+  const promptsCb = useRef(onPrompts);
   useEffect(() => {
     headingsCb.current = onHeadings;
+    promptsCb.current = onPrompts;
   });
 
   useLayoutEffect(() => {
@@ -415,42 +470,43 @@ export function CmsContent({ html, className, onHeadings, toc, sources }: CmsCon
     const restoreParagraphs = upgradeCodeRuns(root);
     const enhanced = enhanceBlocks(root, (h) => headingsCb.current?.(h));
 
-    const prompts = [...root.querySelectorAll<HTMLElement>("[data-prompt]")].map((block): Slot => {
-      const host = document.createElement("div");
-      host.className = "prompt-bar";
-      const foot = document.createElement("div");
-      foot.className = "prompt-foot";
-      block.prepend(host);
-      block.append(foot);
-      return {
-        kind: "prompt",
-        block,
-        host,
-        foot,
-        label: block.dataset.label?.trim() || "Prompt",
-        undo: () => (host.remove(), foot.remove()),
-      };
-    });
+    const prompts = enhancePrompts(root);
+    promptsCb.current?.(prompts.map((p) => p.prompt));
 
     // Wrap each code block so the bar sits outside the horizontally-scrolling <pre>.
     const codes = [...root.querySelectorAll<HTMLElement>("pre")]
       .filter((pre) => !pre.closest("[data-prompt]"))
-      .map((pre): Slot => {
+      .map((pre): CodeSlot => {
         const block = document.createElement("div");
         block.className = "code-block";
         const host = document.createElement("div");
         host.className = "code-bar";
         pre.replaceWith(block);
-        block.append(host, pre);
-        return { kind: "code", block, host, label: codeLabel(pre), undo: () => block.replaceWith(pre) };
+        block.append(host);
+        // Line numbers sit in a gutter beside the code; wrapped lines can't line up with one.
+        if (pre.hasAttribute("data-line-numbers") && !pre.hasAttribute("data-wrap")) {
+          const scroll = document.createElement("div");
+          scroll.className = "code-scroll";
+          const gutter = document.createElement("div");
+          gutter.className = "code-lines";
+          gutter.setAttribute("aria-hidden", "true");
+          const count = (pre.textContent ?? "").replace(/\n$/, "").split("\n").length;
+          gutter.textContent = Array.from({ length: count }, (_, n) => n + 1).join("\n");
+          scroll.append(gutter, pre);
+          block.append(scroll);
+        } else {
+          block.append(pre);
+        }
+        return { block, host, label: codeLabel(pre), undo: () => block.replaceWith(pre) };
       });
 
     highlightCode(root);
-    const next = [...prompts, ...codes];
-    setSlots(next);
+    setPromptSlots(prompts);
+    setCodeSlots(codes);
     setExtras(enhanced.extras);
     return () => {
-      next.forEach(({ undo }) => undo());
+      codes.forEach(({ undo }) => undo());
+      prompts.forEach(({ undo }) => undo());
       enhanced.undo();
       restoreParagraphs();
     };
@@ -459,11 +515,11 @@ export function CmsContent({ html, className, onHeadings, toc, sources }: CmsCon
   return (
     <>
       <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: safeHtml }} />
-      {slots.map(({ kind, block, host, foot, label }, i) => (
-        <Fragment key={i}>
-          {createPortal(<CopyBar block={block} label={label} kind={kind} />, host)}
-          {foot && createPortal(<PromptToggle block={block} />, foot)}
-        </Fragment>
+      {promptSlots.map(({ prompt, hosts }) => (
+        <PromptCard key={prompt.id} prompt={prompt} hosts={hosts} />
+      ))}
+      {codeSlots.map(({ block, host, label }, i) => (
+        <Fragment key={i}>{createPortal(<CopyBar block={block} label={label} />, host)}</Fragment>
       ))}
       {extras.map((x, i) => {
         const key = `x${i}`;

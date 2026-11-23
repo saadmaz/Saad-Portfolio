@@ -44,6 +44,7 @@ import {
   canonicalOf,
   categoriesOf,
   countWords,
+  demoteH1,
   coverOf,
   isIndexable,
   normalizePath,
@@ -762,7 +763,8 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
       postAuthor &&
         `<p><a href="/authors/${escape(postAuthor.slug)}">About ${escape(postAuthor.name)}</a></p>`,
       cover && img(cover.url, cover.alt || p.title),
-      p.content ?? "",
+      // One H1 per page (the title): body H1s become H2s, as on the live page.
+      demoteH1(p.content),
       (p.sources ?? []).length &&
         `<h2>Sources &amp; references</h2>\n<ol>${p.sources
           .map(

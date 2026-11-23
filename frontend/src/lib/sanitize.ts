@@ -14,6 +14,7 @@
  */
 
 import DOMPurify from "dompurify";
+import { demoteH1 } from "./article-core";
 
 const FORBID_TAGS = [
   "style",
@@ -57,12 +58,16 @@ function installHooks() {
 
 export function sanitizeArticle(html: string): string {
   installHooks();
-  return DOMPurify.sanitize(html, {
-    USE_PROFILES: { html: true },
-    FORBID_TAGS,
-    ADD_ATTR: ["target", "loading", "decoding", "srcset", "sizes"],
-    ALLOW_DATA_ATTR: true,
-  });
+  // The title is the page's only H1.
+  return demoteH1(
+    DOMPurify.sanitize(html, {
+      USE_PROFILES: { html: true },
+      FORBID_TAGS,
+      // `download` is for attachment blocks; their files come from the admin's Storage bucket.
+      ADD_ATTR: ["target", "loading", "decoding", "srcset", "sizes", "download"],
+      ALLOW_DATA_ATTR: true,
+    }),
+  );
 }
 
 export function sanitizeHtmlBlock(html: string): string {

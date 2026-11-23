@@ -14,6 +14,8 @@ import {
   readingMinutesOf,
   readingTimeMinutes,
   relatedPosts,
+  adjacentPosts,
+  demoteH1,
   resolveRedirect,
   seriesParts,
   seriesPosition,
@@ -347,5 +349,34 @@ describe("feeds", () => {
       expect(xml).not.toContain(`/blog/${hidden}<`);
     expect(xml).not.toContain("category/empty");
     expect(xml).not.toContain("authors/nobody");
+  });
+});
+
+describe("adjacentPosts", () => {
+  const a = post({ id: "a", date: "2025-01-01T00:00:00.000Z" });
+  const b = post({ id: "b", date: "2025-02-01T00:00:00.000Z" });
+  const c = post({ id: "c", date: "2025-03-01T00:00:00.000Z" });
+
+  it("finds the older and newer neighbours regardless of input order", () => {
+    const r = adjacentPosts(b, [c, a, b]);
+    expect([r.previous?.id, r.next?.id]).toEqual(["a", "c"]);
+  });
+
+  it("has no previous for the oldest and no next for the newest", () => {
+    expect(adjacentPosts(a, [a, b, c]).previous).toBeNull();
+    expect(adjacentPosts(c, [a, b, c]).next).toBeNull();
+  });
+});
+
+describe("demoteH1", () => {
+  it("turns body H1s into H2s, keeping attributes", () => {
+    expect(demoteH1('<h1 id="a">Intro</h1><p>x</p><H1>B</H1>')).toBe(
+      '<h2 id="a">Intro</h2><p>x</p><h2>B</h2>',
+    );
+  });
+
+  it("leaves other tags and escaped text alone", () => {
+    const html = "<h2>Keep</h2><hr><p>&lt;h1&gt; in text</p><h10x>";
+    expect(demoteH1(html)).toBe(html);
   });
 });
