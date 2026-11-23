@@ -7,6 +7,7 @@ import {
   promptsMarkdown,
   promptsText,
   promptVariables,
+  withoutPromptHeadings,
   type ArticlePrompt,
 } from "./prompts";
 
@@ -151,4 +152,27 @@ describe("promptsFileName", () => {
     ["Café prompts", "txt", "cafe-prompts-prompts.txt"],
     ["!!!", "md", "article-prompts.md"],
   ] as const)("%s", (title, ext, name) => expect(promptsFileName(title, ext)).toBe(name));
+});
+
+describe("withoutPromptHeadings", () => {
+  const prompts = [{ title: "Product Requirements Document (PRD)" }, { title: "Database Design" }];
+  it("drops headings that just repeat a prompt title, keeps the rest", () => {
+    const headings = [
+      { text: "STAGE 1: PRODUCT PLANNING" },
+      { text: "Prompt 01: Product Requirements Document (PRD)" },
+      { text: "Prompt 04 – Database Design" },
+      { text: "Database Design principles explained" },
+      { text: "Final thoughts" },
+    ];
+    expect(withoutPromptHeadings(headings, prompts).map((h) => h.text)).toEqual([
+      "STAGE 1: PRODUCT PLANNING",
+      "Database Design principles explained",
+      "Final thoughts",
+    ]);
+  });
+
+  it("changes nothing without prompts", () => {
+    const headings = [{ text: "Prompt 01: X" }];
+    expect(withoutPromptHeadings(headings, [])).toBe(headings);
+  });
 });
