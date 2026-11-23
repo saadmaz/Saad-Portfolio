@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
@@ -36,10 +37,20 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
   },
 ];
 
-export function Footer() {
+export function Footer({ screen = false }: { screen?: boolean }) {
   return (
-    <footer className="overflow-hidden border-t border-line">
-      <div className="wrap pb-8 pt-16 md:pt-24">
+    <footer
+      className={cn(
+        "overflow-hidden border-t border-line",
+        screen && "md:flex md:min-h-[100svh] md:flex-col",
+      )}
+    >
+      <div
+        className={cn(
+          "wrap pb-8 pt-16 md:pt-24",
+          screen && "md:flex md:flex-1 md:flex-col md:justify-between md:pt-[112px]",
+        )}
+      >
         <div className="flex flex-col gap-12 md:flex-row md:justify-between">
           <div className="flex max-w-[384px] flex-col gap-4">
             <p className="text-h4 font-medium">Have something in mind?</p>

@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
-export function Layout({ children }: { children: ReactNode }) {
+/** `screenFooter` makes the footer fill the viewport from tablet up (homepage). */
+export function Layout({ children, screenFooter = false }: { children: ReactNode; screenFooter?: boolean }) {
   return (
     <div id="top" className="flex min-h-screen flex-col">
       <a
@@ -15,7 +16,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <main id="main-content" className="flex-1 pt-[72px] lg:pt-[88px]">
         {children}
       </main>
-      <Footer />
+      <Footer screen={screenFooter} />
     </div>
   );
 }

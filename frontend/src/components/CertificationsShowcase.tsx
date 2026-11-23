@@ -59,7 +59,7 @@ export function CertificationsShowcase({ certs }: { certs: Certificate[] }) {
       {/* By field */}
       <div className="flex flex-col rounded-media border border-line bg-surface/60 p-5 md:p-7">
         <p className="label text-fg-3">By field</p>
-        <ul className="mt-[clamp(14px,2.6svh,24px)] flex flex-col gap-[clamp(10px,1.8svh,16px)]">
+        <ul className="mt-[clamp(14px,2.6svh,24px)] flex flex-col gap-[clamp(10px,1.8svh,16px)] md:grid md:grid-cols-2 md:gap-x-8 lg:flex">
           {fields.map(([field, n], i) => (
             <li key={field} className={cn(i >= 4 && "hidden md:block")}>
               <div className="flex items-baseline justify-between gap-4 text-[15px]">

@@ -109,7 +109,7 @@ function Hero({
 
 function Statement() {
   return (
-    <section className="section" aria-label="About">
+    <section className="section screen" aria-label="About">
       <Reveal className="wrap">
         <Eyebrow counted>About</Eyebrow>
         <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
@@ -135,7 +135,7 @@ function SelectedWork() {
   const quote = testimonials[0];
   if (!isLoading && projects.length === 0) return null;
   return (
-    <section className="section" aria-labelledby="work-heading">
+    <section className="section screen" aria-labelledby="work-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -152,7 +152,7 @@ function SelectedWork() {
           />
         </Reveal>
         {isLoading ? (
-          <Skeleton className="aspect-[16/9] w-full rounded-media" />
+          <Skeleton className="aspect-[16/9] w-full rounded-media md:aspect-auto md:h-[min(56.25vw,60svh)]" />
         ) : (
           <div className="flex flex-col gap-20">
             {projects[0] && (
@@ -192,7 +192,7 @@ function ExperienceList() {
   const companies = useMemo(() => normalizeExperience(data).slice(0, 4), [data]);
   if (!isLoading && companies.length === 0) return null;
   return (
-    <section className="section" aria-labelledby="experience-heading">
+    <section className="section screen" aria-labelledby="experience-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -253,7 +253,7 @@ function Speaking() {
 
   if (events.length === 0) return null;
   return (
-    <section className="section" aria-labelledby="speaking-heading">
+    <section className="section screen" aria-labelledby="speaking-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -314,9 +314,9 @@ function Capabilities() {
   const groups = skills.filter((g) => g.skills?.length);
   if (groups.length === 0) return null;
   return (
-    <section className="section overflow-hidden" aria-labelledby="capabilities-heading">
+    <section className="section screen overflow-hidden" aria-labelledby="capabilities-heading">
       <div className="wrap">
-        <Reveal className="mb-12 flex flex-col gap-6 md:mb-16 md:gap-7">
+        <Reveal className="mb-12 flex flex-col gap-6 md:mb-12 md:gap-7 [@media(min-width:768px)_and_(max-height:799px)]:mb-8">
           <Eyebrow counted>Capabilities</Eyebrow>
           <h2 id="capabilities-heading" className="text-display-m font-medium">
             What I <span className="soft">bring</span> to a team
@@ -332,7 +332,7 @@ function Certifications() {
   const { data: certs = [] } = useCertificates();
   if (certs.length === 0) return null;
   return (
-    <section className="section" aria-labelledby="certifications-heading">
+    <section className="section screen" aria-labelledby="certifications-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -361,7 +361,7 @@ function Writing() {
   const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
   if (posts.length === 0) return null;
   return (
-    <section className="section" aria-labelledby="writing-heading">
+    <section className="section screen" aria-labelledby="writing-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -397,7 +397,7 @@ function Writing() {
 
 function ContactCTA() {
   return (
-    <section className="section relative overflow-hidden md:py-44" aria-labelledby="contact-heading">
+    <section className="section screen relative overflow-hidden" aria-labelledby="contact-heading">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_95_0/0.18),transparent_70%)]"
@@ -433,7 +433,7 @@ const Index = () => {
   const { data: events } = useEvents();
   const { data: certs } = useCertificates();
   return (
-    <Layout>
+    <Layout screenFooter>
       <SEO
         fullTitle={PAGE_SEO["/"].fullTitle}
         description={PAGE_SEO["/"].description}

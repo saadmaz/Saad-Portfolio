@@ -64,6 +64,11 @@
   .section {
     @apply border-t border-line py-24 md:py-32;
   }
+  /* Homepage sections: one full viewport each from tablet up, content centred.
+     Top padding clears the fixed header. */
+  .screen {
+    @apply md:flex md:min-h-[100svh] md:flex-col md:justify-center md:pb-12 md:pt-[104px];
+  }
   .label {
     @apply font-mono text-label uppercase;
   }
