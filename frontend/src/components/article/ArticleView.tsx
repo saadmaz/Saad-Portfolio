@@ -14,7 +14,7 @@ import {
   wasUpdated,
 } from "@/lib/article-core";
 import { BASE_URL } from "@/lib/seo-content";
-import { hasNavigation, type ArticlePrompt } from "@/lib/prompts";
+import { hasNavigation, withoutPromptHeadings, type ArticlePrompt } from "@/lib/prompts";
 import type { BlogPost } from "@/types";
 import {
   ArticleCard,
@@ -55,7 +55,10 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
   const updated = wasUpdated(post) ? updatedAtOf(post) : null;
   const showToc = post.tableOfContents !== false;
   // Turning the TOC off hides section links; prompt navigation stays.
-  const tocHeadings = showToc ? headings : [];
+  const tocHeadings = useMemo(
+    () => (showToc ? withoutPromptHeadings(headings, prompts) : []),
+    [showToc, headings, prompts],
+  );
   const showNav = hasNavigation(tocHeadings, prompts);
   const inlineToc = post.content?.includes("data-toc");
   const inlineSources = post.content?.includes("data-sources");

@@ -151,3 +151,25 @@ export function promptsFileName(title: string, ext: "md" | "txt"): string {
 /** Whether an article has enough to navigate: two sections, or any prompt. */
 export const hasNavigation = (headings: unknown[], prompts: unknown[] = []) =>
   headings.length >= 2 || prompts.length > 0;
+
+/**
+ * Section headings that only repeat a prompt's title ("Prompt 01: PRD"
+ * above the PRD prompt) are dropped from navigation, which lists the
+ * prompts themselves; every other heading stays.
+ */
+export function withoutPromptHeadings<T extends { text: string }>(
+  headings: T[],
+  prompts: { title: string }[],
+): T[] {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  const titles = prompts.map((p) => norm(p.title)).filter((t) => t.length >= 3);
+  if (!titles.length) return headings;
+  return headings.filter((h) => {
+    const text = norm(h.text);
+    return !titles.some((t) => text === t || text.endsWith(` ${t}`));
+  });
+}
