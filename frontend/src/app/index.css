@@ -133,13 +133,27 @@
 .prose-cms [data-prompt] {
   @apply my-10 overflow-hidden rounded-card border border-line-2 bg-surface;
 }
-/* Phones: number, badges and buttons on one row, the title full width below
-   (so buttons never squeeze it). From sm up: a single row. */
+/* Phones: a grid so the buttons never squeeze the title (see below).
+   From sm up: a single row. */
 .prose-cms .prompt-head {
   @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.5 border-b border-line px-4 py-3.5 sm:flex sm:items-start sm:px-5;
 }
 .prose-cms .prompt-main {
   display: contents;
+}
+/* Phone grid: number and buttons on row 1, badges on row 2, title below (row 2
+   when there are no badges). Ignored from sm up, where the head is a flex row. */
+.prose-cms .prompt-head .prompt-num {
+  grid-column: 1;
+  grid-row: 1;
+}
+.prose-cms .prompt-head .prompt-actions {
+  grid-column: 3;
+  grid-row: 1;
+}
+.prose-cms .prompt-head .prompt-badges {
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 .prose-cms .prompt-head .prompt-title {
   grid-column: 1 / -1;

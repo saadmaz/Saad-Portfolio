@@ -81,7 +81,7 @@ export function PromptCard({ prompt, hosts }: { prompt: ArticlePrompt; hosts: Pr
           </span>
           <div className="prompt-main">
             {(prompt.stage || language) && (
-              <div className="flex flex-wrap items-center gap-1.5 self-center sm:mb-1">
+              <div className="prompt-badges flex flex-wrap items-center gap-1.5 sm:mb-1">
                 {prompt.stage && <span className="prompt-badge">{prompt.stage}</span>}
                 {language && <span className="prompt-badge is-muted">{language}</span>}
               </div>
@@ -91,7 +91,7 @@ export function PromptCard({ prompt, hosts }: { prompt: ArticlePrompt; hosts: Pr
               {prompt.title}
             </h3>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-1">
+          <div className="prompt-actions flex shrink-0 flex-wrap items-center justify-end gap-1">
             {prompt.variables.length > 0 && (
               <button
                 type="button"
