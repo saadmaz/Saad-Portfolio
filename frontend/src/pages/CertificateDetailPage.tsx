@@ -2,7 +2,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import NotFound from "./NotFound";
-import { Button, Eyebrow, Skeleton, Tag } from "@/components/ui";
+import { Button, Eyebrow, PageHero, Skeleton, Tag } from "@/components/ui";
 import { Mark, Row } from "@/components/cards";
 import { useCertificate, useCertificates } from "@/hooks/useContent";
 import { monthYear, year } from "@/lib/format";
@@ -48,26 +48,28 @@ const CertificateDetailPage = () => {
         // Thin pages kept out of search; the /certifications list is indexed.
         noIndex="follow"
       />
-      <header className="wrap pb-14 pt-12 md:pt-20">
-        <Link to="/certifications" className="text-sm text-fg-2 hover:text-fg">
-          ← All certificates
-        </Link>
-        <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-center">
-          <Mark src={cert.issuer_logo} label={cert.issuer} className="size-20 rounded-[20px] text-sm" />
-          <div className="flex flex-col gap-3">
-            {cert.category && <span className="font-mono text-meta text-fg-3">{cert.category}</span>}
-            <h1 className="text-display-m font-medium">{cert.title}</h1>
-          </div>
-        </div>
-        <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-line-2 pt-8 md:grid-cols-4">
-          {meta.map(([k, v]) => (
-            <div key={k} className="flex min-w-0 flex-col gap-2.5">
-              <dt className="label text-fg-3">{k}</dt>
-              <dd className="break-words">{v}</dd>
+      <PageHero className="mb-8" band="Saad Mazhar · Certificates">
+        <div className="">
+          <Link to="/certifications" className="text-sm text-fg-2 hover:text-fg">
+            ← All certificates
+          </Link>
+          <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-center">
+            <Mark src={cert.issuer_logo} label={cert.issuer} className="size-20 rounded-[20px] text-sm" />
+            <div className="flex flex-col gap-3">
+              {cert.category && <span className="font-mono text-meta text-fg-3">{cert.category}</span>}
+              <h1 className="text-display-m font-medium">{cert.title}</h1>
             </div>
-          ))}
-        </dl>
-      </header>
+          </div>
+          <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-line-2 pt-8 md:grid-cols-4">
+            {meta.map(([k, v]) => (
+              <div key={k} className="flex min-w-0 flex-col gap-2.5">
+                <dt className="label text-fg-3">{k}</dt>
+                <dd className="break-words">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </PageHero>
 
       <section className="wrap grid gap-12 pb-24 md:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-5 rounded-[24px] border border-line bg-surface p-5 md:p-8">

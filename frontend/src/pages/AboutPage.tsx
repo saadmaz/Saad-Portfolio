@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Button, Eyebrow, Reveal } from "@/components/ui";
+import { Button, Eyebrow, PageHero, Reveal } from "@/components/ui";
 import { Row } from "@/components/cards";
 import {
   useAwards,
@@ -69,37 +69,39 @@ const AboutPage = () => {
         description={PAGE_SEO["/about"].description}
         url={`${BASE_URL}/about`}
       />
-      <section className="wrap grid items-end gap-12 pb-24 pt-12 md:grid-cols-[460px_1fr] md:gap-24 md:pt-24">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-line bg-surface bg-[radial-gradient(ellipse_at_50%_30%,rgb(255_95_0/0.16),transparent_70%)]">
-          <img
-            src={portrait}
-            alt="Saad Mazhar"
-            className="absolute bottom-0 left-1/2 w-[135%] max-w-none -translate-x-1/2 mix-blend-lighten"
-          />
-        </div>
-        <div className="flex flex-col gap-9">
-          <Eyebrow>About</Eyebrow>
-          <h1 className="text-display-m font-medium">
-            Founder by trade, <span className="soft">engineer by habit,</span> host by accident.
-          </h1>
-          <p className="text-body-l text-fg-2">
-            I’m Saad Mazhar, a computer science undergraduate and the founder of TankSudda and Stopwash. I’ve
-            been writing software for five years and selling it for three.
-          </p>
-          <p className="text-body-l text-fg-2">
-            Outside the code I host and speak at tech events across Sri Lanka, from small meetups to packed
-            summits. Both jobs are the same skill: making something complicated feel simple.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button href={myResume} download="Saad_Mazhar_Resume.pdf" size="lg" icon={false}>
-              Download résumé
-            </Button>
-            <Button to="/contact" variant="secondary" size="lg">
-              Get in touch
-            </Button>
+      <PageHero className="mb-8" band="Saad Mazhar · About">
+        <div className="grid items-center gap-12 md:grid-cols-[minmax(0,420px)_1fr] md:gap-24">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] md:h-[min(62svh,525px)] md:w-auto md:justify-self-start border border-line bg-surface bg-[radial-gradient(ellipse_at_50%_30%,rgb(255_95_0/0.16),transparent_70%)]">
+            <img
+              src={portrait}
+              alt="Saad Mazhar"
+              className="absolute bottom-0 left-1/2 w-[135%] max-w-none -translate-x-1/2 mix-blend-lighten"
+            />
+          </div>
+          <div className="flex flex-col gap-9">
+            <Eyebrow>About</Eyebrow>
+            <h1 className="text-display-m font-medium">
+              Founder by trade, <span className="soft">engineer by habit,</span> host by accident.
+            </h1>
+            <p className="text-body-l text-fg-2">
+              I’m Saad Mazhar, a computer science undergraduate and the founder of TankSudda and Stopwash.
+              I’ve been writing software for five years and selling it for three.
+            </p>
+            <p className="text-body-l text-fg-2">
+              Outside the code I host and speak at tech events across Sri Lanka, from small meetups to packed
+              summits. Both jobs are the same skill: making something complicated feel simple.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button href={myResume} download="Saad_Mazhar_Resume.pdf" size="lg" icon={false}>
+                Download résumé
+              </Button>
+              <Button to="/contact" variant="secondary" size="lg">
+                Get in touch
+              </Button>
+            </div>
           </div>
         </div>
-      </section>
+      </PageHero>
 
       {education.length > 0 && (
         <Split id="education" index={idx()} label="Education" title="Where I" soft="learned">

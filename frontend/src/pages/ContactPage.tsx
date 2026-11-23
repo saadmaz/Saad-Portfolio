@@ -39,13 +39,13 @@ const ContactPage = () => {
         description={PAGE_SEO["/contact"].description}
         url={`${BASE_URL}/contact`}
       />
-      <section className="relative -mt-[72px] overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
+      <section className="relative -mt-[72px] flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_10%_20%,rgb(255_95_0/0.14),transparent_70%)]"
         />
-        <div className="wrap relative grid gap-16 pb-32 pt-12 lg:grid-cols-[1fr_560px] lg:gap-24 lg:pt-24">
-          <div className="flex flex-col gap-10">
+        <div className="wrap relative grid gap-16 pb-16 pt-12 lg:grid-cols-[1fr_560px] lg:gap-24 lg:pb-8 lg:pt-2">
+          <div className="flex flex-col gap-8">
             <Eyebrow>Contact</Eyebrow>
             <h1 className="text-display-m font-medium xl:text-display-l">
               Let’s build <span className="soft">something good.</span>

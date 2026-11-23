@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { EyeOff } from "lucide-react";
-import { Button, Eyebrow, Tag } from "@/components/ui";
+import { Button, Eyebrow, PageHero, Tag } from "@/components/ui";
 import { CmsContent, type ContentHeading } from "@/components/CmsContent";
 import { useAuthorOf, useBlogSettings, useSeries } from "@/hooks/useBlog";
 import { useArticleTracking } from "@/hooks/useArticleTracking";
@@ -80,29 +80,31 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
   return (
     <>
       <ReadingProgress target={articleRef} />
-      <header className="mx-auto flex max-w-[820px] flex-col items-center gap-7 px-5 pb-12 pt-12 text-center md:pt-20">
-        <Breadcrumbs
-          items={[
-            { label: "Blog", to: "/blog" },
-            ...(post.category
-              ? [{ label: post.category, to: `/blog/category/${slugify(post.category)}` }]
-              : []),
-            { label: post.title },
-          ]}
-        />
-        {post.unlisted && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-[13px] text-fg-3">
-            <EyeOff aria-hidden className="size-3.5" />
-            Unlisted · only people with the link can see this
-          </span>
-        )}
-        {typeLabel && <span className="label text-accent">{typeLabel}</span>}
-        <h1 className="text-display-m font-medium">{post.title}</h1>
-        {(post.subtitle || post.excerpt) && (
-          <p className="text-body-l text-fg-2">{post.subtitle || post.excerpt}</p>
-        )}
-        <Byline post={post} author={author} updated={updated} wpm={settings.readingWpm} />
-      </header>
+      <PageHero centered className="mb-12" band="Saad Mazhar · Blog">
+        <header className="mx-auto flex max-w-[820px] flex-col items-center gap-7">
+          <Breadcrumbs
+            items={[
+              { label: "Blog", to: "/blog" },
+              ...(post.category
+                ? [{ label: post.category, to: `/blog/category/${slugify(post.category)}` }]
+                : []),
+              { label: post.title },
+            ]}
+          />
+          {post.unlisted && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-[13px] text-fg-3">
+              <EyeOff aria-hidden className="size-3.5" />
+              Unlisted · only people with the link can see this
+            </span>
+          )}
+          {typeLabel && <span className="label text-accent">{typeLabel}</span>}
+          <h1 className="text-display-m font-medium">{post.title}</h1>
+          {(post.subtitle || post.excerpt) && (
+            <p className="text-body-l text-fg-2">{post.subtitle || post.excerpt}</p>
+          )}
+          <Byline post={post} author={author} updated={updated} wpm={settings.readingWpm} />
+        </header>
+      </PageHero>
 
       <CoverFigure post={post} />
 

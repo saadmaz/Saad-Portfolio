@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { responsiveImage } from "@/lib/images";
 import type { ImageAsset } from "@/types";
@@ -185,6 +186,61 @@ export function Media({
 }
 
 /** Header used at the top of every inner page. */
+/**
+ * Full-screen opening section for every page, like the homepage hero: sits
+ * under the fixed header, fills the viewport, content centred, orange glow,
+ * and a bottom band with a scroll cue. `media` fills the space left below the
+ * copy (cover photos on detail pages).
+ */
+export function PageHero({
+  children,
+  media,
+  band,
+  centered,
+  className,
+}: {
+  children: ReactNode;
+  media?: ReactNode;
+  /** Left side of the bottom band (defaults to nothing; the scroll cue is always on the right). */
+  band?: ReactNode;
+  centered?: boolean;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cn(
+        "relative -mt-[72px] flex min-h-[100svh] flex-col overflow-hidden lg:-mt-[88px]",
+        className,
+      )}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_80%_25%,rgb(255_95_0/0.16),transparent_70%)]"
+      />
+      <div
+        className={cn(
+          "wrap relative flex flex-1 flex-col pb-[clamp(24px,5svh,56px)] pt-[clamp(104px,16svh,152px)]",
+          media ? "gap-[clamp(24px,4svh,48px)]" : "justify-center",
+          centered && "items-center text-center",
+        )}
+      >
+        <div className={cn("flex flex-col", centered && "items-center")}>{children}</div>
+        {media && <div className="relative flex min-h-[160px] flex-1 flex-col">{media}</div>}
+      </div>
+      <div className="relative shrink-0 border-t border-line bg-base/60 backdrop-blur-sm">
+        <div className="wrap flex items-center justify-between gap-6 py-[clamp(14px,2.6svh,24px)]">
+          <div className="min-w-0 font-mono text-meta text-fg-3">{band}</div>
+          <span className="flex shrink-0 items-center gap-2 font-mono text-meta text-fg-3" aria-hidden>
+            Scroll
+            <ArrowDown className="size-4 animate-bounce motion-reduce:animate-none" />
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Page opening: label, two-tone title, intro and an optional aside, as a full-screen hero. */
 export function PageHeader({
   label,
   title,
@@ -201,10 +257,10 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <header className="wrap pb-16 pt-16 md:pb-20 md:pt-24">
+    <PageHero className="mb-16 md:mb-24" band={<span className="truncate">Saad Mazhar · {label}</span>}>
       <Eyebrow>{label}</Eyebrow>
-      <div className="mt-8 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-        <h1 className="text-display-l font-medium">
+      <div className="mt-8 flex flex-col gap-10 md:mt-10 md:flex-row md:items-end md:justify-between">
+        <h1 className="text-display-xl font-medium">
           {title}
           {soft && (
             <>
@@ -215,9 +271,9 @@ export function PageHeader({
         </h1>
         {aside}
       </div>
-      {intro && <p className="mt-8 max-w-[640px] text-body-l text-fg-2">{intro}</p>}
+      {intro && <p className="mt-8 max-w-[640px] text-body-l text-fg-2 md:mt-10">{intro}</p>}
       {children}
-    </header>
+    </PageHero>
   );
 }
 
