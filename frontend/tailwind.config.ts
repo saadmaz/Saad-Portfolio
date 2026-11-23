@@ -50,6 +50,10 @@ export default {
           to: { opacity: "1", transform: "none" },
         },
         "fill-x": { from: { transform: "scaleX(0)" }, to: { transform: "scaleX(1)" } },
+        "word-in": {
+          from: { transform: "translateY(105%)", opacity: "0" },
+          to: { transform: "none", opacity: "1" },
+        },
         marquee: { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
         "react-pop": {
           "0%": { transform: "scale(1) rotate(0deg)" },
@@ -65,6 +69,7 @@ export default {
       animation: {
         rise: "rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
         "fill-x": "fill-x 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "word-in": "word-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both",
         marquee: "marquee 48s linear infinite",
         "react-pop": "react-pop 450ms cubic-bezier(0.16, 1, 0.3, 1)",
         "count-in": "count-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both",

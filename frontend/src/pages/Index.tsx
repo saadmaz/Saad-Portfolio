@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
+import { cn } from "@/lib/utils";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectTile, Row } from "@/components/cards";
@@ -403,75 +404,171 @@ function Magnetic({ children, strength = 0.25 }: { children: ReactNode; strength
   );
 }
 
+const CONTACT_WORDS = ["a conversation.", "what’s next.", "something real.", "something good."];
+
+/** Cycles the second headline line; each word slides up through a mask. Static under reduced motion. */
+function RotatingWord() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setInterval(() => setI((n) => (n + 1) % CONTACT_WORDS.length), 2800);
+    return () => window.clearInterval(t);
+  }, []);
+  return (
+    <span className="relative -mb-[0.22em] block overflow-hidden pb-[0.22em]">
+      <span key={i} className="soft block animate-word-in">
+        {CONTACT_WORDS[i]}
+      </span>
+      {/* Every option for screen readers, once, instead of a changing announcement. */}
+      <span className="sr-only">{CONTACT_WORDS.join(" ")}</span>
+    </span>
+  );
+}
+
+/** Email link that also copies the address, with a brief "Copied" badge. The mailto still opens. */
+function CopyEmail() {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef(0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const copy = () => {
+    navigator.clipboard
+      ?.writeText(CONTACT.email)
+      .then(() => {
+        setCopied(true);
+        window.clearTimeout(timer.current);
+        timer.current = window.setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
+  };
+  return (
+    <div className="flex items-center gap-3">
+      <a
+        href={`mailto:${CONTACT.email}`}
+        onClick={copy}
+        className="group relative w-fit break-all text-h2 font-medium text-fg"
+        title="Click to email (address is copied too)"
+      >
+        {CONTACT.email}
+        <span
+          aria-hidden
+          className="absolute -bottom-1 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-fg transition-transform duration-500 ease-out group-hover:scale-x-100"
+        />
+      </a>
+      <span
+        role="status"
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full bg-fg px-2.5 py-1 font-mono text-[12px] text-white transition-all duration-300",
+          copied ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0",
+        )}
+      >
+        <Check aria-hidden className="size-3.5" />
+        {copied ? "Copied" : ""}
+      </span>
+    </div>
+  );
+}
+
+/** Local time in Colombo with a status dot (green during waking hours). Client-only, so prerender stays stable. */
+function ColomboTime() {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const t = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(t);
+  }, []);
+  const fmt = (o: Intl.DateTimeFormatOptions) =>
+    now ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Colombo", ...o }).format(now) : "";
+  const hour = now ? Number(fmt({ hour: "numeric", hour12: false })) : 12;
+  const awake = hour >= 8 && hour < 23;
+  return (
+    <p className="flex items-center gap-2.5 font-mono text-meta text-fg-2">
+      <span className="relative flex size-2">
+        {awake && <span className="absolute inset-0 animate-ping rounded-full bg-[#1f7a3a] opacity-60" />}
+        <span className={cn("relative size-2 rounded-full", awake ? "bg-[#1f7a3a]" : "bg-fg/40")} />
+      </span>
+      Colombo, Sri Lanka
+      {now && (
+        <>
+          <span aria-hidden>·</span>
+          <span>{fmt({ hour: "numeric", minute: "2-digit", hour12: true })} local</span>
+        </>
+      )}
+    </p>
+  );
+}
+
+const CHAT_TOPICS = [
+  "AI & product craft",
+  "Founder & builder notes",
+  "Student & community initiatives",
+  "Random rabbit holes",
+];
+
 /**
- * Contact: solid orange, with a headline that leans gently with the cursor
- * and magnetic buttons.
+ * Contact as an open door rather than a client pitch: a headline whose second
+ * line cycles, a human line, copy-on-click email, low-stakes actions, what I'm
+ * happy to talk about, and local time. Lines rise in when the section enters view.
  */
 function ContactCTA() {
-  const ref = useRef<HTMLElement>(null);
-  const frame = useRef(0);
-
-  const onMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (e.pointerType !== "mouse") return;
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    cancelAnimationFrame(frame.current);
-    frame.current = requestAnimationFrame(() => {
-      el.style.setProperty("--tx", `${(x - 0.5) * 14}px`);
-      el.style.setProperty("--ty", `${(y - 0.5) * 10}px`);
-    });
-  };
-  useEffect(() => () => cancelAnimationFrame(frame.current), []);
-
   return (
-    <section
-      ref={ref}
-      onPointerMove={onMove}
-      onPointerLeave={() => {
-        ref.current?.style.setProperty("--tx", "0px");
-        ref.current?.style.setProperty("--ty", "0px");
-      }}
-      className="section screen theme-orange border-t-0"
-      aria-labelledby="contact-heading"
-    >
-      <Reveal className="wrap relative">
+    <section className="section screen theme-orange border-t-0" aria-labelledby="contact-heading">
+      <Reveal className="wrap contact-stagger">
         <Eyebrow counted>Contact</Eyebrow>
         <h2
           id="contact-heading"
-          className="mt-8 text-display-xl font-medium transition-transform duration-700 ease-out [transform:translate(var(--tx,0px),var(--ty,0px))] motion-reduce:transform-none md:mt-10"
+          className="mt-[clamp(16px,3svh,36px)] text-[clamp(3.25rem,min(8.6vw,13.5svh),8.5rem)] font-medium leading-[0.95] tracking-[-0.05em]"
         >
-          Let’s build
-          <br />
-          <span className="soft">something good.</span>
+          <span className="rise block">Let’s build</span>
+          <span className="block">
+            <span className="rise block" style={{ animationDelay: "110ms" }}>
+              <RotatingWord />
+            </span>
+          </span>
         </h2>
-        <div className="mt-14 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <a
-            href={`mailto:${CONTACT.email}`}
-            className="group relative w-fit break-all text-h2 font-medium transition-colors hover:text-accent"
-          >
-            {CONTACT.email}
-            <span
-              aria-hidden
-              className="absolute -bottom-1 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
-            />
-          </a>
+        <p
+          className="rise mt-[clamp(16px,3svh,32px)] max-w-[560px] text-body-l text-fg-2"
+          style={{ animationDelay: "220ms" }}
+        >
+          Whether you have a rough idea, a question, or just want to compare notes, my inbox is open.
+        </p>
+
+        <div
+          className="rise mt-[clamp(20px,4svh,44px)] flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
+          style={{ animationDelay: "330ms" }}
+        >
+          <CopyEmail />
           <div className="flex flex-col gap-3 sm:flex-row">
             <Magnetic>
-              <Button href={CONTACT.bookingUrl} variant="secondary" size="lg" icon={false}>
-                Book a call
+              <Button href={CONTACT.bookingUrl} variant="secondary" size="lg">
+                Quick chat
               </Button>
             </Magnetic>
             <Magnetic>
               <Button to="/contact" size="lg">
-                Start a project
+                Say hello
               </Button>
             </Magnetic>
           </div>
         </div>
-        <SocialLinks className="mt-12" />
+
+        <div
+          className="rise mt-[clamp(24px,4.4svh,52px)] flex flex-col gap-4 border-t border-line-3 pt-[clamp(16px,3svh,28px)] md:flex-row md:items-center md:justify-between"
+          style={{ animationDelay: "440ms" }}
+        >
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+            <span className="label shrink-0 text-fg-2">Open to chatting about</span>
+            <ul className="flex flex-wrap gap-2">
+              {CHAT_TOPICS.map((t) => (
+                <li key={t} className="rounded-full border border-line-3 px-3 py-1.5 text-[13px] text-fg">
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <ColomboTime />
+        </div>
+
+        <SocialLinks className="rise mt-[clamp(16px,3svh,28px)]" />
       </Reveal>
     </section>
   );
