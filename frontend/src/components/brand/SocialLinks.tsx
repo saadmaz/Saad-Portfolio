@@ -24,7 +24,7 @@ export function SocialLinks({ className, size = "md" }: { className?: string; si
             aria-label={`${s.label} (opens in a new tab)`}
             title={s.label}
             className={cn(
-              "flex items-center justify-center rounded-full border border-line-2 text-fg-2 transition-colors duration-200 hover:border-line-3 hover:bg-surface-2 hover:text-fg",
+              "flex items-center justify-center rounded-full border border-line-2 text-fg-2 transition-[color,background-color,border-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:border-line-3 hover:bg-surface-2 hover:text-fg active:translate-y-0",
               size === "sm" ? "size-10" : "size-11",
             )}
           >
