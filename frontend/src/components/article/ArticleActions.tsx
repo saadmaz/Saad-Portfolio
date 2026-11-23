@@ -28,6 +28,7 @@ export function ArticleActions({
   author,
   url,
   shareable = true,
+  downloadable = true,
   className,
 }: {
   prompts: ArticlePrompt[];
@@ -35,6 +36,8 @@ export function ArticleActions({
   author?: string;
   url: string;
   shareable?: boolean;
+  /** Show the .md / .txt download buttons (the article's "Prompt downloads" setting). */
+  downloadable?: boolean;
   className?: string;
 }) {
   const [doneWith, setDoneWith] = useState<Done>(null);
@@ -109,26 +112,30 @@ export function ArticleActions({
           {icon("all", ClipboardCopy)}
           {doneWith === "all" ? "Copied" : prompts.length === 1 ? "Copy prompt" : "Copy all prompts"}
         </button>
-        <button
-          type="button"
-          onClick={() => download("md")}
-          className={cn(btn, doneWith === "md" ? done : quiet)}
-        >
-          {icon("md", FileDown)}
-          <span>
-            <span className="sr-only">Download prompts as </span>.md
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => download("txt")}
-          className={cn(btn, doneWith === "txt" ? done : quiet)}
-        >
-          {icon("txt", FileDown)}
-          <span>
-            <span className="sr-only">Download prompts as </span>.txt
-          </span>
-        </button>
+        {downloadable && (
+          <>
+            <button
+              type="button"
+              onClick={() => download("md")}
+              className={cn(btn, doneWith === "md" ? done : quiet)}
+            >
+              {icon("md", FileDown)}
+              <span>
+                <span className="sr-only">Download prompts as </span>.md
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => download("txt")}
+              className={cn(btn, doneWith === "txt" ? done : quiet)}
+            >
+              {icon("txt", FileDown)}
+              <span>
+                <span className="sr-only">Download prompts as </span>.txt
+              </span>
+            </button>
+          </>
+        )}
         {shareable && canShare && (
           <button
             type="button"

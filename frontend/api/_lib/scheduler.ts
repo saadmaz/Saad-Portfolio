@@ -113,6 +113,7 @@ export const SNAPSHOT_FIELDS = [
   "tableOfContents",
   "reactionsEnabled",
   "socialShareEnabled",
+  "promptDownloads",
   "ctaText",
   "ctaUrl",
   "readingTimeMinutes",
