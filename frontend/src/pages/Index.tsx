@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
-import { EventCard, ProjectCard, Row } from "@/components/cards";
+import { EventCard, ProjectCard, ProjectSpotlight, Row } from "@/components/cards";
+import { cn } from "@/lib/utils";
 import { SkillsShowcase } from "@/components/SkillsShowcase";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
@@ -128,6 +129,26 @@ function Statement() {
   );
 }
 
+function Quote({
+  quote,
+  className,
+}: {
+  quote: { content: string; name: string; position?: string; company?: string };
+  className?: string;
+}) {
+  return (
+    <figure className={className}>
+      <blockquote className="line-clamp-4 text-h4 font-light leading-snug">“{quote.content}”</blockquote>
+      <figcaption className="mt-4 text-sm">
+        {quote.name}
+        <span className="ml-3 font-mono text-meta text-fg-3">
+          {[quote.position, quote.company].filter(Boolean).join(", ")}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
 function SelectedWork() {
   const { data: featured = [], isLoading } = useFeaturedProjects();
   const { data: testimonials = [] } = useTestimonials();
@@ -152,35 +173,36 @@ function SelectedWork() {
           />
         </Reveal>
         {isLoading ? (
-          <Skeleton className="aspect-[16/9] w-full rounded-media md:aspect-auto md:h-[min(56.25vw,60svh)]" />
+          <Skeleton className="aspect-[16/9] w-full rounded-media md:aspect-auto md:h-[min(46svh,40vw)]" />
+        ) : projects.length === 1 ? (
+          // One project: image beside the details, the quote tucked under them.
+          <Reveal>
+            <ProjectSpotlight
+              project={projects[0]}
+              index={0}
+              aside={quote && <Quote quote={quote} className="mt-4 border-t border-line pt-6" />}
+            />
+          </Reveal>
         ) : (
-          <div className="flex flex-col gap-20">
-            {projects[0] && (
-              <Reveal>
-                <ProjectCard project={projects[0]} index={0} feature />
+          <>
+            <div
+              className={cn(
+                "grid gap-16 md:gap-6",
+                projects.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3",
+              )}
+            >
+              {projects.map((p, i) => (
+                <Reveal key={p.id}>
+                  <ProjectCard project={p} index={i} compact />
+                </Reveal>
+              ))}
+            </div>
+            {quote && (
+              <Reveal className="ml-auto mt-12 max-w-[900px] md:mt-10">
+                <Quote quote={quote} />
               </Reveal>
             )}
-            {projects.length > 1 && (
-              <div className="grid gap-16 md:grid-cols-2 md:gap-6">
-                {projects.slice(1).map((p, i) => (
-                  <Reveal key={p.id}>
-                    <ProjectCard project={p} index={i + 1} />
-                  </Reveal>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        {quote && (
-          <Reveal className="ml-auto mt-24 max-w-[900px]">
-            <blockquote className="text-h2 font-light leading-snug">“{quote.content}”</blockquote>
-            <p className="mt-7 text-sm">
-              {quote.name}
-              <span className="ml-3 font-mono text-meta text-fg-3">
-                {[quote.position, quote.company].filter(Boolean).join(", ")}
-              </span>
-            </p>
-          </Reveal>
+          </>
         )}
       </div>
     </section>
@@ -447,9 +469,9 @@ const Index = () => {
         <SelectedWork />
         <ExperienceList />
         <Speaking />
+        <Writing />
         <Capabilities />
         <Certifications />
-        <Writing />
         <ContactCTA />
       </div>
     </Layout>
