@@ -108,31 +108,23 @@ function Hero({
 }
 
 function Statement() {
-  // Handwritten note, centred.
   return (
-    <section className="section screen theme-orange border-t-0" aria-labelledby="about-heading">
+    <section className="section screen theme-orange border-t-0" aria-label="About">
       <Reveal className="wrap flex flex-col items-center text-center">
         <Eyebrow counted>About</Eyebrow>
-        <h2
-          id="about-heading"
-          className="mt-6 font-hand text-[clamp(2.75rem,5.4vw,4.75rem)] font-bold leading-none md:mt-8"
-        >
-          A little about me
-        </h2>
-        <div className="mt-[clamp(20px,3.5svh,40px)] flex max-w-[860px] flex-col gap-[clamp(10px,2svh,20px)] font-hand text-[clamp(1.375rem,min(2.1vw,3.4svh),2.125rem)] leading-[1.25] text-fg">
-          <p>Hey, I’m Saad! I have a habit of turning “wouldn’t it be cool if...” into actual projects.</p>
-          <p>
-            Sometimes it’s a startup, sometimes it’s a random app idea, sometimes it’s 2 AM and I’m wondering
-            if I can build something that probably doesn’t need to exist (yet).
-          </p>
-          <p>
-            I’m into tech, business, AI, and pretty much anything that lets me create, experiment or solve an
-            interesting problem. I’ve started businesses, built products, written code, made mistakes, learned
-            a ridiculous amount and somehow always found another idea to chase.
-          </p>
-          <p>Basically, I like making things happen. And I have a feeling I’m only getting started.</p>
-        </div>
-        <div className="mt-[clamp(24px,4svh,48px)]">
+        <p className="mt-[clamp(20px,4svh,40px)] max-w-[1080px] text-balance text-[clamp(2rem,min(4.6vw,7svh),4.25rem)] font-medium leading-[1.04] tracking-[-0.04em] text-fg">
+          Hey, I’m Saad. I have a habit of turning random{" "}
+          <span className="font-light text-fg-2">“what if?”</span> ideas into actual projects.
+        </p>
+        <p className="mt-[clamp(16px,3.4svh,36px)] max-w-[640px] text-pretty text-[clamp(1rem,min(1.5vw,2.6svh),1.25rem)] leading-[1.6] text-fg-2">
+          I’m into tech, business, AI and building things that probably started as a late-night idea. I’ve
+          started businesses, built products, written plenty of code and chased more ideas than I can count.
+        </p>
+        <span aria-hidden className="mt-[clamp(16px,3.4svh,36px)] h-px w-16 bg-fg/30" />
+        <p className="mt-[clamp(16px,3.4svh,36px)] text-[clamp(1rem,min(1.5vw,2.6svh),1.25rem)] font-medium text-fg">
+          Always curious, always experimenting, and probably already thinking about the next thing.
+        </p>
+        <div className="mt-[clamp(20px,4.4svh,48px)]">
           <Button to="/about" size="lg">
             Get to know me a little more
           </Button>
