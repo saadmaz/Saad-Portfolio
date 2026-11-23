@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
+import { cn } from "@/lib/utils";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
 import { EventCard, ProjectTile, Row } from "@/components/cards";
@@ -371,16 +372,46 @@ function Writing() {
   );
 }
 
+/**
+ * Contact: an ember gradient (deep red-brown at the bottom rising into bright
+ * orange) with two slow drifting blobs. On pointer devices a warm spotlight
+ * follows the cursor and reveals a dot grid around it.
+ */
 function ContactCTA() {
+  const ref = useRef<HTMLElement>(null);
+  const frame = useRef(0);
+  const [active, setActive] = useState(false);
+
+  const onMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => {
+      el.style.setProperty("--mx", `${x}%`);
+      el.style.setProperty("--my", `${y}%`);
+    });
+  };
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+
   return (
     <section
-      className="section screen theme-orange relative overflow-hidden border-t-0"
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setActive(true)}
+      onPointerLeave={() => setActive(false)}
+      className="contact-ember section screen theme-orange relative isolate overflow-hidden border-t-0"
       aria-labelledby="contact-heading"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_105%,rgb(255_95_0/0.18),transparent_70%)]"
-      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="contact-ember__blob contact-ember__blob--a" />
+        <div className="contact-ember__blob contact-ember__blob--b" />
+        <div className={cn("contact-ember__spot", active && "is-active")} />
+        <div className={cn("contact-ember__grid", active && "is-active")} />
+      </div>
       <Reveal className="wrap relative">
         <Eyebrow counted>Contact</Eyebrow>
         <h2 id="contact-heading" className="mt-8 text-display-xl font-medium md:mt-10">
@@ -389,8 +420,15 @@ function ContactCTA() {
           <span className="soft">something good.</span>
         </h2>
         <div className="mt-14 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <a href={`mailto:${CONTACT.email}`} className="break-all text-h2 font-medium hover:text-accent">
+          <a
+            href={`mailto:${CONTACT.email}`}
+            className="group relative w-fit break-all text-h2 font-medium transition-colors hover:text-accent"
+          >
             {CONTACT.email}
+            <span
+              aria-hidden
+              className="absolute -bottom-1 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+            />
           </a>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button href={CONTACT.bookingUrl} variant="secondary" size="lg" icon={false}>
