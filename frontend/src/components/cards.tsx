@@ -25,10 +25,13 @@ export function ProjectCard({
   project,
   index,
   feature,
+  compact,
 }: {
   project: Project;
   index?: number;
   feature?: boolean;
+  /** Homepage grid: shorter image and clamped tagline so a row fits one screen. */
+  compact?: boolean;
 }) {
   const img = project.heroImage || project.image;
   const tags = (project.techStack ?? []).slice(0, feature ? 4 : 3);
@@ -37,7 +40,7 @@ export function ProjectCard({
       <Media
         src={img}
         alt={project.altText || project.title}
-        className={feature ? "aspect-[16/9]" : "aspect-[3/2]"}
+        className={feature ? "aspect-[16/9]" : compact ? "aspect-[16/10]" : "aspect-[3/2]"}
         priority={feature}
       />
       {feature ? (
@@ -62,7 +65,7 @@ export function ProjectCard({
             {arrow}
           </div>
           <h3 className="text-h2 font-medium">{project.title}</h3>
-          <p className="text-fg-2">{project.tagline}</p>
+          <p className={cn("text-fg-2", compact && "line-clamp-2")}>{project.tagline}</p>
           {tags.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-2">
               {tags.map((t) => (
@@ -73,6 +76,51 @@ export function ProjectCard({
         </div>
       )}
     </Link>
+  );
+}
+
+/**
+ * Homepage project spotlight: image beside the details from tablet up, so a
+ * single project fits one screen. `aside` renders under the details (e.g. a quote).
+ */
+export function ProjectSpotlight({
+  project,
+  index,
+  aside,
+}: {
+  project: Project;
+  index?: number;
+  aside?: ReactNode;
+}) {
+  const img = project.heroImage || project.image;
+  const tags = (project.techStack ?? []).slice(0, 4);
+  return (
+    <div className="grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-10 lg:gap-16">
+      <Link to={`/projects/${project.slug}`} className="group block" aria-label={project.title}>
+        <Media
+          src={img}
+          alt={project.altText || project.title}
+          className="aspect-[16/10] transition-[border-color] duration-200 group-hover:border-line-3 md:aspect-auto md:h-[min(46svh,40vw)]"
+          priority
+        />
+      </Link>
+      <div className="flex flex-col gap-5">
+        <span className="font-mono text-meta text-fg-3">{projectMeta(project, index)}</span>
+        <Link to={`/projects/${project.slug}`} className="group flex items-start justify-between gap-4">
+          <h3 className="text-h1 font-medium transition-colors group-hover:text-accent">{project.title}</h3>
+          <span className="mt-2">{arrow}</span>
+        </Link>
+        {project.tagline && <p className="line-clamp-3 text-fg-2">{project.tagline}</p>}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <Tag key={t}>{t}</Tag>
+            ))}
+          </div>
+        )}
+        {aside}
+      </div>
+    </div>
   );
 }
 
