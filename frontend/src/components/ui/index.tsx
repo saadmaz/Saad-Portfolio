@@ -241,7 +241,7 @@ export function SectionHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-12 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
+    <div className="mb-12 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between">
       <div className="flex flex-col gap-6 md:gap-7">
         <Eyebrow index={index} counted={counted}>
           {label}

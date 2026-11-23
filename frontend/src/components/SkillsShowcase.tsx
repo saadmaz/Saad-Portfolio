@@ -187,11 +187,14 @@ export function SkillsShowcase({ groups }: { groups: SkillSet[] }) {
 
       {/* Everything, always moving */}
       <div
-        className="group/marquee mt-[clamp(20px,4svh,44px)] flex flex-col gap-[clamp(8px,1.6svh,16px)]"
+        className="group/marquee mt-[clamp(20px,4svh,44px)] flex flex-col gap-[clamp(8px,1.6svh,16px)] [@media(min-width:768px)_and_(max-height:799px)]:hidden"
         aria-hidden
       >
         <Marquee items={rowA} />
-        <Marquee items={rowB} reverse />
+        {/* Second row only where the homepage section still fits one screen. */}
+        <div className="[@media(min-width:768px)_and_(max-height:879px)]:hidden [@media(min-width:768px)_and_(orientation:portrait)]:hidden">
+          <Marquee items={rowB} reverse />
+        </div>
       </div>
     </div>
   );
