@@ -16,6 +16,7 @@ import {
   relatedPosts,
   adjacentPosts,
   demoteH1,
+  sameText,
   resolveRedirect,
   seriesParts,
   seriesPosition,
@@ -378,5 +379,15 @@ describe("demoteH1", () => {
   it("leaves other tags and escaped text alone", () => {
     const html = "<h2>Keep</h2><hr><p>&lt;h1&gt; in text</p><h10x>";
     expect(demoteH1(html)).toBe(html);
+  });
+});
+
+describe("sameText", () => {
+  it("ignores case, punctuation and spacing", () => {
+    expect(
+      sameText("WSO2 to Choreo Labs: A Brand in Transition", "wso2 to choreo labs  a brand in transition"),
+    ).toBe(true);
+    expect(sameText("20 AI Prompts", "20 AI Prompts to Build")).toBe(false);
+    expect(sameText("", "")).toBe(false);
   });
 });

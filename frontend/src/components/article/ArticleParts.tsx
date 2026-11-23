@@ -81,15 +81,20 @@ export function Byline({
         <span className="font-medium text-fg">{post.author || "Saad Mazhar"}</span>
       )}
       <span aria-hidden className="hidden h-8 w-px bg-line-2 sm:block" />
-      <p className="font-mono text-meta text-fg-3">
-        <time dateTime={published}>{fullDate(published)}</time>
+      {/* Items wrap as whole units: "10 min read" never splits across lines. */}
+      <p className="flex flex-wrap justify-center gap-x-2 font-mono text-meta text-fg-3 sm:justify-start">
+        <time dateTime={published} className="whitespace-nowrap">
+          {fullDate(published)}
+        </time>
         {updated && (
-          <>
-            {" · Updated "}
-            <time dateTime={updated}>{fullDate(updated)}</time>
-          </>
+          <span className="whitespace-nowrap">
+            <span aria-hidden>· </span>Updated <time dateTime={updated}>{fullDate(updated)}</time>
+          </span>
         )}
-        {` · ${readingMinutesOf(post, wpm)} min read`}
+        <span className="whitespace-nowrap">
+          <span aria-hidden>· </span>
+          {readingMinutesOf(post, wpm)} min read
+        </span>
       </p>
     </div>
   );
@@ -105,7 +110,7 @@ export function CoverFigure({ post }: { post: BlogPost }) {
       <Media
         asset={cover as ImageAsset}
         alt={cover.alt || post.title}
-        className="aspect-[2/1]"
+        natural
         sizes="(min-width: 1296px) 1200px, 100vw"
         priority
       />
@@ -296,7 +301,7 @@ export function ArticleCard({
       <Media
         asset={cover as ImageAsset | null}
         alt={cover?.alt || ""}
-        className={large ? "aspect-[16/9]" : "aspect-[3/2]"}
+        natural
         sizes={
           large
             ? "(min-width: 1024px) 760px, 100vw"

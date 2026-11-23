@@ -62,7 +62,7 @@ const SeriesPage = () => {
       />
       {series.cover?.url && (
         <div className="wrap">
-          <Media asset={series.cover} alt={series.cover.alt || ""} className="aspect-[3/1]" priority />
+          <Media asset={series.cover} alt={series.cover.alt || ""} natural priority />
         </div>
       )}
       <section className="wrap py-16 md:py-20">
