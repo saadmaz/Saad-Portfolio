@@ -331,3 +331,42 @@ export function ArticleCard({
     </Link>
   );
 }
+
+/** Previous (older) / next (newer) article links at the end of a post. */
+export function ArticlePager({
+  previous,
+  next,
+  className,
+}: {
+  previous: BlogPost | null;
+  next: BlogPost | null;
+  className?: string;
+}) {
+  if (!previous && !next) return null;
+  const card =
+    "group flex flex-col gap-1.5 rounded-card border border-line-2 p-5 transition-colors hover:border-line-3 hover:bg-surface";
+  return (
+    <nav aria-label="More articles" className={cn("grid gap-3 sm:grid-cols-2", className)}>
+      {previous ? (
+        <Link to={articlePath(previous)} rel="prev" className={card}>
+          <span className="label flex items-center gap-1.5 text-fg-3">
+            <ArrowLeft aria-hidden className="size-3.5" /> Previous article
+          </span>
+          <span className="text-[0.9375rem] leading-snug text-fg-2 group-hover:text-fg">
+            {previous.title}
+          </span>
+        </Link>
+      ) : (
+        <span className="hidden sm:block" />
+      )}
+      {next && (
+        <Link to={articlePath(next)} rel="next" className={cn(card, "sm:items-end sm:text-right")}>
+          <span className="label flex items-center gap-1.5 text-fg-3">
+            Next article <ArrowRight aria-hidden className="size-3.5" />
+          </span>
+          <span className="text-[0.9375rem] leading-snug text-fg-2 group-hover:text-fg">{next.title}</span>
+        </Link>
+      )}
+    </nav>
+  );
+}

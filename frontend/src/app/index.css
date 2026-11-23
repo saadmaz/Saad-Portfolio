@@ -127,25 +127,79 @@
 .prose-cms pre {
   @apply overflow-x-auto rounded-card border border-line bg-surface p-5 font-mono text-meta;
 }
-/* Copyable prompt from the admin editor; <CmsContent> adds the .prompt-bar
-   and .prompt-foot. Reads like a chat message: sans text, generous leading. */
+/* Prompt card from the admin editor. <CmsContent> adds .prompt-head,
+   .prompt-vars and .prompt-foot; <PromptCard> fills them. The prompt text
+   itself is the article's own markup. Reads like a chat message. */
 .prose-cms [data-prompt] {
-  @apply overflow-hidden rounded-card border border-line-2 bg-surface;
+  @apply my-10 overflow-hidden rounded-card border border-line-2 bg-surface;
 }
-.prose-cms .prompt-bar {
-  @apply flex items-center justify-between gap-4 border-b border-line py-2 pl-5 pr-2;
+.prose-cms .prompt-head {
+  @apply flex items-start gap-3 border-b border-line px-4 py-3.5 sm:px-5;
+}
+.prose-cms .prompt-num {
+  @apply mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 font-mono text-[13px] font-medium text-accent;
+}
+.prose-cms .prompt-title {
+  @apply m-0 text-[1.0625rem] font-medium leading-snug text-fg;
+}
+.prose-cms .prompt-badge {
+  @apply inline-flex items-center rounded-full border border-accent/30 bg-accent/[0.08] px-2 py-0.5 font-mono text-[11px] uppercase leading-4 tracking-wide text-accent;
+}
+.prose-cms .prompt-badge.is-muted {
+  @apply border-line-2 bg-transparent text-fg-3;
+}
+.prose-cms [data-prompt-description] {
+  @apply m-0 px-5 pt-4 text-[0.9375rem] leading-relaxed text-fg-2 md:px-6;
+}
+.prose-cms .prompt-vars:empty,
+.prose-cms .prompt-foot:empty {
+  @apply hidden;
+}
+.prose-cms .prompt-vars-panel {
+  @apply mx-4 mt-4 rounded-xl border border-line-2 bg-base/50 p-4 sm:mx-5;
 }
 .prose-cms .prompt-foot {
   @apply flex justify-center border-t border-line py-2;
 }
-.prose-cms .prompt-foot:empty {
-  @apply hidden;
+.prose-cms [data-prompt-usage],
+.prose-cms [data-prompt-note] {
+  @apply m-0 border-t border-line px-5 py-3 text-[0.875rem] leading-relaxed text-fg-2 md:px-6;
+}
+.prose-cms [data-prompt-usage]::before,
+.prose-cms [data-prompt-note]::before {
+  @apply mr-2 font-mono text-[11px] uppercase tracking-wider text-fg-3;
+}
+.prose-cms [data-prompt-usage]::before {
+  content: "How to use";
+}
+.prose-cms [data-prompt-note]::before {
+  content: "Note";
 }
 .prose-cms [data-prompt].is-collapsed pre,
 .prose-cms [data-prompt].is-collapsed .prompt-body {
   @apply max-h-[26rem] overflow-hidden;
   -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent);
   mask-image: linear-gradient(to bottom, black 65%, transparent);
+}
+/* [VARIABLES] inside a prompt: highlighted, and show the reader's value once filled. */
+.prose-cms mark.prompt-var {
+  @apply rounded bg-accent/[0.12] px-1 font-medium text-accent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.prose-cms mark.prompt-var.is-filled {
+  @apply bg-live/[0.14] text-fg;
+}
+/* Minimal style: no box, an accent rule down the side. */
+.prose-cms [data-prompt][data-variant="minimal"] {
+  @apply rounded-none border-0 border-l-2 border-accent bg-transparent;
+}
+.prose-cms [data-prompt][data-variant="minimal"] .prompt-head {
+  @apply border-b-0 pb-0;
+}
+/* Code-language prompts (bash, JSON…): monospaced, highlighted, scroll sideways. */
+.prose-cms [data-prompt].is-code pre {
+  @apply overflow-x-auto whitespace-pre font-mono text-meta leading-relaxed;
 }
 /* Code block; <CmsContent> wraps each <pre> and adds the .code-bar. */
 .prose-cms .code-block {
@@ -159,6 +213,20 @@
 }
 .prose-cms pre code {
   @apply rounded-none bg-transparent p-0;
+}
+.prose-cms pre[data-wrap] {
+  @apply whitespace-pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Line numbers: a gutter beside the code, scrolling with it. */
+.prose-cms .code-scroll {
+  @apply flex overflow-x-auto;
+}
+.prose-cms .code-lines {
+  @apply shrink-0 select-none whitespace-pre border-r border-line py-5 pl-4 pr-3 text-right font-mono text-meta leading-relaxed text-fg-3/60;
+}
+.prose-cms .code-scroll pre {
+  @apply flex-1 overflow-visible;
 }
 .prose-cms [data-prompt] pre {
   @apply m-0 overflow-visible whitespace-pre-wrap break-words rounded-none border-0 bg-transparent px-5 py-5 font-sans text-[0.9375rem] leading-[1.75] text-fg md:px-6;
@@ -445,4 +513,153 @@
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+/* Step-by-step: numbered steps joined by a rail. */
+.prose-cms ol[data-steps] {
+  @apply my-10 list-none space-y-0 pl-0;
+  counter-reset: step;
+}
+.prose-cms li[data-step] {
+  @apply relative pb-9 pl-12 sm:pl-14;
+  counter-increment: step;
+}
+.prose-cms li[data-step]::before {
+  content: counter(step);
+  @apply absolute left-0 top-0 flex size-8 items-center justify-center rounded-full border border-accent/50 bg-base font-mono text-[13px] font-medium text-accent;
+}
+.prose-cms li[data-step]::after {
+  content: "";
+  @apply absolute bottom-1 left-4 top-10 w-px bg-line-2;
+}
+.prose-cms li[data-step]:last-child {
+  @apply pb-0;
+}
+.prose-cms li[data-step]:last-child::after {
+  @apply hidden;
+}
+.prose-cms [data-step-title] {
+  @apply m-0 text-[1.125rem] font-medium leading-8 text-fg;
+}
+.prose-cms [data-step-body] {
+  @apply mt-2;
+}
+.prose-cms [data-step-body] > * + * {
+  @apply mt-4;
+}
+.prose-cms [data-step-body] [data-prompt],
+.prose-cms [data-step-body] .code-block {
+  @apply my-4;
+}
+
+/* Comparison: side-by-side columns, stacked on phones. */
+.prose-cms [data-comparison] {
+  @apply my-10;
+}
+.prose-cms [data-comparison-heading] {
+  @apply label mb-3 text-fg-3;
+}
+.prose-cms [data-comparison-grid] {
+  @apply grid gap-3 sm:grid-cols-2;
+}
+.prose-cms [data-comparison][data-count="3"] [data-comparison-grid] {
+  @apply lg:grid-cols-3;
+}
+.prose-cms [data-comparison][data-count="1"] [data-comparison-grid] {
+  @apply sm:grid-cols-1;
+}
+.prose-cms [data-comparison-col] {
+  @apply rounded-card border border-line-2 bg-surface p-5;
+}
+.prose-cms [data-comparison-col][data-tone="pro"] {
+  border-top: 2px solid rgb(var(--live));
+}
+.prose-cms [data-comparison-col][data-tone="con"] {
+  border-top: 2px solid rgb(var(--danger));
+}
+.prose-cms [data-comparison-title] {
+  @apply m-0 mb-3 font-medium text-fg;
+}
+.prose-cms [data-comparison-col] ul {
+  @apply m-0 list-none space-y-2 pl-0 text-[0.9375rem] leading-relaxed;
+}
+.prose-cms [data-comparison-col] li {
+  @apply relative pl-6;
+}
+.prose-cms [data-comparison-col] li::before {
+  content: "\2022";
+  @apply absolute left-1 text-fg-3;
+}
+.prose-cms [data-comparison-col][data-tone="pro"] li::before {
+  content: "\2713";
+  @apply left-0 text-live;
+}
+.prose-cms [data-comparison-col][data-tone="con"] li::before {
+  content: "\2715";
+  @apply left-0 text-danger;
+}
+
+/* Resource list: link cards. */
+.prose-cms [data-resources] {
+  @apply my-10;
+}
+.prose-cms [data-resources-heading] {
+  @apply label mb-3 text-fg-3;
+}
+.prose-cms [data-resources] ul {
+  @apply m-0 grid list-none gap-2 pl-0 sm:grid-cols-2;
+}
+.prose-cms [data-resources] li > a,
+.prose-cms [data-resources] li > span {
+  @apply flex h-full flex-col gap-1 rounded-card border border-line-2 bg-surface p-4 no-underline transition-colors;
+}
+.prose-cms [data-resources] li > a:hover {
+  @apply border-line-3 bg-surface-2;
+}
+.prose-cms [data-resource-title] {
+  @apply font-medium leading-snug text-fg;
+}
+.prose-cms [data-resources] li > a [data-resource-title]::after {
+  content: " \2197";
+  @apply text-fg-3;
+}
+.prose-cms [data-resource-desc] {
+  @apply text-[0.9375rem] leading-snug text-fg-2;
+}
+.prose-cms [data-resource-meta] {
+  @apply mt-auto pt-1 font-mono text-[12px] text-fg-3;
+}
+.prose-cms [data-resource-meta]:empty {
+  @apply hidden;
+}
+
+/* Downloadable file */
+.prose-cms [data-attachment] {
+  @apply relative my-10 rounded-card border border-line-2 bg-surface p-4 pl-[4.5rem];
+}
+.prose-cms [data-attachment]::before {
+  content: attr(data-ext);
+  @apply absolute left-4 top-4 flex h-12 w-11 items-center justify-center rounded-lg border border-accent/30 bg-accent/[0.08] font-mono text-[11px] font-medium uppercase text-accent;
+}
+.prose-cms [data-attachment][data-empty] {
+  @apply hidden;
+}
+.prose-cms [data-attachment-link] {
+  @apply relative flex min-h-12 flex-col justify-center pr-10 no-underline;
+}
+.prose-cms [data-attachment-link]::after {
+  content: "\2193";
+  @apply absolute right-1 flex size-8 items-center justify-center rounded-full border border-line-2 text-fg-2 transition-colors;
+}
+.prose-cms [data-attachment-link]:hover::after {
+  @apply border-accent bg-accent text-fg-inverse;
+}
+.prose-cms [data-attachment-name] {
+  @apply block font-medium leading-snug text-fg;
+}
+.prose-cms [data-attachment-meta] {
+  @apply block font-mono text-[12px] text-fg-3;
+}
+.prose-cms [data-attachment-desc] {
+  @apply m-0 mt-3 border-t border-line pt-3 text-[0.9375rem] text-fg-2;
 }

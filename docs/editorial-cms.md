@@ -22,7 +22,7 @@ CMS usage notes live in the admin repo's `docs/blog-cms.md`.
    │◀── Admin SDK ── api/feed                     /rss.xml and /sitemaps/blog.xml (live)
    │◀── Admin SDK ── scripts/prerender.mjs        crawler HTML, OG cards, redirects.json (build)
    ▼
- Firebase Storage  blog/** (images ≤15 MB, admin write)        middleware.ts  301/302 redirects at the edge
+ Firebase Storage  blog/** (images ≤15 MB; blog/attachments: pdf/md/txt/csv/zip ≤25 MB; admin write)        middleware.ts  301/302 redirects at the edge
 ```
 
 - **No new infrastructure.** Firestore, Storage, Auth, Vercel functions and the
@@ -233,10 +233,42 @@ figure markup for old images).
 
 | Command (in `frontend/`) | Covers |
 |---|---|
-| `npm test` | `article-core` (reading time vectors, slugs, heading ids, visibility, dates, related, featured, series, redirects incl. loops/chains, publish checks, JSON-LD, RSS, sitemap); services (published-only queries, rules denials); API (scheduler decisions incl. double-publish/rejection/redirects, preview tokens, admin auth, cron auth, tracking validation, reactions, rate limiting) |
+| `npm test` | `prompts` (variable detection, fill-in, copy-all format, Markdown/TXT exports, file names); `article-core` (previous/next article, H1 demotion, reading time vectors, slugs, heading ids, visibility, dates, related, featured, series, redirects incl. loops/chains, publish checks, JSON-LD, RSS, sitemap); services (published-only queries, rules denials); API (scheduler decisions incl. double-publish/rejection/redirects, preview tokens, admin auth, cron auth, tracking validation, reactions, rate limiting) |
 | `npm run test:rules` | Firestore rules against the emulator (needs the Firebase CLI + Java). Not part of CI by default. |
 | `npm run typecheck`, `npm run lint`, `npm run build` | As before; build also runs prerender + CSP check |
 
 The admin repo's tests cover the editor (lossless round-trip of every block and
 of legacy content, embed allow-list, chart data), autosave behaviour, SEO
 analysis, diffing, time-zone conversion and the image pipeline.
+
+## 11. Interactive content blocks
+
+The editor's developer blocks are plain HTML with `data-*` markers, so they're
+in the prerendered crawler HTML as real text. `CmsContent` enhances them in
+place after sanitising, with no extra requests:
+
+| Markup | Reader experience |
+|---|---|
+| `div[data-prompt]` (`data-label`, `data-stage`, `data-language`, `data-variant`) with `[data-prompt-description]`, `pre`, `[data-prompt-usage]`, `[data-prompt-note]` | `PromptCard`: number, title (an `h3`), stage/language badges, Copy (the exact original text), *Customise* with an input per `[VARIABLE]` (live preview in the text, copy customised or original), collapse for long prompts, `role="status"` confirmations. Anchored as `#prompt-01`… Code-language prompts are syntax-highlighted. Legacy prompts (label + `pre`, or inline-code runs) still work. |
+| `pre[data-wrap]`, `pre[data-line-numbers]` | Wrapped lines; a line-number gutter (not shown when wrapping is on, since wrapped lines can't line up with it). |
+| `ol[data-steps] > li[data-step]` | Numbered steps on a rail. |
+| `div[data-comparison]` | Columns side by side, stacked on phones; ✓ / ✕ markers by tone. |
+| `div[data-resources]` | Link cards; links open in a new tab with `noopener noreferrer`. |
+| `div[data-attachment]` | File card with type badge, size and a download link. |
+
+Article-level:
+
+- **Prompt tools** bar (only when an article has prompts): copy all prompts
+  (`# Stage…` / `## Prompt 01: Title` / prompt / `---`), download as `.md`
+  (title, author, stages, numbered prompts in fences longer than any backticks
+  inside) or `.txt`. Both are built in the browser; share and copy link.
+- **Navigation:** the sticky desktop sidebar and the collapsible mobile TOC list
+  sections and prompts (numbered, grouped by stage) and highlight the one in view.
+  Turning the article's TOC off hides section links but keeps prompt navigation.
+- **Footer:** previous / next article by publish date (hidden inside a series,
+  which has its own navigation).
+- **One H1:** `<h1>`s in the body become `<h2>`s on the page and in the
+  prerendered HTML (`demoteH1` in `article-core.js`).
+
+Deploy the Storage rules after this change so attachment uploads work:
+`firebase deploy --only storage`.

@@ -16,6 +16,7 @@ export const REACTIONS: { id: string; label: string; emoji: string }[];
 export const REACTION_IDS: string[];
 export const SLUG_RE: RegExp;
 
+export function demoteH1(html: string | undefined | null): string;
 export function stripHtml(html: string | undefined | null): string;
 export function countWords(text: string | undefined | null): number;
 export function readingTimeMinutes(html: string | undefined | null, wpm?: number): number;
@@ -42,6 +43,10 @@ export function articleTypeLabel(id: string | undefined, types?: ArticleTypeOpti
 
 export function relatedScore(a: Partial<BlogPost>, b: Partial<BlogPost>): number;
 export function relatedPosts<T extends PostLike>(post: PostLike, candidates: T[], limit?: number): T[];
+export function adjacentPosts<T extends PostLike>(
+  post: PostLike,
+  candidates: T[],
+): { previous: T | null; next: T | null };
 export function featuredPosts<T extends PostLike>(posts: T[]): T[];
 
 export interface SeriesPosition<T> {
