@@ -133,11 +133,24 @@
 .prose-cms [data-prompt] {
   @apply my-10 overflow-hidden rounded-card border border-line-2 bg-surface;
 }
+/* Phones: number, badges and buttons on one row, the title full width below
+   (so buttons never squeeze it). From sm up: a single row. */
 .prose-cms .prompt-head {
-  @apply flex items-start gap-3 border-b border-line px-4 py-3.5 sm:px-5;
+  @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.5 border-b border-line px-4 py-3.5 sm:flex sm:items-start sm:px-5;
+}
+.prose-cms .prompt-main {
+  display: contents;
+}
+.prose-cms .prompt-head .prompt-title {
+  grid-column: 1 / -1;
+}
+@screen sm {
+  .prose-cms .prompt-main {
+    @apply block min-w-0 flex-1;
+  }
 }
 .prose-cms .prompt-num {
-  @apply mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 font-mono text-[13px] font-medium text-accent;
+  @apply flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 font-mono text-[13px] font-medium text-accent;
 }
 .prose-cms .prompt-title {
   @apply m-0 text-[1.0625rem] font-medium leading-snug text-fg;
@@ -662,4 +675,21 @@
 }
 .prose-cms [data-attachment-desc] {
   @apply m-0 mt-3 border-t border-line pt-3 text-[0.9375rem] text-fg-2;
+}
+
+/* Justified text (an editor alignment option). On narrow columns it opens
+   wide gaps between words, and headings never justify well: headings stay
+   left-aligned, paragraphs justify only from md up, with hyphenation. */
+.prose-cms :is(h1, h2, h3, h4, h5, h6, figcaption, li)[style*="justify"] {
+  text-align: left !important;
+}
+.prose-cms [style*="justify"] {
+  text-align: left !important;
+}
+@screen md {
+  .prose-cms :is(p, blockquote)[style*="justify"] {
+    text-align: justify !important;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
 }

@@ -130,6 +130,8 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
             html={post.content ?? ""}
             onHeadings={setHeadings}
             onPrompts={setPrompts}
+            title={post.title}
+            subtitle={post.subtitle || post.excerpt}
             toc={showToc ? <TableOfContents headings={headings} prompts={prompts} variant="inline" /> : null}
             sources={<SourcesList sources={sources} />}
           />

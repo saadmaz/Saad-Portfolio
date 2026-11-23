@@ -227,13 +227,16 @@ const BlogsPage = () => {
               )}
             </div>
 
-            <p className="mt-10 font-mono text-meta text-fg-3" aria-live="polite">
-              {filtering
-                ? `${filtered.length} ${filtered.length === 1 ? "article" : "articles"}`
-                : "Latest articles"}
-            </p>
+            {(filtering || list.length > 0) && (
+              <p className="mt-10 font-mono text-meta text-fg-3" aria-live="polite">
+                {filtering
+                  ? `${filtered.length} ${filtered.length === 1 ? "article" : "articles"}`
+                  : "More articles"}
+              </p>
+            )}
             {list.length === 0 ? (
-              <Empty>{filtering ? "No articles match these filters." : "More posts are on the way."}</Empty>
+              // Every post is already shown above: nothing to add here.
+              filtering && <Empty>No articles match these filters.</Empty>
             ) : (
               <div className="mt-6 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                 {list.slice(0, visible).map((p) => (

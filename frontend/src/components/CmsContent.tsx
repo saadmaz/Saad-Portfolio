@@ -2,7 +2,7 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type R
 import { createPortal } from "react-dom";
 import { Check, ChevronLeft, ChevronRight, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { assignHeadingIds } from "@/lib/article-core";
+import { assignHeadingIds, sameText } from "@/lib/article-core";
 import { sanitizeArticle, sanitizeHtmlBlock } from "@/lib/sanitize";
 import { embedSrc, EMBED_PROVIDERS } from "@/lib/embeds";
 import { Chart } from "@/components/article/Chart";
@@ -276,6 +276,21 @@ type Extra =
   | { kind: "toc"; host: HTMLElement }
   | { kind: "sources"; host: HTMLElement };
 
+/**
+ * Articles often start with their own title (and subtitle) pasted into the
+ * body; the page header already shows them. Hides that repeat so the title
+ * isn't read twice and doesn't head the table of contents. Returns an undo.
+ */
+function hideRepeatedTitle(root: HTMLElement, title?: string, subtitle?: string) {
+  const first = root.firstElementChild as HTMLElement | null;
+  if (!first || !/^H[1-3]$/.test(first.tagName) || !sameText(first.textContent, title)) return () => {};
+  const removed: Element[] = [first];
+  const next = first.nextElementSibling;
+  if (next?.tagName === "P" && subtitle && sameText(next.textContent, subtitle)) removed.push(next);
+  removed.forEach((el) => el.remove());
+  return () => root.prepend(...removed);
+}
+
 /** Wraps `el` in a new element and returns a function that unwraps it. */
 function wrap(el: Element, className: string) {
   const wrapper = document.createElement("div");
@@ -439,6 +454,9 @@ interface CmsContentProps {
   onHeadings?: (headings: ContentHeading[]) => void;
   /** Prompt blocks found in the content, numbered in reading order. */
   onPrompts?: (prompts: ArticlePrompt[]) => void;
+  /** The page's title and subtitle: a copy of them at the start of the body is hidden. */
+  title?: string;
+  subtitle?: string;
   /** Rendered where the author placed a "Table of contents" block. */
   toc?: ReactNode;
   /** Rendered where the author placed a "Sources & references" block. */
@@ -451,7 +469,16 @@ interface CmsContentProps {
  * with a copy button and their wrap / line-number options. The editor's other
  * structured blocks are enhanced by enhanceBlocks().
  */
-export function CmsContent({ html, className, onHeadings, onPrompts, toc, sources }: CmsContentProps) {
+export function CmsContent({
+  html,
+  className,
+  onHeadings,
+  onPrompts,
+  title,
+  subtitle,
+  toc,
+  sources,
+}: CmsContentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [codeSlots, setCodeSlots] = useState<CodeSlot[]>([]);
   const [promptSlots, setPromptSlots] = useState<PromptSlot[]>([]);
@@ -467,6 +494,7 @@ export function CmsContent({ html, className, onHeadings, onPrompts, toc, source
   useLayoutEffect(() => {
     const root = ref.current;
     if (!root) return;
+    const restoreLead = hideRepeatedTitle(root, title, subtitle);
     const restoreParagraphs = upgradeCodeRuns(root);
     const enhanced = enhanceBlocks(root, (h) => headingsCb.current?.(h));
 
@@ -509,8 +537,9 @@ export function CmsContent({ html, className, onHeadings, onPrompts, toc, source
       prompts.forEach(({ undo }) => undo());
       enhanced.undo();
       restoreParagraphs();
+      restoreLead();
     };
-  }, [safeHtml]);
+  }, [safeHtml, title, subtitle]);
 
   return (
     <>

@@ -120,3 +120,4 @@ export function buildBlogSitemap(opts: {
   categories?: CategoryOption[];
 }): string;
 export function categoriesOf(posts: Partial<BlogPost>[]): CategoryOption[];
+export function sameText(a: string | null | undefined, b: string | null | undefined): boolean;

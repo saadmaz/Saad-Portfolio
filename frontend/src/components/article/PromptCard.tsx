@@ -79,9 +79,9 @@ export function PromptCard({ prompt, hosts }: { prompt: ArticlePrompt; hosts: Pr
           <span className="prompt-num" aria-hidden>
             {promptNumber(prompt.number)}
           </span>
-          <div className="min-w-0 flex-1">
+          <div className="prompt-main">
             {(prompt.stage || language) && (
-              <div className="mb-1 flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5 self-center sm:mb-1">
                 {prompt.stage && <span className="prompt-badge">{prompt.stage}</span>}
                 {language && <span className="prompt-badge is-muted">{language}</span>}
               </div>

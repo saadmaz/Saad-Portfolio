@@ -122,6 +122,10 @@ export function Reveal({ children, className }: { children: ReactNode; className
 /**
  * Image with a graphite gradient fallback when there's no source (or it fails).
  * Pass `asset` (an uploaded ImageAsset) for srcset, intrinsic size and focal point.
+ *
+ * `natural`: the frame takes the image's own proportions, so the whole image
+ * always shows (cover art with text must never be cropped). Without known
+ * dimensions it falls back to 16:9 and fits the image inside, uncropped.
  */
 export function Media({
   src,
@@ -130,6 +134,7 @@ export function Media({
   priority,
   asset,
   sizes,
+  natural,
 }: {
   src?: string;
   alt: string;
@@ -137,11 +142,18 @@ export function Media({
   priority?: boolean;
   asset?: ImageAsset | null;
   sizes?: string;
+  natural?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const img = asset?.url ? responsiveImage(asset, sizes) : src ? { src } : null;
+  const w = Number(img?.width) || 0;
+  const h = Number(img?.height) || 0;
+  const frame = natural ? { aspectRatio: w && h ? `${w} / ${h}` : "16 / 9" } : undefined;
   return (
-    <div className={cn("relative overflow-hidden rounded-media border border-line bg-surface", className)}>
+    <div
+      style={frame}
+      className={cn("relative overflow-hidden rounded-media border border-line bg-surface", className)}
+    >
       {img && !failed ? (
         <img
           src={img.src}
@@ -154,8 +166,13 @@ export function Media({
           fetchPriority={priority ? "high" : undefined}
           decoding="async"
           onError={() => setFailed(true)}
-          style={img.objectPosition ? { objectPosition: img.objectPosition } : undefined}
-          className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          style={!natural && img.objectPosition ? { objectPosition: img.objectPosition } : undefined}
+          className={cn(
+            "size-full",
+            natural
+              ? "object-contain transition-opacity duration-300 group-hover:opacity-90"
+              : "object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]",
+          )}
         />
       ) : (
         <div

@@ -610,3 +610,14 @@ export function categoriesOf(posts) {
   }
   return [...seen.values()];
 }
+
+/** Same words, ignoring case, punctuation and spacing ("A: B!" equals "a b"). */
+export function sameText(a, b) {
+  const norm = (s) =>
+    String(s ?? "")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
+      .trim();
+  const x = norm(a);
+  return x.length > 0 && x === norm(b);
+}
