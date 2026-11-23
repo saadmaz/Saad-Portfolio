@@ -16,7 +16,26 @@
   --accent-hover: 255 122 38;
   --live: 74 222 128;
   --danger: 242 85 90;
+  /* Hairline colour channel (lines are this at low opacity). */
+  --ink: 255 255 255;
   color-scheme: dark;
+}
+
+/* Light island inside the dark page (homepage projects). Tokens flip, so
+   components using bg-base / text-fg / border-line adapt untouched. */
+.theme-light {
+  --bg: 255 255 255;
+  --surface: 243 243 240;
+  --surface-2: 234 234 231;
+  --surface-3: 222 222 218;
+  --fg: 17 17 19;
+  --fg-2: 78 78 82;
+  --fg-3: 112 112 116;
+  --fg-inverse: 255 255 255;
+  --ink: 0 0 0;
+  color-scheme: light;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
 }
 
 @layer base {
@@ -66,6 +85,33 @@
   }
   /* Homepage sections: one full viewport each from tablet up, content centred.
      Top padding clears the fixed header. */
+  /* Project card notch: a page-coloured corner cut out of the image, with
+     rounded fillets either side, that holds the round arrow button. */
+  .notch {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 84px;
+    height: 84px;
+    background: rgb(var(--bg));
+    border-top-left-radius: 28px;
+  }
+  .notch::before,
+  .notch::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: radial-gradient(circle at 0 0, transparent 21.5px, rgb(var(--bg)) 22px);
+  }
+  .notch::before {
+    right: 0;
+    bottom: 100%;
+  }
+  .notch::after {
+    right: 100%;
+    bottom: 0;
+  }
   .screen {
     @apply md:flex md:min-h-[100svh] md:flex-col md:justify-center md:pb-12 md:pt-[104px];
   }

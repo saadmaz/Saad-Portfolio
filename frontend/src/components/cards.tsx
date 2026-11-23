@@ -25,13 +25,10 @@ export function ProjectCard({
   project,
   index,
   feature,
-  compact,
 }: {
   project: Project;
   index?: number;
   feature?: boolean;
-  /** Homepage grid: shorter image and clamped tagline so a row fits one screen. */
-  compact?: boolean;
 }) {
   const img = project.heroImage || project.image;
   const tags = (project.techStack ?? []).slice(0, feature ? 4 : 3);
@@ -40,7 +37,7 @@ export function ProjectCard({
       <Media
         src={img}
         alt={project.altText || project.title}
-        className={feature ? "aspect-[16/9]" : compact ? "aspect-[16/10]" : "aspect-[3/2]"}
+        className={feature ? "aspect-[16/9]" : "aspect-[3/2]"}
         priority={feature}
       />
       {feature ? (
@@ -65,7 +62,7 @@ export function ProjectCard({
             {arrow}
           </div>
           <h3 className="text-h2 font-medium">{project.title}</h3>
-          <p className={cn("text-fg-2", compact && "line-clamp-2")}>{project.tagline}</p>
+          <p className="text-fg-2">{project.tagline}</p>
           {tags.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-2">
               {tags.map((t) => (
@@ -80,47 +77,46 @@ export function ProjectCard({
 }
 
 /**
- * Homepage project spotlight: image beside the details from tablet up, so a
- * single project fits one screen. `aside` renders under the details (e.g. a quote).
+ * Homepage project card: square image with a notched corner holding the arrow
+ * button, then a tag, the title and orange-dotted meta.
  */
-export function ProjectSpotlight({
-  project,
-  index,
-  aside,
-}: {
-  project: Project;
-  index?: number;
-  aside?: ReactNode;
-}) {
-  const img = project.heroImage || project.image;
-  const tags = (project.techStack ?? []).slice(0, 4);
+export function ProjectTile({ project }: { project: Project }) {
+  const img = project.cardImage || project.heroImage || project.image;
+  const tag = project.category || project.type || project.techStack?.[0];
+  const meta = [project.role || project.status, project.date && monthYear(project.date)].filter(Boolean);
   return (
-    <div className="grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-10 lg:gap-16">
-      <Link to={`/projects/${project.slug}`} className="group block" aria-label={project.title}>
-        <Media
-          src={img}
-          alt={project.altText || project.title}
-          className="aspect-[16/10] transition-[border-color] duration-200 group-hover:border-line-3 md:aspect-auto md:h-[min(46svh,40vw)]"
-          priority
-        />
-      </Link>
-      <div className="flex flex-col gap-5">
-        <span className="font-mono text-meta text-fg-3">{projectMeta(project, index)}</span>
-        <Link to={`/projects/${project.slug}`} className="group flex items-start justify-between gap-4">
-          <h3 className="text-h1 font-medium transition-colors group-hover:text-accent">{project.title}</h3>
-          <span className="mt-2">{arrow}</span>
-        </Link>
-        {project.tagline && <p className="line-clamp-3 text-fg-2">{project.tagline}</p>}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tags.map((t) => (
-              <Tag key={t}>{t}</Tag>
-            ))}
-          </div>
+    <Link to={`/projects/${project.slug}`} className="group flex flex-col">
+      <div className="relative aspect-square overflow-hidden rounded-[24px] bg-surface">
+        {img && (
+          <img
+            src={img}
+            alt={project.altText || project.title}
+            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          />
         )}
-        {aside}
+        <span className="notch" aria-hidden />
+        <span
+          aria-hidden
+          className="absolute bottom-0 right-0 flex size-[68px] items-center justify-center rounded-full bg-fg text-base transition-colors duration-200 group-hover:bg-accent group-hover:text-white"
+        >
+          <ArrowUpRight className="size-6 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </span>
       </div>
-    </div>
+      {tag && (
+        <span className="mt-5 self-start rounded-full bg-surface px-3.5 py-1.5 text-sm text-fg-2">{tag}</span>
+      )}
+      <h3 className="mt-3 line-clamp-2 text-h4 font-semibold leading-snug text-fg">{project.title}</h3>
+      {meta.length > 0 && (
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-fg-2">
+          {meta.map((m) => (
+            <span key={m} className="flex items-center gap-1.5">
+              <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+              {m}
+            </span>
+          ))}
+        </div>
+      )}
+    </Link>
   );
 }
 
