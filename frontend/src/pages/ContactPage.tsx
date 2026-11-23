@@ -42,7 +42,7 @@ const ContactPage = () => {
       <section className="relative -mt-[72px] overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_10%_20%,rgb(255_122_77/0.14),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_10%_20%,rgb(255_106_0/0.14),transparent_70%)]"
         />
         <div className="wrap relative grid gap-16 pb-32 pt-12 lg:grid-cols-[1fr_560px] lg:gap-24 lg:pt-24">
           <div className="flex flex-col gap-10">
