@@ -40,6 +40,73 @@
   color: rgb(var(--fg));
 }
 
+/* Homepage contact: ember gradient, drifting blobs, cursor spotlight. */
+.contact-ember {
+  --mx: 50%;
+  --my: 85%;
+  background:
+    radial-gradient(120% 75% at 50% 118%, #3d0f00 0%, #8f2a00 30%, transparent 72%),
+    radial-gradient(70% 60% at 0% 0%, #ff9a52 0%, transparent 60%),
+    linear-gradient(180deg, #ff7424 0%, #ff5f00 48%, #e24c00 100%);
+}
+.contact-ember__blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  will-change: transform;
+}
+.contact-ember__blob--a {
+  width: 46vw;
+  height: 46vw;
+  left: -8vw;
+  top: 10%;
+  background: rgb(255 186 120 / 0.55);
+  animation: ember-drift-a 18s ease-in-out infinite alternate;
+}
+.contact-ember__blob--b {
+  width: 40vw;
+  height: 40vw;
+  right: -6vw;
+  bottom: -14vw;
+  background: rgb(176 46 0 / 0.6);
+  animation: ember-drift-b 22s ease-in-out infinite alternate;
+}
+.contact-ember__spot,
+.contact-ember__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+.contact-ember__spot {
+  background: radial-gradient(520px circle at var(--mx) var(--my), rgb(255 238 214 / 0.42), transparent 62%);
+}
+.contact-ember__grid {
+  background-image: radial-gradient(rgb(17 17 19 / 0.28) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(300px circle at var(--mx) var(--my), black, transparent 75%);
+  mask-image: radial-gradient(300px circle at var(--mx) var(--my), black, transparent 75%);
+}
+.contact-ember__spot.is-active,
+.contact-ember__grid.is-active {
+  opacity: 1;
+}
+@keyframes ember-drift-a {
+  to {
+    transform: translate(18vw, 8vh) scale(1.15);
+  }
+}
+@keyframes ember-drift-b {
+  to {
+    transform: translate(-22vw, -12vh) scale(0.9);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-ember__blob {
+    animation: none;
+  }
+}
+
 /* Light island inside the dark page (homepage projects). Tokens flip, so
    components using bg-base / text-fg / border-line adapt untouched. */
 .theme-light {
