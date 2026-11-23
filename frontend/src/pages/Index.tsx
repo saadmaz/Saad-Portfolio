@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
@@ -110,7 +110,7 @@ function Hero({
 
 function Statement() {
   return (
-    <section className="section screen theme-orange border-t-0" aria-label="About">
+    <section className="section screen theme-orange orange-mesh border-t-0" aria-label="About">
       <Reveal className="wrap">
         <Eyebrow counted>About</Eyebrow>
         <p className="mt-7 max-w-[1040px] text-h1 font-medium text-fg-3 md:mt-8">
@@ -338,7 +338,7 @@ function Writing() {
   const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
   if (posts.length === 0) return null;
   return (
-    <section className="section screen theme-orange border-t-0" aria-labelledby="writing-heading">
+    <section className="section screen theme-orange orange-mesh border-t-0" aria-labelledby="writing-heading">
       <div className="wrap">
         <Reveal>
           <SectionHeader
@@ -372,10 +372,35 @@ function Writing() {
   );
 }
 
+/** Pulls its child a few pixels toward the cursor while the pointer is over it. */
+function Magnetic({ children, strength = 0.25 }: { children: ReactNode; strength?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const move = (e: React.PointerEvent) => {
+    const el = ref.current;
+    if (!el || e.pointerType !== "mouse") return;
+    const r = el.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width / 2) * strength;
+    const dy = (e.clientY - r.top - r.height / 2) * strength;
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+  };
+  const reset = () => {
+    if (ref.current) ref.current.style.transform = "";
+  };
+  return (
+    <span
+      ref={ref}
+      onPointerMove={move}
+      onPointerLeave={reset}
+      className="inline-flex transition-transform duration-300 ease-out motion-reduce:transform-none"
+    >
+      {children}
+    </span>
+  );
+}
+
 /**
- * Contact: an ember gradient (deep red-brown at the bottom rising into bright
- * orange) with two slow drifting blobs. On pointer devices a warm spotlight
- * follows the cursor and reveals a dot grid around it.
+ * Contact: the shaded orange surface, plus a lighter glow that follows the
+ * cursor, a headline that leans gently with it, and magnetic buttons.
  */
 function ContactCTA() {
   const ref = useRef<HTMLElement>(null);
@@ -387,12 +412,14 @@ function ContactCTA() {
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
     cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(() => {
-      el.style.setProperty("--mx", `${x}%`);
-      el.style.setProperty("--my", `${y}%`);
+      el.style.setProperty("--mx", `${x * 100}%`);
+      el.style.setProperty("--my", `${y * 100}%`);
+      el.style.setProperty("--tx", `${(x - 0.5) * 14}px`);
+      el.style.setProperty("--ty", `${(y - 0.5) * 10}px`);
     });
   };
   useEffect(() => () => cancelAnimationFrame(frame.current), []);
@@ -402,19 +429,21 @@ function ContactCTA() {
       ref={ref}
       onPointerMove={onMove}
       onPointerEnter={(e) => e.pointerType === "mouse" && setActive(true)}
-      onPointerLeave={() => setActive(false)}
-      className="contact-ember section screen theme-orange relative isolate overflow-hidden border-t-0"
+      onPointerLeave={() => {
+        setActive(false);
+        ref.current?.style.setProperty("--tx", "0px");
+        ref.current?.style.setProperty("--ty", "0px");
+      }}
+      className="section screen theme-orange orange-mesh border-t-0"
       aria-labelledby="contact-heading"
     >
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="contact-ember__blob contact-ember__blob--a" />
-        <div className="contact-ember__blob contact-ember__blob--b" />
-        <div className={cn("contact-ember__spot", active && "is-active")} />
-        <div className={cn("contact-ember__grid", active && "is-active")} />
-      </div>
+      <div aria-hidden className={cn("orange-mesh__spot", active && "is-active")} />
       <Reveal className="wrap relative">
         <Eyebrow counted>Contact</Eyebrow>
-        <h2 id="contact-heading" className="mt-8 text-display-xl font-medium md:mt-10">
+        <h2
+          id="contact-heading"
+          className="mt-8 text-display-xl font-medium transition-transform duration-700 ease-out [transform:translate(var(--tx,0px),var(--ty,0px))] motion-reduce:transform-none md:mt-10"
+        >
           Let’s build
           <br />
           <span className="soft">something good.</span>
@@ -431,12 +460,16 @@ function ContactCTA() {
             />
           </a>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button href={CONTACT.bookingUrl} variant="secondary" size="lg" icon={false}>
-              Book a call
-            </Button>
-            <Button to="/contact" size="lg">
-              Start a project
-            </Button>
+            <Magnetic>
+              <Button href={CONTACT.bookingUrl} variant="secondary" size="lg" icon={false}>
+                Book a call
+              </Button>
+            </Magnetic>
+            <Magnetic>
+              <Button to="/contact" size="lg">
+                Start a project
+              </Button>
+            </Magnetic>
           </div>
         </div>
         <SocialLinks className="mt-12" />
