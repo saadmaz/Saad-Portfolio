@@ -7,10 +7,10 @@
  *
  * Output (public/):
  *   favicon.ico                      16/32/48, for browsers and crawlers that request it by default
- *   icons/favicon-v3.svg             adaptive: light top on dark UI, dark top on light UI
- *   icons/favicon-v3-{48,96,192}.png dark-top variant (readable on Google's light results page)
- *   icons/icon-v3-{192,512}.png      web app manifest
- *   icons/logo-v3-512.png            structured-data logo
+ *   icons/favicon-v4.svg             adaptive: light top on dark UI, dark top on light UI
+ *   icons/favicon-v4-{48,96,192}.png dark-top variant (readable on Google's light results page)
+ *   icons/icon-v4-{192,512}.png      web app manifest
+ *   icons/logo-v4-512.png            structured-data logo
  *   apple-touch-icon.png             180px, light top (iOS always fills transparency with black)
  *
  * File names carry a version so search engines and browsers can't keep
@@ -27,7 +27,7 @@ const ICONS = join(PUBLIC, "icons");
 
 const LIGHT = "#F5F5F2"; // upper strokes on dark surfaces
 const INK = "#111113"; // upper strokes on light surfaces
-const EMBER = "#FF6A00";
+const EMBER = "#FF5F00";
 
 // Figma Brand/Mark, 420px frame. Upper pieces, then lower pieces.
 const UPPER = [
@@ -86,10 +86,10 @@ mkdirSync(ICONS, { recursive: true });
 const onLight = svg(INK);
 const onDark = svg(LIGHT);
 
-writeFileSync(join(ICONS, "favicon-v3.svg"), adaptive);
-for (const size of [48, 96, 192]) writeFileSync(join(ICONS, `favicon-v3-${size}.png`), png(onLight, size));
-for (const size of [192, 512]) writeFileSync(join(ICONS, `icon-v3-${size}.png`), png(onLight, size));
-writeFileSync(join(ICONS, "logo-v3-512.png"), png(onLight, 512));
+writeFileSync(join(ICONS, "favicon-v4.svg"), adaptive);
+for (const size of [48, 96, 192]) writeFileSync(join(ICONS, `favicon-v4-${size}.png`), png(onLight, size));
+for (const size of [192, 512]) writeFileSync(join(ICONS, `icon-v4-${size}.png`), png(onLight, size));
+writeFileSync(join(ICONS, "logo-v4-512.png"), png(onLight, 512));
 writeFileSync(join(PUBLIC, "apple-touch-icon.png"), png(onDark, 180));
 writeFileSync(
   join(PUBLIC, "favicon.ico"),
