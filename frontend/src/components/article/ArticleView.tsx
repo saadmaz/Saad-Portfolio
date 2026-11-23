@@ -122,6 +122,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
             author={author?.name || post.author}
             url={url}
             shareable={showShare}
+            downloadable={post.promptDownloads !== false}
             className="mb-12"
           />
           <CmsContent
