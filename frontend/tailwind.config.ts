@@ -22,8 +22,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Geist", "system-ui", "sans-serif"],
-        mono: ["Geist Mono", "ui-monospace", "monospace"],
+        sans: ["Geist Variable", "Geist", "system-ui", "sans-serif"],
+        mono: ["Geist Mono Variable", "Geist Mono", "ui-monospace", "monospace"],
       },
       fontSize: {
         "display-xl": ["clamp(3.25rem, 8.6vw, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.05em" }],

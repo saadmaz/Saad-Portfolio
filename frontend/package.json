@@ -18,6 +18,8 @@
     "test:rules": "firebase emulators:exec --only firestore --project rules-test \"vitest run --dir tests/rules\""
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
     "@sendgrid/mail": "^8.1.3",
     "@tanstack/react-query": "^5.83.0",
     "@vercel/analytics": "^2.0.1",
