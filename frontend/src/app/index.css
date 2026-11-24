@@ -829,41 +829,41 @@
 }
 
 /* YouTube links become thumbnail cards (CmsContent + VideoCard). */
-.prose-cms .video-host {
+:is(.prose-cms, .video-standalone) .video-host {
   @apply my-8;
 }
-.prose-cms .video-card {
+:is(.prose-cms, .video-standalone) .video-card {
   @apply m-0 overflow-hidden rounded-card border border-line-2 bg-surface;
 }
-.prose-cms .video-frame {
+:is(.prose-cms, .video-standalone) .video-frame {
   @apply relative aspect-video bg-base;
 }
-.prose-cms .video-frame > button,
-.prose-cms .video-frame > iframe {
+:is(.prose-cms, .video-standalone) .video-frame > button,
+:is(.prose-cms, .video-standalone) .video-frame > iframe {
   @apply absolute inset-0 size-full border-0;
 }
-.prose-cms .video-frame > button {
+:is(.prose-cms, .video-standalone) .video-frame > button {
   @apply cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent;
 }
 /* 16:9 frame; the 4:3 fallback thumbnail's black bars are trimmed, never the picture. */
-.prose-cms .video-frame img {
+:is(.prose-cms, .video-standalone) .video-frame img {
   @apply m-0 size-full rounded-none border-0 object-cover transition-opacity duration-300;
 }
-.prose-cms .video-play {
+:is(.prose-cms, .video-standalone) .video-play {
   @apply absolute left-1/2 top-1/2 flex size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent text-fg-inverse shadow-lg transition-transform duration-200;
 }
-.prose-cms .video-frame > button:hover img {
+:is(.prose-cms, .video-standalone) .video-frame > button:hover img {
   @apply opacity-85;
 }
-.prose-cms .video-frame > button:hover .video-play {
+:is(.prose-cms, .video-standalone) .video-frame > button:hover .video-play {
   @apply scale-110;
 }
-.prose-cms .video-card figcaption {
+:is(.prose-cms, .video-standalone) .video-card figcaption {
   @apply m-0 flex items-start justify-between gap-4 px-4 py-3 text-left text-[0.9375rem] leading-snug sm:px-5;
 }
-.prose-cms .video-title {
+:is(.prose-cms, .video-standalone) .video-title {
   @apply font-medium text-fg;
 }
-.prose-cms .video-card .video-link {
+:is(.prose-cms, .video-standalone) .video-card .video-link {
   @apply inline-flex shrink-0 items-center gap-1 font-mono text-[12px] text-fg-3 no-underline transition-colors hover:text-fg;
 }

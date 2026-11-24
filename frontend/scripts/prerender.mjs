@@ -42,6 +42,18 @@ import {
   pageTitle,
 } from "../src/lib/seo-content.js";
 import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
+import {
+  projectCanonical,
+  projectDuration,
+  projectGallery,
+  projectSchema,
+  projectSeoDescription,
+  projectSeoTitle,
+  projectTimeline,
+  projectVideos,
+  relatedProjects,
+  toDate,
+} from "../src/lib/project-seo.js";
 import { submitChangedUrls } from "./indexnow.mjs";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import {
@@ -724,52 +736,135 @@ function prerenderStaticRoutes(shell, data) {
 const author = PERSON_REF;
 
 function prerenderProjects(shell, projects) {
+  const list = (items) =>
+    items.length && `<ul>\n${items.map((t) => `<li>${escape(t)}</li>`).join("\n")}\n</ul>`;
+  const section = (heading, ...parts) => {
+    const body = parts.filter(Boolean).join("\n");
+    return body && `<section>\n<h2>${escape(heading)}</h2>\n${body}\n</section>`;
+  };
   for (const p of projects) {
     const routePath = `/projects/${p.slug}`;
-    const tech = p.technologies ?? p.techStack ?? [];
-    const description = p.tagline
-      ? `${p.tagline}${tech.length ? ` Built with ${tech.slice(0, 3).join(", ")}.` : ""} Case study by Saad Mazhar.`
-      : truncate(p.overview || `${p.title} - a software project by Saad Mazhar.`, 160);
-    const shots = (p.screenshots ?? []).filter((src) => src && src !== p.heroImage);
+    const tech = p.technologies?.length ? p.technologies : (p.techStack ?? []);
+    const related = relatedProjects(p, projects);
+    const timeline = projectTimeline(p);
+    const duration = projectDuration(p);
+    const updated = toDate(p.updated_at);
+    const facts = [
+      ["Role", p.role],
+      ["Client / organisation", p.client],
+      ["Timeline", [timeline, duration].filter(Boolean).join(" · ")],
+      ["Stage", p.stage],
+      ["Status", p.status],
+      ["Industry", p.industry],
+      ["Built for", p.target_audience],
+      ["Team size", p.team_size && String(p.team_size)],
+    ].filter(([, v]) => v);
+    const challenges = (p.challenges ?? []).map((c) =>
+      typeof c === "string" ? c : [c.wall, c.fix].filter(Boolean).join(". "),
+    );
+    const links = [
+      (p.liveUrl || p.live_preview) &&
+        `<li><a href="${escape(p.liveUrl || p.live_preview)}">Live site</a></li>`,
+      (p.githubUrl || p.github) && `<li><a href="${escape(p.githubUrl || p.github)}">Source code</a></li>`,
+      ...(p.resources ?? [])
+        .filter((r) => r?.url)
+        .map(
+          (r) =>
+            `<li><a href="${escape(r.url)}">${escape(r.label || r.url)}</a>${r.kind ? ` (${escape(r.kind)})` : ""}</li>`,
+        ),
+    ].filter(Boolean);
     const bodyHtml = [
       p.heroImage && img(p.heroImage, p.altText || `${p.title}, a project by ${SITE_NAME}`),
-      paras(p.overview),
-      paras(p.description),
-      paras(p.long_description),
+      facts.length &&
+        `<dl>\n${facts.map(([k, v]) => `<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join("\n")}\n</dl>`,
+      section("Overview", paras(p.overview), paras(p.description)),
+      section("What I built", paras(p.solution || p.long_description)),
+      section("My contribution", list(p.contribution ?? [])),
+      section(
+        "Impact & results",
+        (p.results ?? []).length &&
+          `<ul>\n${p.results.map((r) => `<li><strong>${escape(r.value)}</strong> ${escape(r.label)}</li>`).join("\n")}\n</ul>`,
+        paras(p.impact),
+      ),
+      section("Features", list(p.features ?? [])),
+      section(
+        "Architecture",
+        p.architecture?.diagramUrl &&
+          img(p.architecture.diagramUrl, p.architecture.diagramAlt || `${p.title} architecture diagram`),
+        paras(p.architecture?.description),
+        list(p.technical_decisions ?? []),
+      ),
+      section("Challenges", list(challenges)),
+      section("What I learned", list(p.learnings ?? [])),
       tech.length && `<p>Built with: ${escape(tech.join(", "))}</p>`,
-      p.liveUrl && `<p><a href="${escape(p.liveUrl)}">Live site</a></p>`,
-      shots.length &&
-        `<h2>Screenshots</h2>\n${shots.map((src, i) => img(src, `${p.title} screenshot ${i + 1}`)).join("\n")}`,
+      (p.skills ?? []).length && `<p>Skills: ${escape(p.skills.join(", "))}</p>`,
+      section(
+        "Team & credits",
+        list(
+          (p.collaborators ?? [])
+            .filter((c) => c?.name)
+            .map((c) => [c.name, c.role].filter(Boolean).join(", ")),
+        ),
+      ),
+      section(
+        "What people said",
+        (p.testimonials ?? [])
+          .filter((t) => t?.quote)
+          .map(
+            (t) =>
+              `<blockquote><p>${escape(t.quote)}</p><footer>${escape([t.name, t.role, t.organisation].filter(Boolean).join(", "))}</footer></blockquote>`,
+          )
+          .join("\n"),
+      ),
+      section(
+        "Gallery",
+        projectGallery(p)
+          .map(
+            (g) =>
+              `<figure><img src="${escape(g.url)}" alt="${escape(g.alt)}" loading="lazy" decoding="async" />${g.caption ? `<figcaption>${escape(g.caption)}</figcaption>` : ""}</figure>`,
+          )
+          .join("\n"),
+      ),
+      section(
+        "Video",
+        projectVideos(p)
+          .map(
+            (v, i) =>
+              `<p><a href="${escape(v.url)}">${escape(v.title || `${p.title} demo video ${i + 1}`)}</a></p>`,
+          )
+          .join("\n"),
+      ),
+      section("Links", links.length && `<ul>\n${links.join("\n")}\n</ul>`),
+      section(
+        "Related projects",
+        related.length &&
+          `<ul>\n${related.map((r) => `<li><a href="/projects/${escape(r.slug)}">${escape(r.title)}</a>${r.tagline ? ` - ${escape(r.tagline)}` : ""}</li>`).join("\n")}\n</ul>`,
+      ),
+      updated &&
+        `<p>Last updated <time datetime="${updated.toISOString()}">${escape(dateLabel(updated.toISOString()))}</time></p>`,
       '<p><a href="/projects">All projects</a></p>',
     ]
       .filter(Boolean)
       .join("\n");
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      name: p.title,
-      description: p.tagline || p.overview,
-      url: p.liveUrl || `${BASE_URL}${routePath}`,
-      image: p.heroImage,
-      applicationCategory: p.category || "WebApplication",
-      operatingSystem: "Web",
-      author,
-      keywords: tech.join(", "),
-    };
     writeRoute(
       routePath,
       injectContent(shell, {
         path: routePath,
-        title: `${p.title} | Project`,
-        description,
-        schemas: [schema],
+        title: projectSeoTitle(p),
+        h1: p.title,
+        description: projectSeoDescription(p),
+        schemas: [projectSchema(p, { baseUrl: BASE_URL, author, related })],
         bodyHtml,
+        // Only set when the original case study lives elsewhere; otherwise the page is its own canonical.
+        canonical: p.canonical_url ? projectCanonical(p, BASE_URL) : undefined,
+        // A dedicated 1200×630 share image beats the generated card.
+        image: p.og_image ? { url: p.og_image, width: OG_WIDTH, height: OG_HEIGHT } : undefined,
         // Stub write-ups (see src/lib/indexing.js) stay reachable but out of the index.
         noIndex: isProjectIndexable(p) ? false : "follow",
         og: {
           eyebrow: "Project",
           title: p.title,
-          meta: joinMeta(p.role, p.date && dateLabel(p.date), tech.slice(0, 3).join(", ")),
+          meta: joinMeta(p.role, timeline || (p.date && dateLabel(p.date)), tech.slice(0, 3).join(", ")),
           photo: p.heroImage,
         },
       }),
@@ -1169,7 +1264,11 @@ function writeSitemaps(data) {
     "projects.xml": [
       urlEntry(`${BASE_URL}/projects`, newest(projectDates)),
       ...projects.map((p, i) =>
-        urlEntry(`${BASE_URL}/projects/${p.slug}`, projectDates[i], [p.heroImage, ...(p.screenshots ?? [])]),
+        urlEntry(`${BASE_URL}/projects/${p.slug}`, projectDates[i], [
+          ...new Set(
+            [p.heroImage, p.architecture?.diagramUrl, ...projectGallery(p).map((g) => g.url)].filter(Boolean),
+          ),
+        ]),
       ),
     ],
   };
