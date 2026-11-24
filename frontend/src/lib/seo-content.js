@@ -73,7 +73,8 @@ export function eventDescriptionOf(e) {
       .includes(own.toLowerCase())
       ? `${own.replace(/[.!]?$/, ".")} `
       : "";
-  return cut(`${lead}Saad Mazhar: ${facts}.`, 160);
+  // CMS fields can carry stray spaces ("51st Big Debate "): collapse them.
+  return cut(`${lead}Saad Mazhar: ${facts}.`.replace(/\s+/g, " ").trim(), 160);
 }
 
 /** Meta description for a blog category page: the CMS one, else a full sentence. */
