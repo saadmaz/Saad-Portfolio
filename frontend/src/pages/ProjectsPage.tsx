@@ -156,7 +156,7 @@ const ProjectsPage = () => {
             <div
               role="group"
               aria-label="Filter by category"
-              className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:-mx-8 sm:px-8 md:mx-0 md:flex-wrap md:px-0"
+              className="-mx-5 flex min-w-0 gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:-mx-8 sm:px-8 md:mx-0 md:flex-1 md:px-0 md:pr-8 md:[mask-image:linear-gradient(to_right,black_92%,transparent)]"
             >
               <Chip active={filter === "All"} count={projects.length} onClick={() => setFilter("All")}>
                 All
