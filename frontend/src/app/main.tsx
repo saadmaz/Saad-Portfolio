@@ -1,5 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+// Geist + Geist Mono, self-hosted (bundled woff2, same origin): no render-blocking
+// request to Google Fonts. One variable file covers every weight; the browser only
+// downloads the unicode subsets a page actually uses.
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
 import "./index.css";
 
 const rootElement = document.getElementById("root")!;
