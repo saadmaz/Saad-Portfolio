@@ -141,11 +141,24 @@ function Statement() {
 }
 
 function SelectedWork() {
-  const { data: featured = [], isLoading } = useFeaturedProjects();
-  const projects = [...featured].sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)).slice(0, 3);
+  const { data: featured = [], isLoading: loadingFeatured } = useFeaturedProjects();
+  const { data: all = [], isLoading: loadingAll } = useProjects();
+  const isLoading = loadingFeatured && loadingAll;
+  // Featured first, then the rest by order, so the strip has enough to keep moving.
+  const projects = useMemo(() => {
+    const byOrder = (a: { order_index?: number }, b: { order_index?: number }) =>
+      (a.order_index ?? 999) - (b.order_index ?? 999);
+    const lead = [...featured].sort(byOrder);
+    const seen = new Set(lead.map((p) => p.slug));
+    const rest = [...all].sort(byOrder).filter((p) => !seen.has(p.slug));
+    return [...lead, ...rest].slice(0, 10);
+  }, [featured, all]);
   if (!isLoading && projects.length === 0) return null;
+  // Two copies so the -50% loop is seamless; speed stays constant however many there are.
+  const loop = [...projects, ...projects];
+  const tile = "w-[clamp(240px,min(28vw,calc(100svh-370px)),400px)]";
   return (
-    // White section; cards stay square, so the row is capped to what fits one screen.
+    // White section; tiles stay square and are capped to what fits one screen.
     <section className="section screen theme-light border-t-0" aria-labelledby="work-heading">
       <div className="wrap">
         <Reveal>
@@ -158,16 +171,37 @@ function SelectedWork() {
             action={<Button to="/projects">All projects</Button>}
           />
         </Reveal>
-        <div className="grid gap-12 sm:grid-cols-2 md:max-w-[calc((100svh-370px)*3+3rem)] md:grid-cols-3 md:gap-6">
-          {isLoading
-            ? [0, 1, 2].map((i) => <Skeleton key={i} className="aspect-square rounded-[24px] bg-surface" />)
-            : projects.map((p) => (
-                <Reveal key={p.id}>
-                  <ProjectTile project={p} />
-                </Reveal>
-              ))}
-        </div>
       </div>
+      {isLoading ? (
+        <div className="wrap flex gap-6 overflow-hidden">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className={cn("aspect-square shrink-0 rounded-[24px] bg-surface", tile)} />
+          ))}
+        </div>
+      ) : (
+        <Reveal>
+          {/* Pauses on hover or keyboard focus; with reduced motion it becomes a plain swipeable row. */}
+          <div className="group/work overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-reduce:overflow-x-auto">
+            <ul
+              className="flex w-max animate-marquee group-hover/work:[animation-play-state:paused] group-focus-within/work:[animation-play-state:paused]"
+              style={{ animationDuration: `${projects.length * 7}s` }}
+            >
+              {loop.map((p, i) => {
+                const copy = i >= projects.length;
+                return (
+                  <li
+                    key={`${p.id}-${i}`}
+                    aria-hidden={copy || undefined}
+                    className={cn("shrink-0 pr-6", tile, copy && "motion-reduce:hidden")}
+                  >
+                    <ProjectTile project={p} tabIndex={copy ? -1 : undefined} />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </Reveal>
+      )}
     </section>
   );
 }

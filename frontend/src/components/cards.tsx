@@ -80,12 +80,12 @@ export function ProjectCard({
  * Homepage project card: square image with a notched corner holding the arrow
  * button, then a tag, the title and orange-dotted meta.
  */
-export function ProjectTile({ project }: { project: Project }) {
+export function ProjectTile({ project, tabIndex }: { project: Project; tabIndex?: number }) {
   const img = project.cardImage || project.heroImage || project.image;
   const tag = project.category || project.type || project.techStack?.[0];
   const meta = [project.role || project.status, project.date && monthYear(project.date)].filter(Boolean);
   return (
-    <Link to={`/projects/${project.slug}`} className="group flex flex-col">
+    <Link to={`/projects/${project.slug}`} tabIndex={tabIndex} className="group flex flex-col">
       <div className="relative aspect-square overflow-hidden rounded-[24px] bg-surface">
         {img && (
           <img
