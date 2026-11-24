@@ -18,6 +18,10 @@ export interface IndexableProject {
   overview?: string;
   description?: string;
   long_description?: string;
+  impact?: string;
+  contribution?: string[];
+  technical_decisions?: string[];
+  architecture?: { description?: string };
   seo_visibility?: SeoVisibility;
 }
 
