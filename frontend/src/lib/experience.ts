@@ -14,6 +14,7 @@ export interface Company {
   key: string;
   name: string;
   logo?: string;
+  illustration?: string;
   url?: string;
   meta: string;
   featured: boolean;
@@ -46,6 +47,7 @@ export function normalizeExperience(docs: Experience[]): Company[] {
         key,
         name,
         logo: d.company_logo ?? d.companyLogo,
+        illustration: d.journey_image || undefined,
         url: d.companyUrl,
         meta: [d.employment_type ?? d.employmentType, d.location, d.location_type ?? d.workMode]
           .filter(Boolean)
