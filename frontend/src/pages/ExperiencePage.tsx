@@ -1,12 +1,11 @@
 import { useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Button, Empty, PageHeader, Skeleton, Stat } from "@/components/ui";
+import { Empty, PageHeader, Skeleton, Stat } from "@/components/ui";
 import { ExperienceJourney } from "@/components/ExperienceJourney";
 import { useExperience } from "@/hooks/useContent";
 import { normalizeExperience } from "@/lib/experience";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 const ExperiencePage = () => {
   const { data = [], isLoading } = useExperience();
@@ -42,11 +41,6 @@ const ExperiencePage = () => {
         ) : (
           <ExperienceJourney companies={companies} />
         )}
-        <div className="mt-20 flex justify-center">
-          <Button href={myResume} download="Saad_Mazhar_Resume.pdf" size="lg" icon={false}>
-            Download full résumé
-          </Button>
-        </div>
       </section>
     </Layout>
   );

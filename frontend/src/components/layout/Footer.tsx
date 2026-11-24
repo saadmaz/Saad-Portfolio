@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 type FooterLink = { label: string; to?: string; href?: string; download?: string };
 
@@ -23,7 +22,6 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { label: "Projects", to: "/projects" },
       { label: "Skills", to: "/skills" },
       { label: "Certificates", to: "/certifications" },
-      { label: "Résumé", href: myResume, download: "Saad_Mazhar_Resume.pdf" },
     ],
   },
   {
