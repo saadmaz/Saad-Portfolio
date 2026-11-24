@@ -151,7 +151,8 @@ function SelectedWork() {
     const lead = [...featured].sort(byOrder);
     const seen = new Set(lead.map((p) => p.slug));
     const rest = [...all].sort(byOrder).filter((p) => !seen.has(p.slug));
-    return [...lead, ...rest].slice(0, 10);
+    // A blank tile in a showcase reads as broken, so only projects with an image make the strip.
+    return [...lead, ...rest].filter((p) => p.cardImage || p.heroImage || p.image).slice(0, 10);
   }, [featured, all]);
   if (!isLoading && projects.length === 0) return null;
   // Two copies so the -50% loop is seamless; speed stays constant however many there are.

@@ -5,7 +5,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import NotFound from "./NotFound";
 import { Button, Media, PageHero, Reveal, Skeleton, Tag } from "@/components/ui";
-import { ProjectCard, StageBadge } from "@/components/cards";
+import { ProjectCard, ProjectPoster, StageBadge } from "@/components/cards";
 import { Gallery } from "@/components/Gallery";
 import { VideoCard } from "@/components/article/VideoCard";
 import { useProject, useProjects } from "@/hooks/useProjects";
@@ -413,11 +413,14 @@ const ProjectDetailPage = () => {
       <PageHero
         band={<span className="truncate">Saad Mazhar · Projects{category ? ` · ${category}` : ""}</span>}
         media={
-          <BrowserFrame
-            src={project.heroImage || project.image}
-            alt={project.altText || project.title}
-            url={live}
-          />
+          // No screenshot yet: let the title carry the hero rather than an empty frame.
+          (project.heroImage || project.image) && (
+            <BrowserFrame
+              src={project.heroImage || project.image}
+              alt={project.altText || project.title}
+              url={live}
+            />
+          )
         }
       >
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-mono text-meta text-fg-3">
@@ -474,7 +477,12 @@ const ProjectDetailPage = () => {
               </dl>
             )}
             {results.length > 0 && (
-              <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
+              <dl
+                className={cn(
+                  "grid grid-cols-2 gap-3",
+                  results.length >= 4 ? "md:grid-cols-4" : results.length === 3 ? "md:grid-cols-3" : "",
+                )}
+              >
                 {results.slice(0, 4).map((r) => (
                   <div
                     key={r.label + r.value}
@@ -627,12 +635,16 @@ const ProjectDetailPage = () => {
                 </span>
                 <span className="text-body-l text-fg-2">{next.tagline}</span>
               </div>
-              <Media
-                src={next.heroImage || next.image}
-                alt=""
-                className="aspect-[16/10] rounded-[20px]"
-                imgClassName="object-top"
-              />
+              {next.heroImage || next.image ? (
+                <Media
+                  src={next.heroImage || next.image}
+                  alt=""
+                  className="aspect-[16/10] rounded-[20px]"
+                  imgClassName="object-top"
+                />
+              ) : (
+                <ProjectPoster project={next} className="aspect-[16/10] rounded-[20px]" />
+              )}
             </Link>
           </div>
         </section>

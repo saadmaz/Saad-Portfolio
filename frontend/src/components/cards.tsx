@@ -50,6 +50,28 @@ export function StageBadge({ stage, className }: { stage?: string; className?: s
 const projectTags = (p: Project, n: number) =>
   (p.techStack?.length ? p.techStack : (p.technologies ?? [])).slice(0, n);
 
+/** Typographic stand-in for a project with no screenshot yet: initials on a lit grid. */
+export function ProjectPoster({ project, className }: { project: Project; className?: string }) {
+  const words = project.title.split(/\s+/).filter((w) => /^[A-Za-z0-9]/.test(w));
+  const initials = words
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return (
+    <div
+      aria-hidden
+      className={cn("relative overflow-hidden rounded-media border border-line bg-surface", className)}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_95_0/0.3),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.08),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
+      <div className="absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.05)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.05)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(ellipse_at_70%_20%,black,transparent_75%)]" />
+      <span className="absolute bottom-3 left-5 text-[clamp(4rem,8vw,7.5rem)] font-medium leading-none tracking-[-0.06em] text-fg/[0.14] transition-colors duration-300 group-hover:text-fg/25">
+        {initials}
+      </span>
+    </div>
+  );
+}
+
 /** Grid card: framed screenshot with category and stage, then meta, title, tagline and stack. */
 export function ProjectCard({
   project,
@@ -71,12 +93,16 @@ export function ProjectCard({
       )}
     >
       <div className="relative p-2 pb-0">
-        <Media
-          src={img}
-          alt={project.altText || project.title}
-          className="aspect-[16/10] rounded-[16px]"
-          imgClassName="object-top"
-        />
+        {img ? (
+          <Media
+            src={img}
+            alt={project.altText || project.title}
+            className="aspect-[16/10] rounded-[16px]"
+            imgClassName="object-top"
+          />
+        ) : (
+          <ProjectPoster project={project} className="aspect-[16/10] rounded-[16px]" />
+        )}
         <div className="pointer-events-none absolute inset-x-5 top-5 flex items-start justify-between gap-2">
           {category ? (
             <span className="label inline-flex h-7 items-center rounded-full bg-base/75 px-2.5 text-fg backdrop-blur-md">
@@ -118,13 +144,20 @@ export function ProjectFeature({ project }: { project: Project }) {
       to={`/projects/${project.slug}`}
       className="group grid overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-[border-color,background-color] duration-300 hover:border-line-3 hover:bg-surface/70 md:grid-cols-[1.35fr_1fr] md:p-3"
     >
-      <Media
-        src={img}
-        alt={project.altText || project.title}
-        className="aspect-[16/10] rounded-[20px] md:aspect-auto md:min-h-[440px]"
-        imgClassName="object-top"
-        priority
-      />
+      {img ? (
+        <Media
+          src={img}
+          alt={project.altText || project.title}
+          className="aspect-[16/10] rounded-[20px] md:aspect-auto md:min-h-[440px]"
+          imgClassName="object-top"
+          priority
+        />
+      ) : (
+        <ProjectPoster
+          project={project}
+          className="aspect-[16/10] rounded-[20px] md:aspect-auto md:min-h-[440px]"
+        />
+      )}
       <div className="flex flex-col gap-6 p-5 md:p-8 lg:p-10">
         <div className="flex flex-wrap items-center gap-2">
           <span className="label inline-flex h-7 items-center rounded-full bg-accent px-2.5 text-fg-inverse">
