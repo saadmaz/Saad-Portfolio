@@ -109,130 +109,28 @@ function Hero({
 }
 
 function Statement() {
-  // Clean type with handwritten marker accents that draw themselves in (see .ink-* in index.css).
+  // One idea, one accent: "what if?" gets a highlighter swipe that sweeps in on view.
   return (
     <section className="section screen theme-orange border-t-0" aria-label="About">
       <Reveal className="wrap flex flex-col items-center text-center">
         <Eyebrow counted>About</Eyebrow>
-
-        <div className="group relative mt-[clamp(20px,4svh,40px)] max-w-[1080px]">
-          <p className="text-balance text-[clamp(2rem,min(4.6vw,7svh),4.25rem)] font-medium leading-[1.08] tracking-[-0.04em] text-fg">
-            Hey, I’m Saad. I have a habit of turning random{" "}
-            <span className="relative mx-[0.12em] inline-block whitespace-nowrap">
-              <span className="ink-text ink-wiggle inline-block -rotate-3 font-ink text-[1.12em] font-normal tracking-normal text-[#FFF4E0]">
-                what if?
-              </span>
-              <svg
-                aria-hidden
-                viewBox="0 0 220 80"
-                preserveAspectRatio="none"
-                fill="none"
-                className="ink-draw pointer-events-none absolute -inset-x-[0.3em] -inset-y-[0.12em] h-[calc(100%+0.24em)] w-[calc(100%+0.6em)] text-[#FFF4E0]"
-              >
-                <path
-                  d="M150 10 C 95 2, 25 10, 12 38 C 2 62, 70 76, 128 72 C 186 68, 214 48, 206 28 C 198 10, 150 4, 112 8"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  pathLength={1}
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-            </span>{" "}
-            ideas into{" "}
-            <span className="relative inline-block whitespace-nowrap">
-              actual projects
-              <svg
-                aria-hidden
-                viewBox="0 0 300 24"
-                preserveAspectRatio="none"
-                fill="none"
-                className="ink-draw ink-late pointer-events-none absolute -bottom-[0.16em] left-0 h-[0.28em] w-full text-[#FFF4E0]"
-              >
-                <path
-                  d="M4 8 C 70 3, 170 2, 296 7"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  pathLength={1}
-                  vectorEffect="non-scaling-stroke"
-                />
-                <path
-                  d="M24 19 C 110 13, 200 13, 280 17"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  pathLength={1}
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-            </span>
-            .
-          </p>
-
-          {/* Margin note, large screens: a curly arrow from the note into the headline. */}
-          <div
-            aria-hidden
-            className="ink-wiggle pointer-events-none absolute -right-[clamp(8px,3.2vw,72px)] top-[-0.35em] hidden rotate-[8deg] flex-col items-start text-[#FFF4E0] xl:flex"
-          >
-            <span className="ink-text ink-late whitespace-nowrap font-ink text-[1.75rem] leading-none">
-              3 AM thoughts
-            </span>
-            <svg viewBox="0 0 120 90" fill="none" className="ink-draw ink-late -ml-6 mt-1 h-[78px] w-[104px]">
-              <path
-                d="M78 4 C 46 4, 22 18, 30 38 C 36 52, 56 44, 46 34 C 34 24, 14 46, 8 82"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                pathLength={1}
-              />
-              <path
-                d="M0 68 L 8 84 L 20 72"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                pathLength={1}
-              />
-            </svg>
-          </div>
-        </div>
-
-        <p className="mt-[clamp(16px,3.4svh,36px)] max-w-[640px] text-pretty text-[clamp(1rem,min(1.5vw,2.6svh),1.25rem)] leading-[1.6] text-fg-2">
+        <p className="mt-[clamp(20px,4svh,40px)] max-w-[1040px] text-balance text-[clamp(2rem,min(4.6vw,7svh),4.25rem)] font-medium leading-[1.1] tracking-[-0.04em] text-fg">
+          Hey, I’m Saad. I have a habit of turning random{" "}
+          <span className="relative inline-block whitespace-nowrap px-[0.18em]">
+            <span
+              aria-hidden
+              className="highlight-swipe absolute inset-x-0 inset-y-[0.08em] -rotate-1 rounded-[0.18em] bg-[#FFF4E0]"
+            />
+            <span className="relative">what if?</span>
+          </span>{" "}
+          ideas into actual projects.
+        </p>
+        <p className="mt-[clamp(18px,3.6svh,36px)] max-w-[620px] text-pretty text-[clamp(1rem,min(1.5vw,2.6svh),1.25rem)] leading-[1.6] text-fg-2">
           I’m into tech, business, AI and building things that probably started as a late-night idea. I’ve
           started businesses, built products, written plenty of code and chased more ideas than I can count.
-        </p>
-        <p className="mt-[clamp(12px,2.6svh,28px)] text-[clamp(1rem,min(1.5vw,2.6svh),1.25rem)] font-medium text-fg">
           Always curious, always experimenting, and probably already thinking about the next thing.
         </p>
-
-        <div className="relative mt-[clamp(20px,4.4svh,48px)]">
-          {/* "start here" note pointing at the button, tablet and up. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-[70%] items-end gap-1 text-[#FFF4E0] md:flex"
-          >
-            <span className="ink-text ink-last -rotate-6 whitespace-nowrap font-ink text-[1.6rem] leading-none">
-              start here
-            </span>
-            <svg viewBox="0 0 90 50" fill="none" className="ink-draw ink-last h-[44px] w-[80px]">
-              <path
-                d="M4 10 C 30 4, 62 14, 80 36"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                pathLength={1}
-              />
-              <path
-                d="M66 34 L 82 40 L 80 22"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                pathLength={1}
-              />
-            </svg>
-          </div>
+        <div className="mt-[clamp(22px,4.4svh,48px)]">
           <Button to="/about" size="lg">
             Get to know me a little more
           </Button>
