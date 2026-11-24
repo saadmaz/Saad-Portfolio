@@ -24,6 +24,7 @@ export default {
       fontFamily: {
         sans: ["Geist", "system-ui", "sans-serif"],
         mono: ["Geist Mono", "ui-monospace", "monospace"],
+        ink: ["Covered By Your Grace", "cursive"],
       },
       fontSize: {
         "display-xl": ["clamp(3.25rem, 8.6vw, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.05em" }],
