@@ -6,7 +6,17 @@ import { Button, Eyebrow, Field, FilterPill } from "@/components/ui";
 import { useContactMutation } from "@/hooks/useContent";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
-import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
+import { PAGE_SEO, BASE_URL, CONTACT_FAQ, CONTACT_SERVICES } from "@/lib/seo-content";
+
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: CONTACT_FAQ.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
 
 const INTERESTS = ["Product build", "AI integration", "Speaking", "Hosting", "Something else"];
 const BUDGETS = ["< $2k", "$2–10k", "$10k+", "Not sure"];
@@ -38,6 +48,8 @@ const ContactPage = () => {
         title={PAGE_SEO["/contact"].title}
         description={PAGE_SEO["/contact"].description}
         url={`${BASE_URL}/contact`}
+        structuredData={FAQ_SCHEMA}
+        breadcrumbs={[{ name: "Contact", url: `${BASE_URL}/contact` }]}
       />
       <section className="relative -mt-[72px] flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[72px] lg:-mt-[88px] lg:pt-[88px]">
         <div
@@ -177,6 +189,36 @@ const ContactPage = () => {
             )}
           </div>
         </div>
+      </section>
+
+      <section aria-labelledby="help-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
+        <Eyebrow>What I can help with</Eyebrow>
+        <h2 id="help-heading" className="mt-6 max-w-[720px] text-h2 font-medium">
+          Hire a full-stack developer <span className="soft">who has shipped his own products.</span>
+        </h2>
+        <ul className="mt-10 grid gap-6 md:grid-cols-3">
+          {CONTACT_SERVICES.map((s) => (
+            <li key={s.title} className="rounded-[20px] border border-line bg-surface p-6">
+              <h3 className="text-h3 font-medium">{s.title}</h3>
+              <p className="mt-3 text-fg-2">{s.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="faq-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
+        <Eyebrow>FAQ</Eyebrow>
+        <h2 id="faq-heading" className="mt-6 text-h2 font-medium">
+          Before you <span className="soft">get in touch</span>
+        </h2>
+        <dl className="mt-10 max-w-[820px] border-b border-line-2">
+          {CONTACT_FAQ.map(({ q, a }) => (
+            <div key={q} className="border-t border-line-2 py-6">
+              <dt className="text-body-l font-medium">{q}</dt>
+              <dd className="mt-2 text-fg-2">{a}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
     </Layout>
   );

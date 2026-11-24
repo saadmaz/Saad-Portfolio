@@ -5,6 +5,7 @@ import { Empty, FilterPill, PageHeader, Reveal, Skeleton } from "@/components/ui
 import { ProjectCard } from "@/components/cards";
 import { useProjects } from "@/hooks/useProjects";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
+import { isProjectIndexable } from "@/lib/indexing";
 
 const ProjectsPage = () => {
   const { data = [], isLoading } = useProjects();
@@ -27,8 +28,9 @@ const ProjectsPage = () => {
         title={PAGE_SEO["/projects"].title}
         description={PAGE_SEO["/projects"].description}
         url={`${BASE_URL}/projects`}
-        // An empty listing reads as a soft 404 to search engines.
-        noIndex={!isLoading && data.length === 0}
+        // An empty or stub-only listing reads as a soft 404 to search engines
+        // (same rule as the prerendered copy).
+        noIndex={!isLoading && !data.some(isProjectIndexable) ? "follow" : false}
       />
       <PageHeader
         label="Projects"

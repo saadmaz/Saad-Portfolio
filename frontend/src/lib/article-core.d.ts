@@ -119,5 +119,6 @@ export function buildBlogSitemap(opts: {
   series?: Pick<BlogSeries, "slug" | "postIds" | "published">[];
   categories?: CategoryOption[];
 }): string;
+export const CATEGORY_MIN_POSTS: number;
 export function categoriesOf(posts: Partial<BlogPost>[]): CategoryOption[];
 export function sameText(a: string | null | undefined, b: string | null | undefined): boolean;

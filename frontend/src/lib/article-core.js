@@ -580,7 +580,9 @@ export function buildBlogSitemap({ baseUrl, posts, authors = [], series = [], ca
   const newestIn = (list) => day(list.map(updatedAtOf).filter(Boolean).sort().pop());
   for (const c of categories) {
     const inCat = live.filter((p) => slugify(p.category) === c.slug);
-    if (inCat.length) entries.push(urlXml(`${baseUrl}/blog/category/${c.slug}`, newestIn(inCat)));
+    // Smaller categories are noindex (thin copies of /blog), so they're not submitted.
+    if (inCat.length >= CATEGORY_MIN_POSTS)
+      entries.push(urlXml(`${baseUrl}/blog/category/${c.slug}`, newestIn(inCat)));
   }
   for (const a of authors) {
     const byAuthor = live.filter((p) => p.authorId === a.id);
@@ -600,6 +602,12 @@ export function buildBlogSitemap({ baseUrl, posts, authors = [], series = [], ca
     "",
   ].join("\n");
 }
+
+/**
+ * A category page is indexed (and listed in the blog sitemap) once it has this
+ * many listed articles. Below that it's `noindex, follow`.
+ */
+export const CATEGORY_MIN_POSTS = 3;
 
 /** Unique category list ({ slug, label }) from posts, in first-seen order. */
 export function categoriesOf(posts) {

@@ -15,6 +15,16 @@
       "source": "/app-icon.svg",
       "destination": "/apple-touch-icon.png",
       "permanent": true
+    },
+    {
+      "source": "/blog/ai-for-customer-success-how-smart-companies-turn-support-into-a-retention-engine",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/yc-partner-in-your-pocket-claude-problem-validation",
+      "destination": "/blog",
+      "permanent": true
     }
   ],
   "rewrites": [

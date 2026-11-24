@@ -9,7 +9,7 @@ import { useEvents } from "@/hooks/useContent";
 import { fullDate } from "@/lib/format";
 import { eventPhotoAlt } from "@/lib/imageAlt";
 import { isEventIndexable } from "@/lib/indexing";
-import { BASE_URL } from "@/lib/seo-content";
+import { BASE_URL, eventDescriptionOf } from "@/lib/seo-content";
 import { eventPath, matchesKey } from "@/lib/paths";
 
 const EventDetailPage = () => {
@@ -47,7 +47,7 @@ const EventDetailPage = () => {
     <Layout>
       <SEO
         title={event.title}
-        description={event.description?.slice(0, 160)}
+        description={eventDescriptionOf(event)}
         url={`${BASE_URL}${eventPath(event)}`}
         // Thin write-ups stay out of search (same rule as the prerendered copy).
         noIndex={isEventIndexable(event) ? false : "follow"}

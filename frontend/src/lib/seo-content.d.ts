@@ -2,6 +2,17 @@
 
 export const SITE_NAME: string;
 export const BASE_URL: string;
+export const TITLE_MAX: number;
+export function pageTitle(title: string): string;
+export function eventDescriptionOf(event: {
+  title?: string;
+  description?: string;
+  role?: string;
+  organizer?: string;
+  location?: string;
+  date?: string;
+}): string;
+export function categoryDescriptionOf(label: string, custom?: string | null): string;
 export const PERSON_ID: string;
 export const WEBSITE_ID: string;
 export const PERSON_REF: Record<string, unknown>;
@@ -21,3 +32,5 @@ export const PAGE_SEO: Record<
     h1?: string;
   }
 >;
+export const CONTACT_SERVICES: { title: string; body: string }[];
+export const CONTACT_FAQ: { q: string; a: string }[];

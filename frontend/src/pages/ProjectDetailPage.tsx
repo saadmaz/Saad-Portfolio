@@ -6,6 +6,7 @@ import { Button, Media, PageHero, Reveal, Skeleton, Tag } from "@/components/ui"
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { year } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
+import { isProjectIndexable } from "@/lib/indexing";
 
 function Block({
   index,
@@ -85,6 +86,8 @@ const ProjectDetailPage = () => {
         title={project.title}
         description={project.tagline}
         url={`${BASE_URL}/projects/${project.slug}`}
+        // Stub write-ups stay out of search (same rule as the prerendered copy).
+        noIndex={isProjectIndexable(project) ? false : "follow"}
         breadcrumbs={[
           { name: "Projects", url: `${BASE_URL}/projects` },
           { name: project.title, url: `${BASE_URL}/projects/${project.slug}` },
