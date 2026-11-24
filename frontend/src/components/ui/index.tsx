@@ -74,10 +74,33 @@ export function Eyebrow({
   );
 }
 
+/** Counts up from 0 to `value` once on mount (instantly with reduced motion). */
+export function CountUp({ value, duration = 1400 }: { value: number; duration?: number }) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(value);
+      return;
+    }
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      setShown(Math.round(value * (1 - Math.pow(1 - t, 4))));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value, duration]);
+  return <span className="tabular-nums">{shown}</span>;
+}
+
 export function Stat({ value, label, className }: { value: ReactNode; label: string; className?: string }) {
   return (
     <div className={cn("flex flex-col gap-2.5", className)}>
-      <span className="text-display-m font-medium">{value}</span>
+      <span className="text-display-m font-medium">
+        {typeof value === "number" ? <CountUp value={value} /> : value}
+      </span>
       <span className="label text-fg-3">{label}</span>
     </div>
   );
@@ -201,6 +224,7 @@ export function PageHero({
   media,
   band,
   centered,
+  ambient,
   className,
 }: {
   children: ReactNode;
@@ -208,6 +232,8 @@ export function PageHero({
   /** Left side of the bottom band (defaults to nothing; the scroll cue is always on the right). */
   band?: ReactNode;
   centered?: boolean;
+  /** Landing-page backdrop: drifting glows, a fading grid and film grain. */
+  ambient?: boolean;
   className?: string;
 }) {
   return (
@@ -217,10 +243,20 @@ export function PageHero({
         className,
       )}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_80%_25%,rgb(255_95_0/0.16),transparent_70%)]"
-      />
+      {ambient ? (
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-[10%] -top-[20%] size-[70vmax] animate-drift rounded-full bg-[radial-gradient(circle,rgb(255_95_0/0.22),transparent_62%)] blur-2xl" />
+          <div className="absolute -bottom-[35%] -left-[15%] size-[55vmax] animate-drift rounded-full bg-[radial-gradient(circle,rgb(255_122_38/0.1),transparent_65%)] blur-2xl [animation-delay:-11s] [animation-duration:28s]" />
+          <div className="absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.045)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.045)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_75%_65%_at_60%_40%,black,transparent_80%)]" />
+          <div className="grain absolute inset-0 opacity-[0.06] mix-blend-overlay" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-base to-transparent" />
+        </div>
+      ) : (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_60%_at_80%_25%,rgb(255_95_0/0.16),transparent_70%)]"
+        />
+      )}
       <div
         className={cn(
           "wrap relative flex flex-1 flex-col pb-[clamp(24px,5svh,56px)] pt-[clamp(104px,16svh,152px)]",
@@ -244,6 +280,28 @@ export function PageHero({
   );
 }
 
+/** Headline words rising out of a clipped line, one after another. */
+function RisingWords({ text, from = 0, className }: { text: string; from?: number; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((w, i) => (
+        <span key={`${w}-${i}`}>
+          <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+            <span
+              className={cn("inline-block animate-word-in", className)}
+              style={{ animationDelay: `${(from + i) * 90}ms` }}
+            >
+              {w}
+            </span>
+          </span>
+          {i < words.length - 1 && " "}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /** Page opening: label, two-tone title, intro and an optional aside, as a full-screen hero. */
 export function PageHeader({
   label,
@@ -261,21 +319,31 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <PageHero className="mb-16 md:mb-24" band={<span className="truncate">Saad Mazhar · {label}</span>}>
-      <Eyebrow>{label}</Eyebrow>
+    <PageHero
+      ambient
+      className="mb-16 md:mb-24"
+      band={<span className="truncate">Saad Mazhar · {label}</span>}
+    >
+      <div className="animate-rise">
+        <Eyebrow>{label}</Eyebrow>
+      </div>
       <div className="mt-8 flex flex-col gap-10 md:mt-10 md:flex-row md:items-end md:justify-between">
         <h1 className="text-display-xl font-medium">
-          {title}
+          <RisingWords text={title} />
           {soft && (
             <>
               {" "}
-              <span className="soft">{soft}</span>
+              <RisingWords text={soft} from={title.split(" ").length} className="soft" />
             </>
           )}
         </h1>
-        {aside}
+        {aside && <div className="animate-rise [animation-delay:450ms]">{aside}</div>}
       </div>
-      {intro && <p className="mt-8 max-w-[640px] text-body-l text-fg-2 md:mt-10">{intro}</p>}
+      {intro && (
+        <p className="mt-8 max-w-[640px] animate-rise text-body-l text-fg-2 [animation-delay:350ms] md:mt-10">
+          {intro}
+        </p>
+      )}
       {children}
     </PageHero>
   );

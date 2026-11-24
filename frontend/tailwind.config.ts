@@ -61,6 +61,11 @@ export default {
           "65%": { transform: "scale(0.94) rotate(2deg)" },
           "100%": { transform: "scale(1) rotate(0deg)" },
         },
+        drift: {
+          "0%": { transform: "translate3d(0,0,0) scale(1)" },
+          "50%": { transform: "translate3d(-6%,4%,0) scale(1.08)" },
+          "100%": { transform: "translate3d(4%,-3%,0) scale(0.96)" },
+        },
         "count-in": {
           from: { opacity: "0", transform: "translateY(5px)", filter: "blur(2px)" },
           to: { opacity: "1", transform: "none", filter: "none" },
@@ -72,6 +77,7 @@ export default {
         "word-in": "word-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both",
         marquee: "marquee 48s linear infinite",
         "react-pop": "react-pop 450ms cubic-bezier(0.16, 1, 0.3, 1)",
+        drift: "drift 22s ease-in-out infinite alternate",
         "count-in": "count-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
