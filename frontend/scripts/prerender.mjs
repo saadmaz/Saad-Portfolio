@@ -35,12 +35,18 @@ import {
   NAV_LINKS,
   SITE_NAME,
   BASE_URL,
+  CONTACT_FAQ,
+  CONTACT_SERVICES,
+  categoryDescriptionOf,
+  eventDescriptionOf,
+  pageTitle,
 } from "../src/lib/seo-content.js";
-import { isEventIndexable } from "../src/lib/indexing.js";
+import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
 import { submitChangedUrls } from "./indexnow.mjs";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import {
   articleSchema,
+  CATEGORY_MIN_POSTS,
   canonicalOf,
   categoriesOf,
   countWords,
@@ -189,7 +195,7 @@ function injectContent(
   OG_JOBS.push({ file: ogFile(routePath), spec: { title, ...og } });
   const card = `${BASE_URL}/${ogFile(routePath)}?v=${OG_VERSION}`;
   const html = applyHeadMeta(shell, {
-    title: fullTitle || `${title} - ${SITE_NAME}`,
+    title: fullTitle || pageTitle(title),
     description,
     url: pageUrl,
     canonical,
@@ -573,7 +579,23 @@ function staticBody(routePath, data) {
           `<a href="${escape(n.content_url)}">${escape(n.title)}</a> - ${escape(joinMeta(dateLabel(n.date), n.description))}`,
       );
     case "/contact":
-      return `<p>Email: <a href="mailto:hello@saadmaz.com">hello@saadmaz.com</a></p>\n<p>Based in Colombo, Sri Lanka.</p>\n${list(PERSON_SCHEMA.sameAs, (u) => `<a href="${escape(u)}">${escape(u)}</a>`)}`;
+      return [
+        `<p>Product builds, startup collaborations, speaking and hosting. Tell me what you're working on and I'll reply within a day.</p>`,
+        `<p>Email: <a href="mailto:hello@saadmaz.com">hello@saadmaz.com</a> · <a href="https://calendly.com/saadmaz/30min">Book a 30-minute call</a></p>`,
+        `<p>Based in Colombo, Sri Lanka.</p>`,
+        section(
+          "What I can help with",
+          CONTACT_SERVICES.map((s) => `<h3>${escape(s.title)}</h3>\n<p>${escape(s.body)}</p>`).join("\n"),
+        ),
+        section(
+          "Frequently asked questions",
+          CONTACT_FAQ.map(({ q, a }) => `<h3>${escape(q)}</h3>\n<p>${escape(a)}</p>`).join("\n"),
+        ),
+        section(
+          "Elsewhere",
+          list(PERSON_SCHEMA.sameAs, (u) => `<a href="${escape(u)}">${escape(u)}</a>`),
+        ),
+      ].join("\n");
     default:
       return "";
   }
@@ -649,6 +671,25 @@ function staticCard(routePath, data) {
   return cards[routePath] ?? { eyebrow: PAGE_SEO[routePath]?.title };
 }
 
+/** Same FAQ as ContactPage.tsx shows and marks up. */
+const CONTACT_FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: CONTACT_FAQ.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
+
+/**
+ * Static pages kept out of the index: /projects until it lists a real case study
+ * (an empty or stub-only listing reads as a soft 404), and /languages, a few
+ * lines already covered on /about.
+ */
+const thinStaticRoute = (routePath, data) =>
+  (routePath === "/projects" && !data.projects.some(isProjectIndexable)) || routePath === "/languages";
+
 function prerenderStaticRoutes(shell, data) {
   const person = personSchema(data);
   for (const [routePath, { title, fullTitle, h1, description }] of Object.entries(PAGE_SEO)) {
@@ -657,7 +698,9 @@ function prerenderStaticRoutes(shell, data) {
         ? homeSchemas(person)
         : routePath === "/about"
           ? [person, ...pageSchemas(routePath, title)]
-          : pageSchemas(routePath, title);
+          : routePath === "/contact"
+            ? [...pageSchemas(routePath, title), CONTACT_FAQ_SCHEMA]
+            : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -669,8 +712,7 @@ function prerenderStaticRoutes(shell, data) {
         schemas,
         bodyHtml: staticBody(routePath, data),
         og: staticCard(routePath, data),
-        // An empty listing reads as a soft 404 to search engines.
-        noIndex: routePath === "/projects" && !data.projects.length,
+        noIndex: thinStaticRoute(routePath, data) ? "follow" : false,
       }),
     );
   }
@@ -722,6 +764,8 @@ function prerenderProjects(shell, projects) {
         description,
         schemas: [schema],
         bodyHtml,
+        // Stub write-ups (see src/lib/indexing.js) stay reachable but out of the index.
+        noIndex: isProjectIndexable(p) ? false : "follow",
         og: {
           eyebrow: "Project",
           title: p.title,
@@ -812,7 +856,8 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
 function prerenderBlogIndexes(shell, data) {
   // Category pages.
   for (const c of categoriesOf(data.posts.filter(isIndexable))) {
-    const label = data.settings.categories?.find((s) => s.slug === c.slug)?.label ?? c.label;
+    const setting = data.settings.categories?.find((s) => s.slug === c.slug);
+    const label = setting?.label ?? c.label;
     const inCat = data.posts.filter((p) => slugify(p.category) === c.slug);
     const routePath = `/blog/category/${c.slug}`;
     writeRoute(
@@ -820,8 +865,20 @@ function prerenderBlogIndexes(shell, data) {
       injectContent(shell, {
         path: routePath,
         title: `${label} articles`,
-        description: `Articles about ${label} by ${SITE_NAME}.`,
-        bodyHtml: list(inCat, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+        description: categoryDescriptionOf(label, setting?.description),
+        bodyHtml: [
+          setting?.description && paras(setting.description),
+          list(
+            inCat,
+            (p) =>
+              `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>${p.excerpt ? ` - ${escape(p.excerpt)}` : ""}`,
+          ),
+        ]
+          .filter(Boolean)
+          .join("\n"),
+        // A category with one or two posts is a thin copy of /blog: out of the index until
+        // it fills up (same rule as the blog sitemap and BlogsPage.tsx).
+        noIndex: inCat.length < CATEGORY_MIN_POSTS ? "follow" : false,
         og: { eyebrow: "Writing", title: `${label} articles` },
       }),
     );
@@ -912,10 +969,7 @@ function prerenderEvents(shell, events) {
     const routePath = `/events/${keyOf(e)}`;
     const cover = e.image || e.images?.[0];
     const photos = eventPhotos(e);
-    const description = truncate(
-      e.description || `${e.role ?? "Participant"} at ${e.title}, ${e.organizer}.`,
-      160,
-    );
+    const description = eventDescriptionOf(e);
     const images = photos.length
       ? { image: photos.map((src) => imageObject(src, eventPhotoAlt(e, src))) }
       : {};
@@ -1102,8 +1156,10 @@ function writeSitemaps(data) {
   if (data.newsletters.length) main.push("/newsletters");
   if (data.publications.length) main.push("/publications");
   if (data.education.length) main.push("/education");
-  if (data.languages.length) main.push("/languages");
-  const projectDates = data.projects.map((p) => toDateString(p.updated_at));
+  // /languages is noindex (see thinStaticRoute), so it isn't submitted.
+  // Only projects whose pages are indexable (see src/lib/indexing.js).
+  const projects = data.projects.filter(isProjectIndexable);
+  const projectDates = projects.map((p) => toDateString(p.updated_at));
   // Only events whose pages are indexable (see src/lib/indexing.js).
   const events = data.events.filter(isEventIndexable);
   const eventDates = events.map((e) => toDateString(e.updated_at));
@@ -1112,7 +1168,7 @@ function writeSitemaps(data) {
     "main.xml": main.map((p) => urlEntry(p === "/" ? BASE_URL : `${BASE_URL}${p}`, null)),
     "projects.xml": [
       urlEntry(`${BASE_URL}/projects`, newest(projectDates)),
-      ...data.projects.map((p, i) =>
+      ...projects.map((p, i) =>
         urlEntry(`${BASE_URL}/projects/${p.slug}`, projectDates[i], [p.heroImage, ...(p.screenshots ?? [])]),
       ),
     ],
@@ -1128,7 +1184,7 @@ function writeSitemaps(data) {
     ];
   // Certificate detail pages are noindex (see prerenderCertificates), so they're
   // not listed; /certifications itself is in main.xml.
-  if (!data.projects.length) delete files["projects.xml"];
+  if (!projects.length) delete files["projects.xml"];
 
   for (const [name, entries] of Object.entries(files))
     writeFileSync(join(DIST_DIR, "sitemaps", name), buildUrlset(entries), "utf-8");

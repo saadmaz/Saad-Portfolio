@@ -3,6 +3,7 @@ import {
   articleSchema,
   assignHeadingIds,
   buildBlogSitemap,
+  CATEGORY_MIN_POSTS,
   buildRss,
   canonicalOf,
   countWords,
@@ -345,11 +346,20 @@ describe("feeds", () => {
       authors: [{ id: "x", slug: "nobody" }],
     });
     expect(xml).toContain(`<loc>${BASE}/blog/live</loc>`);
-    expect(xml).toContain(`<loc>${BASE}/blog/category/tech</loc>`);
     for (const hidden of ["draft", "scheduled", "unlisted", "noindex", "elsewhere"])
       expect(xml).not.toContain(`/blog/${hidden}<`);
     expect(xml).not.toContain("category/empty");
     expect(xml).not.toContain("authors/nobody");
+  });
+
+  it("sitemap lists a category only once it has CATEGORY_MIN_POSTS live articles", () => {
+    const categories = [{ slug: "tech", label: "Tech" }];
+    // `posts` has one live Tech article (plus hidden ones, which don't count).
+    expect(buildBlogSitemap({ baseUrl: BASE, posts, categories })).not.toContain("category/tech");
+    const more = Array.from({ length: CATEGORY_MIN_POSTS - 1 }, (_, i) => post({ id: `more-${i}` }));
+    expect(buildBlogSitemap({ baseUrl: BASE, posts: [...posts, ...more], categories })).toContain(
+      `<loc>${BASE}/blog/category/tech</loc>`,
+    );
   });
 });
 

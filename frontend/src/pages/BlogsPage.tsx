@@ -6,8 +6,15 @@ import { SEO } from "@/components/SEO";
 import { Button, Empty, FilterPill, PageHeader, Reveal, Skeleton, Tag } from "@/components/ui";
 import { ArticleCard } from "@/components/article/ArticleParts";
 import { useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
-import { articleTypeLabel, categoriesOf, featuredPosts, slugify, stripHtml } from "@/lib/article-core";
-import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
+import {
+  articleTypeLabel,
+  CATEGORY_MIN_POSTS,
+  categoriesOf,
+  featuredPosts,
+  slugify,
+  stripHtml,
+} from "@/lib/article-core";
+import { PAGE_SEO, BASE_URL, categoryDescriptionOf } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
 import type { BlogPost } from "@/types";
 import NotFound from "./NotFound";
@@ -79,10 +86,13 @@ const BlogsPage = () => {
   const seo = category
     ? {
         title: `${category.label} articles`,
-        description: category.description || `Articles about ${category.label} by Saad Mazhar.`,
+        description: categoryDescriptionOf(category.label, category.description),
         url: `${BASE_URL}/blog/category/${category.slug}`,
       }
     : { ...PAGE_SEO["/blog"], url: `${BASE_URL}/blog` };
+  // Same rule as the prerendered copy and the blog sitemap.
+  const thinCategory =
+    !!category && data.filter((p) => slugify(p.category) === category.slug).length < CATEGORY_MIN_POSTS;
 
   return (
     <Layout>
@@ -90,6 +100,7 @@ const BlogsPage = () => {
         title={seo.title}
         description={seo.description}
         url={seo.url}
+        noIndex={thinCategory ? "follow" : false}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",

@@ -12,3 +12,15 @@ export const EVENT_MIN_WORDS: number;
 export const SEO_VISIBILITY: readonly SeoVisibility[];
 export function eventWordCount(event: IndexableEvent): number;
 export function isEventIndexable(event: IndexableEvent): boolean;
+
+export interface IndexableProject {
+  tagline?: string;
+  overview?: string;
+  description?: string;
+  long_description?: string;
+  seo_visibility?: SeoVisibility;
+}
+
+export const PROJECT_MIN_WORDS: number;
+export function projectWordCount(project: IndexableProject): number;
+export function isProjectIndexable(project: IndexableProject): boolean;

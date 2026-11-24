@@ -37,3 +37,28 @@ export function isEventIndexable(event) {
   if (visibility === "noindex") return false;
   return eventWordCount(event) >= EVENT_MIN_WORDS;
 }
+
+/**
+ * Projects follow the same rule: a case study is indexed once its write-up
+ * (tagline, overview, description, long description) reaches PROJECT_MIN_WORDS.
+ * A stub project stays reachable by link but is `noindex, follow` and out of
+ * the sitemap, and /projects itself is only indexed when it lists at least one
+ * indexable project. `seo_visibility` overrides, as for events.
+ */
+export const PROJECT_MIN_WORDS = 100;
+
+/** Words in a project's own write-up. */
+export function projectWordCount(project) {
+  return ["tagline", "overview", "description", "long_description"].reduce(
+    (n, key) => n + words(project?.[key]),
+    0,
+  );
+}
+
+/** True when the project's page should be indexed and listed in the sitemap. */
+export function isProjectIndexable(project) {
+  const visibility = project?.seo_visibility;
+  if (visibility === "index") return true;
+  if (visibility === "noindex") return false;
+  return projectWordCount(project) >= PROJECT_MIN_WORDS;
+}

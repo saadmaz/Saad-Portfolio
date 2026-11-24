@@ -13,7 +13,7 @@
  */
 
 import { Helmet } from "react-helmet-async";
-import { SITE_NAME, BASE_URL } from "@/lib/seo-content.js";
+import { SITE_NAME, BASE_URL, pageTitle } from "@/lib/seo-content.js";
 
 interface BreadcrumbItem {
   name: string;
@@ -88,7 +88,7 @@ export function SEO({
   noIndex = false,
 }: SEOProps) {
   const fullTitle =
-    fullTitleProp ?? (title ? `${title} - ${SITE_NAME}` : `${SITE_NAME} - Founder · Speaker · Developer`);
+    fullTitleProp ?? (title ? pageTitle(title) : `${SITE_NAME} - Founder · Speaker · Developer`);
   // noIndex pages (404s) have no card of their own: share the home card.
   const ogImage = image ?? ogCardFor(noIndex ? BASE_URL : url);
   const isLargeImage = imageWidth / imageHeight >= 1.9 && imageWidth >= 1200;

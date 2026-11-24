@@ -14,6 +14,8 @@ const LanguagesPage = () => {
         title={PAGE_SEO["/languages"].title}
         description={PAGE_SEO["/languages"].description}
         url={`${BASE_URL}/languages`}
+        // A few lines already covered on /about: kept out of the index (see prerender.mjs).
+        noIndex="follow"
       />
       <PageHeader
         label="Languages"

@@ -19,7 +19,7 @@ import { createHash } from "node:crypto";
 import { allowMethods } from "./_lib/http.js";
 import { findPublishedPost, type Post } from "./_lib/posts.js";
 import { canonicalOf, coverOf, SLUG_RE, seoDescriptionOf, seoTitleOf } from "../src/lib/article-core.js";
-import { BASE_URL, SITE_NAME } from "../src/lib/seo-content.js";
+import { BASE_URL, SITE_NAME, pageTitle } from "../src/lib/seo-content.js";
 import { applyHeadMeta, escapeHtml, POST_PAGES_DIR } from "../src/lib/share-meta.js";
 import type { HeadMeta, ShareImage } from "../src/lib/share-meta.js";
 
@@ -55,7 +55,7 @@ export function shareImageOf(post: Post, hasBuiltCard: boolean): ShareImage | nu
 
 export function postHeadMeta(post: Post, hasBuiltCard: boolean): HeadMeta {
   return {
-    title: `${seoTitleOf(post)} - ${SITE_NAME}`,
+    title: pageTitle(seoTitleOf(post)),
     description: seoDescriptionOf(post) || `"${post.title}" by ${post.author || SITE_NAME}.`,
     url: `${BASE_URL}/blog/${post.slug}`,
     canonical: canonicalOf(post, BASE_URL),
