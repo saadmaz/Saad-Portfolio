@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { Eyebrow, Media } from "@/components/ui";
@@ -65,10 +65,18 @@ export function Gallery({
   images,
   title,
   alts,
+  captions,
+  label = "Gallery",
+  heading,
 }: {
   images: string[];
   title: string;
   /** Per-photo alt text, aligned with `images`. */ alts?: string[];
+  /** Per-photo captions, aligned with `images`; shown in the lightbox. */
+  captions?: string[];
+  label?: string;
+  /** Replaces the default "From the day in N photos" heading. */
+  heading?: ReactNode;
 }) {
   const [open, setOpen] = useState<number | null>(null);
   const tiles = layout(images.length);
@@ -79,12 +87,16 @@ export function Gallery({
       <div className="wrap">
         <div className="flex items-end justify-between gap-6">
           <div className="flex flex-col gap-6">
-            <Eyebrow>Gallery</Eyebrow>
+            <Eyebrow>{label}</Eyebrow>
             <h2 id="gallery-heading" className="text-h1 font-medium">
-              From the day{" "}
-              <span className="soft">
-                in {images.length} {single ? "photo" : "photos"}
-              </span>
+              {heading ?? (
+                <>
+                  From the day{" "}
+                  <span className="soft">
+                    in {images.length} {single ? "photo" : "photos"}
+                  </span>
+                </>
+              )}
             </h2>
           </div>
           {!single && (
@@ -147,6 +159,7 @@ export function Gallery({
           images={images}
           title={title}
           alts={alts}
+          captions={captions}
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
@@ -160,6 +173,7 @@ function Lightbox({
   images,
   title,
   alts,
+  captions,
   index,
   onIndex,
   onClose,
@@ -167,6 +181,7 @@ function Lightbox({
   images: string[];
   title: string;
   alts?: string[];
+  captions?: string[];
   index: number;
   onIndex: (i: number) => void;
   onClose: () => void;
@@ -285,6 +300,12 @@ function Lightbox({
           </>
         )}
       </div>
+
+      {captions?.[index] && (
+        <p className="gutter shrink-0 pt-4 text-center text-meta text-white/70" aria-live="polite">
+          {captions[index]}
+        </p>
+      )}
 
       {count > 1 && (
         <div

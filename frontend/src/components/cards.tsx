@@ -7,6 +7,7 @@ import { monthYear, year } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { eventPath } from "@/lib/paths";
 import { eventPhotoAlt } from "@/lib/imageAlt";
+import { stageTone } from "@/lib/projectStage";
 
 const arrow = (
   <ArrowUpRight
@@ -15,63 +16,153 @@ const arrow = (
   />
 );
 
-function projectMeta(p: Project, index?: number) {
-  return [index !== undefined && String(index + 1).padStart(2, "0"), p.date && year(p.date), p.role]
-    .filter(Boolean)
-    .join(" · ");
+function projectMeta(p: Project) {
+  return [p.date && year(p.date), p.role].filter(Boolean).join(" · ");
 }
 
+export function StageBadge({ stage, className }: { stage?: string; className?: string }) {
+  if (!stage) return null;
+  const tone = stageTone(stage);
+  return (
+    <span
+      className={cn(
+        "label inline-flex h-7 items-center gap-2 whitespace-nowrap rounded-full border px-2.5",
+        tone === "live" && "border-live/25 bg-live/10 text-live",
+        tone === "building" && "border-accent/25 bg-accent/10 text-accent",
+        tone === "muted" && "border-line-2 bg-base/60 text-fg-2",
+        className,
+      )}
+    >
+      <span
+        aria-hidden
+        className={cn(
+          "size-1.5 rounded-full",
+          tone === "live" && "bg-live shadow-[0_0_0_3px_rgb(var(--live)/0.18)]",
+          tone === "building" && "bg-accent",
+          tone === "muted" && "bg-fg-3",
+        )}
+      />
+      {stage}
+    </span>
+  );
+}
+
+const projectTags = (p: Project, n: number) =>
+  (p.techStack?.length ? p.techStack : (p.technologies ?? [])).slice(0, n);
+
+/** Grid card: framed screenshot with category and stage, then meta, title, tagline and stack. */
 export function ProjectCard({
   project,
-  index,
-  feature,
+  className,
 }: {
   project: Project;
   index?: number;
-  feature?: boolean;
+  className?: string;
 }) {
   const img = project.heroImage || project.image;
-  const tags = (project.techStack ?? []).slice(0, feature ? 4 : 3);
+  const category = project.category || project.type;
+  const tags = projectTags(project, 3);
   return (
-    <Link to={`/projects/${project.slug}`} className="group flex flex-col gap-6 md:gap-7">
+    <Link
+      to={`/projects/${project.slug}`}
+      className={cn(
+        "group flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-surface/40 transition-[border-color,background-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-line-3 hover:bg-surface/80 hover:shadow-[0_24px_60px_-28px_rgb(0_0_0/0.8)]",
+        className,
+      )}
+    >
+      <div className="relative p-2 pb-0">
+        <Media
+          src={img}
+          alt={project.altText || project.title}
+          className="aspect-[16/10] rounded-[16px]"
+          imgClassName="object-top"
+        />
+        <div className="pointer-events-none absolute inset-x-5 top-5 flex items-start justify-between gap-2">
+          {category ? (
+            <span className="label inline-flex h-7 items-center rounded-full bg-base/75 px-2.5 text-fg backdrop-blur-md">
+              {category}
+            </span>
+          ) : (
+            <span />
+          )}
+          <StageBadge stage={project.stage} className="bg-base/75 backdrop-blur-md" />
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-5 md:p-6">
+        <div className="flex items-center justify-between gap-4">
+          <span className="truncate font-mono text-meta text-fg-3">{projectMeta(project)}</span>
+          {arrow}
+        </div>
+        <h3 className="text-h3 font-medium transition-colors group-hover:text-accent">{project.title}</h3>
+        <p className="line-clamp-2 text-fg-2">{project.tagline}</p>
+        {tags.length > 0 && (
+          <div className="mt-auto flex flex-wrap gap-2 pt-3">
+            {tags.map((t) => (
+              <Tag key={t}>{t}</Tag>
+            ))}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+/** Wide spotlight card for the lead project: screenshot left, story and headline numbers right. */
+export function ProjectFeature({ project }: { project: Project }) {
+  const img = project.heroImage || project.image;
+  const category = project.category || project.type;
+  const tags = projectTags(project, 5);
+  const results = (project.results ?? []).filter((r) => r?.value).slice(0, 3);
+  return (
+    <Link
+      to={`/projects/${project.slug}`}
+      className="group grid overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-[border-color,background-color] duration-300 hover:border-line-3 hover:bg-surface/70 md:grid-cols-[1.35fr_1fr] md:p-3"
+    >
       <Media
         src={img}
         alt={project.altText || project.title}
-        className={feature ? "aspect-[16/9]" : "aspect-[3/2]"}
-        priority={feature}
+        className="aspect-[16/10] rounded-[20px] md:aspect-auto md:min-h-[440px]"
+        imgClassName="object-top"
+        priority
       />
-      {feature ? (
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div className="flex flex-col gap-3">
-            <span className="font-mono text-meta text-fg-3">{projectMeta(project, index)}</span>
-            <h3 className="text-h1 font-medium">{project.title}</h3>
-          </div>
-          <div className="flex max-w-[460px] flex-col gap-5">
-            <p className="text-fg-2">{project.tagline}</p>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((t) => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
-          </div>
+      <div className="flex flex-col gap-6 p-5 md:p-8 lg:p-10">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="label inline-flex h-7 items-center rounded-full bg-accent px-2.5 text-fg-inverse">
+            Featured
+          </span>
+          {category && <Tag>{category}</Tag>}
+          <StageBadge stage={project.stage} />
         </div>
-      ) : (
         <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-4">
-            <span className="font-mono text-meta text-fg-3">{projectMeta(project, index)}</span>
-            {arrow}
-          </div>
-          <h3 className="text-h2 font-medium">{project.title}</h3>
-          <p className="text-fg-2">{project.tagline}</p>
-          {tags.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-2">
-              {tags.map((t) => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
-          )}
+          <span className="font-mono text-meta text-fg-3">{projectMeta(project)}</span>
+          <h3 className="text-h1 font-medium">{project.title}</h3>
+          <p className="text-body-l text-fg-2">{project.tagline}</p>
         </div>
-      )}
+        {results.length > 0 && (
+          <dl className="grid grid-cols-3 gap-4 border-y border-line-2 py-5">
+            {results.map((r) => (
+              <div key={r.label + r.value} className="flex min-w-0 flex-col-reverse gap-1.5">
+                <dt className="text-meta leading-snug text-fg-3">{r.label}</dt>
+                <dd className="truncate text-h3 font-medium">{r.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <Tag key={t}>{t}</Tag>
+            ))}
+          </div>
+        )}
+        <span className="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium text-fg transition-colors group-hover:text-accent">
+          Read the case study
+          <ArrowUpRight
+            aria-hidden
+            className="size-4 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+          />
+        </span>
+      </div>
     </Link>
   );
 }

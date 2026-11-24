@@ -136,6 +136,7 @@ export function Media({
   asset,
   sizes,
   natural,
+  imgClassName,
 }: {
   src?: string;
   alt: string;
@@ -144,6 +145,8 @@ export function Media({
   asset?: ImageAsset | null;
   sizes?: string;
   natural?: boolean;
+  /** Extra classes on the <img>, e.g. `object-top` for page screenshots. */
+  imgClassName?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const img = asset?.url ? responsiveImage(asset, sizes) : src ? { src } : null;
@@ -173,6 +176,7 @@ export function Media({
             natural
               ? "object-contain transition-opacity duration-300 group-hover:opacity-90"
               : "object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]",
+            imgClassName,
           )}
         />
       ) : (
