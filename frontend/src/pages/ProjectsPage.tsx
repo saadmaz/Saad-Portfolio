@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Search, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Empty, PageHeader, Reveal, Skeleton } from "@/components/ui";
+import { CountUp, Empty, PageHeader, Reveal, Skeleton } from "@/components/ui";
 import { ProjectCard, ProjectFeature } from "@/components/cards";
 import { stageTone } from "@/lib/projectStage";
 import { useProjects } from "@/hooks/useProjects";
@@ -120,7 +120,9 @@ const ProjectsPage = () => {
               {stats.map((s) => (
                 <div key={s.label} className="flex flex-col-reverse gap-2">
                   <dt className="label text-fg-3">{s.label}</dt>
-                  <dd className="text-display-m font-medium tabular-nums">{s.value}</dd>
+                  <dd className="text-display-m font-medium">
+                    <CountUp value={s.value} />
+                  </dd>
                 </div>
               ))}
             </dl>
