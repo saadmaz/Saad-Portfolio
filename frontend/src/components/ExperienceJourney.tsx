@@ -22,7 +22,7 @@ function Stop({ company }: { company: Company }) {
     <Mark
       src={company.logo}
       label={company.name}
-      className="size-[70%] rounded-[24%] border-line-3 bg-surface-3 text-[1.25rem] text-fg md:text-[2.5rem] shadow-[0_22px_40px_-12px_rgb(0_0_0/0.75),inset_0_1px_0_rgb(255_255_255/0.08)]"
+      className="size-[70%] rounded-[24%] border-transparent bg-surface-3 transition-[border-color,box-shadow] duration-300 group-hover/stop:border-accent group-hover/stop:shadow-[0_22px_40px_-12px_rgb(0_0_0/0.75),0_0_0_4px_rgb(255_95_0/0.15),0_0_32px_rgb(255_95_0/0.25)] text-[1.25rem] text-fg md:text-[2.5rem] shadow-[0_22px_40px_-12px_rgb(0_0_0/0.75),inset_0_1px_0_rgb(255_255_255/0.08)]"
     />
   );
 }
@@ -234,7 +234,7 @@ export function ExperienceJourney({ companies }: { companies: Company[] }) {
           return (
             <li
               key={c.key}
-              className="grid grid-cols-[64px_1fr] items-start gap-5 md:grid-cols-2 md:items-center md:gap-16"
+              className="group/stop grid grid-cols-[64px_1fr] items-start gap-5 md:grid-cols-2 md:items-center md:gap-16"
             >
               <div
                 ref={(el) => {

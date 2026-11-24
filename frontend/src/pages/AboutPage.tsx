@@ -14,7 +14,6 @@ import {
 import { partsToLabel, range, year } from "@/lib/format";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import portrait from "@/assets/profile-photo.webp";
-import myResume from "@/assets/Resume/Saad_Mazhar_Resume.pdf";
 
 function Split({
   id,
@@ -92,10 +91,7 @@ const AboutPage = () => {
               summits. Both jobs are the same skill: making something complicated feel simple.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button href={myResume} download="Saad_Mazhar_Resume.pdf" size="lg" icon={false}>
-                Download résumé
-              </Button>
-              <Button to="/contact" variant="secondary" size="lg">
+              <Button to="/contact" size="lg">
                 Get in touch
               </Button>
             </div>
