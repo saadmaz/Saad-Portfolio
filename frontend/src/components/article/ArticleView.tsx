@@ -139,8 +139,8 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
         byline={<Byline post={post} author={author} updated={updated} wpm={settings.readingWpm} />}
       />
 
-      {/* The article card rises over the bottom of the cover. */}
-      <div className="wrap relative z-10 -mt-28 grid gap-x-10 pb-20 md:-mt-40 xl:grid-cols-[minmax(0,1fr)_minmax(0,800px)_minmax(0,1fr)]">
+      {/* Rail · article · contents. The fixed side columns keep the contents list readable. */}
+      <div className="wrap relative grid gap-x-10 py-10 md:py-16 xl:grid-cols-[64px_minmax(0,1fr)_240px] xl:gap-x-12">
         <ArticleRail
           target={articleRef}
           url={url}
@@ -151,7 +151,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
 
         <article
           ref={articleRef}
-          className="mx-auto w-full min-w-0 max-w-[800px] rounded-[28px] border border-line bg-base px-5 pb-12 pt-10 shadow-[0_-30px_80px_-30px_rgb(0_0_0/0.7)] sm:px-10 md:px-14 md:pt-14 xl:col-start-2 xl:row-start-1"
+          className="mx-auto w-full min-w-0 max-w-[780px] pb-8 sm:rounded-[28px] sm:border sm:border-line sm:bg-surface/30 sm:px-10 sm:pb-12 sm:pt-12 md:px-14 xl:col-start-2 xl:row-start-1"
         >
           <div className="mx-auto max-w-prose">
             {showNav && !(inlineToc && showToc) && (
@@ -216,7 +216,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
         </article>
 
         {showNav && (
-          <aside className="hidden xl:col-start-3 xl:row-start-1 xl:block xl:pt-40">
+          <aside className="hidden xl:col-start-3 xl:row-start-1 xl:block">
             <TableOfContents
               headings={tocHeadings}
               prompts={prompts}

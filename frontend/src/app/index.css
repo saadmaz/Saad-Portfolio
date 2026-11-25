@@ -193,28 +193,29 @@
   }
 }
 
-/* Blog post body on top of .prose-cms: a larger opening paragraph with an
-   orange drop cap, numbered section headings and heavier pull quotes. */
-.article-body {
-  counter-reset: article-h2;
+/* Blog post body on top of .prose-cms. Articles either open straight with
+   body text (larger first paragraph + orange drop cap) or with the author's
+   own title heading and an italic summary line (that line becomes the lead).
+   Section headings aren't auto-numbered: the opening h2 is often the title. */
+.article-body > p:first-child {
+  @apply text-[1.25rem] leading-[1.65] text-fg md:text-[1.3125rem];
 }
-.article-body > p:first-of-type {
-  @apply text-[1.3125rem] leading-[1.65] text-fg;
-}
-.article-body > p:first-of-type::first-letter {
+.article-body > p:first-child::first-letter {
   @apply float-left mr-3 mt-1.5 font-medium text-accent;
-  font-size: 4.4em;
+  font-size: 4.2em;
   line-height: 0.82;
 }
-.article-body > h2 {
-  counter-increment: article-h2;
+.article-body > h2:first-child {
+  @apply mt-0 text-balance;
 }
-.article-body > h2::before {
-  @apply mb-3 block font-mono text-meta font-normal text-accent;
-  content: counter(article-h2, decimal-leading-zero);
+.article-body > h2:first-child + p {
+  @apply border-l-2 border-accent pl-5 text-[1.1875rem] leading-[1.6] text-fg md:text-[1.25rem];
 }
 .article-body > blockquote {
-  @apply my-12 border-l-4 py-1 pl-7 text-h2 font-normal leading-snug;
+  @apply my-12 border-l-4 py-1 pl-6 text-h3 font-normal leading-snug md:pl-7 md:text-h2;
+}
+.article-body img {
+  @apply w-full;
 }
 
 /* Film grain for the page heroes. */

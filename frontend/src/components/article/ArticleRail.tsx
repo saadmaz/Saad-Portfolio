@@ -73,7 +73,7 @@ export function ArticleRail({
 
   return (
     <>
-      <aside className="hidden xl:col-start-1 xl:row-start-1 xl:block xl:justify-self-end xl:pt-40">
+      <aside className="hidden xl:col-start-1 xl:row-start-1 xl:block">
         <div className="sticky top-28 flex w-16 flex-col items-center gap-6">
           {valid && (
             <time dateTime={date} className="flex flex-col items-center gap-1 text-center">
