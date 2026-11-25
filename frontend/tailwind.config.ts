@@ -61,6 +61,7 @@ export default {
           "65%": { transform: "scale(0.94) rotate(2deg)" },
           "100%": { transform: "scale(1) rotate(0deg)" },
         },
+        "slide-in": { from: { transform: "translateX(100%)" }, to: { transform: "none" } },
         float: {
           from: { transform: "translateY(0) rotate(0deg)" },
           to: { transform: "translateY(-14px) rotate(-1.5deg)" },
@@ -81,6 +82,7 @@ export default {
         "word-in": "word-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both",
         marquee: "marquee 48s linear infinite",
         "react-pop": "react-pop 450ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "slide-in": "slide-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both",
         float: "float 5s ease-in-out infinite alternate",
         drift: "drift 22s ease-in-out infinite alternate",
         "count-in": "count-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both",
