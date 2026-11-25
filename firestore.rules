@@ -70,6 +70,12 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Newsletter subscribers: written only by /api/subscribe (Admin SDK).
+    match /subscribers/{id} {
+      allow create: if false;
+      allow read, update, delete: if isAdmin();
+    }
+
     // ── Admin-only internal collections ──────────────────────────────
     match /activity_logs/{id} { allow read, write: if isAdmin(); }
 

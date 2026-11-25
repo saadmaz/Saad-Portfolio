@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import { Link } from "react-router-dom";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
@@ -62,6 +63,10 @@ export function Footer({ screen = false }: { screen?: boolean }) {
               {CONTACT.email}
             </a>
             <SocialLinks size="sm" className="mt-2" />
+            <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6">
+              <p className="text-sm font-medium">Notes from the build, in your inbox</p>
+              <SubscribeForm compact source="footer" />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 sm:gap-6">
             {COLUMNS.map((col) => (
