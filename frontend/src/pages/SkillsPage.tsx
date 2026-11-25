@@ -291,6 +291,22 @@ function SkillPanel({ skill, usage, onClose }: { skill: Item; usage?: SkillUsage
   );
 }
 
+const TIMELINE_MAX = 8;
+const LEVEL_MAX = 12;
+
+function MoreButton({ open, hidden, onClick }: { open: boolean; hidden: number; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={open}
+      className="self-start rounded-full px-1 font-mono text-meta text-fg-3 underline-offset-4 transition-colors hover:text-accent hover:underline"
+    >
+      {open ? "Show less" : `+${hidden} more`}
+    </button>
+  );
+}
+
 const SkillsPage = () => {
   const { data: all = [], isLoading } = useSkills();
   const { data: certs = [] } = useCertificates();
@@ -327,6 +343,14 @@ const SkillsPage = () => {
   );
   const experts = items.filter((s) => s.level === "Expert");
   const firstYear = Math.min(...items.map((s) => s.startYear).filter((y) => y > 1990), NOW);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const toggleMore = (key: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+
   const byYear = useMemo(() => {
     const m = new Map<number, Item[]>();
     for (const s of items) if (s.startYear > 1990) m.set(s.startYear, [...(m.get(s.startYear) ?? []), s]);
@@ -583,7 +607,7 @@ const SkillsPage = () => {
                   <span className="text-display-m font-medium leading-none">{year}</span>
                   <span className="font-mono text-meta text-fg-3">+{list.length} new</span>
                   <ul className="flex flex-col gap-2">
-                    {list.map((s, i) => (
+                    {(expanded.has(`y${year}`) ? list : list.slice(0, TIMELINE_MAX)).map((s, i) => (
                       <li
                         key={s.name}
                         className="flex translate-y-3 items-center gap-2.5 rounded-xl border border-line bg-surface/60 px-3 py-2 opacity-0 transition-[opacity,transform] duration-500 group-data-[in=true]:translate-y-0 group-data-[in=true]:opacity-100"
@@ -596,6 +620,13 @@ const SkillsPage = () => {
                       </li>
                     ))}
                   </ul>
+                  {list.length > TIMELINE_MAX && (
+                    <MoreButton
+                      open={expanded.has(`y${year}`)}
+                      hidden={list.length - TIMELINE_MAX}
+                      onClick={() => toggleMore(`y${year}`)}
+                    />
+                  )}
                 </div>
               ))}
             </Reveal>
@@ -636,25 +667,33 @@ const SkillsPage = () => {
                         }}
                       />
                     </span>
-                    <ul className="flex flex-wrap gap-2">
-                      {list.map((s) => (
+                    <ul className="flex flex-col gap-1.5">
+                      {(expanded.has(`l${l.key}`) ? list : list.slice(0, LEVEL_MAX)).map((s) => (
                         <li key={s.name}>
                           <button
                             type="button"
                             onClick={() => setOpen(s)}
-                            className="inline-flex h-9 items-center gap-2 rounded-full border border-line-2 bg-base pl-1.5 pr-3 text-sm transition-colors hover:text-fg"
+                            title={s.name}
+                            className="flex h-9 w-full items-center gap-2.5 rounded-full border border-line-2 bg-base pl-1.5 pr-3 text-left text-sm transition-colors hover:text-fg"
                             onMouseEnter={(e) => (e.currentTarget.style.borderColor = l.color)}
                             onMouseLeave={(e) => (e.currentTarget.style.borderColor = "")}
                           >
-                            <span className="size-6 rounded-full bg-surface p-1 text-[9px] text-fg-3">
+                            <span className="size-6 shrink-0 rounded-full bg-surface p-1 text-[9px] text-fg-3">
                               <Logo skill={s} className="size-full" />
                             </span>
-                            {s.name}
+                            <span className="min-w-0 truncate">{s.name}</span>
                           </button>
                         </li>
                       ))}
                       {list.length === 0 && <li className="text-sm text-fg-3">Nothing here yet.</li>}
                     </ul>
+                    {list.length > LEVEL_MAX && (
+                      <MoreButton
+                        open={expanded.has(`l${l.key}`)}
+                        hidden={list.length - LEVEL_MAX}
+                        onClick={() => toggleMore(`l${l.key}`)}
+                      />
+                    )}
                   </Reveal>
                 );
               })}
