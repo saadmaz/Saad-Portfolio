@@ -9,11 +9,11 @@ import { ProjectTile, Row } from "@/components/cards";
 import { eventPath } from "@/lib/paths";
 import { eventPhotoAlt } from "@/lib/imageAlt";
 import type { Event } from "@/types";
-import { SkillsShowcase } from "@/components/SkillsShowcase";
+import { ToolsMarquee } from "@/components/ToolsMarquee";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
-import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
+import { useCertificates, useEvents, useExperience } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
 import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
@@ -353,23 +353,25 @@ function Speaking() {
 }
 
 function Capabilities() {
-  const { data: skills = [] } = useSkills();
-  const groups = skills.filter((g) => g.skills?.length);
-  if (groups.length === 0) return null;
   return (
     <section
       className="section screen theme-light overflow-hidden border-t-0"
       aria-labelledby="capabilities-heading"
     >
       <div className="wrap">
-        <Reveal className="mb-12 flex flex-col gap-6 md:mb-12 md:gap-7 [@media(min-width:768px)_and_(max-height:799px)]:mb-8">
-          <Eyebrow counted>Capabilities</Eyebrow>
-          <h2 id="capabilities-heading" className="text-display-m font-medium">
-            What I <span className="soft">bring</span> to a team
-          </h2>
+        <Reveal className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between md:gap-7 [@media(min-width:768px)_and_(max-height:799px)]:mb-8">
+          <div className="flex flex-col gap-6 md:gap-7">
+            <Eyebrow counted>Capabilities</Eyebrow>
+            <h2 id="capabilities-heading" className="text-display-m font-medium">
+              Tools I <span className="soft">build with</span>
+            </h2>
+          </div>
+          <Button to="/skills">All skills</Button>
         </Reveal>
-        <SkillsShowcase groups={groups} />
       </div>
+      <Reveal>
+        <ToolsMarquee />
+      </Reveal>
     </section>
   );
 }
