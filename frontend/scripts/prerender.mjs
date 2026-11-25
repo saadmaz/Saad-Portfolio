@@ -40,6 +40,7 @@ import {
   categoryDescriptionOf,
   eventDescriptionOf,
   pageTitle,
+  CONTACT_PAGE_SCHEMA,
 } from "../src/lib/seo-content.js";
 import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
 import {
@@ -887,7 +888,7 @@ function prerenderStaticRoutes(shell, data) {
         : routePath === "/about"
           ? [person, ...pageSchemas(routePath, title)]
           : routePath === "/contact"
-            ? [...pageSchemas(routePath, title), CONTACT_FAQ_SCHEMA]
+            ? [...pageSchemas(routePath, title), CONTACT_FAQ_SCHEMA, CONTACT_PAGE_SCHEMA]
             : routePath === "/skills" && data.skills.length
               ? [
                   ...pageSchemas(routePath, title),

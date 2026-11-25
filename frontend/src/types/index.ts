@@ -271,6 +271,15 @@ export interface AboutSettings {
   now?: { building?: string; learning?: string; reading?: string };
 }
 
+/** site_settings/contact: availability shown on the Contact page, edited in the admin. */
+export interface ContactSettings {
+  status?: "available" | "limited" | "booked";
+  /** e.g. "Available for new projects" or "Booked until March". */
+  message?: string;
+  /** e.g. "within 24 hours". */
+  reply_time?: string;
+}
+
 export interface Hackathon {
   id: string;
   name: string;

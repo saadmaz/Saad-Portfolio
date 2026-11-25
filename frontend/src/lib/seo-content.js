@@ -285,6 +285,31 @@ export const CONTACT_SERVICES = [
   },
 ];
 
+/** ContactPage JSON-LD: who to contact and what they offer (used by ContactPage.tsx and the prerender). */
+export const CONTACT_PAGE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Saad Mazhar",
+  url: `${BASE_URL}/contact`,
+  mainEntity: {
+    "@type": "Person",
+    name: "Saad Mazhar",
+    url: BASE_URL,
+    email: "hello@saadmaz.com",
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "business inquiries",
+      email: "hello@saadmaz.com",
+      areaServed: "Worldwide",
+      availableLanguage: ["English"],
+    },
+    makesOffer: CONTACT_SERVICES.map((svc) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: svc.title, description: svc.body },
+    })),
+  },
+};
+
 export const CONTACT_FAQ = [
   {
     q: "What kind of work do you take on?",

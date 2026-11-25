@@ -315,7 +315,7 @@ const EventsPage = () => {
           <h2 className="text-display-m font-medium">
             Want me to host or speak <span className="soft">at your event?</span>
           </h2>
-          <Button to="/contact" size="lg">
+          <Button to="/contact?topic=hosting" size="lg">
             Send an invite
           </Button>
         </div>

@@ -12,6 +12,7 @@ import { byEventDateDesc } from "@/lib/eventDates";
 import { COLLECTIONS, fetchById, fetchCollection, fetchOrdered } from "@/lib/firestore";
 import type {
   AboutSettings,
+  ContactSettings,
   Award,
   Cause,
   Certificate,
@@ -40,6 +41,7 @@ export const ContentService = {
   getHackathons: () => fetchCollection<Hackathon>(COLLECTIONS.hackathons),
   /** Values and "Now" for the About page; null when unset or unreadable (sections then stay hidden). */
   getAboutSettings: () => fetchById<AboutSettings>(COLLECTIONS.siteSettings, "about").catch(() => null),
+  getContactSettings: () => fetchById<ContactSettings>(COLLECTIONS.siteSettings, "contact").catch(() => null),
   getTestimonials: () => fetchCollection<Testimonial>(COLLECTIONS.testimonials),
   getVolunteerExperience: () => fetchCollection<VolunteerExperience>(COLLECTIONS.volunteer),
   getEducation: () => fetchCollection<Education>(COLLECTIONS.education),

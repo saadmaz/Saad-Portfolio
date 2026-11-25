@@ -38,6 +38,9 @@ export const useAwards = () =>
 export const useLanguages = () =>
   useQuery({ queryKey: queryKeys.languages.all, queryFn: ContentService.getLanguages });
 
+export const useContactSettings = () =>
+  useQuery({ queryKey: queryKeys.contact.settings, queryFn: ContentService.getContactSettings });
+
 export const useAboutSettings = () =>
   useQuery({ queryKey: queryKeys.about.settings, queryFn: ContentService.getAboutSettings });
 
