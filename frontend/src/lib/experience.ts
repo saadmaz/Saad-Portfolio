@@ -72,7 +72,7 @@ export function normalizeExperience(docs: Experience[]): Company[] {
         name,
         logo: d.company_logo ?? d.companyLogo,
         illustration: d.journey_image || undefined,
-        url: d.companyUrl,
+        url: d.company_url || d.companyUrl,
         meta: [employmentType, d.location, locationType].filter(Boolean).join(" · "),
         employmentType,
         location: d.location,

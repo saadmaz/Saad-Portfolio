@@ -179,6 +179,8 @@ export interface Experience {
   company?: string;
   companyLogo?: string;
   companyUrl?: string;
+  /** Company website (new schema; companyUrl is the legacy alias). */
+  company_url?: string;
   employmentType?: string;
   startDate?: string;
   endDate?: string;
