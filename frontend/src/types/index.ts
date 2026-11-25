@@ -444,6 +444,15 @@ export interface Publication {
   link?: string;
   authors?: string[];
   tags?: string[];
+  /** paper | article | talk | book (see lib/publications.js). */
+  type?: string;
+  doi?: string;
+  /** Uploaded PDF. */
+  pdf?: string;
+  /** Publisher or venue logo. */
+  logo?: string;
+  abstract?: string;
+  featured?: boolean;
 }
 
 export interface Patent {

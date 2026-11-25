@@ -3,6 +3,7 @@ import { SubscribeForm } from "@/components/SubscribeForm";
 import { Link } from "react-router-dom";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
+import { usePatents, usePublications } from "@/hooks/useContent";
 
 type FooterLink = { label: string; to?: string; href?: string; download?: string };
 
@@ -37,6 +38,10 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
 ];
 
 export function Footer({ screen = false }: { screen?: boolean }) {
+  const { data: pubs } = usePublications();
+  const { data: patents } = usePatents();
+  // Hide the link while there's nothing to show (unknown while loading → keep it).
+  const hidePubs = pubs !== undefined && patents !== undefined && !pubs.length && !patents.length;
   return (
     <footer
       className={cn(
@@ -72,22 +77,24 @@ export function Footer({ screen = false }: { screen?: boolean }) {
             {COLUMNS.map((col) => (
               <div key={col.title} className="flex flex-col gap-3.5 sm:w-40">
                 <span className="label text-fg-3">{col.title}</span>
-                {col.links.map((l) =>
-                  l.to ? (
-                    <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
-                      {l.label}
-                    </Link>
-                  ) : (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      download={l.download}
-                      className="text-sm text-fg hover:text-accent"
-                    >
-                      {l.label}
-                    </a>
-                  ),
-                )}
+                {col.links
+                  .filter((l) => !(hidePubs && l.to === "/publications"))
+                  .map((l) =>
+                    l.to ? (
+                      <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <a
+                        key={l.label}
+                        href={l.href}
+                        download={l.download}
+                        className="text-sm text-fg hover:text-accent"
+                      >
+                        {l.label}
+                      </a>
+                    ),
+                  )}
               </div>
             ))}
           </div>
