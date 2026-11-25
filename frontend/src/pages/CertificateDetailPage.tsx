@@ -3,9 +3,11 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import NotFound from "./NotFound";
 import { Button, Eyebrow, PageHero, Skeleton, Tag } from "@/components/ui";
-import { Mark, Row } from "@/components/cards";
+import { Mark } from "@/components/cards";
+import { CertPaper } from "@/components/CertPaper";
+import { areaColors } from "@/lib/certAreas";
 import { useCertificate, useCertificates } from "@/hooks/useContent";
-import { monthYear, year } from "@/lib/format";
+import { monthYear } from "@/lib/format";
 import { BASE_URL } from "@/lib/seo-content";
 import { certificatePath } from "@/lib/paths";
 
@@ -27,7 +29,13 @@ const CertificateDetailPage = () => {
   // Old ID links land on the readable URL.
   if (cert.slug && id !== cert.slug) return <Navigate to={certificatePath(cert)} replace />;
 
-  const related = all.filter((c) => c.id !== cert.id && c.issuer === cert.issuer).slice(0, 4);
+  // Nearly every certificate shares an issuer, so related means the same learning area.
+  const related = all
+    .filter(
+      (c) => c.id !== cert.id && (cert.category ? c.category === cert.category : c.issuer === cert.issuer),
+    )
+    .slice(0, 3);
+  const color = areaColors(all).get(cert.category) ?? "#ff5f00";
   const pdf = cert.pdf_document_link;
   const meta = [
     [
@@ -48,7 +56,7 @@ const CertificateDetailPage = () => {
         // Thin pages kept out of search; the /certifications list is indexed.
         noIndex="follow"
       />
-      <PageHero className="mb-8" band="Saad Mazhar · Certificates">
+      <PageHero ambient className="mb-8" band="Saad Mazhar · Certificates">
         <div className="">
           <Link to="/certifications" className="text-sm text-fg-2 hover:text-fg">
             ← All certificates
@@ -73,15 +81,8 @@ const CertificateDetailPage = () => {
 
       <section className="wrap grid gap-12 pb-24 md:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-5 rounded-[24px] border border-line bg-surface p-5 md:p-8">
-          {/* The CSP blocks embedded PDFs (object-src 'none'), so this is a typeset card; the PDF opens in a tab. */}
-          <div className="flex aspect-[1.414] w-full flex-col items-center justify-center gap-3 rounded-lg bg-[#F5F2ED] px-6 text-center text-fg-inverse shadow-[0_24px_48px_-12px_rgb(0_0_0/0.5)]">
-            <span className="label opacity-60">Certificate of completion</span>
-            <span className="text-h1 font-medium">Saad Mazhar</span>
-            <span className="max-w-md text-h4 font-medium">{cert.title}</span>
-            <span className="mt-4 font-mono text-meta opacity-60">
-              {[monthYear(cert.issue_date), cert.issuer].filter(Boolean).join(" · ")}
-            </span>
-          </div>
+          {/* The CSP blocks embedded PDFs (object-src 'none'), so this is a drawn certificate; the PDF opens in a tab. */}
+          <CertPaper cert={cert} color={color} />
           <div className="flex flex-wrap gap-3">
             {cert.credential_url && <Button href={cert.credential_url}>Verify credential</Button>}
             {pdf && (
@@ -114,19 +115,16 @@ const CertificateDetailPage = () => {
       {related.length > 0 && (
         <section className="section">
           <div className="wrap">
-            <Eyebrow>More from {cert.issuer}</Eyebrow>
-            <div className="mt-10 grid border-b border-line-2 md:grid-cols-2 md:gap-x-6">
+            <Eyebrow>More in {cert.category || cert.issuer}</Eyebrow>
+            <ul className="mt-10 grid gap-5 md:grid-cols-3">
               {related.map((c) => (
-                <Row
-                  key={c.id}
-                  to={certificatePath(c)}
-                  mark={<Mark src={c.issuer_logo} label={c.issuer} />}
-                  title={<span className="block text-[1rem] md:text-h4">{c.title}</span>}
-                  sub={c.issuer}
-                  trail={year(c.issue_date)}
-                />
+                <li key={c.id}>
+                  <Link to={certificatePath(c)} className="block h-full">
+                    <CertPaper cert={c} color={color} className="h-full" />
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
       )}
