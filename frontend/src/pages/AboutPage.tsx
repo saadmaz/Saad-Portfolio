@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -33,6 +33,7 @@ import { companyPeriod, normalizeExperience } from "@/lib/experience";
 import { partsToLabel, range, year } from "@/lib/format";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
+import { useScrollFill } from "@/hooks/useScrollFill";
 import portrait from "@/assets/profile-photo.webp";
 
 type Kind = "work" | "education" | "award" | "hackathon";
@@ -78,33 +79,6 @@ function Mark_({ children }: { children: ReactNode }) {
       <span className="relative">{children}</span>
     </span>
   );
-}
-
-/** Journey rail that fills orange as the reader scrolls through it. */
-function useFill<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  const [fill, setFill] = useState(0);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setFill(1);
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const r = el.getBoundingClientRect();
-      setFill(Math.min(1, Math.max(0, (window.innerHeight * 0.65 - r.top) / Math.max(1, r.height))));
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-  return [ref, fill] as const;
 }
 
 const AboutPage = () => {
@@ -177,7 +151,7 @@ const AboutPage = () => {
       return next;
     });
   const shownMoments = moments.filter((m) => kinds.has(m.kind));
-  const [rail, fill] = useFill<HTMLOListElement>();
+  const [rail, fill] = useScrollFill<HTMLOListElement>();
 
   const firstYear = Math.min(
     new Date().getFullYear(),
