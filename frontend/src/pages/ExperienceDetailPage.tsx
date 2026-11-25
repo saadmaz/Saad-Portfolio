@@ -7,6 +7,7 @@ import NotFound from "./NotFound";
 import { PageHero, Reveal, SectionHeader, Skeleton, Tag } from "@/components/ui";
 import { Mark, ProjectCard } from "@/components/cards";
 import { Gallery } from "@/components/Gallery";
+import { Linkified } from "@/components/Linkified";
 import { useExperience, useSkills } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { companyPeriod, companyProjects, normalizeExperience, type Company } from "@/lib/experience";
@@ -158,7 +159,9 @@ function RoleJourney({ company }: { company: Company }) {
                 </span>
               </div>
               {r.description && (
-                <p className="mt-4 whitespace-pre-line text-body-l text-fg-2">{r.description}</p>
+                <p className="mt-4 whitespace-pre-line text-body-l text-fg-2">
+                  <Linkified text={r.description} />
+                </p>
               )}
               {r.skills.length > 0 && (
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -351,14 +354,14 @@ const ExperienceDetailPage = () => {
       <div className="counted">
         {/* 3 · Overview */}
         {company.description && (
-          <section className="section border-t-0" aria-labelledby="overview">
+          <section className="section theme-orange border-t-0" aria-labelledby="overview">
             <div className="wrap grid gap-10 md:grid-cols-[280px_1fr] md:gap-20">
               <Reveal>
                 <SectionHeader counted id="overview" label="Overview" title="The" soft="story" />
               </Reveal>
               <Reveal delay={120}>
                 <p className="whitespace-pre-line text-h3 font-light leading-relaxed text-fg md:text-[1.75rem] md:leading-[1.5]">
-                  {company.description}
+                  <Linkified text={company.description} />
                 </p>
               </Reveal>
             </div>
@@ -367,7 +370,7 @@ const ExperienceDetailPage = () => {
 
         {/* 4 · What I did */}
         {(cards.length > 0 || achievementsAsText) && (
-          <section className="section" aria-labelledby="what-i-did">
+          <section className="section theme-light border-t-0" aria-labelledby="what-i-did">
             <div className="wrap">
               <Reveal>
                 <SectionHeader
@@ -399,7 +402,7 @@ const ExperienceDetailPage = () => {
                               !c.title && "text-h4 font-normal leading-relaxed text-fg",
                             )}
                           >
-                            {c.description}
+                            <Linkified text={c.description} />
                           </p>
                         </Spotlight>
                       </Reveal>
@@ -410,7 +413,7 @@ const ExperienceDetailPage = () => {
                 <Reveal>
                   <Spotlight className="p-6 md:p-10">
                     <p className="whitespace-pre-line text-h4 font-normal leading-relaxed text-fg">
-                      {company.achievements}
+                      <Linkified text={company.achievements ?? ""} />
                     </p>
                   </Spotlight>
                 </Reveal>
@@ -437,7 +440,7 @@ const ExperienceDetailPage = () => {
 
         {/* 6 · Tech & tools */}
         {skills.length > 0 && (
-          <section className="section" aria-labelledby="tools">
+          <section className="section theme-light border-t-0" aria-labelledby="tools">
             <div className="wrap">
               <Reveal>
                 <SectionHeader counted id="tools" label="Tech & tools" title="What I" soft="worked with" />
