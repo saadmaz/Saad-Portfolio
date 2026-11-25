@@ -278,7 +278,7 @@ function StageCard({ event, tabIndex }: { event: Event; tabIndex?: number }) {
       />
       <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
         {event.role ? (
-          <span className="label inline-flex h-7 items-center gap-2 rounded-full bg-white/15 px-3 text-white backdrop-blur-md">
+          <span className="label inline-flex h-7 items-center gap-2 rounded-full bg-black/55 px-3 text-white backdrop-blur-md">
             <span aria-hidden className="size-1.5 rounded-full bg-accent" />
             {event.role}
           </span>
@@ -287,7 +287,7 @@ function StageCard({ event, tabIndex }: { event: Event; tabIndex?: number }) {
         )}
         <span
           aria-hidden
-          className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md transition-colors duration-300 group-hover/stage:bg-accent"
+          className="flex size-10 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md transition-colors duration-300 group-hover/stage:bg-accent"
         >
           <ArrowUpRight className="size-[18px] transition-transform duration-200 ease-out group-hover/stage:-translate-y-0.5 group-hover/stage:translate-x-0.5" />
         </span>
@@ -325,7 +325,7 @@ function Speaking() {
       </div>
       <Reveal>
         {/* Pauses on hover, keyboard focus or a press (touch); reduced motion gets a swipeable row. */}
-        <div className="group/stages overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:overflow-x-auto">
+        <div className="group/stages overflow-hidden motion-reduce:overflow-x-auto">
           <ul
             className="flex w-max animate-marquee group-focus-within/stages:[animation-play-state:paused] group-hover/stages:[animation-play-state:paused] group-active/stages:[animation-play-state:paused]"
             style={{ animationDuration: `${events.length * 8}s` }}
