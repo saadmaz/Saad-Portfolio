@@ -1,0 +1,3 @@
+# Vercel (Hobby) counts every file in api/ as a serverless function, tests included.
+# Tests run in CI, never on Vercel, so keep them out of the upload.
+api/**/*.test.ts
