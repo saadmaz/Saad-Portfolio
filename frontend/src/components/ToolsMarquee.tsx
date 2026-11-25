@@ -8,6 +8,7 @@ const files = import.meta.glob<string>("@/assets/tools/*.svg", {
 });
 
 const LABELS: Record<string, string> = {
+  amazonwebservices: "AWS",
   androidstudio: "Android Studio",
   cloudflare: "Cloudflare",
   css3: "CSS3",
@@ -54,7 +55,7 @@ function Row({ tools, reverse }: { tools: typeof TOOLS; reverse?: boolean }) {
   // Two copies so the -50% loop is seamless; the copy is hidden from assistive tech.
   const loop = [...tools, ...tools];
   return (
-    <div className="group/row overflow-hidden motion-reduce:overflow-x-auto">
+    <div className="group/row -my-4 overflow-hidden py-4 motion-reduce:overflow-x-auto">
       <ul
         className={cn(
           "flex w-max animate-marquee group-hover/row:[animation-play-state:paused]",
