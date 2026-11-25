@@ -263,6 +263,12 @@ export interface Language {
   name: string;
   level: string; // e.g., 'Native', 'Fluent', 'Professional'
   percentage: number;
+  /** Optional 0–100 breakdown shown on /about. */
+  speaking?: number;
+  reading?: number;
+  writing?: number;
+  /** Where it's used, e.g. "Hosting events, client work". */
+  note?: string;
 }
 
 /** site_settings/about: optional About page content edited in the admin. */

@@ -38,7 +38,6 @@ export const NAV_MENUS: NavMenu[] = [
       { title: "Education", href: "/education", description: "Academic background" },
       { title: "Events & Hosting", href: "/events", description: "Speaking and hosting" },
       { title: "Volunteer", href: "/about#volunteer", description: "Community involvement" },
-      { title: "Languages", href: "/languages", description: "Communication abilities" },
       { title: "Awards", href: "/about#awards", description: "Recognition and honors" },
     ],
   },

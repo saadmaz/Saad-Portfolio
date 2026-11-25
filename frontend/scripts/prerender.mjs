@@ -762,8 +762,6 @@ function staticBody(routePath, data) {
       return skillsHtml(data.skills);
     case "/certifications":
       return list(data.certificates, certLine);
-    case "/languages":
-      return list(data.languages, languageLine);
     case "/projects":
       return list(
         data.projects,
@@ -887,7 +885,6 @@ function staticCard(routePath, data) {
       soft: "the build",
       meta: data.posts.length ? `${data.posts.length} articles` : "",
     },
-    "/languages": { eyebrow: "Languages", title: "Languages I", soft: "speak and host in" },
     "/publications": { eyebrow: "Publications", title: "Published", soft: "work" },
     "/newsletters": { eyebrow: "Newsletter", title: "Notes, straight", soft: "to your inbox" },
   };
@@ -907,12 +904,10 @@ const CONTACT_FAQ_SCHEMA = {
 
 /**
  * Static pages kept out of the index: /projects until it lists a real case study
- * (an empty or stub-only listing reads as a soft 404), and /languages, a few
- * lines already covered on /about.
+ * (an empty or stub-only listing reads as a soft 404), and /publications while empty.
  */
 const thinStaticRoute = (routePath, data) =>
   (routePath === "/projects" && !data.projects.some(isProjectIndexable)) ||
-  routePath === "/languages" ||
   (routePath === "/publications" && !data.publications.length && !data.patents.length);
 
 function prerenderStaticRoutes(shell, data) {
@@ -1510,7 +1505,7 @@ function writeSitemaps(data) {
   if (data.education.length) main.push("/education");
   for (const c of experienceCompanies(data.experience))
     if (isCompanyIndexable(c)) main.push(`/experience/${c.slug}`);
-  // /languages is noindex (see thinStaticRoute), so it isn't submitted.
+  // /languages permanently redirects to /about#languages, so it isn't submitted.
   // Only projects whose pages are indexable (see src/lib/indexing.js).
   const projects = data.projects.filter(isProjectIndexable);
   const projectDates = projects.map((p) => toDateString(p.updated_at));
@@ -1660,8 +1655,8 @@ function writeLlmsFull(data) {
       );
   }
   if (data.languages.length) {
-    h(`Languages (${BASE_URL}/languages)`);
-    for (const l of data.languages) item(joinMeta(l.name, l.level));
+    h(`Languages (${BASE_URL}/about#languages)`);
+    for (const l of data.languages) item(joinMeta(l.name, l.level, l.note));
   }
   if (data.certificates.length) {
     h(`Certifications (${BASE_URL}/certifications)`);

@@ -491,16 +491,18 @@ const AboutPage = () => {
                 label="Languages"
                 title="Fluent in"
                 soft={languages.length === 3 ? "three" : String(languages.length)}
-                action={
-                  <Button to="/languages" variant="ghost">
-                    Details
-                  </Button>
-                }
               />
             </Reveal>
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {languages.map((l, i) => {
                 const lvl = languageLevel(l.level ?? "");
+                const breakdown = (
+                  [
+                    ["Speaking", l.speaking],
+                    ["Reading", l.reading],
+                    ["Writing", l.writing],
+                  ] as const
+                ).filter(([, v]) => typeof v === "number" && v > 0) as [string, number][];
                 return (
                   <li key={l.id}>
                     <Reveal
@@ -524,6 +526,28 @@ const AboutPage = () => {
                           </span>
                         ))}
                       </span>
+                      {breakdown.length > 0 && (
+                        <dl className="flex flex-col gap-2.5 border-t border-line pt-4">
+                          {breakdown.map(([k, v], si) => (
+                            <div key={k} className="grid grid-cols-[72px_1fr_36px] items-center gap-3">
+                              <dt className="label text-fg-3">{k}</dt>
+                              <dd className="h-1 overflow-hidden rounded-full bg-line-2">
+                                <span
+                                  className="block h-full origin-left scale-x-0 rounded-full bg-fg/70 transition-transform duration-700 ease-out group-data-[in=true]:scale-x-100"
+                                  style={{
+                                    width: `${Math.min(100, v)}%`,
+                                    transitionDelay: `${i * 90 + si * 100 + 500}ms`,
+                                  }}
+                                />
+                              </dd>
+                              <span className="text-right font-mono text-meta text-fg-3">
+                                {Math.min(100, v)}
+                              </span>
+                            </div>
+                          ))}
+                        </dl>
+                      )}
+                      {l.note && <p className="text-sm text-fg-2">{l.note}</p>}
                     </Reveal>
                   </li>
                 );
