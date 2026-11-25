@@ -414,6 +414,22 @@ const eduPeriod = (e) =>
     e.is_current ?? e.isCurrent,
   );
 const companyOf = (x) => x.company_name ?? x.company ?? "";
+/** Same rule as companySlug() in src/lib/experience.ts. */
+const companySlugOf = (x) => slugify(companyOf(x)) || "company";
+
+/** Experience docs grouped into companies (legacy one-role docs share a name). */
+function experienceCompanies(experience) {
+  const bySlug = new Map();
+  for (const x of experience) {
+    const slug = companySlugOf(x);
+    if (!bySlug.has(slug)) bySlug.set(slug, []);
+    bySlug.get(slug).push(x);
+  }
+  return [...bySlug.entries()].map(([slug, docs]) => ({ slug, name: companyOf(docs[0]), docs }));
+}
+
+/** A company page with real write-up gets indexed; a bare title-and-dates page doesn't. */
+const isCompanyIndexable = (c) => stripHtml(experienceHtml(c.docs)).split(" ").filter(Boolean).length >= 80;
 const expPeriod = (x) =>
   period(
     parts(x.start_month, x.start_year) || dateLabel(x.startDate),
@@ -453,7 +469,7 @@ function experienceHtml(experience) {
         : [{ role_title: x.title ?? x.position, description: x.description }];
       return [
         `<article>`,
-        `<h2>${escape(companyOf(x))}</h2>`,
+        `<h2><a href="/experience/${escape(companySlugOf(x))}">${escape(companyOf(x))}</a></h2>`,
         `<p>${escape(joinMeta(x.employment_type ?? x.employmentType, x.location_type ?? x.location, expPeriod(x)))}</p>`,
         ...roles.map((r) =>
           [
@@ -1137,6 +1153,40 @@ function prerenderEvents(shell, events) {
   }
 }
 
+function prerenderExperience(shell, experience) {
+  for (const c of experienceCompanies(experience)) {
+    const routePath = `/experience/${c.slug}`;
+    const first = c.docs[0];
+    const role = first.roles?.[0]?.role_title ?? first.position ?? "";
+    const description = truncate(
+      stripHtml(first.description || first.roles?.[0]?.description || "") ||
+        `${role ? `${role} at ` : ""}${c.name}. Saad Mazhar's work experience.`,
+      160,
+    );
+    const bodyHtml = [experienceHtml(c.docs), '<p><a href="/experience">All experience</a></p>'].join("\n");
+    writeRoute(
+      routePath,
+      injectContent(shell, {
+        path: routePath,
+        title: `${c.name}${role ? `: ${role}` : ""}`,
+        description,
+        schemas: [
+          {
+            "@context": "https://schema.org",
+            "@type": "OrganizationRole",
+            roleName: role || undefined,
+            member: author,
+            memberOf: { "@type": "Organization", name: c.name },
+          },
+        ],
+        bodyHtml,
+        noIndex: isCompanyIndexable(c) ? false : "follow",
+        og: { eyebrow: "Experience", title: c.name, meta: joinMeta(role, expPeriod(first)) },
+      }),
+    );
+  }
+}
+
 function prerenderCertificates(shell, certificates) {
   for (const c of certificates) {
     const routePath = `/certifications/${keyOf(c)}`;
@@ -1251,6 +1301,8 @@ function writeSitemaps(data) {
   if (data.newsletters.length) main.push("/newsletters");
   if (data.publications.length) main.push("/publications");
   if (data.education.length) main.push("/education");
+  for (const c of experienceCompanies(data.experience))
+    if (isCompanyIndexable(c)) main.push(`/experience/${c.slug}`);
   // /languages is noindex (see thinStaticRoute), so it isn't submitted.
   // Only projects whose pages are indexable (see src/lib/indexing.js).
   const projects = data.projects.filter(isProjectIndexable);
@@ -1437,6 +1489,7 @@ async function main() {
   prerenderBlogIndexes(shell, data);
   prerenderEvents(shell, data.events);
   prerenderCertificates(shell, data.certificates);
+  prerenderExperience(shell, data.experience);
   console.log(
     `✅ Detail pages prerendered: ${data.projects.length} projects, ${data.posts.length} posts, ${data.events.length} events, ${data.certificates.length} certificates.`,
   );

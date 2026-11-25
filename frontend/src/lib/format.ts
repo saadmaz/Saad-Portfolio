@@ -54,6 +54,8 @@ export function partsToLabel(month?: string, yr?: number): string {
 
 export function range(start: string, end: string | null | undefined, current?: boolean): string {
   const to = current ? "Present" : end || "";
+  // No start date: show the end alone rather than a dangling "– Present".
+  if (!start) return to;
   return to ? `${start} – ${to}` : start;
 }
 
