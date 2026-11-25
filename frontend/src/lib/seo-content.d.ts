@@ -33,4 +33,6 @@ export const PAGE_SEO: Record<
   }
 >;
 export const CONTACT_SERVICES: { title: string; body: string }[];
+/** ContactPage JSON-LD shared by ContactPage.tsx and the prerender. */
+export const CONTACT_PAGE_SCHEMA: Record<string, unknown>;
 export const CONTACT_FAQ: { q: string; a: string }[];

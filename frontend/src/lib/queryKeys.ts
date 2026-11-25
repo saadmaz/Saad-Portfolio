@@ -30,6 +30,7 @@ export const queryKeys = {
   languages: { all: ["languages"] as const },
   hackathons: { all: ["hackathons"] as const },
   about: { settings: ["site_settings", "about"] as const },
+  contact: { settings: ["site_settings", "contact"] as const },
   testimonials: { all: ["testimonials"] as const },
   volunteer: { all: ["volunteer"] as const },
   education: { all: ["education"] as const },

@@ -123,7 +123,7 @@ const EventDetailPage = () => {
               Event page
             </Button>
           )}
-          <Button to="/contact" variant="ghost">
+          <Button to="/contact?topic=hosting" variant="ghost">
             Invite me to host
           </Button>
         </aside>

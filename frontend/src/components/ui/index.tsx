@@ -426,6 +426,7 @@ interface FieldProps {
   multiline?: boolean;
   error?: string;
   autoComplete?: string;
+  maxLength?: number;
 }
 
 export function Field({
@@ -439,6 +440,7 @@ export function Field({
   multiline,
   error,
   autoComplete,
+  maxLength,
 }: FieldProps) {
   const cls = cn(
     "w-full rounded-xl border bg-surface px-[18px] py-4 text-[1rem] text-fg placeholder:text-fg-3 transition-colors focus:bg-surface-2 focus:outline-none",
@@ -455,6 +457,7 @@ export function Field({
           placeholder={placeholder}
           required={required}
           rows={5}
+          maxLength={maxLength}
           className={cn(cls, "resize-y")}
         />
       ) : (
@@ -466,6 +469,7 @@ export function Field({
           placeholder={placeholder}
           required={required}
           autoComplete={autoComplete}
+          maxLength={maxLength}
           className={cls}
         />
       )}
