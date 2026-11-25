@@ -21,6 +21,7 @@ import { resolveRedirect } from "./src/lib/article-core.js";
 import { classifyPath, type ContentKind } from "./src/lib/edge-routing.js";
 
 export const config = {
+  runtime: "nodejs",
   matcher: ["/((?!api/|assets/|og/|sitemaps/|icons/|_vercel|.*\\.[a-z0-9]+$).*)"],
 };
 
