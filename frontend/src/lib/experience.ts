@@ -30,6 +30,9 @@ export interface Company {
   locationType?: string;
   description?: string;
   achievements?: string;
+  metrics: { value: string; label: string }[];
+  highlights: { title: string; description: string }[];
+  testimonial?: { quote: string; name: string; role?: string };
   media: ExperienceMedia[];
   featured: boolean;
   order?: number;
@@ -77,6 +80,9 @@ export function normalizeExperience(docs: Experience[]): Company[] {
         // Legacy docs use `description` for the single role, so only roles[] docs have a company one.
         description: d.roles?.length ? d.description : undefined,
         achievements: d.achievements ?? d.impact,
+        metrics: (d.impact_metrics ?? []).filter((m) => m?.value && m?.label),
+        highlights: (d.highlights ?? []).filter((h) => h?.title).slice(0, 3),
+        testimonial: d.testimonial?.quote && d.testimonial.name ? d.testimonial : undefined,
         media: [],
         featured: d.is_featured ?? false,
         order: d.display_order ?? d.order_index,
