@@ -186,7 +186,7 @@ function SelectedWork() {
       ) : (
         <Reveal>
           {/* Pauses on hover or keyboard focus; with reduced motion it becomes a plain swipeable row. */}
-          <div className="group/work overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-reduce:overflow-x-auto">
+          <div className="group/work overflow-hidden motion-reduce:overflow-x-auto">
             <ul
               className="flex w-max animate-marquee group-hover/work:[animation-play-state:paused] group-focus-within/work:[animation-play-state:paused]"
               style={{ animationDuration: `${projects.length * 7}s` }}
