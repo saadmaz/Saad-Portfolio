@@ -529,6 +529,71 @@ function skillsHtml(skills) {
 }
 
 /** Plain-language answers about the stack, built from the CMS so they never go stale. */
+/** "2,000+" → 2000, "1.2k" → 1200 (mirrors audienceOf in src/lib/eventStats.ts). */
+const audienceOf = (text) => {
+  const m = String(text ?? "")
+    .replace(/,/g, "")
+    .match(/(\d+(?:\.\d+)?)\s*(k)?/i);
+  return m ? Math.round(Number(m[1]) * (m[2] ? 1000 : 1)) : 0;
+};
+
+/** ItemList of every event page plus plain answers about Saad's stage work. */
+function eventsSchemas(events) {
+  const roles = new Map();
+  for (const e of events) if (e.role) roles.set(e.role, (roles.get(e.role) ?? 0) + 1);
+  const breakdown = [...roles]
+    .sort((a, b) => b[1] - a[1])
+    .map(([r, n]) => `${n} as ${r.toLowerCase()}`)
+    .join(", ");
+  const audience = events.reduce((n, e) => n + audienceOf(e.attendees), 0);
+  const recent = events
+    .filter((e) => ["Host", "Speaker", "Compere"].includes(e.role))
+    .slice(0, 5)
+    .map((e) => e.title);
+  const qa = [
+    [
+      "How many events has Saad Mazhar hosted or spoken at?",
+      `Saad Mazhar has taken part in ${events.length} events${breakdown ? `: ${breakdown}` : ""}.`,
+    ],
+    audience > 0 && [
+      "How big are the events Saad Mazhar has been part of?",
+      `Together they drew more than ${audience.toLocaleString("en-US")} attendees.`,
+    ],
+    recent.length && [
+      "Which events has Saad Mazhar hosted recently?",
+      `Recent ones include ${recent.join(", ")}.`,
+    ],
+    [
+      "Can I book Saad Mazhar to host or speak at an event?",
+      `Yes. Send an invite through ${BASE_URL}/contact.`,
+    ],
+  ].filter(Boolean);
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Events - Saad Mazhar",
+      url: `${BASE_URL}/events`,
+      numberOfItems: events.length,
+      itemListElement: events.map((e, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: e.title,
+        url: `${BASE_URL}/events/${keyOf(e)}`,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: qa.map(([q, a]) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
+    },
+  ];
+}
+
 function skillsFaqSchema(skills) {
   const all = skills.flatMap((g) => g.skills);
   const names = (lvl) => [...new Set(all.filter((s) => s.level === lvl).map((s) => s.name))];
@@ -829,7 +894,9 @@ function prerenderStaticRoutes(shell, data) {
                   skillsListSchema(data.skills),
                   skillsFaqSchema(data.skills),
                 ]
-              : pageSchemas(routePath, title);
+              : routePath === "/events" && data.events.length
+                ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
+                : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {

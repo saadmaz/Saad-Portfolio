@@ -273,7 +273,9 @@ export function EventCard({ event, className }: { event: Event; className?: stri
         )}
       </div>
       <span className="font-mono text-meta text-fg-3">
-        {[monthYear(event.date), event.location].filter(Boolean).join(" · ")}
+        {[monthYear(event.date), event.location, event.attendees && `${event.attendees} people`]
+          .filter(Boolean)
+          .join(" · ")}
       </span>
       <h3 className="text-h4 font-medium transition-colors group-hover:text-accent">{event.title}</h3>
       <span className="-mt-2 text-sm text-fg-2">{event.organizer}</span>
