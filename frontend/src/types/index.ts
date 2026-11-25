@@ -263,6 +263,12 @@ export interface Language {
   percentage: number;
 }
 
+/** site_settings/about: optional About page content edited in the admin. */
+export interface AboutSettings {
+  values?: { title: string; description: string }[];
+  now?: { building?: string; learning?: string; reading?: string };
+}
+
 export interface Hackathon {
   id: string;
   name: string;
