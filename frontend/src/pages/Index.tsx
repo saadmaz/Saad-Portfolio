@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Check } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Reveal, SectionHeader, Skeleton } from "@/components/ui";
-import { EventCard, ProjectTile, Row } from "@/components/cards";
+import { ProjectTile, Row } from "@/components/cards";
+import { eventPath } from "@/lib/paths";
+import { eventPhotoAlt } from "@/lib/imageAlt";
+import type { Event } from "@/types";
 import { SkillsShowcase } from "@/components/SkillsShowcase";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
@@ -245,33 +249,66 @@ function ExperienceList() {
   );
 }
 
-const scrollBtn =
-  "flex size-11 items-center justify-center rounded-full border border-line-2 text-fg-2 transition-colors hover:border-line-3 hover:text-fg disabled:pointer-events-none disabled:opacity-30";
+/** Full-bleed stage photo with the story overlaid; a lit poster when there's no photo yet. */
+function StageCard({ event, tabIndex }: { event: Event; tabIndex?: number }) {
+  const cover = event.image || event.images?.[0];
+  return (
+    <Link
+      to={eventPath(event)}
+      tabIndex={tabIndex}
+      className="group/stage relative block aspect-[4/5] overflow-hidden rounded-[24px] bg-[rgb(17_17_19)] sm:aspect-[5/6]"
+    >
+      {cover ? (
+        <img
+          src={cover}
+          alt={eventPhotoAlt(event, cover)}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover/stage:scale-[1.05]"
+        />
+      ) : (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_95_0/0.45),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.15),transparent_60%)]"
+        />
+      )}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/0 transition-opacity duration-500 group-hover/stage:opacity-95"
+      />
+      <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+        {event.role ? (
+          <span className="label inline-flex h-7 items-center gap-2 rounded-full bg-white/15 px-3 text-white backdrop-blur-md">
+            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+            {event.role}
+          </span>
+        ) : (
+          <span />
+        )}
+        <span
+          aria-hidden
+          className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md transition-colors duration-300 group-hover/stage:bg-accent"
+        >
+          <ArrowUpRight className="size-[18px] transition-transform duration-200 ease-out group-hover/stage:-translate-y-0.5 group-hover/stage:translate-x-0.5" />
+        </span>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-5 text-white md:p-6">
+        <span className="font-mono text-meta text-white/70">
+          {[monthYear(event.date), event.location].filter(Boolean).join(" · ")}
+        </span>
+        <h3 className="line-clamp-2 text-h4 font-medium leading-snug md:text-h3">{event.title}</h3>
+        {event.organizer && <span className="text-sm text-white/70">{event.organizer}</span>}
+      </div>
+    </Link>
+  );
+}
 
 function Speaking() {
-  // Every event, newest first (sorted by the service), in one horizontal rail.
+  // Every event, newest first (sorted by the service), looping in one strip.
   const { data: events = [] } = useEvents();
-  const railRef = useRef<HTMLDivElement>(null);
-  const [edges, setEdges] = useState({ start: true, end: false });
-
-  const updateEdges = useCallback(() => {
-    const el = railRef.current;
-    if (!el) return;
-    setEdges({ start: el.scrollLeft <= 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
-  }, []);
-
-  useEffect(() => {
-    updateEdges();
-    window.addEventListener("resize", updateEdges);
-    return () => window.removeEventListener("resize", updateEdges);
-  }, [updateEdges, events.length]);
-
-  const scroll = (dir: 1 | -1) => {
-    const el = railRef.current;
-    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
-  };
-
   if (events.length === 0) return null;
+  // Two copies so the -50% loop is seamless; speed stays constant however many there are.
+  const loop = [...events, ...events];
   return (
     <section className="section screen theme-light border-t-0" aria-labelledby="speaking-heading">
       <div className="wrap">
@@ -282,49 +319,35 @@ function Speaking() {
             label="Speaking & hosting"
             title="Every stage,"
             soft="a new story"
-            action={
-              <div className="flex items-center gap-3">
-                <div className="hidden gap-2 md:flex">
-                  <button
-                    type="button"
-                    onClick={() => scroll(-1)}
-                    disabled={edges.start}
-                    aria-label="Previous events"
-                    className={scrollBtn}
-                  >
-                    <ChevronLeft className="size-5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => scroll(1)}
-                    disabled={edges.end}
-                    aria-label="Next events"
-                    className={scrollBtn}
-                  >
-                    <ChevronRight className="size-5" />
-                  </button>
-                </div>
-                <Button to="/events" variant="ghost">
-                  All events
-                </Button>
-              </div>
-            }
+            action={<Button to="/events">All events</Button>}
           />
         </Reveal>
-        <div
-          ref={railRef}
-          onScroll={updateEdges}
-          className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 md:mx-0 md:scroll-px-0 md:gap-6 md:px-0 [&::-webkit-scrollbar]:hidden"
-        >
-          {events.map((e) => (
-            <EventCard
-              key={e.id}
-              event={e}
-              className="w-[78%] shrink-0 snap-start md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
-            />
-          ))}
-        </div>
       </div>
+      <Reveal>
+        {/* Pauses on hover, keyboard focus or a press (touch); reduced motion gets a swipeable row. */}
+        <div className="group/stages overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:overflow-x-auto">
+          <ul
+            className="flex w-max animate-marquee group-focus-within/stages:[animation-play-state:paused] group-hover/stages:[animation-play-state:paused] group-active/stages:[animation-play-state:paused]"
+            style={{ animationDuration: `${events.length * 8}s` }}
+          >
+            {loop.map((e, i) => {
+              const copy = i >= events.length;
+              return (
+                <li
+                  key={`${e.id}-${i}`}
+                  aria-hidden={copy || undefined}
+                  className={cn(
+                    "w-[clamp(260px,30vw,400px)] shrink-0 pr-4 md:pr-6",
+                    copy && "motion-reduce:hidden",
+                  )}
+                >
+                  <StageCard event={e} tabIndex={copy ? -1 : undefined} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </Reveal>
     </section>
   );
 }
