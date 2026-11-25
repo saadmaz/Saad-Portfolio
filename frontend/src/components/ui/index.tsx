@@ -118,7 +118,16 @@ export function Meter({ value, max = 4, className }: { value: number; max?: numb
 }
 
 /** Fades children up once they enter the viewport. */
-export function Reveal({ children, className }: { children: ReactNode; className?: string }) {
+export function Reveal({
+  children,
+  className,
+  delay,
+}: {
+  children: ReactNode;
+  className?: string;
+  /** Stagger siblings: ms to wait after entering view. */
+  delay?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -137,7 +146,12 @@ export function Reveal({ children, className }: { children: ReactNode; className
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={ref} data-in={inView} className={cn("reveal", className)}>
+    <div
+      ref={ref}
+      data-in={inView}
+      className={cn("reveal", className)}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+    >
       {children}
     </div>
   );

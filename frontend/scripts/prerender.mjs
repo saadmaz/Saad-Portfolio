@@ -481,7 +481,14 @@ function experienceHtml(experience) {
             .filter(Boolean)
             .join("\n"),
         ),
+        x.impact_metrics?.length && list(x.impact_metrics, (m) => `${escape(m.value)} ${escape(m.label)}`),
+        ...(x.highlights ?? []).map(
+          (h) => `<h3>${escape(h.title)}</h3>
+${paras(h.description)}`,
+        ),
         paras(x.achievements),
+        x.testimonial?.quote &&
+          `<blockquote><p>${escape(x.testimonial.quote)}</p><footer>${escape(joinMeta(x.testimonial.name, x.testimonial.role))}</footer></blockquote>`,
         x.skills?.length && `<p>Skills: ${escape(x.skills.join(", "))}</p>`,
         `</article>`,
       ]
