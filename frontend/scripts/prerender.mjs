@@ -390,7 +390,10 @@ async function loadData() {
     experience: experience
       .filter((x) => x.order_index !== undefined)
       .sort((a, b) => a.order_index - b.order_index),
-    skills: skills.filter((g) => g.skills?.length),
+    // Strip-only tools (toolOnly) stay off the public skills list.
+    skills: skills
+      .map((g) => ({ ...g, skills: (g.skills ?? []).filter((s) => !s.toolOnly) }))
+      .filter((g) => g.skills.length),
     awards: awards.sort(byDateDesc("date")),
     volunteer: volunteer.sort(byDateDesc("startDate")),
     languages,

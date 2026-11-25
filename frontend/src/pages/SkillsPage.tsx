@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, Empty, FilterPill, Meter, PageHeader, Reveal, Skeleton, Stat } from "@/components/ui";
@@ -7,7 +7,13 @@ import { SKILL_LEVEL } from "@/lib/levels";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 
 const SkillsPage = () => {
-  const { data = [], isLoading } = useSkills();
+  const { data: all = [], isLoading } = useSkills();
+  // Strip-only tools (set in the CMS) belong to the home page, not this list.
+  const data = useMemo(
+    () =>
+      all.map((g) => ({ ...g, skills: g.skills.filter((s) => !s.toolOnly) })).filter((g) => g.skills.length),
+    [all],
+  );
   const { data: certs = [] } = useCertificates();
   const [filter, setFilter] = useState("All");
   const total = data.reduce((n, g) => n + g.skills.length, 0);
