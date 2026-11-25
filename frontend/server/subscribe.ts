@@ -12,7 +12,7 @@
  * mail scanners that pre-fetch links can't confirm or unsubscribe anyone.
  * Responses never reveal whether an address is already on the list.
  *
- * Env: FIREBASE_* (see _lib/firebase.ts), SENDGRID_API_KEY, FROM_EMAIL,
+ * Env: FIREBASE_* (see _lib/firebase.ts), RESEND_API_KEY, FROM_EMAIL,
  *      SUBSCRIBE_SECRET (32+ chars; falls back to PREVIEW_SECRET).
  */
 
@@ -100,7 +100,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   }
 
   if (!emailConfigured()) {
-    console.error("[subscribe] SendGrid not configured - confirmation email skipped");
+    console.error("[subscribe] Resend not configured - confirmation email skipped");
     return res.status(500).json({ error: "Could not send the confirmation email. Please try again later." });
   }
   try {
@@ -113,7 +113,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       ),
     });
   } catch (err) {
-    console.error("[subscribe] SendGrid send failed:", err);
+    console.error("[subscribe] Resend send failed:", err);
     return res.status(500).json({ error: "Could not send the confirmation email. Please try again later." });
   }
   return res.status(200).json({ success: true });

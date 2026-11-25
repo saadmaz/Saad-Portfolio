@@ -1,23 +1,24 @@
 /**
- * Sends one email through SendGrid's v3 REST API (plain fetch, so it runs on
- * Cloudflare). Env: SENDGRID_API_KEY (starts with "SG."), FROM_EMAIL.
+ * Sends one email through Resend's REST API (plain fetch, so it runs on
+ * Cloudflare). Env: RESEND_API_KEY (starts with "re_"), FROM_EMAIL (an
+ * address on a domain verified in Resend, e.g. hello@saadmaz.com).
  */
 
-export const emailConfigured = () => (process.env.SENDGRID_API_KEY ?? "").startsWith("SG.");
+export const emailConfigured = () => (process.env.RESEND_API_KEY ?? "").startsWith("re_");
 
 export async function sendEmail(msg: { to: string; subject: string; html: string; replyTo?: string }) {
-  const key = process.env.SENDGRID_API_KEY ?? "";
-  if (!key.startsWith("SG.")) throw new Error("SendGrid is not configured");
-  const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
+  const key = process.env.RESEND_API_KEY ?? "";
+  if (!key.startsWith("re_")) throw new Error("Resend is not configured");
+  const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
     body: JSON.stringify({
-      personalizations: [{ to: [{ email: msg.to }] }],
-      from: { email: process.env.FROM_EMAIL || "noreply@saadmaz.com" },
-      ...(msg.replyTo ? { reply_to: { email: msg.replyTo } } : {}),
+      from: `Saad Mazhar <${process.env.FROM_EMAIL || "hello@saadmaz.com"}>`,
+      to: [msg.to],
+      ...(msg.replyTo ? { reply_to: msg.replyTo } : {}),
       subject: msg.subject,
-      content: [{ type: "text/html", value: msg.html }],
+      html: msg.html,
     }),
   });
-  if (!res.ok) throw new Error(`SendGrid returned ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  if (!res.ok) throw new Error(`Resend returned ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }

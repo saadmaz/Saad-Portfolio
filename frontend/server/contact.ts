@@ -8,7 +8,7 @@
  *   1. Rejects non-POST requests, bots (honeypot) and floods (rate limit)
  *   2. Validates and normalises the request body
  *   3. Saves the message to Firestore (server credentials)
- *   4. Sends an email notification via SendGrid
+ *   4. Sends an email notification via Resend
  *
  * Responds 200 if at least one of (3) or (4) succeeded, 500 otherwise.
  *
@@ -16,9 +16,9 @@
  *   FIREBASE_PROJECT_ID    – e.g. saadportfolio03
  *   FIREBASE_CLIENT_EMAIL  – service account email
  *   FIREBASE_PRIVATE_KEY   – service account private key (\n may be escaped)
- *   SENDGRID_API_KEY       – starts with SG.
+ *   RESEND_API_KEY         – starts with re_
  *   TO_EMAIL               – where contact emails are delivered
- *   FROM_EMAIL             – verified SendGrid sender address
+ *   FROM_EMAIL             – sender on a domain verified in Resend
  */
 
 import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
@@ -135,7 +135,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   }
 
   if (!emailConfigured() || !process.env.TO_EMAIL) {
-    console.warn("[contact] SendGrid not configured - email skipped");
+    console.warn("[contact] Resend not configured - email skipped");
   } else {
     try {
       await sendEmail({
@@ -146,7 +146,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       });
       emailed = true;
     } catch (emailErr) {
-      console.error("[contact] SendGrid send failed:", emailErr);
+      console.error("[contact] Resend send failed:", emailErr);
     }
   }
 

@@ -18,14 +18,14 @@ Content is edited in a separate admin app (`Saad-Portfolio-Admin`). This reposit
 | Motion        | Framer Motion (`LazyMotion`)                       |
 | Data          | TanStack Query v5 over the Firestore web SDK       |
 | SEO           | react-helmet-async + build-time prerender/sitemap  |
-| Contact form  | Pages Function → Firestore (service account) + SendGrid |
+| Contact form  | Pages Function → Firestore (service account) + Resend |
 | Quality gates | ESLint (+ jsx-a11y), Vitest, Prettier, husky       |
 
 ## Architecture
 
 ```
 browser ──read──▶ Firestore            (rules: public read of live content, admin-only write)
-browser ──POST──▶ /api/contact ──▶ Firestore contact_messages + SendGrid email
+browser ──POST──▶ /api/contact ──▶ Firestore contact_messages + Resend email
 browser ──POST──▶ /api/reactions, /api/track   (reactions, first-party analytics, 404 log)
 CMS     ──POST──▶ /api/admin              (preview links, rebuilds, scheduler; admin token)
 cron    ──GET───▶ /api/cron/publish-scheduled   (scheduled publishing)
@@ -100,7 +100,7 @@ Routing lives in `frontend/functions/_middleware.ts`; security headers and the C
 `frontend/src/lib/security-headers.js` (written to `dist/_headers` at build).
 
 Variables and secrets (Pages → Settings): every key in `frontend/.env.example`.
-The `FIREBASE_*` service-account values and `SENDGRID_API_KEY` are server-only -
+The `FIREBASE_*` service-account values and `RESEND_API_KEY` are server-only -
 never prefix them with `VITE_`.
 
 **Firebase rules and indexes** are deployed separately:
