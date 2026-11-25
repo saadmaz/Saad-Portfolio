@@ -13,7 +13,7 @@ import { ToolsMarquee } from "@/components/ToolsMarquee";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts } from "@/hooks/useBlog";
-import { useCertificates, useEvents, useExperience } from "@/hooks/useContent";
+import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
 import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
@@ -353,6 +353,16 @@ function Speaking() {
 }
 
 function Capabilities() {
+  const { data: skillSets = [] } = useSkills();
+  // Logos come from the CMS (skills with an icon and "In tools strip" on).
+  const tools = useMemo(() => {
+    const seen = new Set<string>();
+    return skillSets
+      .flatMap((g) => g.skills ?? [])
+      .filter((s) => s.showInTools && s.icon && !seen.has(s.name) && seen.add(s.name))
+      .map((s) => ({ id: s.name, src: s.icon!, label: s.name }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [skillSets]);
   return (
     <section
       className="section screen theme-light overflow-hidden border-t-0"
@@ -370,7 +380,7 @@ function Capabilities() {
         </Reveal>
       </div>
       <Reveal>
-        <ToolsMarquee />
+        <ToolsMarquee tools={tools} />
       </Reveal>
     </section>
   );

@@ -44,14 +44,21 @@ const LABELS: Record<string, string> = {
   web3js: "Web3.js",
 };
 
-const TOOLS = Object.entries(files)
+export interface Tool {
+  id: string;
+  src: string;
+  label: string;
+}
+
+/** Bundled fallback, used only until the CMS has tools with logos. */
+const BUNDLED: Tool[] = Object.entries(files)
   .map(([path, src]) => {
     const id = path.split("/").pop()!.split("-")[0].replace(".svg", "");
     return { id, src, label: LABELS[id] ?? id };
   })
   .sort((a, b) => a.label.localeCompare(b.label));
 
-function Row({ tools, reverse }: { tools: typeof TOOLS; reverse?: boolean }) {
+function Row({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
   // Two copies so the -50% loop is seamless; the copy is hidden from assistive tech.
   const loop = [...tools, ...tools];
   return (
@@ -91,7 +98,8 @@ function Row({ tools, reverse }: { tools: typeof TOOLS; reverse?: boolean }) {
 }
 
 /** Two rows of tool logos drifting in opposite directions; each pauses on hover. */
-export function ToolsMarquee() {
+export function ToolsMarquee({ tools }: { tools?: Tool[] }) {
+  const TOOLS = tools?.length ? tools : BUNDLED;
   const half = Math.ceil(TOOLS.length / 2);
   return (
     <div className="flex flex-col gap-3 md:gap-4">
