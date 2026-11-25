@@ -226,7 +226,7 @@ export const PAGE_SEO = {
     title: "Skills & Tech Stack",
     h1: "Saad Mazhar's skills and tech stack",
     description:
-      "Saad Mazhar's technical skill set: React, TypeScript, Flutter, Python, AI tools, and cloud platforms.",
+      "Saad Mazhar's tech stack: React, TypeScript, Next.js, Python, Flutter, AWS and AI tools, with proficiency, years used and official links for each.",
   },
   "/certifications": {
     title: "Certifications",

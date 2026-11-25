@@ -55,6 +55,7 @@ import {
   toDate,
 } from "../src/lib/project-seo.js";
 import { submitChangedUrls } from "./indexnow.mjs";
+import { skillLink } from "../src/lib/skill-links.js";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import {
   articleSchema,
@@ -509,10 +510,84 @@ const awardLine = (a) => escape(joinMeta(a.title, a.issuer, dateLabel(a.date)));
 const volunteerLine = (v) => escape(joinMeta(`${v.role}, ${v.organization}`, volPeriod(v)));
 const languageLine = (l) => escape(joinMeta(l.name, l.level));
 
+/** Labels the /skills page shows for each stored level. */
+const LEVEL_LABEL = {
+  Expert: "Daily driver",
+  Advance: "Proficient",
+  Intermediate: "Familiar",
+  Beginner: "Learning",
+};
+const skillMeta = (s) => joinMeta(LEVEL_LABEL[s.level] ?? s.level, s.startYear && `since ${s.startYear}`);
+
 function skillsHtml(skills) {
-  return skills
-    .map((g) => `<h2>${escape(g.category)}</h2>\n${list(g.skills, (s) => escape(joinMeta(s.name, s.level)))}`)
-    .join("\n");
+  const line = (s) => {
+    const href = skillLink(s);
+    const name = href ? `<a href="${escape(href)}" rel="noopener">${escape(s.name)}</a>` : escape(s.name);
+    return `${name} - ${escape(skillMeta(s))}`;
+  };
+  return skills.map((g) => `<h2>${escape(g.category)}</h2>\n${list(g.skills, line)}`).join("\n");
+}
+
+/** Plain-language answers about the stack, built from the CMS so they never go stale. */
+function skillsFaqSchema(skills) {
+  const all = skills.flatMap((g) => g.skills);
+  const names = (lvl) => [...new Set(all.filter((s) => s.level === lvl).map((s) => s.name))];
+  const main = [...names("Expert"), ...names("Advance")].slice(0, 15);
+  const learning = names("Beginner").slice(0, 8);
+  const first = Math.min(...all.map((s) => s.startYear).filter((y) => y > 1990));
+  const qa = [
+    main.length && [
+      "What is Saad Mazhar's main tech stack?",
+      `Saad Mazhar works mainly with ${main.join(", ")}.`,
+    ],
+    Number.isFinite(first) && [
+      "How long has Saad Mazhar been building software?",
+      `Since ${first}, across ${all.length} tools and ${skills.length} disciplines (${skills.map((g) => g.category).join(", ")}).`,
+    ],
+    learning.length && [
+      "What is Saad Mazhar learning right now?",
+      `Currently learning ${learning.join(", ")}.`,
+    ],
+  ].filter(Boolean);
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: qa.map(([q, a]) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+}
+
+/** Every skill as a DefinedTerm linked to its official site (mirrors skillsSchema in SkillsPage.tsx). */
+function skillsListSchema(skills) {
+  const all = skills.flatMap((g) => g.skills.map((s) => ({ ...s, category: g.category })));
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Skills and tools - Saad Mazhar",
+    url: `${BASE_URL}/skills`,
+    numberOfItems: all.length,
+    itemListElement: all.map((s, i) => {
+      const href = skillLink(s);
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "DefinedTerm",
+          name: s.name,
+          description: joinMeta(
+            LEVEL_LABEL[s.level] ?? s.level,
+            s.category,
+            s.startYear && `since ${s.startYear}`,
+          ),
+          inDefinedTermSet: s.category,
+          ...(href ? { sameAs: href } : {}),
+        },
+      };
+    }),
+  };
 }
 
 const section = (title, body) => (body ? `<section>\n<h2>${escape(title)}</h2>\n${body}\n</section>` : "");
@@ -527,8 +602,18 @@ function personSchema(data) {
       ...(e.school_website_url ? { url: e.school_website_url } : {}),
     }));
   if (data.awards.length) schema.award = data.awards.map((a) => joinMeta(a.title, a.issuer));
-  const skills = data.skills.flatMap((g) => g.skills.map((s) => s.name));
-  if (skills.length) schema.knowsAbout = [...new Set(skills)].slice(0, 40);
+  // Strongest first, each tied to its official site so engines resolve the exact entity.
+  const rank = { Expert: 0, Advance: 1, Intermediate: 2, Beginner: 3 };
+  const seen = new Set();
+  const skills = data.skills
+    .flatMap((g) => g.skills)
+    .sort((a, b) => (rank[a.level] ?? 2) - (rank[b.level] ?? 2))
+    .filter((s) => !seen.has(s.name) && seen.add(s.name));
+  if (skills.length)
+    schema.knowsAbout = skills.slice(0, 40).map((s) => {
+      const href = skillLink(s);
+      return href ? { "@type": "Thing", name: s.name, sameAs: href } : s.name;
+    });
   if (data.languages.length) schema.knowsLanguage = data.languages.map((l) => l.name);
   return schema;
 }
@@ -738,7 +823,13 @@ function prerenderStaticRoutes(shell, data) {
           ? [person, ...pageSchemas(routePath, title)]
           : routePath === "/contact"
             ? [...pageSchemas(routePath, title), CONTACT_FAQ_SCHEMA]
-            : pageSchemas(routePath, title);
+            : routePath === "/skills" && data.skills.length
+              ? [
+                  ...pageSchemas(routePath, title),
+                  skillsListSchema(data.skills),
+                  skillsFaqSchema(data.skills),
+                ]
+              : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1452,7 +1543,15 @@ function writeLlmsFull(data) {
   }
   if (data.skills.length) {
     h(`Skills (${BASE_URL}/skills)`);
-    for (const g of data.skills) item(`${g.category}: ${g.skills.map((s) => s.name).join(", ")}`);
+    for (const g of data.skills)
+      item(
+        `${g.category}: ${g.skills
+          .map((s) => {
+            const href = skillLink(s);
+            return `${href ? `[${s.name}](${href})` : s.name} (${skillMeta(s)})`;
+          })
+          .join(", ")}`,
+      );
   }
   if (data.languages.length) {
     h(`Languages (${BASE_URL}/languages)`);

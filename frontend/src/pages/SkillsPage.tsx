@@ -30,6 +30,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { normalizeExperience } from "@/lib/experience";
 import { certificatePath } from "@/lib/paths";
 import { skillKey, skillUsage, type SkillUsage } from "@/lib/skillUsage";
+import { skillLink } from "@/lib/skill-links.js";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
 import type { Skill } from "@/types";
@@ -168,6 +169,7 @@ function SkillPanel({ skill, usage, onClose }: { skill: Item; usage?: SkillUsage
   }, [onClose]);
   const lvl = levelOf(skill);
   const years = yearsOf(skill);
+  const href = skillLink(skill);
   const groups = [
     {
       title: "Projects",
@@ -251,6 +253,16 @@ function SkillPanel({ skill, usage, onClose }: { skill: Item; usage?: SkillUsage
               </dd>
             </div>
           </dl>
+          {href && (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-line-2 px-4 py-2 text-sm text-fg-2 transition-colors hover:border-accent hover:text-accent"
+            >
+              {skill.name} official site <ArrowUpRight aria-hidden className="size-4" />
+            </a>
+          )}
         </div>
         <div className="flex flex-col gap-8 p-6 md:p-8">
           <span className="label text-fg-3">Where I’ve used it</span>
@@ -305,6 +317,32 @@ function MoreButton({ open, hidden, onClick }: { open: boolean; hidden: number; 
       {open ? "Show less" : `+${hidden} more`}
     </button>
   );
+}
+
+/** ItemList of every skill as a DefinedTerm linked to its official site, for search and answer engines. */
+function skillsSchema(items: Item[]) {
+  if (!items.length) return undefined;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Skills and tools - Saad Mazhar",
+    url: `${BASE_URL}/skills`,
+    numberOfItems: items.length,
+    itemListElement: items.map((s, i) => {
+      const href = skillLink(s);
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "DefinedTerm",
+          name: s.name,
+          description: `${levelOf(s).label} · ${s.category}${s.startYear ? ` · since ${s.startYear}` : ""}`,
+          inDefinedTermSet: s.category,
+          ...(href ? { sameAs: href } : {}),
+        },
+      };
+    }),
+  };
 }
 
 const SkillsPage = () => {
@@ -378,6 +416,7 @@ const SkillsPage = () => {
         title={PAGE_SEO["/skills"].title}
         description={PAGE_SEO["/skills"].description}
         url={`${BASE_URL}/skills`}
+        structuredData={skillsSchema(items)}
       />
 
       {/* 1 · Hero */}
