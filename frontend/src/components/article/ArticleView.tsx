@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, EyeOff, Mail } from "lucide-react";
 import { Button, Media, Reveal, SectionHeader, Tag } from "@/components/ui";
@@ -227,7 +228,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
         )}
       </div>
 
-      {/* Subscribe band, linking to the newsletters page for now. */}
+      {/* Subscribe band. */}
       {!preview && (
         <section
           className="theme-orange relative overflow-hidden py-20 md:py-28"
@@ -246,9 +247,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
                 New posts, <span className="font-light text-fg-2">straight to your inbox.</span>
               </h2>
             </div>
-            <Button to="/newsletters" size="lg" variant="secondary" className="border-fg/40">
-              Read the newsletters
-            </Button>
+            <SubscribeForm compact onAccent source="blog" className="w-full md:max-w-[460px]" />
           </Reveal>
         </section>
       )}
