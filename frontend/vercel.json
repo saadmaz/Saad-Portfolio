@@ -2,6 +2,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/languages",
+      "destination": "/about#languages",
+      "permanent": true
+    },
+    {
       "source": "/logo.png",
       "destination": "/icons/logo-v4-512.png",
       "permanent": true

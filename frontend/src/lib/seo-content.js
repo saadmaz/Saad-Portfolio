@@ -252,11 +252,6 @@ export const PAGE_SEO = {
     description:
       "Articles, research papers, and other published work by Saad Mazhar, startup founder and full-stack developer in Colombo, Sri Lanka.",
   },
-  "/languages": {
-    title: "Languages",
-    h1: "Languages Saad Mazhar speaks",
-    description: "The languages Saad Mazhar speaks and hosts events in, with proficiency for each.",
-  },
   "/education": {
     title: "Education",
     h1: "Saad Mazhar's education",

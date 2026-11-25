@@ -13,7 +13,6 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { label: "Education", to: "/education" },
       { label: "Events & Hosting", to: "/events" },
-      { label: "Languages", to: "/languages" },
       { label: "Awards", to: "/about#awards" },
     ],
   },

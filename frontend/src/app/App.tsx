@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Analytics } from "@vercel/analytics/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ScrollToTop } from "@/hooks/useScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -12,7 +12,6 @@ const ProjectDetailPage = lazy(() => import("../pages/ProjectDetailPage"));
 const ExperiencePage = lazy(() => import("../pages/ExperiencePage"));
 const ExperienceDetailPage = lazy(() => import("../pages/ExperienceDetailPage"));
 const SkillsPage = lazy(() => import("../pages/SkillsPage"));
-const LanguagesPage = lazy(() => import("../pages/LanguagesPage"));
 const CertificationsPage = lazy(() => import("../pages/CertificationsPage"));
 const CertificateDetailPage = lazy(() => import("../pages/CertificateDetailPage"));
 const AboutPage = lazy(() => import("../pages/AboutPage"));
@@ -48,7 +47,7 @@ const App = () => (
               <Route path="/experience" element={<ExperiencePage />} />
               <Route path="/experience/:slug" element={<ExperienceDetailPage />} />
               <Route path="/skills" element={<SkillsPage />} />
-              <Route path="/languages" element={<LanguagesPage />} />
+              <Route path="/languages" element={<Navigate to="/about#languages" replace />} />
               <Route path="/certifications" element={<CertificationsPage />} />
               <Route path="/certifications/:id" element={<CertificateDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
