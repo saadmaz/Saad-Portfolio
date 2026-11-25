@@ -295,7 +295,15 @@ export function PageHero({
 }
 
 /** Headline words rising out of a clipped line, one after another. */
-function RisingWords({ text, from = 0, className }: { text: string; from?: number; className?: string }) {
+export function RisingWords({
+  text,
+  from = 0,
+  className,
+}: {
+  text: string;
+  from?: number;
+  className?: string;
+}) {
   const words = text.split(" ");
   return (
     <>

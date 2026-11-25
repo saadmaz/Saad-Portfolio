@@ -100,43 +100,6 @@ export function Byline({
   );
 }
 
-/** Cover image with caption and credit; respects the focal point chosen in the CMS. */
-export function CoverFigure({ post }: { post: BlogPost }) {
-  const cover = coverOf(post);
-  if (!cover) return null;
-  const hasCaption = cover.caption || cover.credit;
-  return (
-    <figure className="wrap">
-      <Media
-        asset={cover as ImageAsset}
-        alt={cover.alt || post.title}
-        natural
-        sizes="(min-width: 1296px) 1200px, 100vw"
-        priority
-      />
-      {hasCaption && (
-        <figcaption className="mx-auto mt-4 max-w-prose text-center text-sm text-fg-3">
-          {cover.caption}
-          {cover.caption && cover.credit && " · "}
-          {cover.credit &&
-            (cover.creditUrl ? (
-              <a
-                href={cover.creditUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 hover:text-fg"
-              >
-                {cover.credit}
-              </a>
-            ) : (
-              cover.credit
-            ))}
-        </figcaption>
-      )}
-    </figure>
-  );
-}
-
 export function SourcesList({ sources, className }: { sources: ArticleSource[]; className?: string }) {
   if (!sources.length) return null;
   return (
@@ -337,7 +300,6 @@ export function ArticleCard({
   );
 }
 
-/** Previous (older) / next (newer) article links at the end of a post. */
 export function ArticlePager({
   previous,
   next,

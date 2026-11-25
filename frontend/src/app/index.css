@@ -193,6 +193,30 @@
   }
 }
 
+/* Blog post body on top of .prose-cms: a larger opening paragraph with an
+   orange drop cap, numbered section headings and heavier pull quotes. */
+.article-body {
+  counter-reset: article-h2;
+}
+.article-body > p:first-of-type {
+  @apply text-[1.3125rem] leading-[1.65] text-fg;
+}
+.article-body > p:first-of-type::first-letter {
+  @apply float-left mr-3 mt-1.5 font-medium text-accent;
+  font-size: 4.4em;
+  line-height: 0.82;
+}
+.article-body > h2 {
+  counter-increment: article-h2;
+}
+.article-body > h2::before {
+  @apply mb-3 block font-mono text-meta font-normal text-accent;
+  content: counter(article-h2, decimal-leading-zero);
+}
+.article-body > blockquote {
+  @apply my-12 border-l-4 py-1 pl-7 text-h2 font-normal leading-snug;
+}
+
 /* Film grain for the page heroes. */
 .grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
