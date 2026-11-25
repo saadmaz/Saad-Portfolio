@@ -57,6 +57,7 @@ import {
 } from "../src/lib/project-seo.js";
 import { submitChangedUrls } from "./indexnow.mjs";
 import { skillLink } from "../src/lib/skill-links.js";
+import { publicationSchema } from "../src/lib/publications.js";
 import { eventPhotos, eventPhotoAlt } from "../src/lib/imageAlt.js";
 import {
   articleSchema,
@@ -289,6 +290,7 @@ const EMPTY = {
   volunteer: [],
   languages: [],
   publications: [],
+  patents: [],
   newsletters: [],
   authors: [],
   series: [],
@@ -345,6 +347,7 @@ async function loadData() {
     volunteer,
     languages,
     publications,
+    patents,
     newsletters,
     authors,
     series,
@@ -362,6 +365,7 @@ async function loadData() {
     all("volunteer_experience"),
     all("languages"),
     all("publications"),
+    all("patents"),
     all("newsletters"),
     all("authors"),
     all("blog_series"),
@@ -400,6 +404,7 @@ async function loadData() {
     volunteer: volunteer.sort(byDateDesc("startDate")),
     languages,
     publications: publications.sort(byDateDesc("date")),
+    patents: patents.sort(byDateDesc("filingDate")),
     newsletters: newsletters.sort(byDateDesc("date")),
     authors,
     series: series.filter((s) => s.published === true),
@@ -527,6 +532,22 @@ function skillsHtml(skills) {
     return `${name} - ${escape(skillMeta(s))}`;
   };
   return skills.map((g) => `<h2>${escape(g.category)}</h2>\n${list(g.skills, line)}`).join("\n");
+}
+
+/** Every publication as a ScholarlyArticle (or talk/book) authored by Saad. */
+function publicationsSchema(publications) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Publications - Saad Mazhar",
+    url: `${BASE_URL}/publications`,
+    numberOfItems: publications.length,
+    itemListElement: publications.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: publicationSchema(p, PERSON_REF),
+    })),
+  };
 }
 
 /** Plain-language answers about the stack, built from the CMS so they never go stale. */
@@ -756,11 +777,24 @@ function staticBody(routePath, data) {
           `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a> - ${escape(joinMeta(dateLabel(p.date), p.excerpt))}`,
       );
     case "/publications":
-      return list(
-        data.publications,
-        (p) =>
-          `${p.link ? `<a href="${escape(p.link)}">${escape(p.title)}</a>` : escape(p.title)} - ${escape(joinMeta(p.publisher, dateLabel(p.date)))}`,
-      );
+      return [
+        list(
+          data.publications,
+          (p) =>
+            `${p.link ? `<a href="${escape(p.link)}">${escape(p.title)}</a>` : escape(p.title)} - ${escape(joinMeta(p.publisher, dateLabel(p.date), p.authors?.join(", ")))}`,
+        ),
+        data.patents.length &&
+          section(
+            "Patents",
+            list(
+              data.patents,
+              (x) =>
+                `${x.link ? `<a href="${escape(x.link)}">${escape(x.title)}</a>` : escape(x.title)} - ${escape(joinMeta(x.status, x.patentOffice, x.patentNumber))}`,
+            ),
+          ),
+      ]
+        .filter(Boolean)
+        .join("\n");
     case "/newsletters":
       return list(
         data.newsletters,
@@ -877,7 +911,9 @@ const CONTACT_FAQ_SCHEMA = {
  * lines already covered on /about.
  */
 const thinStaticRoute = (routePath, data) =>
-  (routePath === "/projects" && !data.projects.some(isProjectIndexable)) || routePath === "/languages";
+  (routePath === "/projects" && !data.projects.some(isProjectIndexable)) ||
+  routePath === "/languages" ||
+  (routePath === "/publications" && !data.publications.length && !data.patents.length);
 
 function prerenderStaticRoutes(shell, data) {
   const person = personSchema(data);
@@ -895,9 +931,11 @@ function prerenderStaticRoutes(shell, data) {
                   skillsListSchema(data.skills),
                   skillsFaqSchema(data.skills),
                 ]
-              : routePath === "/events" && data.events.length
-                ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
-                : pageSchemas(routePath, title);
+              : routePath === "/publications" && data.publications.length
+                ? [...pageSchemas(routePath, title), publicationsSchema(data.publications)]
+                : routePath === "/events" && data.events.length
+                  ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
+                  : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1468,7 +1506,7 @@ function writeSitemaps(data) {
 
   const main = [...ALWAYS_INDEXED_ROUTES];
   if (data.newsletters.length) main.push("/newsletters");
-  if (data.publications.length) main.push("/publications");
+  if (data.publications.length || data.patents.length) main.push("/publications");
   if (data.education.length) main.push("/education");
   for (const c of experienceCompanies(data.experience))
     if (isCompanyIndexable(c)) main.push(`/experience/${c.slug}`);
