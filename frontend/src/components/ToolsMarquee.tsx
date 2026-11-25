@@ -97,9 +97,12 @@ function Row({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
   );
 }
 
+const MIN_CMS_TOOLS = 8;
+
 /** Two rows of tool logos drifting in opposite directions; each pauses on hover. */
 export function ToolsMarquee({ tools }: { tools?: Tool[] }) {
-  const TOOLS = tools?.length ? tools : BUNDLED;
+  // A strip of one or two logos on repeat looks broken; wait for the CMS to have a real set.
+  const TOOLS = (tools?.length ?? 0) >= MIN_CMS_TOOLS ? tools! : BUNDLED;
   const half = Math.ceil(TOOLS.length / 2);
   return (
     <div className="flex flex-col gap-3 md:gap-4">
