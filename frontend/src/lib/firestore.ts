@@ -48,6 +48,7 @@ export const COLLECTIONS = {
   authors: "authors",
   blogSeries: "blog_series",
   blogSettings: "blog_settings",
+  siteSettings: "site_settings",
   blogReactions: "blog_reactions",
   redirects: "redirects",
 } as const;

@@ -31,6 +31,7 @@ service cloud.firestore {
     match /organizations/{id}        { allow read: if true; allow write: if isAdmin(); }
     match /causes/{id}               { allow read: if true; allow write: if isAdmin(); }
     match /hosting/{id}              { allow read: if true; allow write: if isAdmin(); }
+    match /site_settings/{id}        { allow read: if true; allow write: if isAdmin(); }
 
     // ── Blog / editorial CMS ─────────────────────────────────────────
     // Drafts, scheduled and archived posts are private: the public can only
