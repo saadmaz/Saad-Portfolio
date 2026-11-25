@@ -20,6 +20,7 @@ export const DETAIL_ROUTES = [
   { re: /^\/events\/([^/]+)$/, kind: "event" },
   { re: /^\/certifications\/([^/]+)$/, kind: "certificate" },
   { re: /^\/projects\/([^/]+)$/, kind: "project" },
+  { re: /^\/experience\/([^/]+)$/, kind: "experience" },
   { re: /^\/authors\/([^/]+)$/, kind: "author" },
 ];
 

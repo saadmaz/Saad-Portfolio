@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Reveal, Tag } from "@/components/ui";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "@/components/ui";
 import { Mark } from "@/components/cards";
 import { companyPeriod, type Company } from "@/lib/experience";
 import { roadPath, type Point } from "@/lib/journey";
@@ -29,45 +31,40 @@ function Stop({ company }: { company: Company }) {
 
 function CompanyCard({ company, index }: { company: Company; index: number }) {
   return (
-    <article className="rounded-[22px] border border-line bg-surface/70 p-6 backdrop-blur-sm md:p-8">
+    <Link
+      to={`/experience/${company.slug}`}
+      className="group/card block rounded-[22px] border border-line bg-surface/70 p-6 backdrop-blur-sm transition-[border-color,background-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-accent/40 hover:bg-surface hover:shadow-[0_24px_60px_-28px_rgb(0_0_0/0.8)] md:p-8"
+    >
       <div className="flex items-center gap-3">
         <span className="label text-accent">{pad(index + 1)}</span>
         <span aria-hidden className="h-px w-8 bg-line-3" />
         <span className="font-mono text-meta text-fg-3">{companyPeriod(company)}</span>
       </div>
-      <div className="mt-4 flex items-center gap-3">
-        {/* The logo already stands on the road when there's no illustration. */}
-        {company.illustration && <Mark src={company.logo} label={company.name} className="size-9" />}
-        <h2 className="text-h2 font-medium">
-          {company.url ? (
-            <a href={company.url} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
-              {company.name}
-            </a>
-          ) : (
-            company.name
-          )}
-        </h2>
+      <div className="mt-4 flex items-center gap-3.5">
+        <Mark src={company.logo} label={company.name} className="size-11 rounded-[12px]" />
+        <h2 className="text-h2 font-medium transition-colors group-hover/card:text-accent">{company.name}</h2>
       </div>
       {company.meta && <p className="mt-2 font-mono text-meta text-fg-3">{company.meta}</p>}
-      <ol className="mt-6 flex flex-col gap-6">
+      <ol className="mt-6 flex flex-col gap-5">
         {company.roles.map((r) => (
-          <li key={r.title + r.period} className="flex flex-col gap-3 border-l border-line-2 pl-5">
+          <li key={r.title + r.period} className="flex flex-col gap-2 border-l border-line-2 pl-5">
             <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
               <h3 className="text-h4 font-medium">{r.title}</h3>
               <span className="font-mono text-meta text-fg-3">{r.period}</span>
             </div>
-            {r.description && <p className="whitespace-pre-line text-fg-2">{r.description}</p>}
-            {r.skills.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {r.skills.map((s) => (
-                  <Tag key={s}>{s}</Tag>
-                ))}
-              </div>
-            )}
+            {/* The full story lives on the company page. */}
+            {r.description && <p className="line-clamp-2 text-fg-2">{r.description}</p>}
           </li>
         ))}
       </ol>
-    </article>
+      <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-fg-2 transition-colors group-hover/card:text-accent">
+        View details
+        <ArrowUpRight
+          aria-hidden
+          className="size-4 transition-transform duration-200 ease-out group-hover/card:-translate-y-0.5 group-hover/card:translate-x-0.5"
+        />
+      </span>
+    </Link>
   );
 }
 

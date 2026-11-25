@@ -125,7 +125,7 @@ async function contentExists(kind: ContentKind, key: string): Promise<boolean | 
         ]);
         break;
       default:
-        return null; // categories are derived from posts; let the page decide
+        return null; // categories and experience slugs are derived (no stored field); let the page decide
     }
     cache.set(cacheKey, { at: Date.now(), value: found });
     return found;

@@ -10,6 +10,7 @@ const Index = lazy(() => import("../pages/Index"));
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
 const ProjectDetailPage = lazy(() => import("../pages/ProjectDetailPage"));
 const ExperiencePage = lazy(() => import("../pages/ExperiencePage"));
+const ExperienceDetailPage = lazy(() => import("../pages/ExperienceDetailPage"));
 const SkillsPage = lazy(() => import("../pages/SkillsPage"));
 const LanguagesPage = lazy(() => import("../pages/LanguagesPage"));
 const CertificationsPage = lazy(() => import("../pages/CertificationsPage"));
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:slug" element={<ProjectDetailPage />} />
               <Route path="/experience" element={<ExperiencePage />} />
+              <Route path="/experience/:slug" element={<ExperienceDetailPage />} />
               <Route path="/skills" element={<SkillsPage />} />
               <Route path="/languages" element={<LanguagesPage />} />
               <Route path="/certifications" element={<CertificationsPage />} />
