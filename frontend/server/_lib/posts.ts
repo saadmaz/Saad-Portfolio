@@ -1,4 +1,4 @@
-/** Published-post lookup shared by api/blog-page and api/share-image. */
+/** Published-post lookup used by server/blog-page. */
 
 import { adminDb, hasAdminCredentials } from "./firebase.js";
 import type { BlogPost } from "../../src/types/blog.js";

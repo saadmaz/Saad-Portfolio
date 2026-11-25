@@ -1,5 +1,5 @@
 # Normalise line endings to LF in the repo and in every checkout, so builds
-# are byte-identical on Windows and on Vercel/CI (the CSP pins a SHA-256 of
+# are byte-identical on Windows and on Cloudflare/CI (the CSP pins a SHA-256 of
 # the inline script in index.html - CRLF would change that hash).
 * text=auto eol=lf
 

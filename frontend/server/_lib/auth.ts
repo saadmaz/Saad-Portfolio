@@ -2,13 +2,13 @@
  * Admin authentication for CMS-only endpoints.
  *
  * The CMS sends the signed-in user's Firebase ID token as a bearer token.
- * We verify it with the Admin SDK (signature, expiry, revocation) and then
+ * We verify it against Google's keys (signature, issuer, audience, expiry) and then
  * require the same single admin identity the Firestore rules allow
  * (ADMIN_EMAIL, verified). Fails closed when ADMIN_EMAIL isn't configured.
  */
 
-import type { VercelRequest } from "@vercel/node";
-import { adminAuth } from "./firebase.js";
+import type { ApiRequest } from "./adapter.js";
+import { verifyIdToken } from "./google.js";
 
 export type AdminCheck = { ok: true; email: string } | { ok: false; status: 401 | 403 | 500; error: string };
 
@@ -28,8 +28,8 @@ export function isAdminClaims(claims: TokenClaims, adminEmail: string | undefine
 }
 
 export async function requireAdmin(
-  req: VercelRequest,
-  verify: (token: string) => Promise<TokenClaims> = (t) => adminAuth().verifyIdToken(t, true),
+  req: ApiRequest,
+  verify: (token: string) => Promise<TokenClaims> = verifyIdToken,
 ): Promise<AdminCheck> {
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail) return { ok: false, status: 500, error: "ADMIN_EMAIL is not configured" };

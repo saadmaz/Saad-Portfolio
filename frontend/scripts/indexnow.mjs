@@ -11,7 +11,7 @@
  * after the last successful submit and sends only the URLs that changed, so
  * CMS edits and new posts are picked up with no CMS involvement.
  *
- * Runs only on Vercel production builds (VERCEL_ENV=production) with
+ * Runs only on Cloudflare Pages production builds (CF_PAGES_BRANCH=main) with
  * Firebase Admin credentials; INDEXNOW_DISABLED=1 turns it off. Never fails
  * the build. Engines fetch a submitted URL some minutes later, by which time
  * this build is normally live.
@@ -31,7 +31,7 @@ export function changedUrls(current, previous = {}) {
 
 export async function submitChangedUrls(hashes, { baseUrl }) {
   if (process.env.INDEXNOW_DISABLED === "1") return console.log("ℹ️  IndexNow: disabled.");
-  if (process.env.VERCEL_ENV !== "production")
+  if (process.env.CF_PAGES_BRANCH !== "main")
     return console.log("ℹ️  IndexNow: skipped (not a production build).");
   try {
     const { getApps } = await import("firebase-admin/app");

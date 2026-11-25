@@ -15,7 +15,7 @@
  *     parked as draft after MAX_ATTEMPTS so a broken post can't loop forever.
  */
 
-import type { Firestore } from "firebase-admin/firestore";
+import type { Firestore } from "./firestore.js";
 import { normalizePath, planSlugRedirect, publishBlockers } from "../../src/lib/article-core.js";
 import type { BlogPost } from "../../src/types/blog";
 

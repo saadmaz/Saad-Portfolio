@@ -1,14 +1,14 @@
 /**
- * Triggers a production rebuild through a Vercel Deploy Hook so the
+ * Triggers a production rebuild through a Cloudflare Pages deploy hook so the
  * prerendered pages (crawler HTML, social cards, llms-full.txt) pick up
  * newly published or changed articles. Feeds and the blog sitemap are
- * served live by api/feed.ts and don't need this.
+ * served live by server/feed.ts and don't need this.
  *
- * Env: VERCEL_DEPLOY_HOOK_URL (Vercel → Project → Settings → Git → Deploy Hooks).
+ * Env: DEPLOY_HOOK_URL (Cloudflare → Workers & Pages → project → Settings → Builds → Deploy hooks).
  * Throttled through Firestore so a burst of edits queues one build.
  */
 
-import type { Firestore } from "firebase-admin/firestore";
+import type { Firestore } from "./firestore.js";
 
 export const REBUILD_COOLDOWN_MS = 2 * 60 * 1000;
 
@@ -21,7 +21,7 @@ export async function triggerRebuild(
   reason: string,
   now = Date.now(),
 ): Promise<RebuildResult> {
-  const hook = process.env.VERCEL_DEPLOY_HOOK_URL;
+  const hook = process.env.DEPLOY_HOOK_URL;
   if (!hook) return { triggered: false, reason: "not-configured" };
 
   const ref = db.collection("system").doc("rebuild");

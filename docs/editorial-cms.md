@@ -7,7 +7,7 @@ CMS usage notes live in the admin repo's `docs/blog-cms.md`.
 ## 1. Architecture
 
 ```
- Admin CMS (Vite SPA)                         Public site (Vite SPA + Vercel functions)
+ Admin CMS (Vite SPA)                         Public site (Vite SPA + Pages Functions)
  ─────────────────────                        ──────────────────────────────────────────
  TipTap editor, panels, autosave              /blog, /blog/:slug, /blog/category/:c,
         │  Firebase SDK (admin account)        /blog/series/:s, /authors/:slug, /preview/:id
@@ -15,17 +15,17 @@ CMS usage notes live in the admin repo's `docs/blog-cms.md`.
    ┌──────────── Cloud Firestore ◀─────────────────────┘
    │  rules: public reads only published content
    │
-   │◀── Admin SDK ── api/cron/publish-scheduled   scheduled publishing (Vercel Cron + GitHub Actions)
-   │◀── Admin SDK ── api/admin                    preview links, rebuild, run scheduler, status
-   │◀── Admin SDK ── api/preview                  signed draft preview data
-   │◀── Admin SDK ── api/reactions, api/track     reactions, first-party analytics, 404 log
-   │◀── Admin SDK ── api/feed                     /rss.xml and /sitemaps/blog.xml (live)
-   │◀── Admin SDK ── scripts/prerender.mjs        crawler HTML, OG cards, redirects.json (build)
+   │◀── REST ─────── api/cron/publish-scheduled   scheduled publishing (GitHub Actions, every 10 min)
+   │◀── REST ─────── api/admin                    preview links, rebuild, run scheduler, status
+   │◀── REST ─────── api/preview                  signed draft preview data
+   │◀── REST ─────── api/reactions, api/track     reactions, first-party analytics, 404 log
+   │◀── REST ─────── api/feed                     /rss.xml and /sitemaps/blog.xml (live)
+   │◀── REST ─────── scripts/prerender.mjs        crawler HTML, OG cards, redirects.json (build)
    ▼
  Firebase Storage  blog/** (images ≤15 MB; blog/attachments: pdf/md/txt/csv/zip ≤25 MB; admin write)        middleware.ts  301/302 redirects at the edge
 ```
 
-- **No new infrastructure.** Firestore, Storage, Auth, Vercel functions and the
+- **No new infrastructure.** Firestore, Storage, Auth, Cloudflare Pages Functions and the
   existing build-time prerender are reused. Seven functions total (Hobby limit is 12).
 - **Shared logic** lives in `frontend/src/lib/article-core.js` (+ `.d.ts`): reading
   time, slugs, visibility, canonical/OG fallbacks, related-article scoring, series
@@ -133,7 +133,7 @@ No composite indexes are needed (all new queries are single-field or equality-on
    one transaction, record a revision, and clear the autosave. Changing a live
    article's slug writes a 301 from the old URL and collapses redirect chains.
 4. **Scheduling.** The author picks a wall-clock time and IANA time zone; the CMS
-   stores UTC (`scheduledAt`). `api/_lib/scheduler.ts` publishes due posts inside
+   stores UTC (`scheduledAt`). `server/_lib/scheduler.ts` publishes due posts inside
    transactions (no double publication), rejects incomplete ones back to draft with
    a reason, retries transient failures up to 5 times, records each run in
    `system/scheduler`, and triggers a rebuild.
@@ -143,7 +143,7 @@ No composite indexes are needed (all new queries are single-field or equality-on
 
 ## 5. Environment variables (public site)
 
-See `frontend/.env.example`. Server-only (Vercel dashboard, never `VITE_`):
+See `frontend/.env.example`. Server-only (Cloudflare Pages secrets, never `VITE_`):
 
 | Variable | Required for |
 |---|---|
@@ -151,8 +151,8 @@ See `frontend/.env.example`. Server-only (Vercel dashboard, never `VITE_`):
 | `ADMIN_EMAIL` | CMS endpoints (fail closed if unset) |
 | `ADMIN_ORIGINS` | CORS for the CMS (default `https://admin.saadmaz.com`) |
 | `PREVIEW_SECRET` (≥32 chars) | Draft previews |
-| `CRON_SECRET` (≥16 chars) | Scheduler endpoint (Vercel Cron sends it automatically) |
-| `VERCEL_DEPLOY_HOOK_URL` | Automatic rebuilds (optional) |
+| `CRON_SECRET` (≥16 chars) | Scheduler endpoint (sent by the GitHub workflow) |
+| `DEPLOY_HOOK_URL` | Automatic rebuilds via a Cloudflare Pages deploy hook (optional) |
 | `ANALYTICS_SALT` (≥16 chars) | Analytics, 404 log, reactions |
 | `REACTIONS_SALT` | Optional separate reactions key |
 | `PUBLIC_SITE_URL` | Optional preview-link origin override |
@@ -205,23 +205,22 @@ GA4 is already collecting via the existing gtag snippet. **Pulling GA4 or Search
 Console data into the CMS is not implemented**: the status endpoint reports
 whether credentials are configured, and the analytics page links the
 author to those dashboards. Adding it means a server-side provider in
-`api/_lib/` using the GA4 Data API / Search Console API with a service account
+`server/_lib/` using the GA4 Data API / Search Console API with a service account
 (the variables in §5), exposed through `api/admin?action=…`.
 
 ## 9. Deployment & migration
 
 Order matters because the new rules reject the old site's slug query:
 
-1. Set the new environment variables on the site's Vercel project
+1. Set the new variables and secrets on the site's Cloudflare Pages project
    (`ADMIN_EMAIL`, `PREVIEW_SECRET`, `CRON_SECRET`, `ANALYTICS_SALT`, optionally
-   `VERCEL_DEPLOY_HOOK_URL`, `ADMIN_ORIGINS`).
+   `DEPLOY_HOOK_URL`, `ADMIN_ORIGINS`).
 2. **Deploy the site** (new queries filter on `published`; adds functions,
    middleware, cron).
 3. **Then deploy the rules**:
    `firebase deploy --only firestore:rules,storage`
 4. Deploy the admin app (its CSP now allows calling and framing the site).
-5. Add the GitHub secrets `SITE_URL` and `CRON_SECRET` for 10-minute scheduling
-   (on Vercel Pro you can instead change the cron in `vercel.json` to `*/10 * * * *`).
+5. Add the GitHub secrets `SITE_URL` and `CRON_SECRET` for 10-minute scheduling.
 6. In the CMS: create an author profile (the first becomes the default) and review
    Blog settings.
 

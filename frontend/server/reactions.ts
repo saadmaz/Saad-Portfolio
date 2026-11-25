@@ -10,8 +10,8 @@
  * Counts live in blog_reactions/{postId} (public read, server write only).
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { FieldValue } from "firebase-admin/firestore";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
+import { FieldValue } from "./_lib/firestore.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { allowMethods, BOT_UA, clientIp, createRateLimiter, hmac, jsonBody } from "./_lib/http.js";
 import { REACTION_IDS } from "../src/lib/article-core.js";
@@ -29,7 +29,7 @@ export function validateReaction(
   return { ok: true, postId, reaction };
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["POST"])) return;
   res.setHeader("Cache-Control", "no-store");
   const ua = String(req.headers["user-agent"] ?? "");

@@ -54,7 +54,7 @@ service cloud.firestore {
     match /redirects/{id}       { allow read: if true; allow write: if isAdmin(); }
     match /media/{id}           { allow read, write: if isAdmin(); }
 
-    // Written ONLY by the Vercel functions (Admin SDK bypasses rules).
+    // Written ONLY by the server handlers (service account; bypasses rules).
     match /blog_reactions/{id}  { allow read: if true; allow write: if false; }
     match /reaction_votes/{id}  { allow read, write: if false; }
     match /blog_stats/{id=**}   { allow read: if isAdmin(); allow write: if false; }

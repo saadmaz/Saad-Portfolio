@@ -14,8 +14,8 @@
  * Env: ANALYTICS_SALT (≥16 chars). Without it nothing is recorded.
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { FieldValue, type Firestore } from "firebase-admin/firestore";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
+import { FieldValue, type Firestore } from "./_lib/firestore.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { allowMethods, BOT_UA, clientIp, createRateLimiter, hmac, jsonBody, sha256 } from "./_lib/http.js";
 
@@ -89,7 +89,7 @@ async function isLive(db: Firestore, postId: string) {
   return live;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["POST"])) return;
   res.setHeader("Cache-Control", "no-store");
   const ua = String(req.headers["user-agent"] ?? "");

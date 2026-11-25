@@ -1,0 +1,8 @@
+# Cloudflare Pages project (static site in dist/ + functions/ for the API).
+# Secrets and variables are set in the dashboard, not here:
+# Workers & Pages → portfolio → Settings → Variables and secrets.
+name = "saadmaz-portfolio"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-09-01"
+# Buffer and node:crypto for the server handlers.
+compatibility_flags = ["nodejs_compat"]

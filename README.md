@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/saadmaz/Saad-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/saadmaz/Saad-Portfolio/actions/workflows/ci.yml)
 
-Personal portfolio built with **React + TypeScript + Vite**, reading content from **Cloud Firestore**, deployed on **Vercel**.
+Personal portfolio built with **React + TypeScript + Vite**, reading content from **Cloud Firestore**, deployed on **Cloudflare Pages**.
 
 Live: [saadmaz.com](https://saadmaz.com)
 
@@ -18,7 +18,7 @@ Content is edited in a separate admin app (`Saad-Portfolio-Admin`). This reposit
 | Motion        | Framer Motion (`LazyMotion`)                       |
 | Data          | TanStack Query v5 over the Firestore web SDK       |
 | SEO           | react-helmet-async + build-time prerender/sitemap  |
-| Contact form  | Vercel function → Firestore (Admin SDK) + SendGrid |
+| Contact form  | Pages Function → Firestore (service account) + SendGrid |
 | Quality gates | ESLint (+ jsx-a11y), Vitest, Prettier, husky       |
 
 ## Architecture
@@ -39,13 +39,14 @@ architecture, data model, API, environment variables, deployment order and tests
 - **Reads** go straight from the browser to Firestore through one typed layer:
   `lib/firestore.ts` (helpers) → `services/*` (queries) → `hooks/*` (TanStack Query).
   Errors propagate to React Query (`isError`); nothing silently returns `[]`.
-- **Writes** from the public site happen only through `api/contact.ts`, which
+- **Writes** from the public site happen only through `server/contact.ts`, which
   validates input, rate-limits per IP, filters bots with a honeypot, and stores
-  the message with the Admin SDK. Firestore rules deny client-side creates.
+  the message with server credentials. Firestore rules deny client-side creates.
 
 ```
 frontend/
-├── api/contact.ts            # Vercel serverless function (+ contact.test.ts)
+├── functions/                # Cloudflare Pages Functions: _middleware.ts + api/* routes
+├── server/                   # Handlers behind them (+ tests), Firestore REST client in _lib/
 ├── scripts/
 │   ├── prerender.mjs         # Static HTML + sitemaps for crawlers (post-build)
 │   └── check-csp.mjs         # Fails the build if an inline script isn't CSP-hashed
@@ -75,8 +76,8 @@ cp .env.example .env         # fill in the VITE_FIREBASE_* values
 npm run dev                  # http://localhost:8080
 ```
 
-The contact form needs the serverless function; run `vercel dev` instead of
-`npm run dev` to exercise it locally.
+The API needs the Pages Functions runtime; run `npm run build && npm run pages:dev`
+(Wrangler) to exercise it locally.
 
 ### Scripts (run in `frontend/`, or from the root via proxies)
 
@@ -93,10 +94,12 @@ CI (`.github/workflows/ci.yml`) runs typecheck → lint → test → build on ev
 
 ## Deployment
 
-**Vercel project:** Root Directory `frontend`, Build Command `npm run build`, Output `dist`.
-Routing, security headers and the CSP live in `frontend/vercel.json`.
+**Cloudflare Pages project:** Root directory `frontend`, Build command `npm run build`,
+Build output `dist`, Node 24 (`NODE_VERSION=24`). `frontend/wrangler.toml` enables `nodejs_compat`.
+Routing lives in `frontend/functions/_middleware.ts`; security headers and the CSP in
+`frontend/src/lib/security-headers.js` (written to `dist/_headers` at build).
 
-Environment variables (Vercel dashboard): every key in `frontend/.env.example`.
+Variables and secrets (Pages → Settings): every key in `frontend/.env.example`.
 The `FIREBASE_*` service-account values and `SENDGRID_API_KEY` are server-only -
 never prefix them with `VITE_`.
 
@@ -115,4 +118,4 @@ firebase deploy --only firestore:rules,firestore:indexes,storage
 - Never commit `serviceAccountKey.json` or `.env` files (both are git-ignored).
 - The CSP allows exactly one inline script (the gtag snippet in `index.html`) by
   SHA-256 hash. If you change it, `npm run build` fails and prints the new hash
-  to paste into `frontend/vercel.json`.
+  to paste into `frontend/src/lib/security-headers.js`.

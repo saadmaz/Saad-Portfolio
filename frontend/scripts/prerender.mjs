@@ -12,7 +12,7 @@
  * so none of them can drift from what the site shows.
  *
  * Plain string templating, no headless browser: Puppeteer never reliably
- * launches inside Vercel's build container, so this stays on the path that
+ * launches inside a hosted build container, so this stays on the path that
  * produces identical output everywhere. Without Firebase Admin credentials
  * (e.g. CI) it still writes every static route, just without Firestore data.
  *
@@ -250,24 +250,29 @@ function injectContent(
 const CONTENT_HASHES = {};
 const hash = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 
-/** Every prerendered path; written to dist/routes.json for the 404 check in middleware.ts. */
+/** Every prerendered path; written to dist/routes.json for the 404 check in functions/_middleware.ts. */
 const ROUTES = new Set();
 
+/**
+ * "/skills" → dist/skills.html. Cloudflare Pages serves that at /skills
+ * exactly; a skills/index.html would be redirected to /skills/ and change
+ * every canonical URL.
+ */
 function writeRoute(routePath, html) {
   ROUTES.add(routePath.toLowerCase());
-  const routeDir = routePath === "/" ? DIST_DIR : join(DIST_DIR, routePath);
-  mkdirSync(routeDir, { recursive: true });
-  writeFileSync(join(routeDir, "index.html"), html, "utf-8");
+  const file = routePath === "/" ? join(DIST_DIR, "index.html") : join(DIST_DIR, `${routePath}.html`);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, html, "utf-8");
 }
 
 /**
- * Article pages are served by api/blog-page.ts, which re-applies live title,
+ * Article pages are served by server/blog-page.ts, which re-applies live title,
  * description and share image from Firestore, so edits and new posts show up
  * in link previews without waiting for a rebuild. They're written outside the
  * route path so the static file doesn't shadow that rewrite.
  */
 function writePostPage(slug, html, { listed = true } = {}) {
-  // routes.json is public: unlisted posts are left out (middleware.ts then
+  // routes.json is public: unlisted posts are left out (the middleware then
   // confirms them with a live lookup, so their links still work).
   if (listed) ROUTES.add(`/blog/${slug}`.toLowerCase());
   const dir = join(DIST_DIR, POST_PAGES_DIR);
@@ -1241,7 +1246,7 @@ function prerenderBlogIndexes(shell, data) {
   }
 }
 
-/** Redirect map for middleware.ts: { "/blog/old": { to, statusCode } }. */
+/** Redirect map for functions/_middleware.ts: { "/blog/old": { to, statusCode } }. */
 function writeRedirects(data) {
   const map = {};
   for (const r of data.redirects) {
@@ -1264,7 +1269,7 @@ function writeRedirects(data) {
   console.log(`✅ redirects.json (${Object.keys(map).length} rules)`);
 }
 
-/** The page middleware.ts serves (with HTTP 404) for URLs that don't exist. */
+/** The page functions/_middleware.ts serves (with HTTP 404) for URLs that don't exist. */
 function writeNotFound(shell) {
   const html = injectContent(shell, {
     path: "/404",
@@ -1441,6 +1446,37 @@ function prerenderCertificates(shell, certificates) {
 // ── Social cards ─────────────────────────────────────────────────────────
 
 /** Draws every queued card. Photos (event/blog/project covers) are fetched first; on any failure the card falls back to type only. */
+/**
+ * Uploaded social images as 1200×630 JPEGs at /share-image/<slug>.jpg.
+ * Uploads are WebP, which LinkedIn and some chat apps won't preview; JPEG
+ * works everywhere. server/blog-page.ts points og:image here, and the
+ * middleware falls back to the blog card for posts newer than this build.
+ */
+async function renderShareImages(posts) {
+  const withImage = posts.filter((p) => p.slug && p.socialImage?.url);
+  if (!withImage.length) return;
+  const { default: sharp } = await import("sharp");
+  let done = 0;
+  for (const p of withImage) {
+    try {
+      const r = await fetch(p.socialImage.url, { signal: AbortSignal.timeout(15000) });
+      if (!r.ok) throw new Error(`source returned ${r.status}`);
+      const jpeg = await sharp(Buffer.from(await r.arrayBuffer()))
+        .rotate()
+        .resize(1200, 630, { fit: "cover", position: "attention" })
+        .flatten({ background: "#ffffff" })
+        .jpeg({ quality: 85, mozjpeg: true })
+        .toBuffer();
+      mkdirSync(join(DIST_DIR, "share-image"), { recursive: true });
+      writeFileSync(join(DIST_DIR, "share-image", `${p.slug}.jpg`), jpeg);
+      done++;
+    } catch (err) {
+      console.warn(`⚠️  Share image failed for ${p.slug}: ${err.message}`);
+    }
+  }
+  console.log(`✅ Share images: ${done}/${withImage.length}`);
+}
+
 async function renderCards() {
   const started = Date.now();
   let failed = 0;
@@ -1526,7 +1562,7 @@ function writeSitemaps(data) {
       ),
     ],
   };
-  // blog.xml is served live by api/feed.ts (vercel.json rewrite), so it
+  // blog.xml is served live by server/feed.ts (via functions/_middleware.ts), so it
   // follows publishing without a rebuild. It's only listed in the index here;
   // writing a static file would shadow the rewrite.
   const dynamic = ["blog.xml"];
@@ -1710,6 +1746,7 @@ async function main() {
   console.log(`✅ routes.json (${ROUTES.size} pages)`);
   writeLlmsFull(data);
   await renderCards();
+  await renderShareImages([...data.posts, ...data.unlistedPosts]);
   await submitChangedUrls(CONTENT_HASHES, { baseUrl: BASE_URL });
 }
 

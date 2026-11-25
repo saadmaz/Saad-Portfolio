@@ -7,14 +7,14 @@
  * Responses are never cached and never indexed.
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { allowMethods, clientIp, createRateLimiter } from "./_lib/http.js";
 import { previewSecret, verifyPreviewToken } from "./_lib/preview-token.js";
 
 const limited = createRateLimiter({ windowMs: 60_000, max: 60 });
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["GET"])) return;
   res.setHeader("Cache-Control", "private, no-store");
   res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");

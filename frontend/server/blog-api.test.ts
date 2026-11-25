@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { VercelRequest } from "@vercel/node";
+import type { ApiRequest } from "./_lib/adapter";
 import { decideScheduled, snapshotOf, SNAPSHOT_FIELDS } from "./_lib/scheduler";
 import { signPreviewToken, verifyPreviewToken } from "./_lib/preview-token";
 import { isAdminClaims, requireAdmin } from "./_lib/auth";
@@ -136,7 +136,7 @@ describe("admin auth", () => {
     expect(isAdminClaims({ email: "admin@example.com", email_verified: true }, undefined)).toBe(false);
   });
 
-  const req = (authorization?: string) => ({ headers: { authorization } }) as unknown as VercelRequest;
+  const req = (authorization?: string) => ({ headers: { authorization } }) as unknown as ApiRequest;
 
   it("fails closed without ADMIN_EMAIL, a token, or a valid token", async () => {
     const prev = process.env.ADMIN_EMAIL;
@@ -214,10 +214,10 @@ describe("reactions", () => {
 
 describe("http helpers", () => {
   it("parses beacon text bodies and ignores junk", () => {
-    expect(jsonBody({ body: '{"t":"view"}' } as VercelRequest)).toEqual({ t: "view" });
-    expect(jsonBody({ body: { a: 1 } } as unknown as VercelRequest)).toEqual({ a: 1 });
-    expect(jsonBody({ body: "not json" } as VercelRequest)).toEqual({});
-    expect(jsonBody({ body: "x".repeat(20_000) } as VercelRequest)).toEqual({});
+    expect(jsonBody({ body: '{"t":"view"}' } as ApiRequest)).toEqual({ t: "view" });
+    expect(jsonBody({ body: { a: 1 } } as unknown as ApiRequest)).toEqual({ a: 1 });
+    expect(jsonBody({ body: "not json" } as ApiRequest)).toEqual({});
+    expect(jsonBody({ body: "x".repeat(20_000) } as ApiRequest)).toEqual({});
   });
 
   it("rate-limits per key", () => {
@@ -233,7 +233,7 @@ describe("http helpers", () => {
 
   it("reports integration status as booleans only", () => {
     const status = integrationStatus({
-      VERCEL_DEPLOY_HOOK_URL: "https://hook",
+      DEPLOY_HOOK_URL: "https://hook",
       PREVIEW_SECRET: "short",
     } as NodeJS.ProcessEnv);
     expect(status).toEqual({

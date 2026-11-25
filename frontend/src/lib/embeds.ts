@@ -2,7 +2,7 @@
  * Trusted embed providers. The CMS stores an embed as provider + id; the
  * iframe URL is built here from a fixed template, and ids must match a
  * strict pattern, so stored content can never point a frame anywhere else.
- * Keep in sync with vercel.json's frame-src and the CMS's embed parser.
+ * Keep in sync with frame-src in src/lib/security-headers.js and the CMS's embed parser.
  */
 
 export interface EmbedProvider {
