@@ -654,7 +654,7 @@ const Index = () => {
   const { data: events } = useEvents();
   const { data: certs } = useCertificates();
   return (
-    <Layout screenFooter>
+    <Layout>
       <SEO
         fullTitle={PAGE_SEO["/"].fullTitle}
         description={PAGE_SEO["/"].description}
