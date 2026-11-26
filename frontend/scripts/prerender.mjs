@@ -45,6 +45,7 @@ import {
 import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
 import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectGroups.js";
 import { authorFaq, authorTopics } from "../src/lib/authorFaq.js";
+import { sameOrg } from "../src/lib/orgName.js";
 import {
   projectCanonical,
   projectDuration,
@@ -1474,7 +1475,14 @@ function prerenderEvents(shell, events) {
   }
 }
 
-function prerenderExperience(shell, experience) {
+/** "2024" + "Mar" → "2024-03"; year alone → "2024". */
+const roleDate = (year, month) => {
+  if (!year) return undefined;
+  const m = month ? new Date(`${month} 1, 2000`).getMonth() + 1 : 0;
+  return m ? `${year}-${String(m).padStart(2, "0")}` : String(year);
+};
+
+function prerenderExperience(shell, experience, projects = []) {
   for (const c of experienceCompanies(experience)) {
     const routePath = `/experience/${c.slug}`;
     const first = c.docs[0];
@@ -1484,7 +1492,28 @@ function prerenderExperience(shell, experience) {
         `${role ? `${role} at ` : ""}${c.name}. Saad Mazhar's work experience.`,
       160,
     );
-    const bodyHtml = [experienceHtml(c.docs), '<p><a href="/experience">All experience</a></p>'].join("\n");
+    // Same rule as companyProjects() in src/lib/experience.ts.
+    const ids = new Set(c.docs.map((d) => String(d.id)));
+    const built = projects.filter(
+      (p) => p.linked_experience_ids?.some((id) => ids.has(String(id))) || sameOrg(p.client, c.name),
+    );
+    const bodyHtml = [
+      experienceHtml(c.docs),
+      built.length &&
+        section(
+          `Built at ${c.name}`,
+          list(
+            built,
+            (p) =>
+              `<a href="/projects/${escape(p.slug)}">${escape(p.title)}</a>${p.tagline ? ` - ${escape(p.tagline)}` : ""}`,
+          ),
+        ),
+      '<p><a href="/experience">All experience</a></p>',
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const url = first.company_url || first.companyUrl;
+    const logo = first.company_logo || first.companyLogo;
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1497,7 +1526,14 @@ function prerenderExperience(shell, experience) {
             "@type": "OrganizationRole",
             roleName: role || undefined,
             member: author,
-            memberOf: { "@type": "Organization", name: c.name },
+            memberOf: {
+              "@type": "Organization",
+              name: c.name,
+              ...(url ? { url } : {}),
+              ...(logo ? { logo } : {}),
+            },
+            startDate: roleDate(first.start_year, first.start_month),
+            ...(first.is_current ? {} : { endDate: roleDate(first.end_year, first.end_month) }),
           },
         ],
         bodyHtml,
@@ -1849,7 +1885,7 @@ async function main() {
   prerenderBlogIndexes(shell, data);
   prerenderEvents(shell, data.events);
   prerenderCertificates(shell, data.certificates);
-  prerenderExperience(shell, data.experience);
+  prerenderExperience(shell, data.experience, data.projects);
   console.log(
     `✅ Detail pages prerendered: ${data.projects.length} projects, ${data.posts.length} posts, ${data.events.length} events, ${data.certificates.length} certificates.`,
   );
