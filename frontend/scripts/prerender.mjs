@@ -44,6 +44,7 @@ import {
 } from "../src/lib/seo-content.js";
 import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
 import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectGroups.js";
+import { authorFaq, authorTopics } from "../src/lib/authorFaq.js";
 import {
   projectCanonical,
   projectDuration,
@@ -1274,6 +1275,23 @@ function prerenderBlogIndexes(shell, data) {
   for (const a of data.authors.filter((a) => a.slug)) {
     const byAuthor = data.posts.filter((p) => authorOf(p, data)?.id === a.id);
     const routePath = `/authors/${a.slug}`;
+    // Same content as AuthorPage.tsx: topics, articles and the "About the author" FAQ.
+    const expertise = (a.expertise ?? []).filter(Boolean);
+    const topics = expertise.length ? expertise : authorTopics(byAuthor, 10);
+    const faq = authorFaq(a, byAuthor, { expertise });
+    // The site owner's profile is the site's one Person entity, with everything it knows.
+    const isOwner = authorOf({}, data)?.id === a.id;
+    const owner = isOwner ? personSchema(data) : null;
+    const person = owner
+      ? {
+          ...owner,
+          ...authorPersonSchema(a, BASE_URL),
+          "@id": PERSON_ID,
+          sameAs: [...new Set([...(owner.sameAs ?? []), ...(authorPersonSchema(a, BASE_URL).sameAs ?? [])])],
+          knowsAbout: [...topics, ...(owner.knowsAbout ?? [])],
+        }
+      : { ...authorPersonSchema(a, BASE_URL), ...(topics.length ? { knowsAbout: topics } : {}) };
+    delete person["@context"];
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1284,12 +1302,35 @@ function prerenderBlogIndexes(shell, data) {
           {
             "@context": "https://schema.org",
             "@type": "ProfilePage",
-            mainEntity: authorPersonSchema(a, BASE_URL),
+            url: `${BASE_URL}${routePath}`,
+            mainEntity: person,
           },
+          ...(faq.length
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: faq.map((f) => ({
+                    "@type": "Question",
+                    name: f.question,
+                    acceptedAnswer: { "@type": "Answer", text: f.answer },
+                  })),
+                },
+              ]
+            : []),
         ],
         bodyHtml: [
           paras(a.bio),
-          list(byAuthor, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+          topics.length && section("Writes about", `<p>${escape(topics.join(", "))}</p>`),
+          section(
+            "Articles",
+            list(byAuthor, (p) => `<a href="/blog/${escape(p.slug)}">${escape(p.title)}</a>`),
+          ),
+          faq.length &&
+            section(
+              "About the author",
+              faq.map((f) => `<h3>${escape(f.question)}</h3><p>${escape(f.answer)}</p>`).join(""),
+            ),
         ]
           .filter(Boolean)
           .join("\n"),
