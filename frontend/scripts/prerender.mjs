@@ -49,6 +49,7 @@ import {
   projectCanonical,
   projectDuration,
   projectGallery,
+  projectAppSchema,
   projectSchema,
   projectSeoDescription,
   projectSeoTitle,
@@ -1105,7 +1106,10 @@ function prerenderProjects(shell, projects) {
         title: projectSeoTitle(p),
         h1: p.title,
         description: projectSeoDescription(p),
-        schemas: [projectSchema(p, { baseUrl: BASE_URL, author, related })],
+        schemas: [
+          projectSchema(p, { baseUrl: BASE_URL, author, related }),
+          projectAppSchema(p, { baseUrl: BASE_URL, author }),
+        ].filter(Boolean),
         bodyHtml,
         // Only set when the original case study lives elsewhere; otherwise the page is its own canonical.
         canonical: p.canonical_url ? projectCanonical(p, BASE_URL) : undefined,

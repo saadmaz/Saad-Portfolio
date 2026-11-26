@@ -73,9 +73,18 @@ const HUES: Record<string, string> = {
 const hueOf = (colour?: string) => HUES[/from-([a-z]+)-/.exec(colour ?? "")?.[1] ?? ""] ?? "255 95 0";
 
 /** Generated cover for a project with no screenshot yet: its colour, name and stack on a lit grid. */
-export function ProjectPoster({ project, className }: { project: Project; className?: string }) {
+export function ProjectPoster({
+  project,
+  className,
+  showTitle = true,
+}: {
+  project: Project;
+  className?: string;
+  /** Off where the title is already the page's heading (the project hero). */
+  showTitle?: boolean;
+}) {
   const hue = hueOf(project.colour);
-  const stack = projectTags(project, 3);
+  const stack = projectTags(project, showTitle ? 3 : 6);
   return (
     <div
       aria-hidden
@@ -85,9 +94,11 @@ export function ProjectPoster({ project, className }: { project: Project; classN
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(var(--hue)/0.38),transparent_58%),radial-gradient(ellipse_at_0%_100%,rgb(var(--hue)/0.12),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
       <div className="absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.05)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.05)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(ellipse_at_70%_20%,black,transparent_75%)]" />
       <div className="absolute inset-x-5 bottom-4 flex flex-col gap-3 md:inset-x-6 md:bottom-5">
-        <span className="line-clamp-2 text-[clamp(1.5rem,2.6vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.03em] text-fg/80 transition-colors duration-300 group-hover:text-fg">
-          {project.title}
-        </span>
+        {showTitle && (
+          <span className="line-clamp-2 text-[clamp(1.5rem,2.6vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.03em] text-fg/80 transition-colors duration-300 group-hover:text-fg">
+            {project.title}
+          </span>
+        )}
         {stack.length > 0 && (
           <span className="truncate font-mono text-[11px] uppercase tracking-[0.08em] text-fg/45">
             {stack.join(" · ")}
