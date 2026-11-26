@@ -65,7 +65,9 @@
     <meta name="theme-color" content="#111113" />
     <link rel="canonical" href="https://www.saadmaz.com/" />
 
-    <!-- Preconnect for the Firebase CDN. Fonts are self-hosted (see src/app/main.tsx). -->
+    <!-- Preconnect to Firestore (every page's content) and the Firebase CDN (images).
+         Fonts are self-hosted (see src/app/main.tsx). -->
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
     <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
     <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin />
 
