@@ -6,6 +6,7 @@ import { fullDate, monthYear } from "@/lib/format";
 import { articlePath, coverOf, readingMinutesOf, type SeriesPosition } from "@/lib/article-core";
 import type { ArticleSource, Author, BlogPost, BlogSeries, ImageAsset } from "@/types";
 import { authorLinks } from "@/lib/authors";
+import { resizedUrl } from "@/lib/images";
 
 export function Breadcrumbs({ items }: { items: { label: string; to?: string }[] }) {
   return (
@@ -33,7 +34,7 @@ export function Breadcrumbs({ items }: { items: { label: string; to?: string }[]
 function Avatar({ author, size = "size-10" }: { author: Author; size?: string }) {
   return author.avatar ? (
     <img
-      src={author.avatar}
+      src={resizedUrl(author.avatar, 480)}
       alt=""
       className={cn(size, "shrink-0 rounded-full border border-line-2 object-cover")}
     />

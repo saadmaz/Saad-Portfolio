@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Media, RisingWords } from "@/components/ui";
 import { coverOf } from "@/lib/article-core";
 import type { BlogPost, ImageAsset } from "@/types";
+import { resizedUrl } from "@/lib/images";
 
 type Cover = ImageAsset & { caption?: string; credit?: string; creditUrl?: string };
 
@@ -31,7 +32,7 @@ export function ArticleHero({
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {cover?.url ? (
           <img
-            src={cover.url}
+            src={resizedUrl(cover.url, 480)}
             alt=""
             className="absolute inset-0 size-full scale-125 object-cover opacity-25 blur-3xl saturate-150"
           />

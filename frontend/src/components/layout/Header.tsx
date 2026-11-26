@@ -31,6 +31,7 @@ import { useCertificates } from "@/hooks/useContent";
 import portrait from "@/assets/profile-photo.webp";
 import windowEmber from "@/assets/cover/window-ember.svg";
 import windowGraphite from "@/assets/cover/window-graphite.svg";
+import { resizedUrl } from "@/lib/images";
 
 function useScrolled(threshold = 40) {
   const [scrolled, setScrolled] = useState(false);
@@ -97,7 +98,7 @@ function CoverArt({ theme }: { theme: keyof typeof COVER }) {
       <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-base/0 to-base/55" />
       <div className="absolute inset-[20.83%_15%_6.94%_15%]">
         <div className="absolute inset-[-5.77%_-8.33%_-21.15%_-8.33%]">
-          <img src={art} alt="" className="block size-full max-w-none" />
+          <img src={resizedUrl(art, 480)} alt="" className="block size-full max-w-none" />
         </div>
       </div>
     </div>
@@ -136,7 +137,7 @@ function useFeature(menu: string): FeatureContent | null {
     const img = p?.heroImage || p?.image;
     return {
       media: img ? (
-        <img src={img} alt="" className="absolute inset-0 size-full object-cover" />
+        <img src={resizedUrl(img, 480)} alt="" className="absolute inset-0 size-full object-cover" />
       ) : (
         <CoverArt theme="ember" />
       ),
@@ -165,7 +166,11 @@ function useFeature(menu: string): FeatureContent | null {
   if (menu === "Insights")
     return {
       media: latestPost?.image ? (
-        <img src={latestPost.image} alt="" className="absolute inset-0 size-full object-cover" />
+        <img
+          src={resizedUrl(latestPost.image, 480)}
+          alt=""
+          className="absolute inset-0 size-full object-cover"
+        />
       ) : (
         <CoverArt theme="graphite" />
       ),
