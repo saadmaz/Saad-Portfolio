@@ -3,6 +3,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ScrollToTop } from "@/hooks/useScrollToTop";
+import { GaPageViews } from "@/hooks/useGaPageViews";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const Index = lazy(() => import("../pages/Index"));
@@ -37,6 +38,7 @@ const App = () => (
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <ScrollToTop />
+          <GaPageViews />
           <Suspense fallback={<div className="min-h-screen bg-base" />}>
             <Routes>
               <Route path="/" element={<Index />} />
