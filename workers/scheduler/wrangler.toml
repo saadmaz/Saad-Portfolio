@@ -1,0 +1,16 @@
+# Scheduled-publishing trigger (see index.js). Deploy from this folder:
+#   npx wrangler deploy
+#   npx wrangler secret put CRON_SECRET   (same value as on the Pages project)
+name = "saadmaz-scheduler"
+main = "index.js"
+compatibility_date = "2025-09-01"
+workers_dev = false
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[vars]
+SITE_URL = "https://www.saadmaz.com"
+
+[observability]
+enabled = true

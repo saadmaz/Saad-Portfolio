@@ -15,7 +15,7 @@ CMS usage notes live in the admin repo's `docs/blog-cms.md`.
    ┌──────────── Cloud Firestore ◀─────────────────────┘
    │  rules: public reads only published content
    │
-   │◀── REST ─────── api/cron/publish-scheduled   scheduled publishing (GitHub Actions, every 10 min)
+   │◀── REST ─────── api/cron/publish-scheduled   scheduled publishing (cron Worker, every 10 min)
    │◀── REST ─────── api/admin                    preview links, rebuild, run scheduler, status
    │◀── REST ─────── api/preview                  signed draft preview data
    │◀── REST ─────── api/reactions, api/track     reactions, first-party analytics, 404 log
@@ -158,8 +158,8 @@ See `frontend/.env.example`. Server-only (Cloudflare Pages secrets, never `VITE_
 | `PUBLIC_SITE_URL` | Optional preview-link origin override |
 | `GA4_PROPERTY_ID`, `GA4_SERVICE_ACCOUNT_EMAIL`, `GSC_SITE_URL`, `GSC_SERVICE_ACCOUNT_EMAIL` | Reserved for GA4/Search Console reporting (see §8) |
 
-GitHub repository secrets for `.github/workflows/publish-scheduled.yml`:
-`SITE_URL`, `CRON_SECRET`.
+Scheduler: the cron Worker in `workers/scheduler` calls the endpoint every 10 minutes.
+Its secret `CRON_SECRET` must match the one on the Pages project.
 
 Admin app: optional `VITE_SITE_URL` (defaults to `https://www.saadmaz.com`).
 
@@ -220,7 +220,8 @@ Order matters because the new rules reject the old site's slug query:
 3. **Then deploy the rules**:
    `firebase deploy --only firestore:rules,storage`
 4. Deploy the admin app (its CSP now allows calling and framing the site).
-5. Add the GitHub secrets `SITE_URL` and `CRON_SECRET` for 10-minute scheduling.
+5. Deploy the scheduler Worker: in `workers/scheduler`, run `npx wrangler deploy`,
+   then `npx wrangler secret put CRON_SECRET` (same value as on Pages).
 6. In the CMS: create an author profile (the first becomes the default) and review
    Blog settings.
 
