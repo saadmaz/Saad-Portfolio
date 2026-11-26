@@ -32,5 +32,11 @@ describe("projectAppSchema", () => {
       projectAppSchema({ ...base, liveUrl: "https://a.com", stage: "Prototype", category: "AI" }, opts),
     ).toBeNull();
     expect(projectAppSchema({ ...base, stage: "Production", category: "AI" }, opts)).toBeNull();
+    expect(
+      projectAppSchema(
+        { ...base, liveUrl: "https://a.com", stage: "Production", category: "Open Source" },
+        opts,
+      ),
+    ).toBeNull();
   });
 });
