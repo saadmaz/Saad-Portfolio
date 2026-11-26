@@ -146,7 +146,7 @@ const NewslettersPage = () => {
   ].filter((s) => s.value > 0);
 
   return (
-    <Layout>
+    <Layout hideFooterSubscribe>
       <SEO
         title={PAGE_SEO["/newsletters"].title}
         description={PAGE_SEO["/newsletters"].description}
