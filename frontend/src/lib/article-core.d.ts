@@ -128,7 +128,7 @@ export function buildRss(
 export function buildBlogSitemap(opts: {
   baseUrl: string;
   posts: PostLike[];
-  authors?: Pick<Author, "id" | "slug">[];
+  authors?: Pick<Author, "id" | "slug" | "isDefault">[];
   series?: Pick<BlogSeries, "slug" | "postIds" | "published">[];
   categories?: CategoryOption[];
 }): string;
