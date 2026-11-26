@@ -1650,6 +1650,12 @@ function prerenderExperience(shell, experience, projects = []) {
           [["experience"], experience],
           [["projects"], projectCards(projects)],
         ],
+        // The hero illustration, at the size ExperienceDetailPage requests.
+        preload: (() => {
+          const art = c.docs.find((d) => d.journey_image)?.journey_image;
+          if (!art) return undefined;
+          return { href: isOwnStorageImage(art) ? cloudflareResized(art, 680) : art };
+        })(),
         title: `${c.name}${role ? `: ${role}` : ""}`,
         description,
         schemas: [
