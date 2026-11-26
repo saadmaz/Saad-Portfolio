@@ -11,7 +11,7 @@ import { Linkified } from "@/components/Linkified";
 import { useExperience, useSkills } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { companyPeriod, companyProjects, normalizeExperience, type Company } from "@/lib/experience";
-import { BASE_URL } from "@/lib/seo-content";
+import { BASE_URL, PERSON_REF } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
 
 const MEDIA_ICON = { Document: FileText, Presentation, Link: Link2, Image: Link2 } as const;
@@ -242,9 +242,22 @@ const ExperienceDetailPage = () => {
   return (
     <Layout>
       <SEO
-        title={`${company.name}: ${lead?.title ?? "Experience"} | Saad Mazhar`}
+        title={`${company.name}: ${lead?.title ?? "Experience"}`}
         description={summary.replace(/\s+/g, " ").slice(0, 158)}
         url={url}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "OrganizationRole",
+          roleName: lead?.title || undefined,
+          member: PERSON_REF,
+          memberOf: {
+            "@type": "Organization",
+            name: company.name,
+            ...(company.url ? { url: company.url } : {}),
+            ...(company.logo ? { logo: company.logo } : {}),
+          },
+          ...(lead?.start ? { startDate: new Date(lead.start).toISOString().slice(0, 7) } : {}),
+        }}
         breadcrumbs={[
           { name: "Experience", url: `${BASE_URL}/experience` },
           { name: company.name, url },

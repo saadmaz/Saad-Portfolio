@@ -1,6 +1,7 @@
 import type { Experience, ExperienceMedia, Project } from "@/types";
 import { monthIndex, partsToLabel, range } from "@/lib/format";
 import { slugify } from "@/lib/article-core";
+import { sameOrg } from "@/lib/orgName";
 
 export interface Role {
   title: string;
@@ -148,10 +149,7 @@ export function companyPeriod(c: Company): string {
 /** Projects tied to a company: linked in the CMS, or naming it as the client. */
 export function companyProjects(c: Company, projects: Project[]): Project[] {
   const ids = new Set(c.ids);
-  const name = c.name.trim().toLowerCase();
   return projects.filter(
-    (p) =>
-      p.linked_experience_ids?.some((id) => ids.has(String(id))) ||
-      (!!name && p.client?.trim().toLowerCase() === name),
+    (p) => p.linked_experience_ids?.some((id) => ids.has(String(id))) || sameOrg(p.client, c.name),
   );
 }
