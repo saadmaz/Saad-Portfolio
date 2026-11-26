@@ -30,7 +30,9 @@ import { BASE_URL, PERSON_ID } from "@/lib/seo-content";
 import type { Certificate, Event } from "@/types";
 import NotFound from "./NotFound";
 
-const byDateDesc = (a?: string, b?: string) => String(b ?? "").localeCompare(String(a ?? ""));
+/** Newest first; dates are stored as text such as "Aug 24, 2023" or "2026-02-01". */
+const time = (s?: string | null) => Date.parse(String(s ?? "")) || 0;
+const byDateDesc = (a?: string | null, b?: string | null) => time(b) - time(a);
 
 /** One credentials column: a label and up to four linked lines. */
 function Credentials({
