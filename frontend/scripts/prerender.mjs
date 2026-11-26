@@ -20,7 +20,7 @@
  * each page's <SEO> component imports.
  */
 
-import { readFileSync, mkdirSync, writeFileSync } from "fs";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
@@ -310,8 +310,10 @@ const snapshotReplacer = (_key, v) =>
     : v;
 
 function snapshotScript(entries) {
-  if (!entries?.length) return "";
-  const json = JSON.stringify({ builtAt: BUILT_AT, entries }, snapshotReplacer).replace(/</g, "\\u003c");
+  // The header and footer's data rides along on every page; page entries come after and win.
+  const all = [...LAYOUT_SNAPSHOT, ...(entries ?? [])];
+  if (!all.length) return "";
+  const json = JSON.stringify({ builtAt: BUILT_AT, entries: all }, snapshotReplacer).replace(/</g, "\\u003c");
   return `<script type="application/json" id="query-snapshot">${json}</script>`;
 }
 
@@ -353,16 +355,94 @@ const blogSnapshot = (data) => [
   [["blog", "series"], data.series],
 ];
 
+const omit = (obj, keys) => Object.fromEntries(Object.entries(obj).filter(([k]) => !keys.includes(k)));
+/** A post without its body; the stored reading time keeps cards' "N min" right. */
+const postCard = (p) => ({ ...omit(p, ["content"]), readingTimeMinutes: readingMinutesOf(p) });
+/** Long text the list views don't show. */
+const certCards = (certs) => certs.map((c) => omit(c, ["description", "tags"]));
+const eventCards = (events) => events.map((e) => omit(e, ["description", "highlights"]));
+/** Firestore orderBy(field) semantics: docs lacking the field are left out, the rest ascending. */
+const orderedBy = (list, field) =>
+  list
+    .filter((x) => x[field] !== undefined)
+    .sort((a, b) => (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0));
+
+/** The bundled home portrait (hashed by Vite), preloaded so it paints with the first screen. */
+function homePortraitPreload() {
+  const file = readdirSync(join(DIST_DIR, "assets")).find((f) => /^profile-photo-[\w-]+\.webp$/.test(f));
+  return file ? { href: `/assets/${file}` } : undefined;
+}
+
+/** Query snapshot entries by name, built once per build from the loaded data. */
+let Q = {};
+/** Read by the header and footer on every page: small "card" versions. */
+let LAYOUT_SNAPSHOT = [];
+
+function setSnapshotData(data) {
+  const raw = data.raw ?? {};
+  const latest = clientPosts(data.posts)[0];
+  Q = {
+    projects: () => [["projects"], projectCards(data.projects)],
+    featured: () => [["projects", "featured"], projectCards(data.projects.filter((p) => p.featured))],
+    latestPost: () => [["blog", "latest"], latest ? postCard(latest) : null],
+    postCards: () => [["blog", "published"], clientPosts(data.posts).map(postCard)],
+    experience: () => [["experience"], data.experience],
+    skills: () => [["skills"], raw.skills ?? []],
+    certificates: () => [["certificates"], raw.certificates ?? []],
+    certificateCards: () => [["certificates"], certCards(raw.certificates ?? [])],
+    // getEvents: orderBy("date") then newest first (data.events is already newest first).
+    events: () => [["events"], data.events.filter((e) => e.date !== undefined)],
+    eventCards: () => [["events"], eventCards(data.events.filter((e) => e.date !== undefined))],
+    education: () => [["education"], raw.education ?? []],
+    courses: () => [["courses"], raw.courses ?? []],
+    awards: () => [["awards"], raw.awards ?? []],
+    languages: () => [["languages"], raw.languages ?? []],
+    hackathons: () => [["hackathons"], raw.hackathons ?? []],
+    volunteer: () => [["volunteer"], raw.volunteer ?? []],
+    organizations: () => [["organizations"], raw.organizations ?? []],
+    newsletters: () => [["newsletters"], orderedBy(raw.newsletters ?? [], "date")],
+    publications: () => [["publications"], orderedBy(raw.publications ?? [], "date")],
+    patents: () => [["patents"], raw.patents ?? []],
+    about: () => [["site_settings", "about"], raw.about ?? null],
+    contact: () => [["site_settings", "contact"], raw.contact ?? null],
+    authors: () => [["blog", "authors"], data.authors],
+  };
+  LAYOUT_SNAPSHOT = pageSnapshot("featured", "latestPost", "certificateCards", "publications", "patents");
+}
+
+/** Entries for the named queries (later entries win, so full data can replace layout cards). */
+const pageSnapshot = (...names) => names.map((n) => Q[n]?.()).filter(Boolean);
+
+/** What each static route renders from (mirrors the hooks each page calls). */
+const ROUTE_DATA = {
+  "/": ["projects", "postCards", "experience", "skills", "eventCards"],
+  "/about": [
+    "about",
+    "awards",
+    "education",
+    "eventCards",
+    "experience",
+    "hackathons",
+    "languages",
+    "organizations",
+    "projects",
+    "volunteer",
+  ],
+  "/skills": ["experience", "projects", "skills"],
+  "/education": ["courses", "education", "skills"],
+  "/certifications": ["certificates", "skills"],
+  "/events": ["events"],
+  "/publications": ["publications", "patents"],
+  "/newsletters": ["postCards", "newsletters"],
+  "/contact": ["contact", "eventCards", "projects"],
+  "/projects": ["projects"],
+  "/experience": ["experience", "projects"],
+};
+
 /** Snapshot for a static route, or none. */
 function staticSnapshot(routePath, data) {
-  if (routePath === "/projects") return [[["projects"], projectCards(data.projects)]];
   if (routePath === "/blog") return blogSnapshot(data);
-  if (routePath === "/experience")
-    return [
-      [["experience"], data.experience],
-      [["projects"], projectCards(data.projects)],
-    ];
-  return undefined;
+  return ROUTE_DATA[routePath] ? pageSnapshot(...ROUTE_DATA[routePath]) : undefined;
 }
 
 /** Indexable page URL → hash of its crawler-visible content (see scripts/indexnow.mjs). */
@@ -420,6 +500,7 @@ const EMPTY = {
   series: [],
   redirects: [],
   settings: {},
+  raw: {},
 };
 
 async function loadData() {
@@ -477,6 +558,11 @@ async function loadData() {
     series,
     redirects,
     settingsSnap,
+    hackathons,
+    organizations,
+    courses,
+    aboutSnap,
+    contactSnap,
   ] = await Promise.all([
     all("projects"),
     all("blog_posts"),
@@ -495,7 +581,33 @@ async function loadData() {
     all("blog_series"),
     all("redirects"),
     db.collection("blog_settings").doc("config").get(),
+    all("hackathons"),
+    all("organizations"),
+    all("courses"),
+    db.collection("site_settings").doc("about").get(),
+    db.collection("site_settings").doc("contact").get(),
   ]);
+
+  // What the site's own queries return (Firestore's default order, before the
+  // filtering and sorting below), for the per-page query snapshots.
+  const settingsDoc = (snap) => (snap.exists ? { id: snap.id, ...snap.data() } : null);
+  const raw = {
+    skills: [...skills],
+    certificates: [...certificates],
+    events: [...events],
+    education: [...education],
+    awards: [...awards],
+    volunteer: [...volunteer],
+    languages: [...languages],
+    publications: [...publications],
+    patents: [...patents],
+    newsletters: [...newsletters],
+    hackathons,
+    organizations,
+    courses,
+    about: settingsDoc(aboutSnap),
+    contact: settingsDoc(contactSnap),
+  };
 
   return {
     // `published` defaults to true for legacy projects predating the field;
@@ -534,6 +646,7 @@ async function loadData() {
     series: series.filter((s) => s.published === true),
     redirects,
     settings: settingsSnap.exists ? settingsSnap.data() : {},
+    raw,
   };
 }
 
@@ -1085,6 +1198,8 @@ function prerenderStaticRoutes(shell, data) {
       injectContent(shell, {
         path: routePath,
         snapshot: staticSnapshot(routePath, data),
+        // The home hero portrait is the largest element on the first screen.
+        preload: routePath === "/" ? homePortraitPreload() : undefined,
         title,
         fullTitle,
         h1,
@@ -1427,6 +1542,10 @@ function prerenderBlogIndexes(shell, data) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: [
+          ...pageSnapshot("authors", "projects", "eventCards", "experience", "education"),
+          ...blogSnapshot(data),
+        ],
         title: `${a.name}${a.title ? `, ${a.title}` : ""}`,
         description: fitDescription(a.bio || `Articles by ${a.name}.`),
         schemas: [
@@ -1584,6 +1703,7 @@ function prerenderEvents(shell, events) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: pageSnapshot("events"),
         title: e.title,
         description,
         schemas,
@@ -1714,6 +1834,7 @@ function prerenderCertificates(shell, certificates) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: pageSnapshot("certificates"),
         title: c.title,
         description,
         schemas: [schema],
@@ -2015,6 +2136,7 @@ async function main() {
   // starts from the same pristine, JS-only shell.
   const shell = readFileSync(join(DIST_DIR, "index.html"), "utf-8");
   const data = await loadData();
+  setSnapshotData(data);
 
   prerenderStaticRoutes(shell, data);
   prerenderProjects(shell, data.projects);
