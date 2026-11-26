@@ -1,19 +1,19 @@
 /**
  * GET /api/feed?type=rss|sitemap
  *
- * Served at /rss.xml and /sitemaps/blog.xml (rewrites in vercel.json).
+ * Served at /rss.xml, /feed.xml and /sitemaps/blog.xml (rewritten in functions/_middleware.ts).
  * Built live from Firestore and CDN-cached for 10 minutes, so publishing,
  * editing or unpublishing an article updates both without a redeploy.
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { allowMethods } from "./_lib/http.js";
 import { buildBlogSitemap, buildRss, categoriesOf, isIndexable } from "../src/lib/article-core.js";
 import { BASE_URL, PAGE_SEO, SITE_NAME } from "../src/lib/seo-content.js";
 import type { Author, BlogPost, BlogSeries } from "../src/types/blog.js";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["GET", "HEAD"])) return;
   const type = req.query.type === "sitemap" ? "sitemap" : "rss";
   if (!hasAdminCredentials()) return res.status(503).send("Feed unavailable");

@@ -1,9 +1,11 @@
-/** Request helpers shared by the Vercel functions. */
+/** Request helpers shared by the server handlers. */
 
 import { createHash, createHmac, timingSafeEqual } from "crypto";
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./adapter.js";
 
-export function clientIp(req: VercelRequest): string {
+export function clientIp(req: ApiRequest): string {
+  const cf = req.headers["cf-connecting-ip"];
+  if (typeof cf === "string" && cf) return cf;
   const forwarded = req.headers["x-forwarded-for"];
   const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
   return first?.split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
@@ -11,7 +13,7 @@ export function clientIp(req: VercelRequest): string {
 
 /**
  * Best-effort sliding-window limiter, per warm instance. It stops casual
- * floods; a distributed attacker needs an edge rule (Vercel Firewall).
+ * floods; a distributed attacker needs an edge rule (Cloudflare WAF rate limiting rule).
  */
 export function createRateLimiter({ windowMs, max }: { windowMs: number; max: number }) {
   const hits = new Map<string, number[]>();
@@ -26,7 +28,7 @@ export function createRateLimiter({ windowMs, max }: { windowMs: number; max: nu
 }
 
 /** Parses a JSON body that may arrive as text/plain (navigator.sendBeacon) or already parsed. */
-export function jsonBody(req: VercelRequest): Record<string, unknown> {
+export function jsonBody(req: ApiRequest): Record<string, unknown> {
   const body = req.body as unknown;
   if (body && typeof body === "object" && !Buffer.isBuffer(body)) return body as Record<string, unknown>;
   const text = Buffer.isBuffer(body) ? body.toString("utf8") : typeof body === "string" ? body : "";
@@ -39,7 +41,7 @@ export function jsonBody(req: VercelRequest): Record<string, unknown> {
   }
 }
 
-export function allowMethods(req: VercelRequest, res: VercelResponse, methods: string[]): boolean {
+export function allowMethods(req: ApiRequest, res: ApiResponse, methods: string[]): boolean {
   if (methods.includes(req.method ?? "")) return true;
   res.setHeader("Allow", methods.join(", "));
   res.status(405).json({ error: "Method not allowed" });
@@ -59,7 +61,7 @@ export function adminOrigins(): string[] {
  * Credentials travel as a bearer token, never cookies, so no
  * Access-Control-Allow-Credentials.
  */
-export function adminCors(req: VercelRequest, res: VercelResponse): boolean {
+export function adminCors(req: ApiRequest, res: ApiResponse): boolean {
   const origin = String(req.headers.origin ?? "");
   res.setHeader("Vary", "Origin");
   if (adminOrigins().includes(origin)) {

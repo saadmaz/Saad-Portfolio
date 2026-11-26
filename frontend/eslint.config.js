@@ -30,7 +30,7 @@ export default tseslint.config(
   {
     // Serverless functions, build scripts and tooling config run in Node.
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["api/**/*.ts", "tests/**/*.ts", "scripts/**/*.{js,mjs}", "*.{js,ts}"],
+    files: ["server/**/*.ts", "functions/**/*.ts", "tests/**/*.ts", "scripts/**/*.{js,mjs}", "*.{js,ts}"],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.node,

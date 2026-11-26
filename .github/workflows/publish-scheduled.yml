@@ -1,12 +1,12 @@
 name: Publish scheduled posts
 
-# Vercel's Hobby plan only allows daily cron jobs, so this calls the
-# scheduler endpoint every 10 minutes. Overlapping runs are safe: each post
-# is published inside a Firestore transaction (see api/_lib/scheduler.ts).
+# Cloudflare Pages has no cron triggers, so this calls the scheduler
+# endpoint every 10 minutes. Overlapping runs are safe: each post
+# is published inside a Firestore transaction (see server/_lib/scheduler.ts).
 #
 # Repository secrets:
 #   SITE_URL     e.g. https://www.saadmaz.com
-#   CRON_SECRET  same value as the CRON_SECRET env var on Vercel
+#   CRON_SECRET  same value as the CRON_SECRET secret on Cloudflare Pages
 # Without them the job exits quietly.
 
 on:

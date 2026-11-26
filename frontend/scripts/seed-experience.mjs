@@ -6,7 +6,7 @@
  *   node scripts/seed-experience.mjs           # dry run: prints what it would write
  *   node scripts/seed-experience.mjs --write   # writes to Firestore
  *
- * Credentials (admin access, same as the Vercel functions), either:
+ * Credentials (admin access, same as the server handlers), either:
  *   FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY in the environment, or
  *   GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json, or
  *   --firebase-cli: reuse the Firebase CLI login on this machine (`firebase login`),

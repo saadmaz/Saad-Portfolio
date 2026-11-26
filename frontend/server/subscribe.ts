@@ -12,13 +12,13 @@
  * mail scanners that pre-fetch links can't confirm or unsubscribe anyone.
  * Responses never reveal whether an address is already on the list.
  *
- * Env: FIREBASE_* (see _lib/firebase.ts), SENDGRID_API_KEY, FROM_EMAIL,
+ * Env: FIREBASE_* (see _lib/firebase.ts), RESEND_API_KEY, FROM_EMAIL,
  *      SUBSCRIBE_SECRET (32+ chars; falls back to PREVIEW_SECRET).
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import sgMail from "@sendgrid/mail";
-import { FieldValue } from "firebase-admin/firestore";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
+import { FieldValue } from "./_lib/firestore.js";
+import { emailConfigured, sendEmail } from "./_lib/email.js";
 import { adminDb } from "./_lib/firebase.js";
 import { allowMethods, clientIp, createRateLimiter, jsonBody } from "./_lib/http.js";
 import {
@@ -34,7 +34,7 @@ import { escapeHtml } from "./contact.js";
 const isRateLimited = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
 const COLLECTION = "subscribers";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["POST"])) return;
   const body = jsonBody(req);
   const secret = subscribeSecret();
@@ -47,14 +47,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const action = body.action === "confirm" ? "confirm" : "unsub";
     const check = verifyToken(body.token, action, secret);
     if (!check.ok) {
-      return res
-        .status(400)
-        .json({
-          error:
-            check.reason === "expired"
-              ? "This link has expired. Please subscribe again."
-              : "This link isn’t valid.",
-        });
+      return res.status(400).json({
+        error:
+          check.reason === "expired"
+            ? "This link has expired. Please subscribe again."
+            : "This link isn’t valid.",
+      });
     }
     const ref = adminDb().collection(COLLECTION).doc(check.id);
     const snap = await ref.get();
@@ -101,16 +99,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: "Could not subscribe right now. Please try again later." });
   }
 
-  const apiKey = process.env.SENDGRID_API_KEY ?? "";
-  if (!apiKey.startsWith("SG.")) {
-    console.error("[subscribe] SendGrid not configured - confirmation email skipped");
+  if (!emailConfigured()) {
+    console.error("[subscribe] Resend not configured - confirmation email skipped");
     return res.status(500).json({ error: "Could not send the confirmation email. Please try again later." });
   }
   try {
-    sgMail.setApiKey(apiKey);
-    await sgMail.send({
+    await sendEmail({
       to: email,
-      from: process.env.FROM_EMAIL ?? "noreply@saadmaz.com",
       subject: "Confirm your subscription to Saad Mazhar’s newsletter",
       html: renderConfirmEmail(
         `${BASE_URL}/newsletters?confirm=${signToken("confirm", id, secret)}`,
@@ -118,7 +113,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ),
     });
   } catch (err) {
-    console.error("[subscribe] SendGrid send failed:", err);
+    console.error("[subscribe] Resend send failed:", err);
     return res.status(500).json({ error: "Could not send the confirmation email. Please try again later." });
   }
   return res.status(200).json({ success: true });

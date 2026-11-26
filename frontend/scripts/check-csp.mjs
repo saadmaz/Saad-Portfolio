@@ -2,7 +2,7 @@
  * scripts/check-csp.mjs
  * ─────────────────────────────────────────────────────────────
  * Post-build guard: every executable inline <script> in dist/**.html
- * must have its SHA-256 hash listed in vercel.json's script-src.
+ * must have its SHA-256 hash in script-src (src/lib/security-headers.js).
  *
  * The CSP doesn't allow 'unsafe-inline' scripts, so editing an inline
  * script (e.g. the gtag snippet in index.html) without updating the
@@ -13,6 +13,7 @@
 import { createHash } from "crypto";
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join, relative } from "path";
+import { CSP as csp } from "../src/lib/security-headers.js";
 
 const DIST = "dist";
 
@@ -24,9 +25,6 @@ function htmlFiles(dir) {
   });
 }
 
-const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
-const csp =
-  vercel.headers.flatMap((h) => h.headers).find((h) => h.key === "Content-Security-Policy")?.value ?? "";
 const scriptSrc = csp.split(";").find((d) => d.trim().startsWith("script-src")) ?? "";
 
 const missing = new Map();
@@ -41,7 +39,7 @@ for (const file of htmlFiles(DIST)) {
 }
 
 if (missing.size) {
-  console.error("❌  Inline scripts not allowed by the CSP in vercel.json (script-src):");
+  console.error("❌  Inline scripts not allowed by the CSP in src/lib/security-headers.js (script-src):");
   for (const [hash, file] of missing) console.error(`    ${hash}  (first seen in ${file})`);
   process.exit(1);
 }

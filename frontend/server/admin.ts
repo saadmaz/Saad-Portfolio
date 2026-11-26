@@ -10,7 +10,7 @@
  * and is only callable cross-origin from ADMIN_ORIGINS.
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
 import { requireAdmin } from "./_lib/auth.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { adminCors, createRateLimiter, jsonBody } from "./_lib/http.js";
@@ -22,7 +22,7 @@ import { BASE_URL } from "../src/lib/seo-content.js";
 const limited = createRateLimiter({ windowMs: 60_000, max: 60 });
 const POST_ID_RE = /^[A-Za-z0-9_-]{1,128}$/;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (adminCors(req, res)) return;
   res.setHeader("Cache-Control", "no-store");
 
@@ -94,7 +94,7 @@ function siteUrl() {
 /** Which optional integrations are configured. Booleans only - never values. */
 export function integrationStatus(env: NodeJS.ProcessEnv = process.env) {
   return {
-    deployHook: !!env.VERCEL_DEPLOY_HOOK_URL,
+    deployHook: !!env.DEPLOY_HOOK_URL,
     previewSecret: (env.PREVIEW_SECRET ?? "").length >= 32,
     cronSecret: (env.CRON_SECRET ?? "").length >= 16,
     analyticsSalt: (env.ANALYTICS_SALT ?? "").length >= 16,

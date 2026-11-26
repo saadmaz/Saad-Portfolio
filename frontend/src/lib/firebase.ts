@@ -16,7 +16,7 @@
  *
  * How to set these up:
  *   • Local dev  → create frontend/.env  (never commit to git)
- *   • Production → add each VITE_FIREBASE_* key in the Vercel dashboard
+ *   • Production → add each VITE_FIREBASE_* key in Cloudflare Pages (build variables)
  *                  under Settings → Environment Variables
  */
 
@@ -27,12 +27,12 @@ import { getFirestore } from "firebase/firestore";
 // These are PUBLIC identifiers - safe to ship in the browser bundle.
 // Security is enforced by Firestore Security Rules, not by hiding these keys.
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // ─── App singleton ───────────────────────────────────────────────

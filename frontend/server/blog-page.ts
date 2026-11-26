@@ -1,5 +1,5 @@
 /**
- * GET /blog/:slug  (rewritten here by vercel.json)
+ * GET /blog/:slug  (routed here by functions/_middleware.ts)
  *
  * Serves an article page with its title, description, canonical and share
  * image taken live from Firestore, so link previews (WhatsApp, LinkedIn, X,
@@ -14,7 +14,7 @@
  * page (or the shell) is served unchanged, so the page never goes down.
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
 import { createHash } from "node:crypto";
 import { allowMethods } from "./_lib/http.js";
 import { findPublishedPost, type Post } from "./_lib/posts.js";
@@ -29,8 +29,8 @@ const CACHE_MISS = "public, max-age=0, s-maxage=60";
 const BLOG_CARD = `${BASE_URL}/og/blog.png`;
 
 /**
- * A post image re-served by api/share-image as a 1200×630 JPEG on our own
- * domain. ?v= changes with the source URL (uploads get a new token), so a
+ * A post image converted at build time (scripts/prerender.mjs) to a 1200×630
+ * JPEG on our own domain; until the next build it falls back to the blog card. ?v= changes with the source URL (uploads get a new token), so a
  * replaced image gets a new URL that link-preview caches must fetch again.
  */
 export function shareImageUrl(slug: string, sourceUrl: string): string {
@@ -77,25 +77,12 @@ export function injectArticle(shell: string, post: Post): string {
   );
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!allowMethods(req, res, ["GET", "HEAD"])) return;
 
-  const host = String(req.headers["x-forwarded-host"] ?? req.headers.host ?? "");
-  const proto = String(req.headers["x-forwarded-proto"] ?? "https").split(",")[0];
-  const origin = host ? `${proto}://${host}` : BASE_URL;
-  // Forwarded so static reads also work on protected preview deployments.
-  const fwd: Record<string, string> = {};
-  for (const h of ["cookie", "x-vercel-protection-bypass"]) {
-    const v = req.headers[h];
-    if (typeof v === "string") fwd[h] = v;
-  }
   const loadStatic = async (path: string): Promise<string | null> => {
-    try {
-      const r = await fetch(`${origin}${path}`, { headers: fwd, signal: AbortSignal.timeout(8000) });
-      return r.ok ? await r.text() : null;
-    } catch {
-      return null;
-    }
+    const r = await req.asset?.(path);
+    return r ? await r.text() : null;
   };
 
   const slug = String(req.query.slug ?? "").toLowerCase();

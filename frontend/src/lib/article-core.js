@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────
  * Pure article logic shared by every consumer of blog content:
  *   - the React site (via the `@/lib/article-core` import),
- *   - the Vercel functions in api/ (feeds, scheduler, preview),
+ *   - the server handlers in server/ (feeds, scheduler, preview),
  *   - scripts/prerender.mjs (crawler HTML, sitemaps).
  *
  * Plain JS with a hand-written .d.ts, like seo-content.js and imageAlt.js:

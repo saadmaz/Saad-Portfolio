@@ -1,31 +1,30 @@
 /**
  * api/contact.ts
  * ─────────────────────────────────────────────────────────────
- * Vercel serverless function - the ONLY server-side code in the project,
- * and the only path through which contact messages are written.
+ * The only path through which contact messages are written.
  * (Firestore rules deny client-side writes to `contact_messages`.)
  *
  * What it does:
  *   1. Rejects non-POST requests, bots (honeypot) and floods (rate limit)
  *   2. Validates and normalises the request body
- *   3. Saves the message to Firestore via Firebase Admin SDK
- *   4. Sends an email notification via SendGrid
+ *   3. Saves the message to Firestore (server credentials)
+ *   4. Sends an email notification via Resend
  *
  * Responds 200 if at least one of (3) or (4) succeeded, 500 otherwise.
  *
- * Required environment variables (set in Vercel dashboard):
+ * Required environment variables (Cloudflare Pages → Settings → Variables and secrets):
  *   FIREBASE_PROJECT_ID    – e.g. saadportfolio03
  *   FIREBASE_CLIENT_EMAIL  – service account email
- *   FIREBASE_PRIVATE_KEY   – service account private key (with escaped \n)
- *   SENDGRID_API_KEY       – starts with SG.
+ *   FIREBASE_PRIVATE_KEY   – service account private key (\n may be escaped)
+ *   RESEND_API_KEY         – starts with re_
  *   TO_EMAIL               – where contact emails are delivered
- *   FROM_EMAIL             – verified SendGrid sender address
+ *   FROM_EMAIL             – sender on a domain verified in Resend
  */
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import sgMail from "@sendgrid/mail";
-import { initializeApp, cert, getApps } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
+import { adminDb } from "./_lib/firebase.js";
+import { clientIp } from "./_lib/http.js";
+import { emailConfigured, sendEmail } from "./_lib/email.js";
 
 // ─── Validation ──────────────────────────────────────────────────
 
@@ -82,7 +81,7 @@ export function validateContact(body: unknown): ValidationResult {
 
 // ─── Rate limiting ───────────────────────────────────────────────
 // Best-effort, per warm instance. Stops casual floods; a distributed
-// attacker needs an edge rate limit (Vercel Firewall) or a captcha.
+// attacker needs an edge rate limit (Cloudflare WAF rate limiting rule) or a captcha.
 
 const RATE_LIMIT = { windowMs: 10 * 60 * 1000, max: 5 };
 const hits = new Map<string, number[]>();
@@ -94,32 +93,9 @@ export function isRateLimited(key: string, now = Date.now()): boolean {
   return recent.length > RATE_LIMIT.max;
 }
 
-function clientIp(req: VercelRequest): string {
-  const forwarded = req.headers["x-forwarded-for"];
-  const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-  return first?.split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
-}
-
-// ─── Firebase Admin (lazy) ───────────────────────────────────────
-// Initialised on first use so a misconfigured key can't crash module load.
-
-function adminDb() {
-  if (!getApps().length) {
-    initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        // Vercel stores multi-line secrets with escaped \n - unescape them
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      }),
-    });
-  }
-  return getFirestore();
-}
-
 // ─── Request handler ──────────────────────────────────────────────
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
@@ -158,22 +134,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error("[contact] Firestore write failed:", dbErr);
   }
 
-  const apiKey = process.env.SENDGRID_API_KEY ?? "";
-  if (!apiKey.startsWith("SG.") || !process.env.TO_EMAIL) {
-    console.warn("[contact] SendGrid not configured - email skipped");
+  if (!emailConfigured() || !process.env.TO_EMAIL) {
+    console.warn("[contact] Resend not configured - email skipped");
   } else {
     try {
-      sgMail.setApiKey(apiKey);
-      await sgMail.send({
+      await sendEmail({
         to: process.env.TO_EMAIL,
-        from: process.env.FROM_EMAIL ?? "noreply@saadmaz.com",
         replyTo: email,
         subject: `Portfolio Contact: ${subject || "New Message"}`,
         html: renderEmail(result.value),
       });
       emailed = true;
     } catch (emailErr) {
-      console.error("[contact] SendGrid send failed:", emailErr);
+      console.error("[contact] Resend send failed:", emailErr);
     }
   }
 

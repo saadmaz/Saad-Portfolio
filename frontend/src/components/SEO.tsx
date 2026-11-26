@@ -60,7 +60,7 @@ interface SEOProps {
 // `image` to override it, with that image's real dimensions. ?v= is the same
 // design hash prerender.mjs writes, so platforms refetch after a redesign.
 // Cards missing at build time (e.g. a post published since) fall back to
-// home.png via vercel.json, so the URL always resolves to a real PNG.
+// home.png in functions/_middleware.ts, so the URL always resolves to a real PNG.
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 const ogCardFor = (url: string) => {

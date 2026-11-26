@@ -4,6 +4,6 @@ node_modules
 package-lock.json
 public
 src/assets
-# Its inline gtag script is pinned by SHA-256 in vercel.json (CSP);
+# Its inline gtag script is pinned by SHA-256 in src/lib/security-headers.js (CSP);
 # reformatting it would change the hash and break analytics.
 index.html

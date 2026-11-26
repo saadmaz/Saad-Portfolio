@@ -54,7 +54,7 @@ jobs:
         run: npm run build
         env:
           # Stub Firebase env vars so Vite doesn't abort the build.
-          # Real values are set in the Vercel dashboard.
+          # Real values are set in the Cloudflare Pages dashboard.
           VITE_FIREBASE_API_KEY: ci-stub
           VITE_FIREBASE_AUTH_DOMAIN: ci-stub
           VITE_FIREBASE_PROJECT_ID: ci-stub
