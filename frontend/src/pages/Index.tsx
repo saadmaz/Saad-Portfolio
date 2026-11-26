@@ -33,7 +33,8 @@ function Hero({
 }) {
   const stats = [
     { value: "5+", label: "Years building", short: "Years" },
-    { value: projects ? `${projects}` : "20+", label: "Products shipped", short: "Shipped" },
+    // Every project, prototypes and coursework included, so "built" rather than "shipped".
+    { value: projects ? `${projects}` : "20+", label: "Projects built", short: "Built" },
     { value: events ? `${events}` : "40+", label: "Stages & events", short: "Stages" },
     { value: certificates ? `${certificates}` : "99", label: "Certifications", short: "Certs" },
   ];
@@ -591,6 +592,8 @@ function ContactCTA() {
         <Eyebrow counted>Contact</Eyebrow>
         <h2
           id="contact-heading"
+          // The rotating word would otherwise read as every option in a row.
+          aria-label="Let’s build what’s next"
           className="mt-[clamp(16px,3svh,36px)] text-[clamp(3.25rem,min(8.6vw,13.5svh),8.5rem)] font-medium leading-[0.95] tracking-[-0.05em]"
         >
           <span className="rise block">Let’s build</span>

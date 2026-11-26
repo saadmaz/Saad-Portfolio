@@ -22,7 +22,6 @@ import { projectsListSchema } from "@/lib/project-seo";
 import {
   PROJECT_GROUPS,
   PROJECT_STATUSES,
-  firstProjectYear,
   projectGroupOf,
   projectStatusOf,
   projectsFaq,
@@ -191,13 +190,11 @@ const ProjectsPage = () => {
 
   const live = projects.filter((p) => projectStatusOf(p) === "live").length;
   const ventures = projects.filter((p) => projectGroupOf(p) === "venture").length;
-  const since = firstProjectYear(projects);
-  const years = since ? new Date().getFullYear() - since + 1 : 0;
   const stats = [
     { value: projects.length, label: "Projects" },
     { value: live, label: "Live in production" },
     { value: ventures, label: "For my ventures" },
-    { value: years, label: "Years building" },
+    { value: categories.length, label: "Areas" },
   ].filter((s) => s.value > 0);
 
   const indexable = projects.filter(isProjectIndexable);
