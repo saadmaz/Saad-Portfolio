@@ -340,8 +340,14 @@ const PROJECT_LONG_FIELDS = new Set([
   "overview",
   "description",
 ]);
+// Indexability is judged on the write-up these cards leave out, so each card
+// carries the verdict: otherwise every card reads as thin and /projects
+// marks itself noindex until the live data arrives (Google renders before that).
 const projectCards = (projects) =>
-  projects.map((p) => Object.fromEntries(Object.entries(p).filter(([k]) => !PROJECT_LONG_FIELDS.has(k))));
+  projects.map((p) => ({
+    ...Object.fromEntries(Object.entries(p).filter(([k]) => !PROJECT_LONG_FIELDS.has(k))),
+    seo_visibility: isProjectIndexable(p) ? "index" : "noindex",
+  }));
 
 /** Newest first by publish time, as BlogService.getPublished() sorts. */
 /** The editor's own copy of the article (contentJson): only the CMS reads it, so pages don't carry it. */
