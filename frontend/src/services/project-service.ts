@@ -5,8 +5,7 @@
  * Firestore rules restrict them to the admin account.
  */
 
-import { where } from "firebase/firestore";
-import { COLLECTIONS, fetchCollection, fetchFirstWhere, fetchOrdered } from "@/lib/firestore";
+import { COLLECTIONS, fetchCollection, fetchFirstWhere, fetchOrdered, where } from "@/lib/firestore";
 import type { Project } from "@/types";
 
 /**
