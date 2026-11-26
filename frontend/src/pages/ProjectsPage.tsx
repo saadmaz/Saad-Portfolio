@@ -362,7 +362,7 @@ const ProjectsPage = () => {
         {isLoading ? (
           <div className="wrap flex flex-col gap-6 pt-12">
             <Skeleton className="h-[440px] w-full rounded-[28px]" />
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2].map((i) => (
                 <Skeleton key={i} className="h-[420px] rounded-[22px]" />
               ))}
@@ -410,7 +410,7 @@ const ProjectsPage = () => {
                       />
                       <p className="-mt-4 mb-10 max-w-[580px] text-fg-2">{g.intro}</p>
                     </Reveal>
-                    <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                       {items.map((p) => (
                         <li key={p.id}>
                           <Reveal className="h-full">
@@ -458,7 +458,7 @@ const ProjectsPage = () => {
                 <X aria-hidden className="size-4" /> Clear filters
               </button>
             </div>
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {shown.map((p) => (
                 <li key={p.id}>
                   <Reveal className="h-full">
