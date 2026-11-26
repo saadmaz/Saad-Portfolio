@@ -101,6 +101,19 @@ export function articleSchema(
   },
 ): Record<string, unknown>;
 
+/** Blog JSON-LD for the blog index or a category page (listed posts only). */
+export function blogSchema(
+  posts: PostLike[],
+  opts: {
+    baseUrl: string;
+    name: string;
+    description?: string;
+    url: string;
+    publisher: { name: string; id?: string };
+    limit?: number;
+  },
+): Record<string, unknown>;
+
 export function escapeXml(s: unknown): string;
 export function buildRss(
   posts: PostLike[],

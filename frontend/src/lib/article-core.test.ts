@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   articleSchema,
+  blogSchema,
   assignHeadingIds,
   buildBlogSitemap,
   CATEGORY_MIN_POSTS,
@@ -399,5 +400,39 @@ describe("sameText", () => {
     ).toBe(true);
     expect(sameText("20 AI Prompts", "20 AI Prompts to Build")).toBe(false);
     expect(sameText("", "")).toBe(false);
+  });
+});
+
+describe("blogSchema", () => {
+  it("lists only listed posts with absolute URLs and the owner as author", () => {
+    const schema = blogSchema(
+      [
+        post({
+          id: "a",
+          slug: "a",
+          title: "A",
+          excerpt: "Ex",
+          cover: { url: "/a.jpg" },
+          publishedAt: "2025-01-02T00:00:00.000Z",
+        }),
+        post({ id: "b", slug: "b", title: "B", unlisted: true }),
+      ],
+      {
+        baseUrl: BASE,
+        name: "Blog",
+        url: `${BASE}/blog`,
+        publisher: { name: "Site", id: `${BASE}/#person` },
+      },
+    );
+    expect(schema).toMatchObject({ "@type": "Blog", author: { "@id": `${BASE}/#person` } });
+    const items = schema.blogPost as Record<string, unknown>[];
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({
+      "@type": "BlogPosting",
+      headline: "A",
+      url: `${BASE}/blog/a`,
+      image: `${BASE}/a.jpg`,
+      datePublished: "2025-01-02T00:00:00.000Z",
+    });
   });
 });
