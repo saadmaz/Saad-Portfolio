@@ -209,6 +209,7 @@ function injectContent(
     canonical,
     type,
     image,
+    snapshot,
   },
 ) {
   const pageUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
@@ -247,10 +248,80 @@ function injectContent(
 
   // data-prerendered: index.html hides this unstyled crawler copy from
   // visitors until React mounts and replaces it (no flash of plain text).
-  return html.replace(
-    /<div id="root">[\s\S]*?<\/div>/,
-    () => `<div id="root"><div data-prerendered>${content}</div></div>`,
-  );
+  return html
+    .replace(
+      /<div id="root">[\s\S]*?<\/div>/,
+      () => `<div id="root"><div data-prerendered>${content}</div></div>`,
+    )
+    .replace("</body>", () => `${snapshotScript(snapshot)}</body>`);
+}
+
+// ── Query snapshots (src/lib/querySnapshot.ts) ─────────────────────────────
+// Each page carries the query results it renders from, in the shapes the
+// site's services return, so content shows as soon as the app starts.
+
+const BUILT_AT = Date.now();
+
+/** Admin SDK timestamps → the { seconds, nanoseconds } shape the site's date helpers read. */
+const snapshotReplacer = (_key, v) =>
+  v && typeof v === "object" && typeof v._seconds === "number"
+    ? { seconds: v._seconds, nanoseconds: v._nanoseconds ?? 0 }
+    : v;
+
+function snapshotScript(entries) {
+  if (!entries?.length) return "";
+  const json = JSON.stringify({ builtAt: BUILT_AT, entries }, snapshotReplacer).replace(/</g, "\\u003c");
+  return `<script type="application/json" id="query-snapshot">${json}</script>`;
+}
+
+/** Long write-up fields left out of project lists (each project page carries its own in full). */
+const PROJECT_LONG_FIELDS = new Set([
+  "long_description",
+  "problem",
+  "solution",
+  "impact",
+  "challenges",
+  "learnings",
+  "features",
+  "roadmap",
+  "architecture",
+  "technical_decisions",
+  "contribution",
+  "testimonials",
+  "gallery",
+  "screenshots",
+  "images",
+  "collaborators",
+  "resources",
+  "videos",
+  "overview",
+  "description",
+]);
+const projectCards = (projects) =>
+  projects.map((p) => Object.fromEntries(Object.entries(p).filter(([k]) => !PROJECT_LONG_FIELDS.has(k))));
+
+/** Newest first by publish time, as BlogService.getPublished() sorts. */
+const clientPosts = (posts) => {
+  const time = (p) => Date.parse(p.publishedAt ?? p.date ?? "") || 0;
+  return [...posts].sort((a, b) => time(b) - time(a));
+};
+
+const blogSnapshot = (data) => [
+  [["blog", "published"], clientPosts(data.posts)],
+  [["blog", "settings"], Object.keys(data.settings ?? {}).length ? { id: "config", ...data.settings } : {}],
+  [["blog", "series"], data.series],
+];
+
+/** Snapshot for a static route, or none. */
+function staticSnapshot(routePath, data) {
+  if (routePath === "/projects") return [[["projects"], data.projects]];
+  if (routePath === "/blog") return blogSnapshot(data);
+  if (routePath === "/experience")
+    return [
+      [["experience"], data.experience],
+      [["projects"], projectCards(data.projects)],
+    ];
+  return undefined;
 }
 
 /** Indexable page URL → hash of its crawler-visible content (see scripts/indexnow.mjs). */
@@ -972,6 +1043,7 @@ function prerenderStaticRoutes(shell, data) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: staticSnapshot(routePath, data),
         title,
         fullTitle,
         h1,
@@ -1105,6 +1177,10 @@ function prerenderProjects(shell, projects) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: [
+          [["projects", "detail", p.slug], p],
+          [["projects"], projectCards(projects)],
+        ],
         title: projectSeoTitle(p),
         h1: p.title,
         description: projectSeoDescription(p),
@@ -1180,6 +1256,11 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
       p.slug,
       injectContent(shell, {
         path: routePath,
+        snapshot: [
+          [["blog", "detail", p.slug], p],
+          ...blogSnapshot(data),
+          [["blog", "authors"], data.authors],
+        ],
         title: seoTitleOf(p),
         description,
         schemas: hidden ? [] : [schema],
@@ -1249,6 +1330,7 @@ function prerenderBlogIndexes(shell, data) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: blogSnapshot(data),
         title: `${label} articles`,
         description: categoryDescriptionOf(label, setting?.description),
         bodyHtml: [
@@ -1521,6 +1603,10 @@ function prerenderExperience(shell, experience, projects = []) {
       routePath,
       injectContent(shell, {
         path: routePath,
+        snapshot: [
+          [["experience"], experience],
+          [["projects"], projectCards(projects)],
+        ],
         title: `${c.name}${role ? `: ${role}` : ""}`,
         description,
         schemas: [
