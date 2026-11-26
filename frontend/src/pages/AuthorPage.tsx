@@ -26,7 +26,7 @@ import { normalizeExperience } from "@/lib/experience";
 import { certificatePath, eventPath } from "@/lib/paths";
 import { monthYear } from "@/lib/format";
 import { projectStatusOf, projectGroupOf } from "@/lib/projectGroups";
-import { BASE_URL, PERSON_ID } from "@/lib/seo-content";
+import { BASE_URL, PERSON_ID, fitDescription } from "@/lib/seo-content";
 import type { Certificate, Event } from "@/types";
 import NotFound from "./NotFound";
 
@@ -190,7 +190,7 @@ const AuthorPage = () => {
     <Layout>
       <SEO
         title={`${author.name}${author.title ? `, ${author.title}` : ""}`}
-        description={author.bio || `Articles by ${author.name}.`}
+        description={fitDescription(author.bio || `Articles by ${author.name}.`)}
         url={url}
         type="profile"
         {...(author.avatar

@@ -79,10 +79,24 @@ export function eventDescriptionOf(e) {
 
 /** Meta description for a blog category page: the CMS one, else a full sentence. */
 export function categoryDescriptionOf(label, custom) {
-  return (
+  return fitDescription(
     String(custom ?? "").trim() ||
-    `Articles on ${label} by Saad Mazhar, startup founder and full-stack developer in Colombo, Sri Lanka: lessons, tutorials and notes from real projects.`
+      `Articles on ${label} by Saad Mazhar, startup founder and full-stack developer in Colombo: lessons, tutorials and notes from real projects.`,
   );
+}
+
+/**
+ * Meta description sized for search results: long text is cut at a word
+ * boundary (≤158 chars); short text gets `tail` appended when given.
+ */
+export function fitDescription(text, tail = "") {
+  let s = String(text ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (s.length < 70 && tail) s = `${s} ${tail}`.trim();
+  if (s.length <= 158) return s;
+  const cutAt = s.lastIndexOf(" ", 157);
+  return `${s.slice(0, cutAt > 100 ? cutAt : 157).replace(/[,;:.\s]+$/, "")}…`;
 }
 
 export const PERSON_ID = `${BASE_URL}/#person`;
@@ -188,7 +202,7 @@ export const PAGE_SEO = {
     // The crawler copy's H1 mirrors the visible hero heading in Index.tsx.
     h1: "Saad Mazhar: building products that solve real problems.",
     description:
-      "Saad Mazhar is a full-stack developer and startup founder in Colombo, Sri Lanka. See his projects, writing and talks, or hire him to build your web or AI product.",
+      "Saad Mazhar is a full-stack developer and startup founder in Colombo, Sri Lanka. See his projects, writing and talks, or hire him for your web or AI product.",
   },
   // `h1` is the heading in the crawler copy (scripts/prerender.mjs): a plain,
   // descriptive line. Without it the H1 repeated the title ("About | Founder & Developer").

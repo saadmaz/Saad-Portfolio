@@ -11,7 +11,7 @@ import { Linkified } from "@/components/Linkified";
 import { useExperience, useSkills } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { companyPeriod, companyProjects, normalizeExperience, type Company } from "@/lib/experience";
-import { BASE_URL, PERSON_REF } from "@/lib/seo-content";
+import { BASE_URL, PERSON_REF, fitDescription } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
 
 const MEDIA_ICON = { Document: FileText, Presentation, Link: Link2, Image: Link2 } as const;
@@ -243,7 +243,10 @@ const ExperienceDetailPage = () => {
     <Layout>
       <SEO
         title={`${company.name}: ${lead?.title ?? "Experience"}`}
-        description={summary.replace(/\s+/g, " ").slice(0, 158)}
+        description={fitDescription(
+          summary,
+          `Saad Mazhar's role, work and the projects he built at ${company.name}.`,
+        )}
         url={url}
         structuredData={{
           "@context": "https://schema.org",
