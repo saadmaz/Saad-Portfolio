@@ -13,6 +13,8 @@ export interface Project {
   colour?: string;
   order_index?: number;
   featured?: boolean;
+  /** Projects page section; inferred from role/category when unset (lib/projectGroups). */
+  group?: "venture" | "client" | "lab" | "academic";
   /** Defaults to visible when absent (legacy docs). Set to false to hide from the public site and sitemap. */
   published?: boolean;
   /** Search override: "auto" indexes once the write-up is long enough (see lib/indexing). */

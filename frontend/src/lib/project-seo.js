@@ -184,3 +184,37 @@ export function relatedProjects(p, all) {
     .map((id) => byId.get(String(id)))
     .filter((x) => x && x.slug && x.slug !== p.slug && x.published !== false);
 }
+
+/**
+ * ItemList JSON-LD for the projects page: one compact CreativeWork per project
+ * (the full entity lives on each project page under the same @id).
+ */
+export function projectsListSchema(projects, { baseUrl, author }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Projects by Saad Mazhar",
+    url: `${baseUrl}/projects`,
+    numberOfItems: projects.length,
+    itemListElement: projects.map((p, i) => {
+      const url = `${baseUrl}/projects/${p.slug}`;
+      const image = p.og_image || p.heroImage || p.image;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "CreativeWork",
+          "@id": `${url}#project`,
+          name: p.title,
+          description: projectSeoDescription(p),
+          url,
+          ...(image ? { image } : {}),
+          creator: author,
+          ...(clean(p.stage) ? { creativeWorkStatus: clean(p.stage) } : {}),
+          ...(isoYm(p.start_date || p.date) ? { dateCreated: isoYm(p.start_date || p.date) } : {}),
+          ...(clean(p.category || p.type) ? { genre: clean(p.category || p.type) } : {}),
+        },
+      };
+    }),
+  };
+}

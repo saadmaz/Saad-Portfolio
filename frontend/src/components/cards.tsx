@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import type { Event, Project } from "@/types";
@@ -50,24 +50,50 @@ export function StageBadge({ stage, className }: { stage?: string; className?: s
 const projectTags = (p: Project, n: number) =>
   (p.techStack?.length ? p.techStack : (p.technologies ?? [])).slice(0, n);
 
-/** Typographic stand-in for a project with no screenshot yet: initials on a lit grid. */
+/** Tailwind hue in a project's `colour` ("from-cyan-900/40 …") → RGB for the generated cover. */
+const HUES: Record<string, string> = {
+  red: "220 38 38",
+  orange: "234 88 12",
+  amber: "217 119 6",
+  yellow: "202 138 4",
+  lime: "101 163 13",
+  green: "22 163 74",
+  emerald: "5 150 105",
+  teal: "13 148 136",
+  cyan: "8 145 178",
+  sky: "2 132 199",
+  blue: "37 99 235",
+  indigo: "79 70 229",
+  violet: "124 58 237",
+  purple: "147 51 234",
+  fuchsia: "192 38 211",
+  pink: "219 39 119",
+  rose: "225 29 72",
+};
+const hueOf = (colour?: string) => HUES[/from-([a-z]+)-/.exec(colour ?? "")?.[1] ?? ""] ?? "255 95 0";
+
+/** Generated cover for a project with no screenshot yet: its colour, name and stack on a lit grid. */
 export function ProjectPoster({ project, className }: { project: Project; className?: string }) {
-  const words = project.title.split(/\s+/).filter((w) => /^[A-Za-z0-9]/.test(w));
-  const initials = words
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+  const hue = hueOf(project.colour);
+  const stack = projectTags(project, 3);
   return (
     <div
       aria-hidden
       className={cn("relative overflow-hidden rounded-media border border-line bg-surface", className)}
+      style={{ "--hue": hue } as CSSProperties}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(255_95_0/0.3),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.08),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_0%,rgb(var(--hue)/0.38),transparent_58%),radial-gradient(ellipse_at_0%_100%,rgb(var(--hue)/0.12),transparent_60%)] transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
       <div className="absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.05)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.05)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(ellipse_at_70%_20%,black,transparent_75%)]" />
-      <span className="absolute bottom-3 left-5 text-[clamp(4rem,8vw,7.5rem)] font-medium leading-none tracking-[-0.06em] text-fg/[0.14] transition-colors duration-300 group-hover:text-fg/25">
-        {initials}
-      </span>
+      <div className="absolute inset-x-5 bottom-4 flex flex-col gap-3 md:inset-x-6 md:bottom-5">
+        <span className="line-clamp-2 text-[clamp(1.5rem,2.6vw,2.25rem)] font-medium leading-[1.05] tracking-[-0.03em] text-fg/80 transition-colors duration-300 group-hover:text-fg">
+          {project.title}
+        </span>
+        {stack.length > 0 && (
+          <span className="truncate font-mono text-[11px] uppercase tracking-[0.08em] text-fg/45">
+            {stack.join(" · ")}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
