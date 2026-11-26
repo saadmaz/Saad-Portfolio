@@ -19,6 +19,10 @@ export function projectSchema(
   p: Project,
   opts: { baseUrl: string; author: object; related?: Project[] },
 ): Record<string, unknown>;
+export function projectAppSchema(
+  p: Project,
+  opts: { baseUrl: string; author: object },
+): Record<string, unknown> | null;
 export function projectsListSchema(
   projects: Project[],
   opts: { baseUrl: string; author: object },

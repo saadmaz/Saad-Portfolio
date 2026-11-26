@@ -19,6 +19,7 @@ import {
   projectCanonical,
   projectDuration,
   projectGallery,
+  projectAppSchema,
   projectSchema,
   projectSeoDescription,
   projectSeoTitle,
@@ -404,7 +405,10 @@ const ProjectDetailPage = () => {
           : {})}
         // Stub write-ups stay out of search (same rule as the prerendered copy).
         noIndex={isProjectIndexable(project) ? false : "follow"}
-        structuredData={projectSchema(project, { baseUrl: BASE_URL, author: PERSON_REF, related })}
+        structuredData={[
+          projectSchema(project, { baseUrl: BASE_URL, author: PERSON_REF, related }),
+          projectAppSchema(project, { baseUrl: BASE_URL, author: PERSON_REF }),
+        ].filter((s): s is Record<string, unknown> => !!s)}
         breadcrumbs={[
           { name: "Projects", url: `${BASE_URL}/projects` },
           { name: project.title, url },
@@ -413,12 +417,18 @@ const ProjectDetailPage = () => {
       <PageHero
         band={<span className="truncate">Saad Mazhar · Projects{category ? ` · ${category}` : ""}</span>}
         media={
-          // No screenshot yet: let the title carry the hero rather than an empty frame.
-          (project.heroImage || project.image) && (
+          // No screenshot yet: the generated cover (colour and stack) instead of an empty hero.
+          project.heroImage || project.image ? (
             <BrowserFrame
               src={project.heroImage || project.image}
               alt={project.altText || project.title}
               url={live}
+            />
+          ) : (
+            <ProjectPoster
+              project={project}
+              showTitle={false}
+              className="min-h-[180px] flex-1 rounded-[22px]"
             />
           )
         }
@@ -505,7 +515,14 @@ const ProjectDetailPage = () => {
             <SideCard title="Built with">
               <div className="flex flex-wrap gap-2">
                 {stack.map((t) => (
-                  <Tag key={t}>{t}</Tag>
+                  <Link
+                    key={t}
+                    to={`/projects?stack=${encodeURIComponent(t)}`}
+                    title={`Other projects built with ${t}`}
+                    className="transition-opacity hover:opacity-80"
+                  >
+                    <Tag>{t}</Tag>
+                  </Link>
                 ))}
               </div>
             </SideCard>

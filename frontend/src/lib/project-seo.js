@@ -218,3 +218,32 @@ export function projectsListSchema(projects, { baseUrl, author }) {
     }),
   };
 }
+
+const APP_STAGES = new Set(["production", "maintained", "beta"]);
+
+/**
+ * WebApplication JSON-LD for a product people can use today (a live URL and a
+ * live or beta stage), next to the case study's CreativeWork. Marketing
+ * websites aren't applications, so they're left out.
+ */
+export function projectAppSchema(p, { baseUrl, author }) {
+  const live = clean(p.liveUrl || p.live_preview);
+  const category = clean(p.category || p.type).toLowerCase();
+  if (!live || !APP_STAGES.has(clean(p.stage).toLowerCase()) || category === "websites") return null;
+  const page = `${baseUrl}/projects/${p.slug}`;
+  const image = p.og_image || p.heroImage || p.image;
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": `${page}#app`,
+    name: p.title,
+    description: projectSeoDescription(p),
+    url: live,
+    applicationCategory: category.includes("ai") ? "AI application" : "BusinessApplication",
+    operatingSystem: "Web",
+    ...(image ? { image } : {}),
+    creator: author,
+    ...(clean(p.client) ? { provider: { "@type": "Organization", name: clean(p.client) } } : {}),
+    subjectOf: { "@id": `${page}#project` },
+  };
+}
