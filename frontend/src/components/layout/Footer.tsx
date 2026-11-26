@@ -43,8 +43,7 @@ export function Footer() {
   return (
     <footer className="overflow-hidden border-t border-line">
       <div className="wrap pb-6 pt-10 md:pt-14">
-        {/* Capped and centred so the footer doesn't sprawl on wide screens. */}
-        <div className="mx-auto w-full max-w-[880px]">
+        <div className="w-full">
           <div className="grid items-center gap-4 rounded-2xl border border-line bg-surface/40 p-4 md:grid-cols-[minmax(0,1fr)_380px] md:gap-8 md:p-5">
             <div className="flex flex-col gap-1.5">
               <p className="text-h4 font-medium">Notes from the build</p>
@@ -97,21 +96,19 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Sized off the container's width (text is ~5.5em wide) but capped, so it fits without dominating. */}
-        <div className="mx-auto mt-10 w-full max-w-[880px] [container-type:inline-size]">
+        {/* Sized off the container's width (text is ~5.5em wide) so it spans the footer. */}
+        <div className="mt-10 w-full [container-type:inline-size]">
           <p
             aria-hidden
-            className="select-none whitespace-nowrap text-center text-[min(calc(100cqi/5.6),7.5rem)] font-medium leading-[0.8] tracking-[-0.06em] text-fg/[0.06]"
+            className="select-none whitespace-nowrap text-center text-[calc(100cqi/5.6)] font-medium leading-[0.8] tracking-[-0.06em] text-fg/[0.06]"
           >
             Saad Mazhar
           </p>
         </div>
 
-        <div className="mx-auto mt-6 flex w-full max-w-[880px] flex-col items-center gap-1.5 border-t border-line pt-6 text-center font-mono text-meta text-fg-3 sm:flex-row sm:justify-center sm:gap-3">
+        <div className="mt-6 flex w-full items-center justify-center gap-2 whitespace-nowrap border-t border-line pt-6 font-mono text-meta text-fg-3 sm:gap-3">
           <span>© {new Date().getFullYear()} Saad Mazhar</span>
-          <span aria-hidden className="hidden sm:inline">
-            ·
-          </span>
+          <span aria-hidden>·</span>
           <span>{CONTACT.location}</span>
         </div>
       </div>
