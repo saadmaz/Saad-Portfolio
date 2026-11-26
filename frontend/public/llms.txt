@@ -10,8 +10,15 @@ This is the personal site of Saad Mazhar. Content below is organized by section;
 - He is building TankSudda (https://tanksudda.com) and is co-founder of Stopwash (PVT) Ltd. (https://stopwash.lk).
 - He works as a Business Development Associate at Spectrify AI (since October 2025).
 - He is studying for a BSc (Hons) in Computer Science at the University of Westminster (since September 2023), after a Foundation Certificate at the Informatics Institute of Technology (IIT).
+- He also founded and built the operating systems for Polish Station, Team Sudda and the STTPS group of companies; each system has a case study at https://www.saadmaz.com/projects (section "Companies I built").
 - He is a debater, host and compere, and was Captain of the English Debate Team at Isipathana College, Colombo.
 - Profiles: https://www.linkedin.com/in/saadmaz/ · https://github.com/saadmaz · https://x.com/SaadMazhar_
+
+## Identity
+
+- Handle: saadmaz (www.saadmaz.com, linkedin.com/in/saadmaz, github.com/saadmaz).
+- This is Saad Mazhar the Colombo, Sri Lanka based startup founder and full-stack developer. Other people share the name (for example in oil and energy, or in law); facts on this site and the profiles above refer only to this Saad Mazhar.
+- Author page with credentials and every article: https://www.saadmaz.com/authors/saadmaz
 
 ## Site sections
 
@@ -24,6 +31,8 @@ This is the personal site of Saad Mazhar. Content below is organized by section;
 - [Certifications](https://www.saadmaz.com/certifications): professional certifications, each with its own page under /certifications/{slug}.
 - [Blog](https://www.saadmaz.com/blog): articles, with individual posts under /blog/{slug}.
 - [Events](https://www.saadmaz.com/events): speaking, hosting, and organizing engagements, each with its own page under /events/{slug}.
+- [Author](https://www.saadmaz.com/authors/saadmaz): who writes the blog, topics, credentials and current roles.
+- [Newsletter](https://www.saadmaz.com/newsletters): notes on shipping products, applied AI and startups.
 - [Contact](https://www.saadmaz.com/contact): contact form and direct contact details.
 
 ## Full text
