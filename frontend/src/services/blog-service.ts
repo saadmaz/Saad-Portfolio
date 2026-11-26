@@ -7,8 +7,7 @@
  * reachable by direct link, so they're left out of every listing.
  */
 
-import { where } from "firebase/firestore";
-import { COLLECTIONS, fetchById, fetchCollection, fetchFirst } from "@/lib/firestore";
+import { COLLECTIONS, fetchById, fetchCollection, fetchFirst, where } from "@/lib/firestore";
 import { normalizePath } from "@/lib/article-core";
 import type { Author, BlogPost, BlogSeries, BlogSettings, ReactionCounts, Redirect } from "@/types";
 

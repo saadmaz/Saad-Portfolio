@@ -12,6 +12,7 @@ import { useExperience, useSkills } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { companyPeriod, companyProjects, normalizeExperience, type Company } from "@/lib/experience";
 import { BASE_URL, PERSON_REF, fitDescription } from "@/lib/seo-content";
+import { resizedUrl } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 const MEDIA_ICON = { Document: FileText, Presentation, Link: Link2, Image: Link2 } as const;
@@ -329,7 +330,7 @@ const ExperienceDetailPage = () => {
                 className="absolute inset-[15%] rounded-full bg-[radial-gradient(circle,rgb(255_95_0/0.35),transparent_70%)] blur-2xl"
               />
               <img
-                src={company.illustration}
+                src={resizedUrl(company.illustration, 680)}
                 alt=""
                 className="relative size-[220px] animate-float object-contain drop-shadow-[0_30px_40px_rgb(0_0_0/0.6)] md:size-[340px]"
               />
@@ -617,7 +618,7 @@ const ExperienceDetailPage = () => {
               <span className="relative flex items-center gap-6">
                 {next.illustration && (
                   <img
-                    src={next.illustration}
+                    src={resizedUrl(next.illustration, 480)}
                     alt=""
                     loading="lazy"
                     className="hidden size-36 object-contain drop-shadow-[0_20px_30px_rgb(0_0_0/0.5)] transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105 md:block"

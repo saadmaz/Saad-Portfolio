@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { responsiveImage } from "@/lib/images";
+import { resizedImage, responsiveImage } from "@/lib/images";
 import type { ImageAsset } from "@/types";
 
 export { Button } from "./Button";
@@ -185,7 +185,8 @@ export function Media({
   imgClassName?: string;
 }) {
   const [failed, setFailed] = useState(false);
-  const img = asset?.url ? responsiveImage(asset, sizes) : src ? { src } : null;
+  // Uploaded assets bring their own variants; plain Storage URLs get Cloudflare-resized ones.
+  const img = asset?.url ? responsiveImage(asset, sizes) : src ? resizedImage(src, sizes) : null;
   const w = Number(img?.width) || 0;
   const h = Number(img?.height) || 0;
   const frame = natural ? { aspectRatio: w && h ? `${w} / ${h}` : "16 / 9" } : undefined;

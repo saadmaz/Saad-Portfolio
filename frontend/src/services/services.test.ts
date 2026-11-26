@@ -8,8 +8,9 @@ vi.mock("@/lib/firestore", () => ({
   fetchById: vi.fn(),
   fetchFirstWhere: vi.fn(),
   fetchFirst: vi.fn(),
+  // Filters as plain tuples, so assertions read like the query.
+  where: vi.fn((...args: unknown[]) => args),
 }));
-vi.mock("firebase/firestore", () => ({ where: vi.fn((...args) => args), orderBy: vi.fn() }));
 
 import * as firestore from "@/lib/firestore";
 import { BlogService } from "./blog-service";

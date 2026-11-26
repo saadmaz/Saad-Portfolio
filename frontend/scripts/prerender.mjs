@@ -314,7 +314,7 @@ const blogSnapshot = (data) => [
 
 /** Snapshot for a static route, or none. */
 function staticSnapshot(routePath, data) {
-  if (routePath === "/projects") return [[["projects"], data.projects]];
+  if (routePath === "/projects") return [[["projects"], projectCards(data.projects)]];
   if (routePath === "/blog") return blogSnapshot(data);
   if (routePath === "/experience")
     return [
