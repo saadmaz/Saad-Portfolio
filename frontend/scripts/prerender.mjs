@@ -48,6 +48,12 @@ import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectG
 import { authorFaq, authorTopics } from "../src/lib/authorFaq.js";
 import { sameOrg } from "../src/lib/orgName.js";
 import {
+  cloudflareResized,
+  cloudflareSrcSet,
+  isOwnStorageImage,
+  variantSrcSet,
+} from "../src/lib/imageResize.js";
+import {
   projectCanonical,
   projectDuration,
   projectGallery,
@@ -210,6 +216,7 @@ function injectContent(
     type,
     image,
     snapshot,
+    preload,
   },
 ) {
   const pageUrl = routePath === "/" ? BASE_URL : `${BASE_URL}${routePath}`;
@@ -253,6 +260,7 @@ function injectContent(
       /<div id="root">[\s\S]*?<\/div>/,
       () => `<div id="root"><div data-prerendered>${content}</div></div>`,
     )
+    .replace("</head>", () => `${preloadLink(preload)}</head>`)
     .replace("</body>", () => `${snapshotScript(snapshot)}</body>`);
 }
 
@@ -261,6 +269,39 @@ function injectContent(
 // site's services return, so content shows as soon as the app starts.
 
 const BUILT_AT = Date.now();
+
+/**
+ * <link rel="preload"> for the page's main image (its LCP element), so the
+ * browser fetches it with the HTML instead of after the app renders. Must name
+ * exactly what the page's <img> will request (see src/lib/imageResize.js).
+ */
+function preloadLink(img) {
+  if (!img?.href) return "";
+  const set = img.srcset
+    ? ` imagesrcset="${escape(img.srcset)}" imagesizes="${escape(img.sizes || "100vw")}"`
+    : "";
+  return `<link rel="preload" as="image" href="${escape(img.href)}"${set} fetchpriority="high" />\n`;
+}
+
+/** Preload for an article cover: the upload's own variants (Media with `asset`, ArticleHero's sizes). */
+function coverPreload(post) {
+  const cover = coverOf(post);
+  if (!cover?.url) return undefined;
+  return {
+    href: cover.url,
+    srcset: variantSrcSet(cover.variants),
+    sizes: "(min-width: 1100px) 1040px, 100vw",
+  };
+}
+
+/** Preload for a project hero: Cloudflare-resized when it's a Storage image (Media with `src`). */
+function heroPreload(project) {
+  const url = project.heroImage || project.image;
+  if (!url) return undefined;
+  return isOwnStorageImage(url)
+    ? { href: cloudflareResized(url, 1600), srcset: cloudflareSrcSet(url), sizes: "100vw" }
+    : { href: url };
+}
 
 /** Admin SDK timestamps → the { seconds, nanoseconds } shape the site's date helpers read. */
 const snapshotReplacer = (_key, v) =>
@@ -1181,6 +1222,7 @@ function prerenderProjects(shell, projects) {
           [["projects", "detail", p.slug], p],
           [["projects"], projectCards(projects)],
         ],
+        preload: heroPreload(p),
         title: projectSeoTitle(p),
         h1: p.title,
         description: projectSeoDescription(p),
@@ -1261,6 +1303,7 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
           ...blogSnapshot(data),
           [["blog", "authors"], data.authors],
         ],
+        preload: coverPreload(p),
         title: seoTitleOf(p),
         description,
         schemas: hidden ? [] : [schema],
