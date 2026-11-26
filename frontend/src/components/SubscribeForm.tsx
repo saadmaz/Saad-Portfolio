@@ -104,7 +104,7 @@ export function SubscribeForm({
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-invalid={!!message}
-          className="h-12 min-w-0 flex-1 rounded-full border border-line-2 bg-surface px-5 text-[1rem] text-fg placeholder:text-fg-3 focus:border-accent focus:outline-none"
+          className="h-12 min-w-0 shrink-0 rounded-full border border-line-2 sm:flex-1 sm:shrink bg-surface px-5 text-[1rem] text-fg placeholder:text-fg-3 focus:border-accent focus:outline-none"
         />
         {/* Honeypot: hidden from people, bots fill it in. */}
         <input
