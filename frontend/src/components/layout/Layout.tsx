@@ -19,7 +19,8 @@ export function Layout({
         Skip to content
       </a>
       <Header />
-      <main id="main-content" className="flex-1 pt-[72px] lg:pt-[88px]">
+      {/* At least a screen tall, so the footer doesn't paint high and then jump when content loads. */}
+      <main id="main-content" className="min-h-[100svh] flex-1 pt-[72px] lg:pt-[88px]">
         {children}
       </main>
       <Footer hideSubscribe={hideFooterSubscribe} />
