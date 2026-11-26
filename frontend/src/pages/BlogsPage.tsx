@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { ArrowUpRight, ChevronDown, Mail, Rss, Search, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Mail, Search, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import {
@@ -224,9 +224,6 @@ const BlogsPage = () => {
             <div className="mt-8 flex animate-rise flex-wrap gap-3 [animation-delay:400ms]">
               <Button to="/newsletters" icon={false}>
                 <Mail aria-hidden className="size-4" /> Subscribe
-              </Button>
-              <Button href="/rss.xml" variant="secondary" icon={false}>
-                <Rss aria-hidden className="size-4" /> RSS feed
               </Button>
             </div>
             {stats.length > 0 && (
