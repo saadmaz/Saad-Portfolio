@@ -28,7 +28,7 @@ browser ──read──▶ Firestore            (rules: public read of live con
 browser ──POST──▶ /api/contact ──▶ Firestore contact_messages + Resend email
 browser ──POST──▶ /api/reactions, /api/track   (reactions, first-party analytics, 404 log)
 CMS     ──POST──▶ /api/admin              (preview links, rebuilds, scheduler; admin token)
-cron    ──GET───▶ /api/cron/publish-scheduled   (scheduled publishing)
+cron    ──POST──▶ /api/cron/publish-scheduled   (scheduled publishing; workers/scheduler, every 10 min)
 crawler ──GET───▶ /rss.xml, /sitemaps/blog.xml  (live, via /api/feed)
 ```
 

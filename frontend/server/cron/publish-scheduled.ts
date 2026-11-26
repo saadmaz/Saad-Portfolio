@@ -2,7 +2,7 @@
  * GET /api/cron/publish-scheduled
  *
  * Publishes every scheduled post whose time has come. Called by:
- *   - the GitHub Actions workflow .github/workflows/publish-scheduled.yml (every 10 min),
+ *   - the Cloudflare cron Worker in workers/scheduler (every 10 min),
  *   - the CMS "Run scheduler now" button (via /api/admin?action=run-scheduler).
  * Overlapping calls are safe: see server/_lib/scheduler.ts.
  */
