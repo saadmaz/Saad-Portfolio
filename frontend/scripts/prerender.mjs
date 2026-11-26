@@ -43,6 +43,7 @@ import {
   CONTACT_PAGE_SCHEMA,
 } from "../src/lib/seo-content.js";
 import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
+import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectGroups.js";
 import {
   projectCanonical,
   projectDuration,
@@ -52,6 +53,7 @@ import {
   projectSeoTitle,
   projectTimeline,
   projectVideos,
+  projectsListSchema,
   relatedProjects,
   toDate,
 } from "../src/lib/project-seo.js";
@@ -768,12 +770,30 @@ function staticBody(routePath, data) {
       return skillsHtml(data.skills);
     case "/certifications":
       return list(data.certificates, certLine);
-    case "/projects":
-      return list(
-        data.projects,
-        (p) =>
-          `<a href="/projects/${escape(p.slug)}">${escape(p.title)}</a>${p.tagline ? ` - ${escape(p.tagline)}` : ""}`,
+    case "/projects": {
+      // Same sections and FAQ as ProjectsPage.tsx.
+      const groups = PROJECT_GROUPS.map((g) =>
+        section(
+          g.label,
+          list(
+            data.projects.filter((p) => projectGroupOf(p) === g.id),
+            (p) =>
+              `<a href="/projects/${escape(p.slug)}">${escape(p.title)}</a>${p.tagline ? ` - ${escape(p.tagline)}` : ""}`,
+          ),
+        ),
       );
+      const faq = projectsFaq(data.projects);
+      return [
+        ...groups,
+        faq.length &&
+          section(
+            "FAQ",
+            faq.map((f) => `<h3>${escape(f.question)}</h3>\n<p>${escape(f.answer)}</p>`).join("\n"),
+          ),
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
     case "/blog":
       return list(
         data.posts,
@@ -936,12 +956,14 @@ function prerenderStaticRoutes(shell, data) {
                 ? [...pageSchemas(routePath, title), publicationsSchema(data.publications)]
                 : routePath === "/events" && data.events.length
                   ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
-                  : routePath === "/blog" && data.posts.length
-                    ? [
-                        ...pageSchemas(routePath, title),
-                        blogIndexSchema(data.posts, title, `${BASE_URL}/blog`),
-                      ]
-                    : pageSchemas(routePath, title);
+                  : routePath === "/projects" && data.projects.some(isProjectIndexable)
+                    ? [...pageSchemas(routePath, title), ...projectsIndexSchemas(data.projects)]
+                    : routePath === "/blog" && data.posts.length
+                      ? [
+                          ...pageSchemas(routePath, title),
+                          blogIndexSchema(data.posts, title, `${BASE_URL}/blog`),
+                        ]
+                      : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1175,6 +1197,27 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
       { listed: !noIndex },
     );
   }
+}
+
+/** ItemList of indexable projects plus the generated FAQ (same text as the page). */
+function projectsIndexSchemas(projects) {
+  const faq = projectsFaq(projects);
+  return [
+    projectsListSchema(projects.filter(isProjectIndexable), { baseUrl: BASE_URL, author: PERSON_REF }),
+    ...(faq.length
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((f) => ({
+              "@type": "Question",
+              name: f.question,
+              acceptedAnswer: { "@type": "Answer", text: f.answer },
+            })),
+          },
+        ]
+      : []),
+  ];
 }
 
 /** Blog JSON-LD for /blog and category pages (same builder BlogsPage.tsx uses). */
