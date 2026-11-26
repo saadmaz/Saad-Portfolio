@@ -17,6 +17,7 @@ const CertificationsPage = lazy(() => import("../pages/CertificationsPage"));
 const CertificateDetailPage = lazy(() => import("../pages/CertificateDetailPage"));
 const AboutPage = lazy(() => import("../pages/AboutPage"));
 const EducationPage = lazy(() => import("../pages/EducationPage"));
+const SchoolPage = lazy(() => import("../pages/SchoolPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
 const BlogsPage = lazy(() => import("../pages/BlogsPage"));
 const BlogDetailPage = lazy(() => import("../pages/BlogDetailPage"));
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/certifications/:id" element={<CertificateDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/education" element={<EducationPage />} />
+              <Route path="/education/:slug" element={<SchoolPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogsPage />} />
               <Route path="/blog/category/:category" element={<BlogsPage />} />

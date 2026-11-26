@@ -19,6 +19,7 @@ import { Mark, Row } from "@/components/cards";
 import { useCourses, useEducation, useSkills } from "@/hooks/useContent";
 import { useScrollFill } from "@/hooks/useScrollFill";
 import { educationSkills, studyYears } from "@/lib/education";
+import { schoolNameOf, schoolSlugOf } from "@/lib/schools";
 import { partsToLabel, range, year } from "@/lib/format";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
@@ -167,6 +168,14 @@ function Entry({ edu: e }: { edu: Education }) {
           <h2 className="text-h3 font-medium leading-tight md:text-[1.875rem]">{program || school}</h2>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-fg-2">
             {program && <span>{school}</span>}
+            {schoolSlugOf(e) && (
+              <Link
+                to={`/education/${schoolSlugOf(e)}`}
+                className="inline-flex items-center gap-1 text-sm text-fg-2 underline-offset-4 hover:text-accent hover:underline"
+              >
+                More on {schoolNameOf(e)} <ArrowUpRight aria-hidden className="size-3.5" />
+              </Link>
+            )}
             {e.show_grade_publicly && e.grade && (
               <span className="rounded-full border border-accent/30 bg-accent/[0.08] px-2.5 py-1 font-mono text-meta text-accent">
                 {e.grade}

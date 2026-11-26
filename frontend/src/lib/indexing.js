@@ -65,3 +65,15 @@ export function isProjectIndexable(project) {
   if (visibility === "noindex") return false;
   return projectWordCount(project) >= PROJECT_MIN_WORDS;
 }
+
+/** Company pages under this many words of write-up need linked projects to be indexed. */
+export const COMPANY_MIN_WORDS = 80;
+
+/**
+ * A company page (/experience/:slug) earns a place in search with a real
+ * write-up, or with projects built there to show for it (each one a linked
+ * case study). Shared by ExperienceDetailPage.tsx and scripts/prerender.mjs.
+ */
+export function isCompanyPageIndexable({ words = 0, projectCount = 0 }) {
+  return projectCount > 0 || words >= COMPANY_MIN_WORDS;
+}
