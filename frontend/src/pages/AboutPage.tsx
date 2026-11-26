@@ -275,7 +275,7 @@ const AboutPage = () => {
       {/* 3 · Journey */}
       {moments.length > 0 && (
         <section className="section border-t-0" aria-labelledby="journey">
-          <div className="wrap grid gap-12 md:grid-cols-[300px_1fr] md:gap-20">
+          <div className="wrap grid grid-cols-1 gap-12 md:grid-cols-[300px_minmax(0,1fr)] md:gap-20">
             <div className="flex flex-col gap-8 md:sticky md:top-32 md:self-start">
               <Reveal>
                 <SectionHeader id="journey" label="Journey" title="The road" soft="so far" />
