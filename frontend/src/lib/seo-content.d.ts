@@ -13,6 +13,7 @@ export function eventDescriptionOf(event: {
   date?: string;
 }): string;
 export function categoryDescriptionOf(label: string, custom?: string | null): string;
+export function fitDescription(text: string | null | undefined, tail?: string): string;
 export const PERSON_ID: string;
 export const WEBSITE_ID: string;
 export const PERSON_REF: Record<string, unknown>;

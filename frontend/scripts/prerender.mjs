@@ -26,6 +26,7 @@ import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import {
   PAGE_SEO,
+  fitDescription,
   PERSON_SCHEMA,
   PERSON_ID,
   PERSON_REF,
@@ -1302,7 +1303,7 @@ function prerenderBlogIndexes(shell, data) {
       injectContent(shell, {
         path: routePath,
         title: `${a.name}${a.title ? `, ${a.title}` : ""}`,
-        description: a.bio || `Articles by ${a.name}.`,
+        description: fitDescription(a.bio || `Articles by ${a.name}.`),
         schemas: [
           {
             "@context": "https://schema.org",
@@ -1488,10 +1489,11 @@ function prerenderExperience(shell, experience, projects = []) {
     const routePath = `/experience/${c.slug}`;
     const first = c.docs[0];
     const role = first.roles?.[0]?.role_title ?? first.position ?? "";
-    const description = truncate(
+    // Same wording as ExperienceDetailPage.tsx.
+    const description = fitDescription(
       stripHtml(first.description || first.roles?.[0]?.description || "") ||
-        `${role ? `${role} at ` : ""}${c.name}. Saad Mazhar's work experience.`,
-      160,
+        `${role ? `${role} at ` : ""}${c.name}.`,
+      `Saad Mazhar's role, work and the projects he built at ${c.name}.`,
     );
     // Same rule as companyProjects() in src/lib/experience.ts.
     const ids = new Set(c.docs.map((d) => String(d.id)));

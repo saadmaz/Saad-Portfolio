@@ -33,3 +33,15 @@ describe("authorFaq", () => {
     expect(authorFaq(null, posts)).toEqual([]);
   });
 });
+
+describe("fitDescription", () => {
+  it("cuts long text at a word and pads short text", async () => {
+    const { fitDescription } = await import("./seo-content");
+    const long = "word ".repeat(60);
+    const out = fitDescription(long);
+    expect(out.length).toBeLessThanOrEqual(159);
+    expect(out.endsWith("…")).toBe(true);
+    expect(fitDescription("Founder.", "Saad's role at X.")).toBe("Founder. Saad's role at X.");
+    expect(fitDescription("x".repeat(80), "tail")).toBe("x".repeat(80));
+  });
+});
