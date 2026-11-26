@@ -196,7 +196,7 @@ const ProjectsPage = () => {
   const stats = [
     { value: projects.length, label: "Projects" },
     { value: live, label: "Live in production" },
-    { value: ventures, label: "Ventures" },
+    { value: ventures, label: "For my ventures" },
     { value: years, label: "Years building" },
   ].filter((s) => s.value > 0);
 
