@@ -58,7 +58,7 @@ const SchoolPage = () => {
   return (
     <Layout>
       <SEO
-        title={`${name}: Saad Mazhar`}
+        title={name}
         description={fitDescription(summary, `Roles, honours, events and projects connected to ${name}.`)}
         url={url}
         noIndex={isSchoolPageIndexable(edu, content) ? false : "follow"}

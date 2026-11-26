@@ -1931,7 +1931,7 @@ function prerenderSchools(shell, data) {
       injectContent(shell, {
         path: routePath,
         snapshot: pageSnapshot("education", "awards", "volunteer", "eventCards", "projects"),
-        title: `${name}: Saad Mazhar`,
+        title: name,
         h1: fullName,
         description,
         schemas: [
