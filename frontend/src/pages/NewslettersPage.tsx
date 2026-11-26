@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowUpRight, CheckCircle2, Rss, XCircle } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, XCircle } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import {
@@ -200,12 +200,6 @@ const NewslettersPage = () => {
             <h2 className="text-h3 font-medium">Get the next issue</h2>
             <p className="mb-6 mt-2 text-sm text-fg-2">Pick a series, or both.</p>
             <SubscribeForm source="newsletters" />
-            <a
-              href="/rss.xml"
-              className="mt-5 inline-flex items-center gap-2 font-mono text-meta text-fg-3 hover:text-accent"
-            >
-              <Rss aria-hidden className="size-3.5" /> Prefer RSS?
-            </a>
           </div>
         </div>
       </PageHero>
