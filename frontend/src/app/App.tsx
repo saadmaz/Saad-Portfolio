@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ScrollToTop } from "@/hooks/useScrollToTop";
 import { GaPageViews } from "@/hooks/useGaPageViews";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { seedQueryCache } from "@/lib/querySnapshot";
 
 const Index = lazy(() => import("../pages/Index"));
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
@@ -31,6 +32,8 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, retry: 1, refetchOnWindowFocus: false } },
 });
+// Content baked into the page at build time renders immediately; live data refreshes it.
+seedQueryCache(queryClient);
 
 const App = () => (
   <HelmetProvider>

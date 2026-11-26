@@ -31,8 +31,9 @@ const missing = new Map();
 for (const file of htmlFiles(DIST)) {
   const html = readFileSync(file, "utf8");
   for (const [, attrs, body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
-    // External scripts are covered by host allow-lists; JSON-LD is data, not code.
-    if (/\bsrc=/.test(attrs) || /application\/ld\+json/.test(attrs)) continue;
+    // External scripts are covered by host allow-lists; JSON blocks (JSON-LD, the
+    // query snapshot) are data the browser never executes, so CSP does not apply.
+    if (/\bsrc=/.test(attrs) || /type="application\/(ld\+)?json"/.test(attrs)) continue;
     const hash = `'sha256-${createHash("sha256").update(body).digest("base64")}'`;
     if (!scriptSrc.includes(hash) && !missing.has(hash)) missing.set(hash, relative(DIST, file));
   }
