@@ -436,3 +436,14 @@ describe("blogSchema", () => {
     });
   });
 });
+
+describe("buildBlogSitemap authors", () => {
+  it("lists the default author for posts with no author set", () => {
+    const xml = buildBlogSitemap({
+      baseUrl: BASE,
+      posts: [post({ id: "p1", slug: "p1", title: "P", publishedAt: "2025-01-02T00:00:00.000Z" })],
+      authors: [{ id: "a1", slug: "ada", isDefault: true }],
+    });
+    expect(xml).toContain(`${BASE}/authors/ada`);
+  });
+});

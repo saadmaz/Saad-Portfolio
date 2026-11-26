@@ -622,7 +622,8 @@ export function buildBlogSitemap({ baseUrl, posts, authors = [], series = [], ca
       entries.push(urlXml(`${baseUrl}/blog/category/${c.slug}`, newestIn(inCat)));
   }
   for (const a of authors) {
-    const byAuthor = live.filter((p) => p.authorId === a.id);
+    // Posts with no author set belong to the default author (as the site shows them).
+    const byAuthor = live.filter((p) => p.authorId === a.id || (!p.authorId && a.isDefault));
     if (a.slug && byAuthor.length) entries.push(urlXml(`${baseUrl}/authors/${a.slug}`, newestIn(byAuthor)));
   }
   const liveById = new Map(live.map((p) => [p.id, p]));
