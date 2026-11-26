@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { eventPath } from "@/lib/paths";
 import { eventPhotoAlt } from "@/lib/imageAlt";
 import { stageTone } from "@/lib/projectStage";
+import { resizedUrl } from "@/lib/images";
 
 const arrow = (
   <ArrowUpRight
@@ -132,7 +133,7 @@ export function ProjectCard({
       <div className="relative p-2 pb-0">
         {img ? (
           <Media
-            src={img}
+            src={resizedUrl(img, 960)}
             alt={project.altText || project.title}
             className="aspect-[16/10] rounded-[16px]"
             imgClassName="object-top"
@@ -250,7 +251,7 @@ export function ProjectTile({ project, tabIndex }: { project: Project; tabIndex?
       <div className="relative aspect-square overflow-hidden rounded-[24px] bg-surface">
         {img && (
           <img
-            src={img}
+            src={resizedUrl(img, 960)}
             alt={project.altText || project.title}
             className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           />

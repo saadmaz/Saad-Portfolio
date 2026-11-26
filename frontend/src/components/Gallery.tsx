@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { Eyebrow, Media } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { resizedUrl } from "@/lib/images";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -274,7 +275,7 @@ function Lightbox({
       >
         <img
           key={images[index]}
-          src={images[index]}
+          src={resizedUrl(images[index], 1600)}
           alt={alts?.[index] || `${title} (${index + 1} of ${count})`}
           className="max-h-full max-w-full animate-rise select-none rounded-xl object-contain shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] [animation-duration:400ms]"
           draggable={false}

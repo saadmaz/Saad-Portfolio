@@ -21,6 +21,7 @@ import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, BASE_URL, homeSchemas } from "@/lib/seo-content";
 import portrait from "@/assets/profile-photo.webp";
+import { resizedUrl } from "@/lib/images";
 
 function Hero({
   projects,
@@ -261,7 +262,7 @@ function StageCard({ event, tabIndex }: { event: Event; tabIndex?: number }) {
     >
       {cover ? (
         <img
-          src={cover}
+          src={resizedUrl(cover, 960)}
           alt={eventPhotoAlt(event, cover)}
           loading="lazy"
           decoding="async"

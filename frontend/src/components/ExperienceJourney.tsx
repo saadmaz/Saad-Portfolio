@@ -6,6 +6,7 @@ import { Mark } from "@/components/cards";
 import { companyPeriod, type Company } from "@/lib/experience";
 import { roadPath, type Point } from "@/lib/journey";
 import { cn } from "@/lib/utils";
+import { resizedUrl } from "@/lib/images";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -14,7 +15,7 @@ function Stop({ company }: { company: Company }) {
   if (company.illustration)
     return (
       <img
-        src={company.illustration}
+        src={resizedUrl(company.illustration, 480)}
         alt=""
         loading="lazy"
         className="size-full object-contain drop-shadow-[0_24px_28px_rgb(0_0_0/0.55)]"

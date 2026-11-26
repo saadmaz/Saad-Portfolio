@@ -23,6 +23,7 @@ import { partsToLabel, range, year } from "@/lib/format";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
 import type { Education } from "@/types";
+import { resizedUrl } from "@/lib/images";
 
 /* ── Parsing the free-text CMS fields into structure ─────────────────────── */
 
@@ -237,7 +238,7 @@ function Entry({ edu: e }: { edu: Education }) {
                   <>
                     {pr.project_thumbnail && (
                       <img
-                        src={pr.project_thumbnail}
+                        src={resizedUrl(pr.project_thumbnail, 960)}
                         alt=""
                         loading="lazy"
                         className="aspect-[16/9] w-full rounded-[12px] object-cover"
@@ -295,7 +296,7 @@ function Entry({ edu: e }: { edu: Education }) {
                     <span className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-card border border-line bg-surface-2">
                       {thumb ? (
                         <img
-                          src={thumb}
+                          src={resizedUrl(thumb, 960)}
                           alt={m.media_caption}
                           loading="lazy"
                           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"

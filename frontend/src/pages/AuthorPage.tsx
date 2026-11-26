@@ -29,6 +29,7 @@ import { projectStatusOf, projectGroupOf } from "@/lib/projectGroups";
 import { BASE_URL, PERSON_ID, fitDescription } from "@/lib/seo-content";
 import type { Certificate, Event } from "@/types";
 import NotFound from "./NotFound";
+import { resizedUrl } from "@/lib/images";
 
 /** Newest first; dates are stored as text such as "Aug 24, 2023" or "2026-02-01". */
 const time = (s?: string | null) => Date.parse(String(s ?? "")) || 0;
@@ -224,7 +225,7 @@ const AuthorPage = () => {
             <div className="flex items-center gap-5 animate-rise">
               {author.avatar && (
                 <img
-                  src={author.avatar}
+                  src={resizedUrl(author.avatar, 480)}
                   alt=""
                   className="size-16 rounded-full border border-line-2 object-cover lg:hidden"
                 />
@@ -286,7 +287,7 @@ const AuthorPage = () => {
           </div>
           {author.avatar && (
             <img
-              src={author.avatar}
+              src={resizedUrl(author.avatar, 480)}
               alt={author.name}
               className="hidden size-64 animate-rise rounded-full border border-line-2 object-cover [animation-delay:500ms] lg:block xl:size-72"
             />
