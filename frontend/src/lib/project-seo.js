@@ -229,7 +229,14 @@ const APP_STAGES = new Set(["production", "maintained", "beta"]);
 export function projectAppSchema(p, { baseUrl, author }) {
   const live = clean(p.liveUrl || p.live_preview);
   const category = clean(p.category || p.type).toLowerCase();
-  if (!live || !APP_STAGES.has(clean(p.stage).toLowerCase()) || category === "websites") return null;
+  // Open-source work is often a fork or a contribution, so it is not credited as Saad's own app.
+  if (
+    !live ||
+    !APP_STAGES.has(clean(p.stage).toLowerCase()) ||
+    category === "websites" ||
+    category === "open source"
+  )
+    return null;
   const page = `${baseUrl}/projects/${p.slug}`;
   const image = p.og_image || p.heroImage || p.image;
   return {
