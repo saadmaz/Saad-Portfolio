@@ -344,9 +344,14 @@ const projectCards = (projects) =>
   projects.map((p) => Object.fromEntries(Object.entries(p).filter(([k]) => !PROJECT_LONG_FIELDS.has(k))));
 
 /** Newest first by publish time, as BlogService.getPublished() sorts. */
+/** The editor's own copy of the article (contentJson): only the CMS reads it, so pages don't carry it. */
+const sitePost = (p) => {
+  const { contentJson: _editorOnly, ...rest } = p;
+  return rest;
+};
 const clientPosts = (posts) => {
   const time = (p) => Date.parse(p.publishedAt ?? p.date ?? "") || 0;
-  return [...posts].sort((a, b) => time(b) - time(a));
+  return [...posts].sort((a, b) => time(b) - time(a)).map(sitePost);
 };
 
 const blogSnapshot = (data) => [
@@ -1414,7 +1419,7 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
       injectContent(shell, {
         path: routePath,
         snapshot: [
-          [["blog", "detail", p.slug], p],
+          [["blog", "detail", p.slug], sitePost(p)],
           ...blogSnapshot(data),
           [["blog", "authors"], data.authors],
         ],
