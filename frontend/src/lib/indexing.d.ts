@@ -28,3 +28,5 @@ export interface IndexableProject {
 export const PROJECT_MIN_WORDS: number;
 export function projectWordCount(project: IndexableProject): number;
 export function isProjectIndexable(project: IndexableProject): boolean;
+export const COMPANY_MIN_WORDS: number;
+export function isCompanyPageIndexable(opts: { words?: number; projectCount?: number }): boolean;

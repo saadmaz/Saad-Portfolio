@@ -1,7 +1,7 @@
 /** Types for edge-routing.js (plain JS so middleware and prerender share it). */
 
 export type ContentKind =
-  "series" | "category" | "post" | "event" | "certificate" | "project" | "author" | "experience";
+  "series" | "category" | "post" | "event" | "certificate" | "project" | "author" | "experience" | "school";
 
 export const DETAIL_ROUTES: { re: RegExp; kind: ContentKind }[];
 export const PASS_PREFIXES: string[];

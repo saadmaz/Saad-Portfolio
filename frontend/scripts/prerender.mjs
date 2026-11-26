@@ -43,10 +43,17 @@ import {
   pageTitle,
   CONTACT_PAGE_SCHEMA,
 } from "../src/lib/seo-content.js";
-import { isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
+import { isCompanyPageIndexable, isEventIndexable, isProjectIndexable } from "../src/lib/indexing.js";
 import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectGroups.js";
 import { authorFaq, authorTopics } from "../src/lib/authorFaq.js";
 import { sameOrg } from "../src/lib/orgName.js";
+import {
+  isSchoolPageIndexable,
+  rolesOf,
+  schoolContent,
+  schoolNameOf,
+  schoolSlugOf,
+} from "../src/lib/schools.js";
 import {
   cloudflareResized,
   cloudflareSrcSet,
@@ -687,7 +694,19 @@ function experienceCompanies(experience) {
 }
 
 /** A company page with real write-up gets indexed; a bare title-and-dates page doesn't. */
-const isCompanyIndexable = (c) => stripHtml(experienceHtml(c.docs)).split(" ").filter(Boolean).length >= 80;
+/** Projects built at a company: same rule as companyProjects() in src/lib/experience.ts. */
+const companyBuilt = (c, projects) => {
+  const ids = new Set(c.docs.map((d) => String(d.id)));
+  return projects.filter(
+    (p) => p.linked_experience_ids?.some((id) => ids.has(String(id))) || sameOrg(p.client, c.name),
+  );
+};
+/** Same rule as ExperienceDetailPage.tsx (src/lib/indexing.js). */
+const isCompanyIndexable = (c, projects) =>
+  isCompanyPageIndexable({
+    words: stripHtml(experienceHtml(c.docs)).split(" ").filter(Boolean).length,
+    projectCount: companyBuilt(c, projects).length,
+  });
 const expPeriod = (x) =>
   period(
     parts(x.start_month, x.start_year) || dateLabel(x.startDate),
@@ -1751,11 +1770,7 @@ function prerenderExperience(shell, experience, projects = []) {
         `${role ? `${role} at ` : ""}${c.name}.`,
       `Saad Mazhar's role, work and the projects he built at ${c.name}.`,
     );
-    // Same rule as companyProjects() in src/lib/experience.ts.
-    const ids = new Set(c.docs.map((d) => String(d.id)));
-    const built = projects.filter(
-      (p) => p.linked_experience_ids?.some((id) => ids.has(String(id))) || sameOrg(p.client, c.name),
-    );
+    const built = companyBuilt(c, projects);
     const bodyHtml = [
       experienceHtml(c.docs),
       built.length &&
@@ -1804,10 +1819,142 @@ function prerenderExperience(shell, experience, projects = []) {
             startDate: roleDate(first.start_year, first.start_month),
             ...(first.is_current ? {} : { endDate: roleDate(first.end_year, first.end_month) }),
           },
+          // Companies he (co-)founded: say so directly, the fact "who founded X" answers look for.
+          ...(/founder/i.test(role)
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Organization",
+                  name: c.name,
+                  ...(url ? { url, sameAs: [url] } : {}),
+                  ...(logo ? { logo } : {}),
+                  founder: author,
+                  ...(built.length
+                    ? {
+                        owns: built.map((p) => ({
+                          "@type": "CreativeWork",
+                          name: p.title,
+                          url: `${BASE_URL}/projects/${p.slug}`,
+                        })),
+                      }
+                    : {}),
+                },
+              ]
+            : []),
         ],
         bodyHtml,
-        noIndex: isCompanyIndexable(c) ? false : "follow",
+        noIndex: isCompanyIndexable(c, projects) ? false : "follow",
         og: { eyebrow: "Experience", title: c.name, meta: joinMeta(role, expPeriod(first)) },
+      }),
+    );
+  }
+}
+
+/** One page per published school, with what's linked to it (src/lib/schools.js, SchoolPage.tsx). */
+function schoolPages(data) {
+  return data.education
+    .filter((e) => schoolSlugOf(e))
+    .map((edu) => {
+      const content = schoolContent(edu, {
+        awards: data.awards,
+        volunteer: data.volunteer,
+        events: data.events,
+        projects: data.projects,
+      });
+      return { edu, content, slug: schoolSlugOf(edu), indexable: isSchoolPageIndexable(edu, content) };
+    });
+}
+
+function prerenderSchools(shell, data) {
+  for (const { edu, content, slug, indexable } of schoolPages(data)) {
+    const routePath = `/education/${slug}`;
+    const name = schoolNameOf(edu);
+    const fullName = edu.school_name || name;
+    const program = [edu.degree, edu.field_of_study].filter(Boolean).join(" in ");
+    const years = [edu.start_year, edu.is_current ? "present" : edu.end_year].filter(Boolean).join("–");
+    const roles = rolesOf(edu);
+    const description = fitDescription(
+      `Saad Mazhar at ${fullName}${years ? ` (${years})` : ""}${program ? `: ${program}` : ""}. ${String(edu.description ?? "").split(/\n{2,}/)[0]}`,
+      `Roles, honours, events and projects connected to ${name}.`,
+    );
+    const logo = edu.school_logo || edu.logo;
+    const bodyHtml = [
+      `<p>${escape(joinMeta(program, years))}</p>`,
+      paras(edu.description),
+      roles.length &&
+        section(
+          "Roles & societies",
+          list(roles, (r) => escape(r)),
+        ),
+      (content.honours.length || content.awards.length) &&
+        section(
+          "Honours",
+          list(
+            [
+              ...content.honours.map((h) => joinMeta(h.award_title, h.award_issuer, h.award_date_year)),
+              ...content.awards
+                .filter((a) => !content.honours.some((h) => h.award_title === a.title))
+                .map((a) => joinMeta(a.title, a.issuer, dateLabel(a.date))),
+            ],
+            (t) => escape(t),
+          ),
+        ),
+      content.events.length &&
+        section(
+          "Events",
+          list(
+            content.events,
+            (e) =>
+              `<a href="/events/${escape(keyOf(e))}">${escape(e.title)}</a> - ${escape(joinMeta(e.role, dateLabel(e.date)))}`,
+          ),
+        ),
+      content.volunteer.length &&
+        section(
+          "Clubs & volunteering",
+          list(content.volunteer, (v) => escape(joinMeta(v.role, v.organization))),
+        ),
+      content.projects.length &&
+        section(
+          "Built for the school community",
+          list(
+            content.projects,
+            (pr) =>
+              `<a href="/projects/${escape(pr.slug)}">${escape(pr.title)}</a>${pr.tagline ? ` - ${escape(pr.tagline)}` : ""}`,
+          ),
+        ),
+      '<p><a href="/education">All education</a></p>',
+    ]
+      .filter(Boolean)
+      .join("\n");
+    writeRoute(
+      routePath,
+      injectContent(shell, {
+        path: routePath,
+        snapshot: pageSnapshot("education", "awards", "volunteer", "eventCards", "projects"),
+        title: `${name}: Saad Mazhar`,
+        h1: fullName,
+        description,
+        schemas: [
+          ...pageSchemas(routePath, name),
+          {
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            url: `${BASE_URL}${routePath}`,
+            about: {
+              "@type": "EducationalOrganization",
+              name: fullName,
+              ...(edu.school_website_url
+                ? { url: edu.school_website_url, sameAs: [edu.school_website_url] }
+                : {}),
+              ...(logo ? { logo } : {}),
+              alumni: PERSON_REF,
+            },
+            mainEntity: PERSON_REF,
+          },
+        ],
+        bodyHtml,
+        noIndex: indexable ? false : "follow",
+        og: { eyebrow: "Education", title: name, meta: joinMeta(program, years) },
       }),
     );
   }
@@ -1959,8 +2106,9 @@ function writeSitemaps(data) {
   if (data.newsletters.length) main.push("/newsletters");
   if (data.publications.length || data.patents.length) main.push("/publications");
   if (data.education.length) main.push("/education");
+  for (const { slug, indexable } of schoolPages(data)) if (indexable) main.push(`/education/${slug}`);
   for (const c of experienceCompanies(data.experience))
-    if (isCompanyIndexable(c)) main.push(`/experience/${c.slug}`);
+    if (isCompanyIndexable(c, data.projects)) main.push(`/experience/${c.slug}`);
   // /languages permanently redirects to /about#languages, so it isn't submitted.
   // Only projects whose pages are indexable (see src/lib/indexing.js).
   const projects = data.projects.filter(isProjectIndexable);
@@ -2157,6 +2305,7 @@ async function main() {
   prerenderEvents(shell, data.events);
   prerenderCertificates(shell, data.certificates);
   prerenderExperience(shell, data.experience, data.projects);
+  prerenderSchools(shell, data);
   console.log(
     `✅ Detail pages prerendered: ${data.projects.length} projects, ${data.posts.length} posts, ${data.events.length} events, ${data.certificates.length} certificates.`,
   );

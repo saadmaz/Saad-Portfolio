@@ -12,6 +12,7 @@ import { useExperience, useSkills } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { companyPeriod, companyProjects, normalizeExperience, type Company } from "@/lib/experience";
 import { BASE_URL, PERSON_REF, fitDescription } from "@/lib/seo-content";
+import { isCompanyPageIndexable } from "@/lib/indexing";
 import { resizedUrl } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -212,6 +213,16 @@ const ExperienceDetailPage = () => {
   const current = company.roles.some((r) => r.isCurrent);
   const lead = company.roles[0];
   const linked = companyProjects(company, projects);
+  const writeUpWords = [
+    company.description,
+    company.achievements,
+    ...company.roles.map((r) => r.description),
+    ...company.highlights.map((h) => `${h.title} ${h.description}`),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .split(/s+/)
+    .filter(Boolean).length;
   const skills = [...new Set([...company.skills, ...company.roles.flatMap((r) => r.skills)])];
   const images = company.media.filter((m) => m.media_type === "Image");
   const files = company.media.filter((m) => m.media_type !== "Image");
@@ -249,19 +260,47 @@ const ExperienceDetailPage = () => {
           `Saad Mazhar's role, work and the projects he built at ${company.name}.`,
         )}
         url={url}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "OrganizationRole",
-          roleName: lead?.title || undefined,
-          member: PERSON_REF,
-          memberOf: {
-            "@type": "Organization",
-            name: company.name,
-            ...(company.url ? { url: company.url } : {}),
-            ...(company.logo ? { logo: company.logo } : {}),
+        // Same rule as the prerendered copy (src/lib/indexing.js).
+        noIndex={
+          isCompanyPageIndexable({ words: writeUpWords, projectCount: linked.length }) ? false : "follow"
+        }
+        structuredData={[
+          {
+            "@context": "https://schema.org",
+            "@type": "OrganizationRole",
+            roleName: lead?.title || undefined,
+            member: PERSON_REF,
+            memberOf: {
+              "@type": "Organization",
+              name: company.name,
+              ...(company.url ? { url: company.url } : {}),
+              ...(company.logo ? { logo: company.logo } : {}),
+            },
+            ...(lead?.start ? { startDate: new Date(lead.start).toISOString().slice(0, 7) } : {}),
           },
-          ...(lead?.start ? { startDate: new Date(lead.start).toISOString().slice(0, 7) } : {}),
-        }}
+          // Companies he (co-)founded: say so directly, as the prerendered copy does.
+          ...(/founder/i.test(lead?.title ?? "")
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Organization",
+                  name: company.name,
+                  ...(company.url ? { url: company.url, sameAs: [company.url] } : {}),
+                  ...(company.logo ? { logo: company.logo } : {}),
+                  founder: PERSON_REF,
+                  ...(linked.length
+                    ? {
+                        owns: linked.map((p) => ({
+                          "@type": "CreativeWork",
+                          name: p.title,
+                          url: `${BASE_URL}/projects/${p.slug}`,
+                        })),
+                      }
+                    : {}),
+                },
+              ]
+            : []),
+        ]}
         breadcrumbs={[
           { name: "Experience", url: `${BASE_URL}/experience` },
           { name: company.name, url },

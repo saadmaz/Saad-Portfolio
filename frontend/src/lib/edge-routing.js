@@ -22,6 +22,8 @@ export const DETAIL_ROUTES = [
   { re: /^\/projects\/([^/]+)$/, kind: "project" },
   { re: /^\/experience\/([^/]+)$/, kind: "experience" },
   { re: /^\/authors\/([^/]+)$/, kind: "author" },
+  // A school added in the CMS since the last build: served, and the page decides.
+  { re: /^\/education\/([^/]+)$/, kind: "school" },
 ];
 
 /** Always served: the page itself handles access (draft previews). */
