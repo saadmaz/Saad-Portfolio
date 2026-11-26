@@ -35,7 +35,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
   },
 ];
 
-export function Footer() {
+export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
   const { data: pubs } = usePublications();
   const { data: patents } = usePatents();
   // Hide the link while there's nothing to show (unknown while loading → keep it).
@@ -44,17 +44,21 @@ export function Footer() {
     <footer className="overflow-hidden border-t border-line">
       <div className="wrap pb-6 pt-10 md:pt-14">
         <div className="w-full">
-          <div className="grid items-center gap-4 rounded-2xl border border-line bg-surface/40 p-4 md:grid-cols-[minmax(0,1fr)_380px] md:gap-8 md:p-5">
-            <div className="flex flex-col gap-1.5">
-              <p className="text-h4 font-medium">Notes from the build</p>
-              <p className="text-sm text-fg-2">
-                Shipping products, applied AI and startups. A couple of issues a month, at most.
-              </p>
+          {!hideSubscribe && (
+            <div className="grid items-center gap-4 rounded-2xl border border-line bg-surface/40 p-4 md:grid-cols-[minmax(0,1fr)_380px] md:gap-8 md:p-5">
+              <div className="flex flex-col gap-1.5">
+                <p className="text-h4 font-medium">Notes from the build</p>
+                <p className="text-sm text-fg-2">
+                  Shipping products, applied AI and startups. A couple of issues a month, at most.
+                </p>
+              </div>
+              <SubscribeForm compact source="footer" />
             </div>
-            <SubscribeForm compact source="footer" />
-          </div>
+          )}
 
-          <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
+          <div
+            className={`grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12 ${hideSubscribe ? "" : "mt-8 md:mt-10"}`}
+          >
             <div className="flex max-w-[300px] flex-col gap-2.5">
               <p className="text-h4 font-medium">Have something in mind?</p>
               <p className="text-sm text-fg-2">
