@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowUpRight, ChevronDown, Mail, Search, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { SEO } from "@/components/SEO";
 import {
   Button,
@@ -221,10 +222,11 @@ const BlogsPage = () => {
             <p className="mt-8 max-w-[580px] animate-rise text-body-l text-fg-2 [animation-delay:350ms]">
               {category?.description || INTRO}
             </p>
-            <div className="mt-8 flex animate-rise flex-wrap gap-3 [animation-delay:400ms]">
+            <div className="mt-8 flex animate-rise flex-wrap items-center gap-3 [animation-delay:400ms]">
               <Button to="/newsletters" icon={false}>
                 <Mail aria-hidden className="size-4" /> Subscribe
               </Button>
+              <SocialLinks size="sm" />
             </div>
             {stats.length > 0 && (
               <dl className="mt-12 grid max-w-[560px] animate-rise grid-cols-3 gap-6 [animation-delay:450ms]">

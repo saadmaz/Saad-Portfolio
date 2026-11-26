@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { responsiveImage } from "@/lib/images";
 import type { ImageAsset } from "@/types";
@@ -284,10 +283,6 @@ export function PageHero({
       <div className="relative shrink-0 border-t border-line bg-base/60 backdrop-blur-sm">
         <div className="wrap flex items-center justify-between gap-6 py-[clamp(14px,2.6svh,24px)]">
           <div className="min-w-0 font-mono text-meta text-fg-3">{band}</div>
-          <span className="flex shrink-0 items-center gap-2 font-mono text-meta text-fg-3" aria-hidden>
-            Scroll
-            <ArrowDown className="size-4 animate-bounce motion-reduce:animate-none" />
-          </span>
         </div>
       </div>
     </section>

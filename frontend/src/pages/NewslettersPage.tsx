@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowUpRight, CheckCircle2, XCircle } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { SEO } from "@/components/SEO";
 import {
   Button,
@@ -200,6 +201,10 @@ const NewslettersPage = () => {
             <h2 className="text-h3 font-medium">Get the next issue</h2>
             <p className="mb-6 mt-2 text-sm text-fg-2">Pick a series, or both.</p>
             <SubscribeForm source="newsletters" />
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-line pt-5">
+              <span className="font-mono text-meta text-fg-3">Or follow along</span>
+              <SocialLinks size="sm" />
+            </div>
           </div>
         </div>
       </PageHero>
