@@ -63,6 +63,7 @@ import {
   articleSchema,
   CATEGORY_MIN_POSTS,
   canonicalOf,
+  blogSchema,
   categoriesOf,
   countWords,
   demoteH1,
@@ -935,7 +936,12 @@ function prerenderStaticRoutes(shell, data) {
                 ? [...pageSchemas(routePath, title), publicationsSchema(data.publications)]
                 : routePath === "/events" && data.events.length
                   ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
-                  : pageSchemas(routePath, title);
+                  : routePath === "/blog" && data.posts.length
+                    ? [
+                        ...pageSchemas(routePath, title),
+                        blogIndexSchema(data.posts, title, `${BASE_URL}/blog`),
+                      ]
+                    : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1171,6 +1177,17 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
   }
 }
 
+/** Blog JSON-LD for /blog and category pages (same builder BlogsPage.tsx uses). */
+function blogIndexSchema(posts, name, url, description) {
+  return blogSchema(posts, {
+    baseUrl: BASE_URL,
+    name,
+    description,
+    url,
+    publisher: { name: "Saad Mazhar", id: PERSON_ID },
+  });
+}
+
 function prerenderBlogIndexes(shell, data) {
   // Category pages.
   for (const c of categoriesOf(data.posts.filter(isIndexable))) {
@@ -1197,6 +1214,15 @@ function prerenderBlogIndexes(shell, data) {
         // A category with one or two posts is a thin copy of /blog: out of the index until
         // it fills up (same rule as the blog sitemap and BlogsPage.tsx).
         noIndex: inCat.length < CATEGORY_MIN_POSTS ? "follow" : false,
+        schemas: [
+          ...pageSchemas(routePath, `${label} articles`),
+          blogIndexSchema(
+            inCat,
+            `${label} articles`,
+            `${BASE_URL}${routePath}`,
+            categoryDescriptionOf(label, setting?.description),
+          ),
+        ],
         og: { eyebrow: "Writing", title: `${label} articles` },
       }),
     );

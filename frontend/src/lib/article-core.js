@@ -472,6 +472,43 @@ export function articleSchema(post, { baseUrl, author, publisher, series, wordCo
   };
 }
 
+/**
+ * Blog JSON-LD for the blog index (or a category page): the blog itself
+ * plus a short BlogPosting entry per listed post, newest first.
+ */
+export function blogSchema(posts, { baseUrl, name, description, url, publisher, limit = 30 }) {
+  const ref = publisher.id
+    ? { "@id": publisher.id }
+    : { "@type": "Person", name: publisher.name, url: baseUrl };
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name,
+    ...(description ? { description } : {}),
+    url,
+    inLanguage: "en",
+    author: ref,
+    publisher: ref,
+    blogPost: posts
+      .filter(isListed)
+      .slice(0, limit)
+      .map((p) => {
+        const image = socialImageOf(p)?.url || coverOf(p)?.url;
+        return {
+          "@type": "BlogPosting",
+          headline: seoTitleOf(p).slice(0, 110),
+          description: seoDescriptionOf(p),
+          url: canonicalOf(p, baseUrl),
+          datePublished: publishedAtOf(p),
+          dateModified: updatedAtOf(p),
+          ...(image ? { image: abs(image, baseUrl) } : {}),
+          ...(p.category ? { articleSection: p.category } : {}),
+          author: ref,
+        };
+      }),
+  };
+}
+
 // ── Feeds ─────────────────────────────────────────────────────────────────
 
 export function escapeXml(s) {
