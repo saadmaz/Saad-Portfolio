@@ -1390,7 +1390,8 @@ function writeNotFound(shell) {
     path: "/404",
     title: "Page not found",
     description: "The page you're after moved, or never existed.",
-    bodyHtml: '<p><a href="/">Back home</a> · <a href="/blog">Read the blog</a></p>',
+    bodyHtml:
+      '<p><a href="/">Back home</a> · <a href="/projects">Projects</a> · <a href="/blog">Blog</a> · <a href="/about">About</a> · <a href="/events">Talks &amp; events</a> · <a href="/contact">Contact</a></p>',
     noIndex: true,
     og: { title: "Page not found" },
   });
