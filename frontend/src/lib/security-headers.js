@@ -15,11 +15,11 @@ const directives = (frameAncestors) =>
   [
     "default-src 'self'",
     // The hash pins the inline gtag snippet in index.html (see scripts/check-csp.mjs).
-    "script-src 'self' 'sha256-38+K9MPSU4N7Ohk+jz/7ovdBkYDynRGXXHkCS9Ym8x8=' https://www.googletagmanager.com https://static.cloudflareinsights.com",
+    "script-src 'self' 'sha256-38+K9MPSU4N7Ohk+jz/7ovdBkYDynRGXXHkCS9Ym8x8=' https://www.googletagmanager.com https://static.cloudflareinsights.com https://www.clarity.ms https://scripts.clarity.ms https://analytics.ahrefs.com",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com",
+    "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebase.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com https://*.clarity.ms https://c.bing.com https://analytics.ahrefs.com",
     "frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.loom.com https://codepen.io",
     "object-src 'none'",
     "base-uri 'self'",
