@@ -60,6 +60,7 @@ describe("venturesFrom", () => {
   });
   it("adds founder-role clients with no experience entry, led by the eponymous project", () => {
     expect(v[1]).toMatchObject({
+      role: "Founder",
       name: "AgentiveX",
       path: "/projects/agentivex",
       url: "https://a.x",

@@ -63,7 +63,8 @@ export function venturesFrom(companies, projects) {
       .sort();
     return {
       name: client,
-      role: lead.role,
+      // The company-level title, not the project wording ("Founder & lead engineer" → "Founder").
+      role: list.some((p) => /co-?founder/i.test(p.role)) ? "Co-founder" : "Founder",
       period: years.length
         ? years[0] === years[years.length - 1]
           ? years[0]
