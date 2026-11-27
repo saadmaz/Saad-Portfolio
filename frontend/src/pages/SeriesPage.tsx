@@ -1,4 +1,7 @@
 import { Link, useParams } from "react-router-dom";
+import { Mail } from "lucide-react";
+import { SubscribeForm } from "@/components/SubscribeForm";
+import { SERIES } from "@/lib/newsletter";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Empty, Media, PageHeader, Skeleton } from "@/components/ui";
@@ -28,6 +31,8 @@ const SeriesPage = () => {
   const parts = seriesParts(series, new Map(posts.map((p) => [p.id, p])));
   const url = `${BASE_URL}/blog/series/${series.slug}`;
   const minutes = parts.reduce((sum, p) => sum + readingMinutesOf(p, settings.readingWpm), 0);
+  // Series that double as newsletter topics get a sign-up for just that series.
+  const newsletter = SERIES.find((s) => s.id === series.id);
 
   return (
     <Layout>
@@ -92,6 +97,27 @@ const SeriesPage = () => {
           </ol>
         )}
       </section>
+      {newsletter && (
+        <section className="wrap pb-16 md:pb-20" aria-labelledby="series-subscribe">
+          <div className="flex flex-col items-start gap-6 rounded-card border border-line-2 bg-surface p-6 md:flex-row md:items-center md:justify-between md:p-9">
+            <div className="flex max-w-[560px] flex-col gap-3">
+              <span className="label flex items-center gap-2 text-fg-3">
+                <Mail aria-hidden className="size-4" /> {newsletter.number} / {newsletter.label}
+              </span>
+              <h2 id="series-subscribe" className="text-h3 font-medium">
+                Get new {series.title} posts by email.
+              </h2>
+              <p className="text-fg-2">{newsletter.blurb}</p>
+            </div>
+            <SubscribeForm
+              compact
+              topics={[newsletter.id]}
+              source={`series-${series.slug}`}
+              className="w-full md:max-w-[460px]"
+            />
+          </div>
+        </section>
+      )}
     </Layout>
   );
 };
