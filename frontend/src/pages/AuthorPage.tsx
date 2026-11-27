@@ -15,7 +15,7 @@ import {
   Skeleton,
   Tag,
 } from "@/components/ui";
-import { ArticleCard } from "@/components/article/ArticleParts";
+import { BlogCard } from "@/components/article/BlogCard";
 import { authorLinks } from "@/lib/authors";
 import { authorFaq, authorTopics } from "@/lib/authorFaq";
 import { useAuthors, useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
@@ -341,9 +341,9 @@ const AuthorPage = () => {
           {articles.length === 0 ? (
             <Empty>No published articles yet.</Empty>
           ) : (
-            <div className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((p) => (
-                <ArticleCard
+                <BlogCard
                   key={p.id}
                   post={p}
                   wpm={settings.readingWpm}

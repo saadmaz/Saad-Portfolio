@@ -897,3 +897,159 @@
 :is(.prose-cms, .video-standalone) .video-card .video-link {
   @apply inline-flex shrink-0 items-center gap-1 font-mono text-[12px] text-fg-3 no-underline transition-colors hover:text-fg;
 }
+
+/* Graphite tokens re-declared, so a dark component stays dark inside an orange/light island. */
+.theme-dark {
+  --bg: 17 17 19;
+  --surface: 33 33 36;
+  --surface-2: 41 41 45;
+  --surface-3: 50 50 55;
+  --fg: 245 245 242;
+  --fg-2: 163 163 158;
+  --fg-3: 142 142 137;
+  --fg-inverse: 20 20 22;
+  --accent: 255 95 0;
+  --accent-hover: 255 122 38;
+  --ink: 255 255 255;
+  color-scheme: dark;
+}
+
+/* Blog card: full-bleed cover at rest; on hover/focus the cover shrinks to a banner and the
+   details panel rises. Touch screens (no hover) always get the detailed state. */
+.blog-card {
+  --bc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  isolation: isolate;
+  container-type: inline-size;
+  border-radius: 24px;
+  border: 1px solid rgb(var(--ink) / 0.08);
+  background: rgb(var(--surface));
+  color: rgb(var(--fg));
+  transition:
+    transform 0.5s var(--bc-ease),
+    border-color 0.3s ease,
+    box-shadow 0.5s var(--bc-ease);
+}
+.blog-card__media {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 23px;
+  transition:
+    inset 0.55s var(--bc-ease),
+    height 0.55s var(--bc-ease),
+    border-radius 0.55s var(--bc-ease);
+}
+.blog-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 0.35) 0%,
+    transparent 30%,
+    rgb(0 0 0 / 0.5) 58%,
+    rgb(0 0 0 / 0.9) 100%
+  );
+  transition: opacity 0.4s ease;
+}
+.blog-card__front {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px;
+  color: #fff;
+  transition:
+    opacity 0.3s ease,
+    transform 0.5s var(--bc-ease);
+}
+.blog-card__back {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: calc(62% - 10px);
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 18px 18px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.35s ease 0.05s,
+    transform 0.55s var(--bc-ease);
+}
+.blog-card:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 95 0 / 0.45);
+    box-shadow: 0 24px 60px -24px rgb(0 0 0 / 0.75);
+  }
+  .blog-card:is(:hover, :focus-visible) .blog-card__media {
+    inset: 10px 10px auto 10px;
+    height: 38%;
+    border-radius: 16px;
+  }
+  .blog-card:is(:hover, :focus-visible) .blog-card__scrim,
+  .blog-card:is(:hover, :focus-visible) .blog-card__front {
+    opacity: 0;
+  }
+  .blog-card:is(:hover, :focus-visible) .blog-card__front {
+    transform: translateY(-10px);
+  }
+  .blog-card:is(:hover, :focus-visible) .blog-card__back {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (hover: none) {
+  .blog-card__media {
+    inset: 10px 10px auto 10px;
+    height: 38%;
+    border-radius: 16px;
+  }
+  .blog-card__scrim,
+  .blog-card__front {
+    display: none;
+  }
+  .blog-card__back {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Only the excerpt gives way when the panel is short; narrow cards trim it, then drop it. */
+.blog-card__back > * {
+  flex-shrink: 0;
+}
+.blog-card__back > .blog-card__blurb {
+  flex-shrink: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+@container (max-width: 335px) {
+  .blog-card__blurb {
+    -webkit-line-clamp: 1;
+  }
+}
+@container (max-width: 290px) {
+  .blog-card__blurb {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blog-card,
+  .blog-card * {
+    transition-duration: 0.01ms !important;
+  }
+}
