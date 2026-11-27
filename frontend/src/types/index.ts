@@ -429,7 +429,8 @@ export interface Newsletter {
   date: string;
   content_url: string;
   image?: string;
-  type: "founder" | "cse" | string;
+  /** A series id from lib/newsletter.ts (legacy: "founder" | "cse"). */
+  type: string;
   tags?: string[];
 }
 

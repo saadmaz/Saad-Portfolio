@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Email sign-up for the newsletter. `compact` hides the series choice
- * (subscribes to both) for bands and footers.
+ * (subscribes to every series) for bands and footers.
  */
 export function SubscribeForm({
   compact,
@@ -24,7 +24,7 @@ export function SubscribeForm({
 }) {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
-  const [topics, setTopics] = useState<NewsletterSeries[]>(["founder", "cse"]);
+  const [topics, setTopics] = useState<NewsletterSeries[]>(() => SERIES.map((s) => s.id));
   const [error, setError] = useState("");
   const m = useMutation({
     mutationFn: () => SubscribeService.subscribe(email, topics, { website, source }),

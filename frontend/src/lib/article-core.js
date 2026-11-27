@@ -279,6 +279,12 @@ export function featuredPosts(posts) {
 
 // ── Series ────────────────────────────────────────────────────────────────
 
+/** "01 / Projects" from a series' order and short label; "" when it has neither. */
+export function seriesKicker(series) {
+  const num = series?.order ? String(series.order).padStart(2, "0") : "";
+  return [num, series?.label].filter(Boolean).join(" / ");
+}
+
 /**
  * Live parts of a series in reading order. A post belongs to a series via
  * its `seriesId`; the series' `postIds` sets the order, and members it

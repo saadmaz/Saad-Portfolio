@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { issuesByYear, seriesOf } from "./newsletter";
 
 describe("seriesOf", () => {
-  it("maps types and falls back to founder notes", () => {
-    expect(seriesOf({ type: "cse" }).label).toBe("Engineering");
-    expect(seriesOf({ type: "weird" }).id).toBe("founder");
+  it("maps types, legacy types and falls back to the first series", () => {
+    expect(seriesOf({ type: "tech-news" }).label).toBe("News");
+    expect(seriesOf({ type: "cse" }).id).toBe("ai-and-technology");
+    expect(seriesOf({ type: "founder" }).id).toBe("startups");
+    expect(seriesOf({ type: "weird" }).id).toBe("building-in-public");
   });
 });
 
