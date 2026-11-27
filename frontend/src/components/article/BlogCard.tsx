@@ -12,8 +12,6 @@ type CardProps = {
   typeLabel?: string;
   priority?: boolean;
   className?: string;
-  /** Copies in a looping strip: hidden from keyboard and screen readers. */
-  duplicate?: boolean;
 };
 
 function facts(post: BlogPost, wpm: number, typeLabel?: string) {
@@ -70,17 +68,11 @@ function ReadPill({ glass }: { glass?: boolean }) {
 }
 
 /** Cover card that turns into a detail card on hover/focus (always detailed on touch screens). */
-export function BlogCard({ post, wpm, typeLabel, priority, className, duplicate }: CardProps) {
+export function BlogCard({ post, wpm, typeLabel, priority, className }: CardProps) {
   const cover = coverOf(post);
   const { minutes, date, kind, blurb } = facts(post, wpm, typeLabel);
   return (
-    <Link
-      to={articlePath(post)}
-      className={cn("blog-card theme-dark", className)}
-      aria-hidden={duplicate || undefined}
-      tabIndex={duplicate ? -1 : undefined}
-      draggable={false}
-    >
+    <Link to={articlePath(post)} className={cn("blog-card theme-dark", className)} draggable={false}>
       <div className="blog-card__media">
         <Media
           asset={cover as ImageAsset | null}

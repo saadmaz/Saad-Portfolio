@@ -13,7 +13,7 @@ import { ToolsMarquee } from "@/components/ToolsMarquee";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
-import { BlogMarquee } from "@/components/article/BlogMarquee";
+import { BlogCarousel } from "@/components/article/BlogCarousel";
 import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
@@ -440,7 +440,7 @@ function Writing() {
           />
         </Reveal>
       </div>
-      <BlogMarquee
+      <BlogCarousel
         posts={posts}
         wpm={settings.readingWpm}
         typeOf={(p) => articleTypeLabel(p.articleType, settings.articleTypes)}
