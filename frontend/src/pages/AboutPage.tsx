@@ -1,20 +1,22 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
-  Award as AwardIcon,
   BookOpen,
-  Briefcase,
-  GraduationCap,
+  Bot,
   Hammer,
   Medal,
+  Mic,
+  Rocket,
   Sparkles,
   Trophy,
+  Users,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button, CountUp, Eyebrow, PageHero, Reveal, RisingWords, SectionHeader } from "@/components/ui";
-import { EventCard, Mark } from "@/components/cards";
+import { Mark } from "@/components/cards";
+import { Gallery } from "@/components/Gallery";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import {
   useAboutSettings,
@@ -29,47 +31,18 @@ import {
   useVolunteer,
 } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
-import { companyPeriod, normalizeExperience } from "@/lib/experience";
-import { partsToLabel, range, year } from "@/lib/format";
+import { normalizeExperience } from "@/lib/experience";
+import { range, year } from "@/lib/format";
+import { schoolNameOf, schoolSlugOf } from "@/lib/schools";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
 import { cn } from "@/lib/utils";
-import { useScrollFill } from "@/hooks/useScrollFill";
+import type { Education } from "@/types";
 import portrait from "@/assets/profile-photo.webp";
-
-type Kind = "work" | "education" | "award" | "hackathon";
-
-const KINDS: Record<Kind, { label: string; color: string; icon: typeof Briefcase }> = {
-  work: { label: "Work", color: "#ff5f00", icon: Briefcase },
-  education: { label: "Education", color: "#0ea5e9", icon: GraduationCap },
-  award: { label: "Awards", color: "#f5a524", icon: Trophy },
-  hackathon: { label: "Hackathons", color: "#8b5cf6", icon: Hammer },
-};
-
-interface Moment {
-  key: string;
-  kind: Kind;
-  sort: number;
-  when: string;
-  title: string;
-  sub?: string;
-  logo?: string;
-  to?: string;
-  href?: string;
-}
 
 const sortKey = (date?: string | number) => {
   const t = typeof date === "number" ? new Date(date, 0, 1).getTime() : Date.parse(date ?? "");
   return Number.isNaN(t) ? 0 : t;
 };
-
-/** "Native", "Fluent", "Professional", "Conversational", "Basic" → 4..1 */
-function languageLevel(level: string): number {
-  const l = level.toLowerCase();
-  if (/native|bilingual|fluent|mother/.test(l)) return 4;
-  if (/professional|advanced|full/.test(l)) return 3;
-  if (/conversational|intermediate|limited working/.test(l)) return 2;
-  return 1;
-}
 
 /** A phrase that gets a white marker swept behind it once in view. */
 function Mark_({ children }: { children: ReactNode }) {
@@ -80,6 +53,51 @@ function Mark_({ children }: { children: ReactNode }) {
     </span>
   );
 }
+
+const INTO = [
+  { icon: Hammer, title: "Building things", body: "Products, applications and the systems behind them." },
+  { icon: Bot, title: "AI & technology", body: "Exploring what's possible, then making it actually useful." },
+  { icon: Rocket, title: "Entrepreneurship", body: "Building businesses and learning a lot along the way." },
+  { icon: Users, title: "Community", body: "Events, leadership, debating and bringing people together." },
+];
+
+/** Awards grouped by theme; first match wins, anything else lands in "More". */
+const AWARD_GROUPS = [
+  {
+    key: "debate",
+    label: "Debating & public speaking",
+    icon: Mic,
+    test: /debat|speak|speech|oratory|elocution/i,
+  },
+  {
+    key: "lead",
+    label: "Leadership & recognition",
+    icon: Medal,
+    test: /governor|shield|appreciation|leader|recogni|interact|rotary|award/i,
+  },
+  {
+    key: "sport",
+    label: "Sports",
+    icon: Trophy,
+    test: /rugby|cricket|football|athlet|sport|swim|tournament/i,
+  },
+];
+
+/** School-leaving exams are taken in one year; show that year, not years at the school. */
+const isSchoolExam = (e: Education) =>
+  /advanced level|ordinary level|\bA\/?L\b|\bO\/?L\b/i.test(`${e.degree ?? ""} ${e.field_of_study ?? ""}`);
+
+function eduPeriod(e: Education) {
+  const start = e.start_year ? String(e.start_year) : "";
+  const end = e.end_year ? String(e.end_year) : "";
+  if (isSchoolExam(e)) return end || start;
+  if (start && end && start === end) return start;
+  if (e.is_current) return `${start} – ${end || "now"}`;
+  return [start, end].filter(Boolean).join(" – ");
+}
+
+const eduTitle = (e: Education) =>
+  [e.degree, e.field_of_study ?? e.fieldOfStudy].filter(Boolean).join(", ").trim() || schoolNameOf(e);
 
 const AboutPage = () => {
   const { data: education = [] } = useEducation();
@@ -96,101 +114,103 @@ const AboutPage = () => {
 
   const companies = useMemo(() => normalizeExperience(experience), [experience]);
 
-  const moments = useMemo<Moment[]>(() => {
-    const list: Moment[] = [
-      ...companies.map((c) => ({
-        key: `w-${c.key}`,
-        kind: "work" as const,
-        sort: Math.max(0, ...c.roles.map((r) => r.start)),
-        when: companyPeriod(c),
-        title: c.roles[0]?.title || c.name,
-        sub: c.name,
-        logo: c.logo,
-        to: `/experience/${c.slug}`,
-      })),
-      ...education.map((e) => ({
-        key: `e-${e.id}`,
-        kind: "education" as const,
-        sort: sortKey(e.start_year),
-        when: range(partsToLabel(undefined, e.start_year), partsToLabel(undefined, e.end_year), e.is_current),
-        title:
-          [e.degree, e.field_of_study ?? e.fieldOfStudy].filter(Boolean).join(" ") || (e.school_name ?? ""),
-        sub: e.school_name ?? e.institution,
-        logo: e.school_logo,
-        to: "/education",
-      })),
-      ...awards.map((a) => ({
-        key: `a-${a.id}`,
-        kind: "award" as const,
-        sort: sortKey(a.date),
-        when: year(a.date),
-        title: a.title,
-        sub: a.issuer,
-        href: a.link,
-      })),
-      ...hackathons.map((h) => ({
-        key: `h-${h.id}`,
-        kind: "hackathon" as const,
-        sort: sortKey(h.date),
-        when: year(h.date),
-        title: h.name,
-        sub: [h.role, h.achievement].filter(Boolean).join(" · "),
-        logo: h.image,
-        href: h.link,
-      })),
-    ];
-    return list.sort((a, b) => b.sort - a.sort);
-  }, [companies, education, awards, hackathons]);
-
-  const [kinds, setKinds] = useState<Set<Kind>>(new Set(Object.keys(KINDS) as Kind[]));
-  const toggle = (k: Kind) =>
-    setKinds((cur) => {
-      const next = new Set(cur);
-      if (next.has(k) && next.size > 1) next.delete(k);
-      else next.add(k);
-      return next;
-    });
-  const shownMoments = moments.filter((m) => kinds.has(m.kind));
-  const [rail, fill] = useScrollFill<HTMLOListElement>();
-
   const firstYear = Math.min(
     new Date().getFullYear(),
     ...companies.flatMap((c) => c.roles.map((r) => (r.start ? new Date(r.start).getFullYear() : Infinity))),
   );
   const stats = [
-    { value: new Date().getFullYear() - firstYear, label: "Years building" },
+    { value: new Date().getFullYear() - firstYear, label: "Years building", suffix: "+" },
     { value: projects.length, label: "Products shipped" },
     { value: events.length, label: "Stages & events" },
     { value: certs.length, label: "Certifications" },
   ].filter((s) => s.value > 0);
 
-  const values = (settings?.values ?? []).filter((v) => v.title);
-  const now = [
-    { label: "Building", text: settings?.now?.building, icon: Hammer },
-    { label: "Learning", text: settings?.now?.learning, icon: Sparkles },
-    { label: "Reading", text: settings?.now?.reading, icon: BookOpen },
-  ].filter((n) => n.text);
-  const beyond = [
+  const schools = [...education].sort(
+    (a, b) =>
+      (b.is_current ? 1 : 0) - (a.is_current ? 1 : 0) ||
+      Number(b.end_year ?? 0) - Number(a.end_year ?? 0) ||
+      Number(b.start_year ?? 0) - Number(a.start_year ?? 0),
+  );
+
+  const recognition = useMemo(() => {
+    const byDate = [...awards].sort((a, b) => sortKey(b.date) - sortKey(a.date));
+    const groups = AWARD_GROUPS.map((g) => ({ ...g, items: [] as typeof awards })).concat({
+      key: "more",
+      label: "More",
+      icon: Medal,
+      test: /$^/,
+      items: [],
+    });
+    for (const a of byDate) {
+      const text = `${a.title} ${a.issuer ?? ""}`;
+      (
+        groups.find((g) => g.items !== undefined && g.test.test(text)) ?? groups[groups.length - 1]
+      ).items.push(a);
+    }
+    const list = groups
+      .filter((g) => g.items.length)
+      .map((g) => ({
+        key: g.key,
+        label: g.label,
+        icon: g.icon,
+        items: g.items.map((a) => ({
+          key: a.id,
+          title: a.title,
+          sub: a.issuer,
+          when: year(a.date),
+          href: a.link,
+        })),
+      }));
+    if (hackathons.length)
+      list.push({
+        key: "hack",
+        label: "Hackathons & competitions",
+        icon: Sparkles,
+        items: [...hackathons]
+          .sort((a, b) => sortKey(b.date) - sortKey(a.date))
+          .map((h) => ({
+            key: h.id,
+            title: h.name,
+            sub: [h.role, h.achievement].filter(Boolean).join(" · "),
+            when: year(h.date),
+            href: h.link,
+          })),
+      });
+    return list;
+  }, [awards, hackathons]);
+
+  const community = [
     ...volunteer.map((v) => ({
       key: `v-${v.id}`,
-      tag: "Volunteer",
       title: v.role,
       sub: v.organization,
+      sort: sortKey(v.startDate),
       when: range(year(v.startDate), v.endDate && year(v.endDate), v.isCurrent),
       image: v.image,
       href: v.link,
     })),
     ...organizations.map((o) => ({
       key: `o-${o.id}`,
-      tag: "Club & sport",
       title: o.position || o.name,
       sub: o.position ? o.name : undefined,
+      sort: sortKey(o.startDate),
       when: range(year(o.startDate), o.endDate && year(o.endDate), o.isCurrent),
       image: o.image,
       href: o.link,
     })),
-  ];
-  const sortedAwards = [...awards].sort((a, b) => sortKey(b.date) - sortKey(a.date));
+  ].sort((a, b) => b.sort - a.sort);
+
+  // Real photos from stages and events, newest first.
+  const moments = events
+    .map((e) => ({ src: e.image || e.images?.[0], title: e.title }))
+    .filter((m): m is { src: string; title: string } => !!m.src)
+    .slice(0, 8);
+
+  const now = [
+    { label: "Building", text: settings?.now?.building, icon: Hammer },
+    { label: "Learning", text: settings?.now?.learning, icon: Sparkles },
+    { label: "Reading", text: settings?.now?.reading, icon: BookOpen },
+  ].filter((n) => n.text);
 
   return (
     <Layout>
@@ -200,40 +220,40 @@ const AboutPage = () => {
         url={`${BASE_URL}/about`}
       />
 
-      {/* 1 · Hero */}
+      {/* 1 · Hello */}
       <PageHero ambient band={<span className="truncate">Saad Mazhar · About</span>}>
-        <div className="grid items-center gap-12 grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16">
-          <div className="flex flex-col gap-8">
+        <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,400px)] md:gap-16">
+          <div className="flex flex-col gap-6">
             <div className="animate-rise">
               <Eyebrow>About</Eyebrow>
             </div>
             <h1 className="text-display-xl font-medium">
-              <RisingWords text="Hi, I’m" /> <RisingWords text="Saad." from={2} className="text-accent" />
+              <RisingWords text="Hey, I’m" /> <RisingWords text="Saad!" from={2} className="text-accent" />
             </h1>
-            <p className="max-w-[560px] animate-rise text-h3 font-light text-fg-2 [animation-delay:350ms]">
-              Founder by trade, engineer by habit, host by accident.
+            <p className="max-w-[600px] animate-rise text-h3 font-light leading-snug [animation-delay:300ms]">
+              I have a habit of turning <span className="text-accent">“wouldn’t it be cool if…”</span> into
+              actual projects.
             </p>
-            <div className="flex animate-rise flex-wrap items-center gap-4 [animation-delay:450ms]">
+            <div className="flex max-w-[600px] animate-rise flex-col gap-4 text-body-l text-fg-2 [animation-delay:400ms]">
+              <p>
+                Sometimes it’s a startup, sometimes it’s a random app idea, sometimes it’s 2 AM and I’m
+                wondering if I can build something that probably doesn’t need to exist (yet).
+              </p>
+              <p>
+                I’m a developer, entrepreneur and Computer Science undergraduate from Colombo, Sri Lanka. I
+                enjoy building products, exploring AI, figuring out how businesses work and bringing
+                interesting ideas to life.
+              </p>
+              <p className="font-medium text-fg">A little bit of everything, and a lot of curiosity.</p>
+            </div>
+            <div className="flex animate-rise flex-wrap items-center gap-4 [animation-delay:500ms]">
               <Button to="/contact" size="lg">
-                Get in touch
+                Say hello
               </Button>
               <SocialLinks />
             </div>
-            {stats.length > 0 && (
-              <dl className="mt-2 grid max-w-[620px] animate-rise grid-cols-2 gap-6 [animation-delay:550ms] sm:grid-cols-4">
-                {stats.map((s) => (
-                  <div key={s.label} className="flex flex-col-reverse gap-2 border-l border-line-2 pl-4">
-                    <dt className="label text-fg-3">{s.label}</dt>
-                    <dd className="text-display-m font-medium leading-none">
-                      <CountUp value={s.value} />
-                      {s.label === "Years building" && "+"}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            )}
           </div>
-          <div className="relative mx-auto w-full max-w-[420px] animate-rise [animation-delay:300ms]">
+          <div className="relative mx-auto w-full max-w-[300px] animate-rise [animation-delay:300ms] md:max-w-[400px]">
             <div
               aria-hidden
               className="absolute inset-[10%] rounded-full bg-[radial-gradient(circle,rgb(255_95_0/0.4),transparent_70%)] blur-3xl"
@@ -249,345 +269,251 @@ const AboutPage = () => {
         </div>
       </PageHero>
 
-      {/* 2 · My story */}
+      {/* 2 · What I'm into */}
+      <section className="section screen theme-light border-t-0" aria-labelledby="into">
+        <div className="wrap">
+          <Reveal>
+            <SectionHeader id="into" label="What I’m into" title="The things I" soft="keep coming back to" />
+          </Reveal>
+          <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {INTO.map((t, i) => (
+              <li key={t.title}>
+                <Reveal delay={i * 90} className="h-full">
+                  <div className="group flex h-full flex-col gap-3 rounded-[22px] border border-line-2 bg-surface/60 p-4 transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-accent sm:gap-4 md:p-6">
+                    <span className="flex size-11 items-center justify-center rounded-[14px] bg-accent/[0.12] text-accent transition-colors group-hover:bg-accent group-hover:text-fg-inverse">
+                      <t.icon aria-hidden className="size-5" />
+                    </span>
+                    <h3 className="text-[1.0625rem] font-medium leading-snug tracking-[-0.02em] sm:text-[1.25rem]">{t.title}</h3>
+                    <p className="text-sm text-fg-2 sm:text-base">{t.body}</p>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 3 · Story + highlights */}
       <section className="section screen theme-orange border-t-0" aria-labelledby="story">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="story" label="My story" title="How I" soft="got here" />
           </Reveal>
           <Reveal>
-            <p className="max-w-[1000px] text-[clamp(1.75rem,3.4vw,3rem)] font-medium leading-[1.2] tracking-[-0.025em]">
+            <p className="max-w-[1000px] text-[clamp(1.6rem,3.4vw,3rem)] font-medium leading-[1.2] tracking-[-0.025em]">
               I’m a computer science undergraduate and the founder of <Mark_>TankSudda</Mark_> and{" "}
               <Mark_>Stopwash</Mark_>. I’ve been writing software for five years and{" "}
               <Mark_>selling it for three</Mark_>.
             </p>
           </Reveal>
-          <Reveal className="mt-10 grid max-w-[1000px] gap-6 text-body-l text-fg-2 grid-cols-1 md:grid-cols-2">
+          <Reveal className="mt-8 grid max-w-[1000px] grid-cols-1 gap-6 text-body-l text-fg-2 md:mt-10 md:grid-cols-2">
             <p>
               Outside the code I host and speak at tech events across Sri Lanka, from small meetups to packed
               summits.
             </p>
-            <p>Both jobs are the same skill: making something complicated feel simple.</p>
+            <p>
+              Both jobs are the same skill: making something complicated feel simple.{" "}
+              <Link to="/experience" className="tap font-medium text-fg underline underline-offset-4">
+                See my experience
+              </Link>
+            </p>
           </Reveal>
+          {stats.length > 0 && (
+            <Reveal className="mt-12 md:mt-16">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-8 border-t border-[rgb(17_17_19/0.2)] pt-8 md:grid-cols-4">
+                {stats.map((s) => (
+                  <div key={s.label} className="flex flex-col-reverse gap-2">
+                    <dt className="label text-fg-2">{s.label}</dt>
+                    <dd className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-none tracking-[-0.04em]">
+                      <CountUp value={s.value} />
+                      {s.suffix}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          )}
         </div>
       </section>
 
-      {/* 3 · Journey */}
-      {moments.length > 0 && (
-        <section className="section screen border-t-0" aria-labelledby="journey">
-          <div className="wrap grid grid-cols-1 gap-12 md:grid-cols-[300px_minmax(0,1fr)] md:gap-20">
-            <div className="flex flex-col gap-8 md:sticky md:top-32 md:self-start">
+      {/* 4 · Education & learning (+ languages) */}
+      {schools.length > 0 && (
+        <section className="section screen border-t-0" aria-labelledby="education-heading">
+          <div className="wrap grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-20">
+            <div>
               <Reveal>
-                <SectionHeader id="journey" label="Journey" title="The road" soft="so far" />
+                <SectionHeader
+                  id="education-heading"
+                  label="Education & learning"
+                  title="Where I"
+                  soft="learned"
+                  action={
+                    <Button to="/education" variant="secondary">
+                      More detail
+                    </Button>
+                  }
+                />
               </Reveal>
-              <div className="flex flex-wrap gap-2" role="group" aria-label="Show">
-                {(Object.keys(KINDS) as Kind[])
-                  .filter((k) => moments.some((m) => m.kind === k))
-                  .map((k) => {
-                    const on = kinds.has(k);
-                    const { icon: Icon, color, label } = KINDS[k];
-                    return (
-                      <button
-                        key={k}
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => toggle(k)}
-                        className={cn(
-                          "inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-sm transition-colors",
-                          on ? "text-fg" : "border-line-2 text-fg-3",
-                        )}
-                        style={on ? { borderColor: color, background: `${color}1f` } : undefined}
-                      >
-                        <Icon aria-hidden className="size-4" style={{ color: on ? color : undefined }} />
-                        {label}
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
-            <ol ref={rail} className="relative flex flex-col gap-4 pl-10 md:pl-14">
-              <span
-                aria-hidden
-                className="absolute bottom-3 left-[15px] top-3 w-0.5 rounded-full bg-line-2 md:left-[23px]"
-              />
-              <span
-                aria-hidden
-                className="absolute left-[15px] top-3 w-0.5 origin-top rounded-full bg-gradient-to-b from-accent via-accent to-accent/30 md:left-[23px]"
-                style={{ height: "calc(100% - 1.5rem)", transform: `scaleY(${fill})` }}
-              />
-              {shownMoments.map((m, i) => {
-                const { icon: Icon, color, label } = KINDS[m.kind];
-                const body = (
-                  <>
-                    <span className="flex items-center gap-3">
-                      {m.logo ? (
-                        <Mark src={m.logo} label={m.sub || m.title} className="size-10" />
-                      ) : (
-                        <span
-                          className="flex size-10 shrink-0 items-center justify-center rounded-[10px]"
-                          style={{ background: `${color}22`, color }}
-                        >
-                          <Icon aria-hidden className="size-5" />
-                        </span>
-                      )}
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-h4 font-medium transition-colors group-hover:text-accent">
-                          {m.title}
-                        </span>
-                        {m.sub && <span className="block truncate text-sm text-fg-2">{m.sub}</span>}
-                      </span>
-                    </span>
-                    <span className="flex items-center justify-between gap-3 font-mono text-meta text-fg-3">
-                      <span style={{ color }}>{label}</span>
-                      <span>{m.when}</span>
-                    </span>
-                  </>
-                );
-                const card =
-                  "group flex flex-col gap-4 rounded-[20px] border border-line bg-surface/50 p-5 transition-[transform,border-color] duration-300 hover:-translate-y-0.5";
-                return (
-                  <li key={m.key} className="relative">
+              <ol className="relative border-l border-line-2 pl-6 md:pl-8">
+                {schools.map((e, i) => (
+                  <li key={e.id} className="relative pb-7 last:pb-0">
                     <span
                       aria-hidden
-                      className="absolute -left-10 top-6 flex size-8 items-center justify-center rounded-full border-2 bg-base md:-left-14 md:size-12"
-                      style={{ borderColor: color }}
-                    >
-                      <Icon className="size-3.5 md:size-5" style={{ color }} />
-                    </span>
-                    <Reveal delay={Math.min(i, 6) * 60}>
-                      {m.to ? (
-                        <Link to={m.to} className={card}>
-                          {body}
-                        </Link>
-                      ) : m.href ? (
-                        <a href={m.href} target="_blank" rel="noopener noreferrer" className={card}>
-                          {body}
-                        </a>
-                      ) : (
-                        <div className={card}>{body}</div>
+                      className={cn(
+                        "absolute -left-[31px] top-1.5 size-3 rounded-full border-2 md:-left-[39px]",
+                        e.is_current ? "border-accent bg-accent" : "border-line-3 bg-base",
                       )}
+                    />
+                    <Reveal delay={i * 80}>
+                      <Link
+                        to={`/education/${schoolSlugOf(e)}`}
+                        className="group grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-6"
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-[1.125rem] font-medium leading-snug transition-colors group-hover:text-accent md:text-[1.25rem]">
+                            {eduTitle(e)}
+                          </span>
+                          <span className="mt-1 flex items-center gap-2 text-fg-2">
+                            {e.school_logo && (
+                              <Mark src={e.school_logo} label={schoolNameOf(e)} className="size-5" />
+                            )}
+                            {schoolNameOf(e)}
+                          </span>
+                        </span>
+                        <span className="font-mono text-meta text-fg-3 sm:text-right">
+                          {eduPeriod(e)}
+                          {e.is_current && <span className="ml-2 text-accent">· Current</span>}
+                        </span>
+                      </Link>
                     </Reveal>
                   </li>
-                );
-              })}
-            </ol>
+                ))}
+              </ol>
+            </div>
+
+            {languages.length > 0 && (
+              <Reveal className="flex flex-col gap-4 self-start rounded-[22px] border border-line-2 bg-surface/50 p-6 lg:sticky lg:top-32">
+                <span className="label text-fg-3" id="languages">
+                  Languages
+                </span>
+                <ul className="flex flex-col divide-y divide-line-2">
+                  {languages.map((l) => (
+                    <li
+                      key={l.id}
+                      className="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0"
+                    >
+                      <span className="font-medium">{l.name}</span>
+                      <span className="text-right text-sm text-fg-2">{l.level}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )}
           </div>
         </section>
       )}
 
-      {/* 4 · What drives me */}
-      {values.length > 0 && (
-        <section className="section screen theme-light border-t-0" aria-labelledby="values">
+      {/* 5 · Recognition */}
+      {recognition.length > 0 && (
+        <section className="section screen theme-light border-t-0" aria-labelledby="recognition">
           <div className="wrap">
             <Reveal>
-              <SectionHeader id="values" label="What drives me" title="How I" soft="work" />
+              <SectionHeader id="recognition" label="Recognition" title="A few things" soft="I’m proud of" />
             </Reveal>
-            <ul
-              className={cn(
-                "grid gap-4",
-                values.length >= 4 ? "md:grid-cols-2 lg:grid-cols-4" : "md:grid-cols-3",
-              )}
-            >
-              {values.map((v, i) => (
-                <li key={v.title}>
-                  <Reveal delay={i * 100} className="h-full">
-                    <div className="group flex h-full flex-col gap-5 rounded-[22px] border border-line-2 bg-surface/50 p-6 transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-accent md:p-7">
-                      <span className="flex size-11 items-center justify-center rounded-[14px] bg-accent/15 font-mono text-meta text-accent transition-colors group-hover:bg-accent group-hover:text-white">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <h3 className="text-h3 font-medium">{v.title}</h3>
-                      {v.description && <p className="text-fg-2">{v.description}</p>}
-                    </div>
-                  </Reveal>
-                </li>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {recognition.map((g, gi) => (
+                <Reveal
+                  key={g.key}
+                  delay={gi * 90}
+                  className="flex flex-col gap-4 rounded-[22px] border border-line-2 bg-surface/60 p-5 md:p-6"
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="flex size-10 items-center justify-center rounded-xl bg-accent/[0.12] text-accent">
+                      <g.icon aria-hidden className="size-5" />
+                    </span>
+                    <h3 className="text-[1.125rem] font-medium">{g.label}</h3>
+                  </span>
+                  <ul className="flex flex-col divide-y divide-line-2">
+                    {g.items.map((a) => {
+                      const inner = (
+                        <>
+                          <span className="min-w-0">
+                            <span className="block font-medium leading-snug">{a.title}</span>
+                            {a.sub && <span className="mt-0.5 block text-sm text-fg-2">{a.sub}</span>}
+                          </span>
+                          <span className="shrink-0 font-mono text-meta text-fg-3">{a.when}</span>
+                        </>
+                      );
+                      const cls = "flex items-baseline justify-between gap-4 py-3";
+                      return (
+                        <li key={a.key} className="first:[&>*]:pt-0 last:[&>*]:pb-0">
+                          {a.href ? (
+                            <a
+                              href={a.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={cn(cls, "hover:text-accent")}
+                            >
+                              {inner}
+                            </a>
+                          ) : (
+                            <div className={cls}>{inner}</div>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Reveal>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       )}
 
-      {/* 5 · Beyond the code */}
-      {(beyond.length > 0 || events.length > 0) && (
-        <section
-          className={cn("section screen border-t-0", values.length ? "" : "theme-light")}
-          aria-labelledby="beyond"
-        >
+      {/* 6 · Leadership & community */}
+      {community.length > 0 && (
+        <section className="section screen border-t-0" aria-labelledby="community">
           <div className="wrap">
             <Reveal>
               <SectionHeader
-                id="beyond"
-                label="Beyond the code"
-                title="Stages, clubs"
+                id="community"
+                label="Leadership & community"
+                title="Leading"
                 soft="& giving back"
                 action={
                   events.length > 0 ? (
                     <Button to="/events" variant="secondary">
-                      All events
+                      Events & hosting
                     </Button>
                   ) : undefined
                 }
               />
             </Reveal>
-            {events.length > 0 && (
-              <ul className="mb-12 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {events.slice(0, 3).map((e, i) => (
-                  <li key={e.id}>
-                    <Reveal delay={i * 90}>
-                      <EventCard event={e} />
-                    </Reveal>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {beyond.length > 0 && (
-              <ul className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {beyond.map((b, i) => {
-                  const inner = (
-                    <>
-                      <Mark src={b.image} label={b.sub || b.title} className="size-12 rounded-[14px]" />
-                      <span className="min-w-0 flex-1">
-                        <span className="label text-accent">{b.tag}</span>
-                        <span className="mt-1 block truncate font-medium">{b.title}</span>
-                        {b.sub && <span className="block truncate text-sm text-fg-2">{b.sub}</span>}
-                        <span className="mt-1 block font-mono text-meta text-fg-3">{b.when}</span>
-                      </span>
-                      {b.href && (
-                        <ArrowUpRight
-                          aria-hidden
-                          className="size-4 shrink-0 text-fg-3 group-hover:text-accent"
-                        />
-                      )}
-                    </>
-                  );
-                  const cls =
-                    "group flex h-full items-start gap-4 rounded-[20px] border border-line-2 bg-surface/50 p-5 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-accent/60";
-                  return (
-                    <li key={b.key}>
-                      <Reveal delay={Math.min(i, 8) * 50} className="h-full">
-                        {b.href ? (
-                          <a href={b.href} target="_blank" rel="noopener noreferrer" className={cls}>
-                            {inner}
-                          </a>
-                        ) : (
-                          <div className={cls}>{inner}</div>
-                        )}
-                      </Reveal>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* 6 · Languages */}
-      {languages.length > 0 && (
-        <section className="section screen border-t-0" aria-labelledby="languages">
-          <div className="wrap">
-            <Reveal>
-              <SectionHeader
-                id="languages"
-                label="Languages"
-                title="Fluent in"
-                soft={languages.length === 3 ? "three" : String(languages.length)}
-              />
-            </Reveal>
-            <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {languages.map((l, i) => {
-                const lvl = languageLevel(l.level ?? "");
-                const breakdown = (
-                  [
-                    ["Speaking", l.speaking],
-                    ["Reading", l.reading],
-                    ["Writing", l.writing],
-                  ] as const
-                ).filter(([, v]) => typeof v === "number" && v > 0) as [string, number][];
-                return (
-                  <li key={l.id}>
-                    <Reveal
-                      delay={i * 90}
-                      className="group flex flex-col gap-5 rounded-[22px] border border-line bg-surface/50 p-6"
-                    >
-                      <span className="flex items-baseline justify-between gap-4">
-                        <span className="text-h2 font-medium">{l.name}</span>
-                        <span className="font-mono text-meta text-fg-3">{l.level}</span>
-                      </span>
-                      <span className="flex gap-1.5" role="img" aria-label={`${lvl} of 4`}>
-                        {[0, 1, 2, 3].map((s) => (
-                          <span key={s} className="h-1.5 flex-1 overflow-hidden rounded-full bg-line-2">
-                            <span
-                              className={cn(
-                                "block h-full origin-left scale-x-0 rounded-full bg-accent transition-transform duration-500 ease-out",
-                                s < lvl && "group-data-[in=true]:scale-x-100",
-                              )}
-                              style={{ transitionDelay: `${i * 90 + s * 120 + 200}ms` }}
-                            />
-                          </span>
-                        ))}
-                      </span>
-                      {breakdown.length > 0 && (
-                        <dl className="flex flex-col gap-2.5 border-t border-line pt-4">
-                          {breakdown.map(([k, v], si) => (
-                            <div
-                              key={k}
-                              className="grid grid-cols-[72px_minmax(0,1fr)_36px] items-center gap-3"
-                            >
-                              <dt className="label text-fg-3">{k}</dt>
-                              <dd className="h-1 overflow-hidden rounded-full bg-line-2">
-                                <span
-                                  className="block h-full origin-left scale-x-0 rounded-full bg-fg/70 transition-transform duration-700 ease-out group-data-[in=true]:scale-x-100"
-                                  style={{
-                                    width: `${Math.min(100, v)}%`,
-                                    transitionDelay: `${i * 90 + si * 100 + 500}ms`,
-                                  }}
-                                />
-                              </dd>
-                              <span className="text-right font-mono text-meta text-fg-3">
-                                {Math.min(100, v)}
-                              </span>
-                            </div>
-                          ))}
-                        </dl>
-                      )}
-                      {l.note && <p className="text-sm text-fg-2">{l.note}</p>}
-                    </Reveal>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </section>
-      )}
-
-      {/* 7 · Recognition */}
-      {sortedAwards.length > 0 && (
-        <section className="section screen theme-orange border-t-0" aria-labelledby="recognition">
-          <div className="wrap">
-            <Reveal>
-              <SectionHeader id="recognition" label="Recognition" title="Awards" soft="& honours" />
-            </Reveal>
-            <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {sortedAwards.map((a, i) => {
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {community.map((b, i) => {
                 const inner = (
                   <>
-                    <span className="flex size-14 items-center justify-center rounded-full bg-[rgb(17_17_19)] text-[#f5a524] shadow-[inset_0_0_0_3px_rgb(245_165_36/0.4)] transition-transform duration-500 group-hover:rotate-[20deg]">
-                      <Medal className="size-7" />
+                    <Mark src={b.image} label={b.sub || b.title} className="size-12 rounded-[14px]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-medium leading-snug">{b.title}</span>
+                      {b.sub && <span className="mt-0.5 block text-sm text-fg-2">{b.sub}</span>}
+                      <span className="mt-1.5 block font-mono text-meta text-fg-3">{b.when}</span>
                     </span>
-                    <span className="flex flex-col gap-1">
-                      <span className="font-mono text-meta text-fg-2">{year(a.date)}</span>
-                      <span className="text-h4 font-medium leading-snug">{a.title}</span>
-                      {a.issuer && <span className="text-sm text-fg-2">{a.issuer}</span>}
-                    </span>
+                    {b.href && (
+                      <ArrowUpRight
+                        aria-hidden
+                        className="size-4 shrink-0 text-fg-3 group-hover:text-accent"
+                      />
+                    )}
                   </>
                 );
                 const cls =
-                  "group flex h-full flex-col gap-5 rounded-[22px] bg-white/25 p-6 transition-[transform,background-color] duration-300 hover:-translate-y-1 hover:bg-white/40";
+                  "group flex h-full items-start gap-4 rounded-[20px] border border-line-2 bg-surface/50 p-5 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-accent/60";
                 return (
-                  <li key={a.id}>
-                    <Reveal delay={i * 80} className="h-full">
-                      {a.link ? (
-                        <a href={a.link} target="_blank" rel="noopener noreferrer" className={cls}>
+                  <li key={b.key}>
+                    <Reveal delay={Math.min(i, 8) * 60} className="h-full">
+                      {b.href ? (
+                        <a href={b.href} target="_blank" rel="noopener noreferrer" className={cls}>
                           {inner}
                         </a>
                       ) : (
@@ -602,19 +528,43 @@ const AboutPage = () => {
         </section>
       )}
 
-      {/* 8 · Now */}
-      {now.length > 0 && (
-        <section className="section screen theme-light border-t-0" aria-labelledby="now">
-          <div className="wrap">
-            <Reveal>
-              <SectionHeader id="now" label="Now" title="What I’m" soft="up to" />
-            </Reveal>
-            <ul className="grid gap-4 grid-cols-1 md:grid-cols-3">
+      {/* 7 · Moments */}
+      {moments.length >= 3 && (
+        <Gallery
+          className="theme-light border-t-0"
+          images={moments.map((m) => m.src)}
+          alts={moments.map((m) => `Photo from ${m.title}`)}
+          captions={moments.map((m) => m.title)}
+          title="Saad Mazhar"
+          label="Moments"
+          heading={
+            <>
+              Off the screen, <span className="soft">on the stage</span>
+            </>
+          }
+        />
+      )}
+
+      {/* 8 · Currently + call to action */}
+      <section className="section screen border-t-0" aria-labelledby="now">
+        <div className="wrap">
+          <Reveal>
+            <Eyebrow>Currently</Eyebrow>
+            <p
+              id="now"
+              className="mt-6 max-w-[980px] text-[clamp(1.6rem,3.6vw,3rem)] font-medium leading-[1.2] tracking-[-0.025em]"
+            >
+              Building products, exploring AI, working on startups and trying to turn a few more ideas into{" "}
+              <span className="text-accent">reality.</span>
+            </p>
+          </Reveal>
+          {now.length > 0 && (
+            <ul className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-3">
               {now.map((n, i) => (
                 <li key={n.label}>
                   <Reveal
                     delay={i * 100}
-                    className="flex h-full flex-col gap-4 rounded-[22px] border border-line bg-surface/50 p-6"
+                    className="flex h-full flex-col gap-3 rounded-[22px] border border-line bg-surface/50 p-5"
                   >
                     <span className="flex items-center gap-2.5">
                       <span className="relative flex size-2.5">
@@ -624,28 +574,19 @@ const AboutPage = () => {
                       <span className="label text-fg-3">{n.label}</span>
                       <n.icon aria-hidden className="ml-auto size-4 text-fg-3" />
                     </span>
-                    <p className="text-h4 font-medium leading-snug">{n.text}</p>
+                    <p className="font-medium leading-snug">{n.text}</p>
                   </Reveal>
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
-      )}
-
-      {/* 9 · Call to action */}
-      <section className={cn("pb-24", now.length === 0 && "pt-24")}>
-        <div className="wrap">
-          <Reveal className="flex flex-col items-start gap-6 rounded-[28px] bg-gradient-to-br from-accent to-[#ff8a3d] p-8 text-[rgb(17_17_19)] md:flex-row md:items-center md:justify-between md:p-12">
-            <div className="flex flex-col gap-3">
-              <AwardIcon aria-hidden className="size-8 opacity-70" />
-              <h2 className="text-display-m font-medium">
-                Let’s build <span className="font-light opacity-70">something.</span>
-              </h2>
-            </div>
+          )}
+          <Reveal className="mt-12 flex flex-col items-start gap-6 rounded-[28px] bg-gradient-to-br from-accent to-[#ff8a3d] p-7 text-[rgb(17_17_19)] md:mt-16 md:flex-row md:items-center md:justify-between md:p-12">
+            <h2 className="text-[clamp(1.875rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+              Got an idea? <span className="font-light opacity-75">Let’s build it.</span>
+            </h2>
             <Link
               to="/contact"
-              className="inline-flex h-[52px] shrink-0 items-center gap-2.5 rounded-full bg-[rgb(17_17_19)] px-6 text-[15px] font-medium text-white transition-transform hover:-translate-y-0.5"
+              className="inline-flex h-12 shrink-0 items-center gap-2.5 rounded-full bg-[rgb(17_17_19)] px-6 text-[15px] font-medium text-[#fff] transition-transform hover:-translate-y-0.5"
             >
               Get in touch <ArrowUpRight aria-hidden className="size-[18px]" />
             </Link>

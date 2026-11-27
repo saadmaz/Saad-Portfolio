@@ -214,9 +214,9 @@ export const PAGE_SEO = {
   },
   "/about": {
     title: "About | Founder & Developer",
-    h1: "About Saad Mazhar",
+    h1: "Hey, I'm Saad Mazhar",
     description:
-      "Get to know Saad Mazhar, a computer science undergraduate, startup founder, and tech speaker based in Colombo, Sri Lanka.",
+      "Hey, I'm Saad Mazhar, a developer, founder and CS undergraduate in Colombo who turns \"wouldn't it be cool if…\" ideas into real products.",
   },
   "/blog": {
     title: "Blog | Startups, AI & Dev Insights",
