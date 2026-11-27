@@ -581,7 +581,8 @@ const SkillsPage = () => {
                     return (
                       <li
                         key={s.category + s.name}
-                        className="animate-rise"
+                        // Phones show the first dozen until "Show all"; wider screens show everything.
+                        className={cn("animate-rise", i >= 12 && !expanded.has("explorer") && "max-sm:hidden")}
                         style={{ animationDelay: `${Math.min(i, 18) * 25}ms` }}
                       >
                         <button
@@ -615,6 +616,15 @@ const SkillsPage = () => {
                     );
                   })}
                 </ul>
+              )}
+              {shown.length > 12 && (
+                <button
+                  type="button"
+                  onClick={() => toggleMore("explorer")}
+                  className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full border border-line-2 text-sm font-medium sm:hidden"
+                >
+                  {expanded.has("explorer") ? "Show fewer" : `Show all ${shown.length} skills`}
+                </button>
               )}
             </>
           )}
@@ -680,7 +690,7 @@ const SkillsPage = () => {
             <Reveal>
               <SectionHeader id="levels" label="Level map" title="Where I’m" soft="strongest" />
             </Reveal>
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            <div className="swipe-row grid-cols-1 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
               {LEVELS.map((l, li) => {
                 const list = items.filter((s) => s.level === l.key);
                 const pct = items.length ? list.length / items.length : 0;
@@ -688,7 +698,7 @@ const SkillsPage = () => {
                   <Reveal
                     key={l.key}
                     delay={li * 100}
-                    className="group flex flex-col gap-5 rounded-[22px] border border-line-2 bg-surface/50 p-6"
+                    className="swipe-item group flex flex-col gap-5 rounded-[22px] border border-line-2 bg-surface/50 p-5 md:p-6"
                   >
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="text-h3 font-medium" style={{ color: tint(l.color) }}>

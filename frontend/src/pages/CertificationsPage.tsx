@@ -227,9 +227,9 @@ const CertificationsPage = () => {
                 soft="that count most"
               />
             </Reveal>
-            <ul className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="swipe-row grid-cols-1 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
               {headline.map((c, i) => (
-                <li key={c.id}>
+                <li key={c.id} className="swipe-item">
                   <Reveal delay={i * 100} className="h-full">
                     <button
                       type="button"

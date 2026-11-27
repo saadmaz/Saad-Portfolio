@@ -43,7 +43,9 @@ function CompanyCard({ company, index }: { company: Company; index: number }) {
       </div>
       <div className="mt-4 flex items-center gap-3.5">
         <Mark src={company.logo} label={company.name} className="size-11 rounded-[12px]" />
-        <h2 className="text-h2 font-medium transition-colors group-hover/card:text-accent">{company.name}</h2>
+        <h2 className="text-[1.375rem] font-medium leading-tight transition-colors [overflow-wrap:anywhere] group-hover/card:text-accent md:text-h2">
+          {company.name}
+        </h2>
       </div>
       {company.meta && <p className="mt-2 font-mono text-meta text-fg-3">{company.meta}</p>}
       <ol className="mt-6 flex flex-col gap-5">
