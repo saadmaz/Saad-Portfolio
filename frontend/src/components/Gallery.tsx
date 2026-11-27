@@ -69,6 +69,7 @@ export function Gallery({
   captions,
   label = "Gallery",
   heading,
+  className,
 }: {
   images: string[];
   title: string;
@@ -78,13 +79,15 @@ export function Gallery({
   label?: string;
   /** Replaces the default "From the day in N photos" heading. */
   heading?: ReactNode;
+  /** Extra section classes, e.g. a theme band. */
+  className?: string;
 }) {
   const [open, setOpen] = useState<number | null>(null);
   const tiles = layout(images.length);
   const single = images.length === 1;
 
   return (
-    <section className="section screen" aria-labelledby="gallery-heading">
+    <section className={cn("section screen", className)} aria-labelledby="gallery-heading">
       <div className="wrap">
         <div className="flex items-end justify-between gap-6">
           <div className="flex flex-col gap-6">

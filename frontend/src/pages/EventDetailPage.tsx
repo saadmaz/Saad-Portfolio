@@ -154,6 +154,7 @@ const EventDetailPage = () => {
 
       {gallery.length > 0 && (
         <Gallery
+          className="theme-light border-t-0"
           images={gallery}
           title={event.title}
           alts={gallery.map((src) => eventPhotoAlt(event, src))}
@@ -161,7 +162,10 @@ const EventDetailPage = () => {
       )}
 
       {(newer || older) && (
-        <nav className="wrap grid gap-4 border-t border-line-2 py-10 grid-cols-1 sm:grid-cols-2" aria-label="More events">
+        <nav
+          className="wrap grid gap-4 border-t border-line-2 py-10 grid-cols-1 sm:grid-cols-2"
+          aria-label="More events"
+        >
           {older ? (
             <Link to={eventPath(older)} className="group flex flex-col gap-2">
               <span className="label inline-flex items-center gap-2 text-fg-3">
@@ -186,7 +190,7 @@ const EventDetailPage = () => {
       )}
 
       {more.length > 0 && (
-        <section className="section screen">
+        <section className="section screen border-t-0">
           <div className="wrap">
             <Eyebrow>{event.role ? `More as ${event.role.toLowerCase()}` : "More on stage"}</Eyebrow>
             <div className="mt-10 grid gap-x-6 gap-y-14 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

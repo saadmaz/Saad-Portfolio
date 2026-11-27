@@ -105,6 +105,8 @@
   color-scheme: light;
   background-color: rgb(var(--bg));
   color: rgb(var(--fg));
+  /* Deeper green so "live" status text stays readable on white. */
+  --live: 21 128 61;
 }
 
 @layer base {
@@ -920,6 +922,8 @@
   --accent: 255 95 0;
   --accent-hover: 255 122 38;
   --ink: 255 255 255;
+  /* Re-apply text colour: children otherwise inherit the computed colour of a light/orange band. */
+  color: rgb(var(--fg));
   color-scheme: dark;
 }
 

@@ -742,7 +742,7 @@ const SkillsPage = () => {
       )}
 
       {/* 6 · Proof */}
-      <section className="section screen border-t-0" aria-labelledby="proof">
+      <section className="section screen theme-orange border-t-0" aria-labelledby="proof">
         <div className="wrap flex flex-col gap-12">
           {certs.length > 0 && (
             <Reveal className="flex flex-col gap-8">

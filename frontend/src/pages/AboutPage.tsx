@@ -483,7 +483,7 @@ const AboutPage = () => {
 
       {/* 6 · Languages */}
       {languages.length > 0 && (
-        <section className="section screen" aria-labelledby="languages">
+        <section className="section screen border-t-0" aria-labelledby="languages">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -529,7 +529,10 @@ const AboutPage = () => {
                       {breakdown.length > 0 && (
                         <dl className="flex flex-col gap-2.5 border-t border-line pt-4">
                           {breakdown.map(([k, v], si) => (
-                            <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)_36px] items-center gap-3">
+                            <div
+                              key={k}
+                              className="grid grid-cols-[72px_minmax(0,1fr)_36px] items-center gap-3"
+                            >
                               <dt className="label text-fg-3">{k}</dt>
                               <dd className="h-1 overflow-hidden rounded-full bg-line-2">
                                 <span
@@ -601,7 +604,7 @@ const AboutPage = () => {
 
       {/* 8 · Now */}
       {now.length > 0 && (
-        <section className="section screen border-t-0" aria-labelledby="now">
+        <section className="section screen theme-light border-t-0" aria-labelledby="now">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="now" label="Now" title="What I’m" soft="up to" />

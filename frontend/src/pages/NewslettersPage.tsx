@@ -212,7 +212,7 @@ const NewslettersPage = () => {
       <LinkAction />
 
       {/* Series */}
-      <section className="section screen border-t-0" aria-labelledby="series">
+      <section className="section screen theme-light border-t-0" aria-labelledby="series">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="series" label="Two series" title="Pick" soft="your lane" />
@@ -295,7 +295,7 @@ const NewslettersPage = () => {
       ) : (
         <>
           {latest && series === "all" && !tag && (
-            <section className="section screen border-t-0" aria-labelledby="latest">
+            <section className="section screen theme-light border-t-0" aria-labelledby="latest">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="latest" label="Latest issue" title="Fresh" soft="off the press" />
@@ -401,7 +401,10 @@ const NewslettersPage = () => {
         </>
       )}
 
-      <section className="section screen theme-orange relative overflow-hidden" aria-labelledby="subscribe-cta">
+      <section
+        className="section screen theme-orange relative overflow-hidden"
+        aria-labelledby="subscribe-cta"
+      >
         <div className="wrap flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
           <h2 id="subscribe-cta" className="max-w-[560px] text-display-m font-medium">
             Don’t miss <span className="font-light text-fg-2">the next one.</span>
