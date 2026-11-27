@@ -141,9 +141,13 @@ function CopyEmail() {
   );
 }
 
+// Phones: a compact row (icon · text · arrow). Tablet up: a tall tile.
 const TILE =
-  "group relative flex min-h-[116px] flex-col justify-between gap-6 md:min-h-[clamp(108px,15svh,140px)] md:gap-[clamp(16px,3svh,32px)] overflow-hidden rounded-[24px] border p-6 transition-[transform,border-color,background-color] duration-300 hover:-translate-y-1";
-const TILE_TITLE = "block text-[1.25rem] font-medium leading-tight tracking-[-0.02em] lg:text-[1.5rem]";
+  "group relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 overflow-hidden rounded-2xl border p-4 transition-[transform,border-color,background-color] duration-300 hover:-translate-y-1 md:flex md:min-h-[clamp(108px,15svh,140px)] md:flex-col md:items-stretch md:justify-between md:gap-[clamp(16px,3svh,32px)] md:rounded-[24px] md:p-6";
+const TILE_TITLE =
+  "block text-[1.0625rem] font-medium leading-tight tracking-[-0.02em] md:text-[1.25rem] lg:text-[1.5rem]";
+const TILE_TOP = "contents md:flex md:items-center md:justify-between";
+const TILE_SUB = "mt-0.5 block text-[13px] md:mt-1.5 md:text-sm";
 
 /** Full-screen opener: a big promise, then three ways to reach me. */
 function ContactHero({
@@ -211,16 +215,16 @@ function ContactHero({
 
         <div className="mt-[clamp(20px,4svh,56px)] grid animate-rise grid-cols-1 gap-3 [animation-delay:450ms] md:grid-cols-3">
           <a href="#message" className={cn(TILE, "border-accent bg-accent text-fg-inverse")}>
-            <span className="flex items-center justify-between">
-              <PenLine aria-hidden className="size-5" />
+            <span className={TILE_TOP}>
+              <PenLine aria-hidden className="size-5 max-md:order-1" />
               <ArrowDown
                 aria-hidden
-                className="size-5 transition-transform duration-300 group-hover:translate-y-1"
+                className="size-5 transition-transform duration-300 group-hover:translate-y-1 max-md:order-3"
               />
             </span>
-            <span>
+            <span className="min-w-0 max-md:order-2">
               <span className={TILE_TITLE}>Send a message</span>
-              <span className="mt-1.5 block text-sm opacity-80">Takes about two minutes</span>
+              <span className={cn(TILE_SUB, "opacity-80")}>Takes about two minutes</span>
             </span>
           </a>
           <a
@@ -229,33 +233,33 @@ function ContactHero({
             rel="noopener noreferrer"
             className={cn(TILE, "border-line-2 bg-surface/60 backdrop-blur hover:border-accent/60")}
           >
-            <span className="flex items-center justify-between">
-              <CalendarDays aria-hidden className="size-5 text-accent" />
+            <span className={TILE_TOP}>
+              <CalendarDays aria-hidden className="size-5 text-accent max-md:order-1" />
               <ArrowUpRight
                 aria-hidden
-                className="size-5 text-fg-3 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                className="size-5 text-fg-3 transition-transform duration-300 max-md:order-3 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
               />
             </span>
-            <span>
+            <span className="min-w-0 max-md:order-2">
               <span className={TILE_TITLE}>
                 Book a 30-min call<span className="sr-only"> (opens in a new tab)</span>
               </span>
-              <span className="mt-1.5 block text-sm text-fg-2">Free · pick a time that suits you</span>
+              <span className={cn(TILE_SUB, "text-fg-2")}>Free · pick a time that suits you</span>
             </span>
           </a>
           <div className={cn(TILE, "border-line-2 bg-surface/60 backdrop-blur hover:border-accent/60")}>
-            <span className="flex items-center justify-between">
-              <Mail aria-hidden className="size-5 text-accent" />
-              <CopyEmailButton className="relative z-10" />
+            <span className={TILE_TOP}>
+              <Mail aria-hidden className="size-5 text-accent max-md:order-1" />
+              <CopyEmailButton className="relative z-10 max-md:order-3" />
             </span>
-            <span>
+            <span className="min-w-0 max-md:order-2">
               <a
                 href={`mailto:${CONTACT.email}`}
                 className={cn(TILE_TITLE, "after:absolute after:inset-0 group-hover:text-accent")}
               >
                 {CONTACT.email}
               </a>
-              <span className="mt-1.5 block text-sm text-fg-2">Or copy it and write when you're ready</span>
+              <span className={cn(TILE_SUB, "text-fg-2")}>Or copy it and write when you're ready</span>
             </span>
           </div>
         </div>
@@ -579,7 +583,7 @@ const ContactPage = () => {
           <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <Eyebrow index="02">What I can help with</Eyebrow>
-              <h2 id="help-heading" className="mt-6 text-h1 font-medium">
+              <h2 id="help-heading" className="mt-4 text-h1 font-medium md:mt-5">
                 What can we <span className="soft">work on?</span>
               </h2>
             </div>
@@ -588,7 +592,7 @@ const ContactPage = () => {
               ideas.
             </p>
           </Reveal>
-          <ul className="mt-8 grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+          <ul className="mt-6 grid gap-3 grid-cols-1 md:mt-8 md:grid-cols-2 lg:grid-cols-6">
             {CONTACT_SERVICES.map((s, i) => {
               const Icon = SERVICE_ICONS[i] ?? Hammer;
               const feature = i < 2;
@@ -604,8 +608,7 @@ const ContactPage = () => {
                     <Link
                       to={proof[i]?.to ?? "/projects"}
                       className={cn(
-                        "group relative flex h-full flex-col gap-3 overflow-hidden rounded-[24px] border border-line bg-surface p-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50",
-                        feature && "lg:p-8",
+                        "group relative flex h-full flex-col gap-2.5 overflow-hidden rounded-[20px] border border-line bg-surface p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50 lg:p-6",
                       )}
                     >
                       {feature && (
@@ -615,17 +618,17 @@ const ContactPage = () => {
                         />
                       )}
                       <span className="relative flex items-center justify-between">
-                        <span className="flex size-10 items-center justify-center rounded-xl border border-line-2 bg-surface-2 text-accent">
+                        <span className="flex size-9 items-center justify-center rounded-xl border border-line-2 bg-surface-2 text-accent">
                           <Icon aria-hidden className="size-5" />
                         </span>
                         <span className="font-mono text-meta text-fg-3">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                       </span>
-                      <h3 className={cn("relative font-medium group-hover:text-accent", "text-h3")}>
+                      <h3 className="relative text-[1.25rem] font-medium leading-snug tracking-[-0.02em] group-hover:text-accent lg:text-[1.375rem]">
                         {s.title}
                       </h3>
-                      <p className="relative text-[15px] leading-relaxed text-fg-2">{s.body}</p>
+                      <p className="relative text-[14px] leading-[1.6] text-fg-2">{s.body}</p>
                       <span className="relative mt-auto flex items-center justify-between gap-4 border-t border-line-2 pt-3 font-mono text-meta text-fg-3">
                         {proof[i]?.meta}
                         <ArrowUpRight
@@ -645,7 +648,7 @@ const ContactPage = () => {
       {/* Booking card */}
       <section aria-labelledby="call-heading" className="section screen theme-light border-t-0">
         <div className="wrap">
-          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(140deg,#ff8a3d_0%,#ff5f00_42%,#d94a00_100%)] px-6 py-12 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.55),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
+          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(140deg,#ff8a3d_0%,#ff5f00_42%,#d94a00_100%)] px-5 py-10 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.55),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
             {/* Fine grid texture, faded toward the edges. */}
             <div
               aria-hidden
@@ -662,11 +665,11 @@ const ContactPage = () => {
               </span>
               <h2
                 id="call-heading"
-                className="text-[clamp(2.25rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
+                className="text-[clamp(1.875rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
               >
                 Prefer a conversation?
               </h2>
-              <p className="max-w-[520px] text-body-l text-fg-2">
+              <p className="max-w-[520px] text-[15px] leading-relaxed text-fg-2 md:text-body-l">
                 Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and
                 let's figure out what you're working on.
               </p>
@@ -718,7 +721,11 @@ const ContactPage = () => {
                 <li
                   key={s.title}
                   className="flex flex-col gap-4"
-                  style={{ ["--d" as string]: `${[80, 720, 1100][i] ?? 0}ms` }}
+                  style={{
+                    ["--d" as string]: `${[80, 720, 1100][i] ?? 0}ms`,
+                    // When the looping streak reaches this dot (72% of the loop spans the line).
+                    ["--t" as string]: `${[50, 1250, 2460][i] ?? 0}ms`,
+                  }}
                 >
                   <span className="flow__dot relative flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
                     {String(i + 1).padStart(2, "0")}
@@ -769,7 +776,7 @@ const ContactPage = () => {
       {/* Sign-off card */}
       <section aria-labelledby="signoff-heading" className="section screen border-t-0">
         <div className="wrap">
-          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#ff7a26_0%,#ff5f00_50%,#e04e00_100%)] px-6 py-12 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.5),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
+          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#ff7a26_0%,#ff5f00_50%,#e04e00_100%)] px-5 py-10 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.5),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_70%_at_100%_0%,rgb(255_255_255/0.22),transparent_70%),radial-gradient(ellipse_45%_60%_at_0%_100%,rgb(0_0_0/0.14),transparent_70%)]"
@@ -780,11 +787,11 @@ const ContactPage = () => {
               </span>
               <h2
                 id="signoff-heading"
-                className="text-[clamp(2.25rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
+                className="text-[clamp(1.875rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
               >
                 Made something interesting?
               </h2>
-              <p className="max-w-[520px] text-body-l text-fg-2">
+              <p className="max-w-[520px] text-[15px] leading-relaxed text-fg-2 md:text-body-l">
                 I'd love to hear about it. A rough idea, a finished product or just a question, my inbox is
                 open.
               </p>
@@ -809,7 +816,7 @@ const ContactPage = () => {
               </div>
               <nav
                 aria-label="More about Saad"
-                className="mt-2 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-meta text-fg-2"
+                className="mt-2 grid grid-cols-2 gap-x-6 gap-y-2 font-mono text-meta text-fg-2 sm:flex sm:flex-wrap sm:justify-center"
               >
                 {MORE_LINKS.map((l) => (
                   <Link key={l.to} to={l.to} className="tap underline-offset-4 hover:text-fg hover:underline">

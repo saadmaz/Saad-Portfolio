@@ -125,12 +125,11 @@ export function SubscribeForm({
           {m.isPending ? "Subscribing…" : "Subscribe"}
         </Button>
       </div>
-      <p
-        className={cn("font-mono text-meta", message ? "text-danger" : "text-fg-3")}
-        role={message ? "alert" : undefined}
-      >
-        {message || "No spam. One click to unsubscribe."}
-      </p>
+      {message && (
+        <p className="font-mono text-meta text-danger" role="alert">
+          {message}
+        </p>
+      )}
     </form>
   );
 }
