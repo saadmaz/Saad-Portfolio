@@ -24,7 +24,7 @@ import { monthYear, year } from "@/lib/format";
 import { certificatePath } from "@/lib/paths";
 import { skillKey } from "@/lib/skillUsage";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { cn } from "@/lib/utils";
+import { cn, tint } from "@/lib/utils";
 import type { Certificate } from "@/types";
 
 const PAGE = 12;
@@ -264,7 +264,10 @@ const CertificationsPage = () => {
                       onMouseEnter={(e) => (e.currentTarget.style.borderColor = a.color)}
                       onMouseLeave={(e) => (e.currentTarget.style.borderColor = "")}
                     >
-                      <span className="text-display-m font-medium leading-none" style={{ color: a.color }}>
+                      <span
+                        className="text-display-m font-medium leading-none"
+                        style={{ color: tint(a.color) }}
+                      >
                         {a.count}
                       </span>
                       <span className="text-[15px] font-medium leading-snug">{a.cat}</span>
@@ -378,7 +381,10 @@ const CertificationsPage = () => {
               {shown.length === 0 ? (
                 <p className="mt-10 text-fg-3">Nothing matches that search.</p>
               ) : (
-                <ul key={category + q + sort} className="mt-8 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <ul
+                  key={category + q + sort}
+                  className="mt-8 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                >
                   {shown.map((c, i) => {
                     const color = colorOf(c);
                     return (

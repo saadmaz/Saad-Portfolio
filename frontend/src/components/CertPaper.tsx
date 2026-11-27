@@ -60,7 +60,10 @@ export function CertPaper({
           </span>
         </div>
         <div className="relative flex flex-1 flex-col gap-2">
-          <span className="font-mono text-[11px] uppercase tracking-[0.12em]" style={{ color }}>
+          <span
+            className="font-mono text-[11px] uppercase tracking-[0.12em]"
+            style={{ color: `color-mix(in srgb, ${color} 58%, #1c1a17)` }}
+          >
             {cert.category || cert.issuer}
           </span>
           <h3 className="text-balance text-h4 font-medium leading-snug md:text-h3">{cert.title}</h3>
