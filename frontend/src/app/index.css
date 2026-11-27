@@ -132,6 +132,15 @@
 }
 
 @layer components {
+  /* Grows a small text link's hit area to >=24px (WCAG 2.5.8) without moving layout. */
+  .tap {
+    position: relative;
+  }
+  .tap::after {
+    content: "";
+    position: absolute;
+    inset: -6px -4px;
+  }
   /* One gutter scale for the whole site (header included); content caps at 1200px. */
   .gutter {
     @apply px-5 sm:px-8 lg:px-12;

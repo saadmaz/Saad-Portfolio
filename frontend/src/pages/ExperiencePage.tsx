@@ -195,7 +195,7 @@ const ExperiencePage = () => {
                           <div className="mt-auto flex flex-wrap gap-x-5 gap-y-2 pt-2 text-sm">
                             <Link
                               to={v.path}
-                              className="inline-flex items-center gap-1.5 font-medium text-fg hover:text-accent"
+                              className="tap inline-flex items-center gap-1.5 font-medium text-fg hover:text-accent"
                             >
                               {v.path.startsWith("/projects/") ? "Case study" : "Company page"}
                               <ArrowUpRight aria-hidden className="size-4" />
@@ -205,7 +205,7 @@ const ExperiencePage = () => {
                                 href={v.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 text-fg-2 hover:text-fg"
+                                className="tap inline-flex items-center gap-1.5 text-fg-2 hover:text-fg"
                               >
                                 {v.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
                                 <ArrowUpRight aria-hidden className="size-4" />
