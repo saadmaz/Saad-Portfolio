@@ -272,7 +272,7 @@ const ContactPage = () => {
                 <span aria-hidden className={cn("relative size-2 rounded-full", status.dot)} />
               </span>
               <span className={status.text}>{settings?.message?.trim() || status.fallback}</span>
-              <span className="text-fg-3">· replies {replyTime}</span>
+              <span className="hidden text-fg-3 sm:inline">· replies {replyTime}</span>
             </span>
             <div className="flex max-w-[520px] animate-rise flex-col gap-4 [animation-delay:350ms]">
               <p className="text-body-l text-fg">{CONTACT_INTRO[0]}</p>
@@ -338,7 +338,7 @@ const ContactPage = () => {
                   </div>
                   <fieldset>
                     <legend className="label mb-3 text-fg-3">What are you reaching out about?</legend>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                       {TOPICS.map((t) => {
                         const Icon = TOPIC_ICONS[t.id];
                         const active = topic.id === t.id;
@@ -349,7 +349,7 @@ const ContactPage = () => {
                             aria-pressed={active}
                             onClick={() => setTopic(t)}
                             className={cn(
-                              "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm transition-[color,border-color,background-color] duration-200",
+                              "inline-flex min-h-10 items-center gap-2 rounded-2xl border px-3 py-2 text-left text-[13px] leading-tight sm:rounded-full sm:px-4 sm:text-sm transition-[color,border-color,background-color] duration-200",
                               active
                                 ? "border-accent bg-accent/[0.12] text-fg"
                                 : "border-line-2 text-fg-2 hover:border-line-3 hover:text-fg",
@@ -357,7 +357,7 @@ const ContactPage = () => {
                           >
                             <Icon
                               aria-hidden
-                              className={cn("size-4", active ? "text-accent" : "text-fg-3")}
+                              className={cn("size-4 shrink-0", active ? "text-accent" : "text-fg-3")}
                             />
                             {t.label}
                           </button>
@@ -656,7 +656,7 @@ const ContactPage = () => {
             Find me <span className="soft">around the internet.</span>
           </h2>
         </Reveal>
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-12 grid grid-cols-2 gap-3 lg:grid-cols-5">
           {ELSEWHERE.map(({ id, note }, i) => {
             const s = SOCIALS.find((x) => x.id === id);
             if (!s) return null;
@@ -667,7 +667,7 @@ const ContactPage = () => {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex h-full flex-col gap-6 rounded-[20px] border border-line bg-surface p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
+                    className="group flex h-full flex-col gap-4 rounded-[20px] border border-line bg-surface p-4 sm:gap-6 sm:p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
                   >
                     <span className="flex items-center justify-between">
                       <SocialIcon
@@ -691,11 +691,11 @@ const ContactPage = () => {
               </li>
             );
           })}
-          <li>
+          <li className="col-span-2 lg:col-span-1">
             <Reveal delay={ELSEWHERE.length * 60} className="h-full">
               <Link
                 to="/blog"
-                className="group flex h-full flex-col gap-6 rounded-[20px] border border-line bg-surface p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
+                className="group flex h-full flex-col gap-4 rounded-[20px] border border-line bg-surface p-4 sm:gap-6 sm:p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
               >
                 <span className="flex items-center justify-between">
                   <PenLine
