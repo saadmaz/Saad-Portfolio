@@ -596,6 +596,7 @@ const ProjectDetailPage = () => {
 
       {gallery.length > 0 && (
         <Gallery
+          className="theme-light border-t-0"
           images={gallery.map((g) => g.url)}
           alts={gallery.map((g) => g.alt)}
           captions={gallery.map((g) => g.caption)}
@@ -613,7 +614,10 @@ const ProjectDetailPage = () => {
       )}
 
       {related.length > 0 && (
-        <section className="section screen" aria-labelledby="related-heading">
+        <section
+          className={cn("section screen border-t-0", gallery.length === 0 && "theme-light")}
+          aria-labelledby="related-heading"
+        >
           <div className="wrap">
             <div className="mb-10 flex items-end justify-between gap-6">
               <h2 id="related-heading" className="text-h1 font-medium">
@@ -635,7 +639,7 @@ const ProjectDetailPage = () => {
       )}
 
       {showNext && (
-        <section className="section screen">
+        <section className="section screen theme-orange border-t-0">
           <div className="wrap">
             <Link
               to={`/projects/${next.slug}`}

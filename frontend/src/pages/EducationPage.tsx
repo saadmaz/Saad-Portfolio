@@ -421,7 +421,7 @@ const EducationPage = () => {
         </div>
       </PageHero>
 
-      <section className="section screen border-t-0" aria-labelledby="path">
+      <section className="section screen theme-light border-t-0" aria-labelledby="path">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="path" label="Study path" title="Where I" soft="learned" />
@@ -464,7 +464,7 @@ const EducationPage = () => {
       </section>
 
       {learned.length > 0 && (
-        <section className="section screen theme-light border-t-0" aria-labelledby="learned">
+        <section className="section screen border-t-0" aria-labelledby="learned">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -504,7 +504,7 @@ const EducationPage = () => {
       )}
 
       {courses.length > 0 && (
-        <section className="section screen">
+        <section className="section screen theme-orange border-t-0">
           <div className="wrap">
             <SectionHeader
               label="Courses"

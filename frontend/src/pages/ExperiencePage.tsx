@@ -145,7 +145,7 @@ const ExperiencePage = () => {
       ) : (
         <>
           {ventures.length > 0 && (
-            <section className="section screen border-t-0" aria-labelledby="ventures">
+            <section className="section screen theme-light border-t-0" aria-labelledby="ventures">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader
@@ -221,7 +221,7 @@ const ExperiencePage = () => {
             </section>
           )}
 
-          <section className="section screen" aria-labelledby="journey">
+          <section className="section screen border-t-0" aria-labelledby="journey">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="journey" label="Journey" title="The road" soft="so far" />

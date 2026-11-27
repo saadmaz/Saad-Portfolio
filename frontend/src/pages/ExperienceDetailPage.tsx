@@ -528,7 +528,7 @@ const ExperienceDetailPage = () => {
 
         {/* 7 · Projects */}
         {linked.length > 0 && (
-          <section className="section screen" aria-labelledby="company-projects">
+          <section className="section screen border-t-0" aria-labelledby="company-projects">
             <div className="wrap">
               <Reveal>
                 <SectionHeader
@@ -583,7 +583,7 @@ const ExperienceDetailPage = () => {
 
         {/* Documents */}
         {files.length > 0 && (
-          <section className="section screen" aria-labelledby="resources">
+          <section className="section screen theme-light border-t-0" aria-labelledby="resources">
             <div className="wrap">
               <Reveal>
                 <SectionHeader counted id="resources" label="Documents & links" title="Read" soft="more" />
@@ -634,7 +634,7 @@ const ExperienceDetailPage = () => {
 
       {/* 10 · Next company */}
       {next && next.slug !== company.slug && (
-        <section className="section screen">
+        <section className="section screen theme-orange border-t-0">
           <div className="wrap">
             <Link
               to={`/experience/${next.slug}`}

@@ -312,7 +312,7 @@ const PublicationsPage = () => {
       ) : (
         <>
           {featured && tab === "all" && !tag && (
-            <section className="section screen border-t-0" aria-labelledby="featured">
+            <section className="section screen theme-light border-t-0" aria-labelledby="featured">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="featured" label="Featured" title="Start" soft="here" />
@@ -387,7 +387,7 @@ const PublicationsPage = () => {
           </section>
 
           {showPatents && (
-            <section className="section screen border-t-0" aria-labelledby="patents">
+            <section className="section screen theme-light border-t-0" aria-labelledby="patents">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="patents" label="Patents" title="Inventions" soft="on file" />

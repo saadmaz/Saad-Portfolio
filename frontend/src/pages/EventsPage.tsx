@@ -217,7 +217,7 @@ const EventsPage = () => {
       </PageHero>
 
       {featured.length > 0 && (
-        <section className="section screen border-t-0" aria-labelledby="featured">
+        <section className="section screen theme-light border-t-0" aria-labelledby="featured">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="featured" label="Featured" title="Biggest" soft="rooms" />
@@ -284,7 +284,7 @@ const EventsPage = () => {
       </section>
 
       {photos.length >= 6 && (
-        <section className="section screen border-t-0" aria-labelledby="wall">
+        <section className="section screen theme-light border-t-0" aria-labelledby="wall">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="wall" label="Photo wall" title="From the" soft="floor" />
@@ -310,7 +310,7 @@ const EventsPage = () => {
         </section>
       )}
 
-      <section className="section screen">
+      <section className="section screen theme-orange border-t-0">
         <div className="wrap flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <h2 className="text-display-m font-medium">
             Want me to host or speak <span className="soft">at your event?</span>

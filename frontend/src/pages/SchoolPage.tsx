@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Award as AwardIcon } from "lucide-react";
@@ -54,6 +55,16 @@ const SchoolPage = () => {
   const url = `${BASE_URL}/education/${slug}`;
   const logo = edu.school_logo || edu.logo;
   const summary = `Saad Mazhar at ${fullName}${period ? ` (${period})` : ""}${program ? `: ${program}` : ""}. ${paragraphs[0] ?? ""}`;
+
+  // Alternate white / grey across whichever sections this school actually has.
+  const shown = [
+    (paragraphs.length > 0 || roles.length > 0) && "story",
+    (content.honours.length > 0 || content.awards.length > 0) && "honours",
+    content.events.length > 0 && "events",
+    content.volunteer.length > 0 && "service",
+    content.projects.length > 0 && "built",
+  ].filter(Boolean);
+  const band = (id: string) => cn("section screen border-t-0", shown.indexOf(id) % 2 === 0 && "theme-light");
 
   return (
     <Layout>
@@ -123,7 +134,7 @@ const SchoolPage = () => {
       </PageHero>
 
       {(paragraphs.length > 0 || roles.length > 0) && (
-        <section className="section screen border-t-0" aria-labelledby="story">
+        <section className={band("story")} aria-labelledby="story">
           <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
             {paragraphs.length > 0 && (
               <Reveal>
@@ -154,7 +165,7 @@ const SchoolPage = () => {
       )}
 
       {(content.honours.length > 0 || content.awards.length > 0) && (
-        <section className="section screen" aria-labelledby="honours">
+        <section className={band("honours")} aria-labelledby="honours">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="honours" label="Honours" title="Recognition" soft="along the way" />
@@ -194,7 +205,7 @@ const SchoolPage = () => {
       )}
 
       {content.events.length > 0 && (
-        <section className="section screen" aria-labelledby="events">
+        <section className={band("events")} aria-labelledby="events">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -226,7 +237,7 @@ const SchoolPage = () => {
       )}
 
       {content.volunteer.length > 0 && (
-        <section className="section screen" aria-labelledby="service">
+        <section className={band("service")} aria-labelledby="service">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="service" label="Service" title="Clubs &" soft="volunteering" />
@@ -248,7 +259,7 @@ const SchoolPage = () => {
       )}
 
       {content.projects.length > 0 && (
-        <section className="section screen" aria-labelledby="built">
+        <section className={band("built")} aria-labelledby="built">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="built" label="Projects" title="Built for the" soft="school community" />

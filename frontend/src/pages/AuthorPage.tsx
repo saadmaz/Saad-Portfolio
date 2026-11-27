@@ -296,7 +296,7 @@ const AuthorPage = () => {
       </PageHero>
 
       {(categories.length > 0 || tags.length > 0 || expertise.length > 0) && (
-        <section className="section screen border-t-0" aria-labelledby="topics">
+        <section className="section screen theme-light border-t-0" aria-labelledby="topics">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="topics" label="Expertise" title="Writes" soft="about" />
@@ -328,7 +328,11 @@ const AuthorPage = () => {
         </section>
       )}
 
-      <section id="articles" className="section screen scroll-mt-32" aria-labelledby="articles-title">
+      <section
+        id="articles"
+        className="section screen border-t-0 scroll-mt-32"
+        aria-labelledby="articles-title"
+      >
         <div className="wrap">
           <Reveal>
             <SectionHeader
@@ -356,7 +360,7 @@ const AuthorPage = () => {
       </section>
 
       {isDefault && (current.length > 0 || education.length > 0 || certs.length > 0 || talks.length > 0) && (
-        <section className="section screen" aria-labelledby="credentials">
+        <section className="section screen theme-light border-t-0" aria-labelledby="credentials">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="credentials" label="Credentials" title="Why trust" soft="this author" />

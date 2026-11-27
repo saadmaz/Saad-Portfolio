@@ -588,7 +588,7 @@ const ContactPage = () => {
               ideas.
             </p>
           </Reveal>
-          <ul className="mt-12 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+          <ul className="mt-8 grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
             {CONTACT_SERVICES.map((s, i) => {
               const Icon = SERVICE_ICONS[i] ?? Hammer;
               const feature = i < 2;
@@ -604,8 +604,8 @@ const ContactPage = () => {
                     <Link
                       to={proof[i]?.to ?? "/projects"}
                       className={cn(
-                        "group relative flex h-full flex-col gap-4 overflow-hidden rounded-[24px] border border-line bg-surface p-7 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50",
-                        feature && "lg:min-h-[300px] lg:p-9",
+                        "group relative flex h-full flex-col gap-3 overflow-hidden rounded-[24px] border border-line bg-surface p-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50",
+                        feature && "lg:p-8",
                       )}
                     >
                       {feature && (
@@ -615,7 +615,7 @@ const ContactPage = () => {
                         />
                       )}
                       <span className="relative flex items-center justify-between">
-                        <span className="flex size-11 items-center justify-center rounded-2xl border border-line-2 bg-surface-2 text-accent">
+                        <span className="flex size-10 items-center justify-center rounded-xl border border-line-2 bg-surface-2 text-accent">
                           <Icon aria-hidden className="size-5" />
                         </span>
                         <span className="font-mono text-meta text-fg-3">
@@ -624,14 +624,14 @@ const ContactPage = () => {
                       </span>
                       <h3
                         className={cn(
-                          "relative mt-2 font-medium group-hover:text-accent",
-                          feature ? "text-h2" : "text-h3",
+                          "relative font-medium group-hover:text-accent",
+                          "text-h3",
                         )}
                       >
                         {s.title}
                       </h3>
-                      <p className="relative text-fg-2">{s.body}</p>
-                      <span className="relative mt-auto flex items-center justify-between gap-4 border-t border-line-2 pt-4 font-mono text-meta text-fg-3">
+                      <p className="relative text-[15px] leading-relaxed text-fg-2">{s.body}</p>
+                      <span className="relative mt-auto flex items-center justify-between gap-4 border-t border-line-2 pt-3 font-mono text-meta text-fg-3">
                         {proof[i]?.meta}
                         <ArrowUpRight
                           aria-hidden
