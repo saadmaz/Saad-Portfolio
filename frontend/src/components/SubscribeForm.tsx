@@ -7,16 +7,19 @@ import { SERIES } from "@/lib/newsletter";
 import { cn } from "@/lib/utils";
 
 /**
- * Email sign-up for the newsletter. `compact` hides the series choice
- * (subscribes to every series) for bands and footers.
+ * Email sign-up for the newsletter. `compact` hides the series choice for
+ * bands and footers; it subscribes to `topics` (default: every series).
  */
 export function SubscribeForm({
   compact,
   source = "site",
   className,
   onAccent,
+  topics: initialTopics,
 }: {
   compact?: boolean;
+  /** Series to start with (a series page passes its own). */
+  topics?: NewsletterSeries[];
   source?: string;
   className?: string;
   /** On an orange band: an outlined button so it doesn't vanish into the background. */
@@ -24,7 +27,7 @@ export function SubscribeForm({
 }) {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
-  const [topics, setTopics] = useState<NewsletterSeries[]>(() => SERIES.map((s) => s.id));
+  const [topics, setTopics] = useState<NewsletterSeries[]>(() => initialTopics ?? SERIES.map((s) => s.id));
   const [error, setError] = useState("");
   const m = useMutation({
     mutationFn: () => SubscribeService.subscribe(email, topics, { website, source }),
