@@ -34,21 +34,30 @@ const NotFound = () => {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_50%_45%,rgb(255_95_0/0.16),transparent_70%)]"
         />
-        <div className="wrap relative flex min-h-[70vh] flex-col items-center justify-center gap-8 py-24 text-center">
-          <span className="label text-accent">Error 404</span>
-          <h1 className="text-display-xl font-medium">
-            Lost, <span className="soft">beautifully.</span>
-          </h1>
-          <p className="text-body-l text-fg-2">The page you’re after moved, or never existed.</p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button to="/" size="lg">
-              Back home
-            </Button>
-            <Button to="/projects" variant="secondary" size="lg" icon={false}>
-              See my work
-            </Button>
+        <div className="wrap relative flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+          {/* Giant numerals; the glass card overlaps their lower half so the blur has something to frost. */}
+          <div aria-hidden className="relative select-none">
+            <div className="pointer-events-none absolute left-1/2 top-[55%] h-[45%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/30 blur-[90px]" />
+            <p className="relative bg-gradient-to-br from-fg via-fg/70 to-fg/15 bg-clip-text text-[clamp(11.5rem,40vw,28rem)] font-normal leading-[0.85] tracking-[-0.06em] text-transparent">
+              404
+            </p>
           </div>
-          <nav aria-label="Popular pages" className="mt-6 flex flex-col items-center gap-4">
+
+          <div className="relative -mt-[clamp(2.75rem,10vw,8.5rem)] w-full max-w-[520px] rounded-[28px] border border-fg/10 bg-surface/40 p-7 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.7),inset_0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-2xl md:p-10">
+            <span className="label text-accent">Error 404</span>
+            <h1 className="mt-4 text-h2 font-medium">Oops, page not found</h1>
+            <p className="mx-auto mt-3 max-w-[380px] text-fg-2">
+              The page you’re after moved, or never existed. Let’s get you back on track.
+            </p>
+            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button to="/">Back to homepage</Button>
+              <Button to="/projects" variant="secondary" icon={false}>
+                See my work
+              </Button>
+            </div>
+          </div>
+
+          <nav aria-label="Popular pages" className="mt-12 flex flex-col items-center gap-4">
             <span className="label text-fg-3">Or try</span>
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
               {POPULAR.map((l) => (
