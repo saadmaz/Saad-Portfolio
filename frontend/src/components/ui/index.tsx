@@ -423,6 +423,8 @@ interface FieldProps {
   error?: string;
   autoComplete?: string;
   maxLength?: number;
+  /** Shows a quiet "Optional" hint beside the label. */
+  optional?: boolean;
 }
 
 export function Field({
@@ -437,14 +439,18 @@ export function Field({
   error,
   autoComplete,
   maxLength,
+  optional,
 }: FieldProps) {
   const cls = cn(
-    "w-full rounded-xl border bg-surface px-[18px] py-4 text-[1rem] text-fg placeholder:text-fg-3 transition-colors focus:bg-surface-2 focus:outline-none",
-    error ? "border-danger" : "border-line-2 focus:border-accent",
+    "w-full rounded-xl border bg-base/60 px-4 text-[15px] text-fg placeholder:text-fg-3 transition-[border-color,background-color,box-shadow] duration-200 focus:bg-base/80 focus:outline-none focus:ring-4",
+    error ? "border-danger focus:ring-danger/10" : "border-line-2 hover:border-line-3 focus:border-accent focus:ring-accent/10",
   );
   return (
     <label className="flex flex-col gap-2.5">
-      <span className={cn("label", error ? "text-danger" : "text-fg-3")}>{label}</span>
+      <span className="flex items-baseline justify-between gap-3">
+        <span className={cn("label", error ? "text-danger" : "text-fg-3")}>{label}</span>
+        {optional && <span className="text-xs text-fg-3">Optional</span>}
+      </span>
       {multiline ? (
         <textarea
           name={name}
@@ -454,7 +460,7 @@ export function Field({
           required={required}
           rows={5}
           maxLength={maxLength}
-          className={cn(cls, "resize-y")}
+          className={cn(cls, "min-h-[140px] resize-y py-3.5 leading-relaxed")}
         />
       ) : (
         <input
@@ -466,7 +472,7 @@ export function Field({
           required={required}
           autoComplete={autoComplete}
           maxLength={maxLength}
-          className={cls}
+          className={cn(cls, "h-12")}
         />
       )}
       {error && <span className="font-mono text-meta text-danger">{error}</span>}

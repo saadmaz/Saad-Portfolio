@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { Button, Eyebrow, Field, FilterPill, Reveal, RisingWords } from "@/components/ui";
+import { Button, Eyebrow, Field, Reveal, RisingWords } from "@/components/ui";
 import { useContactMutation, useContactSettings, useEvents } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
 import { CONTACT, SOCIALS, type SocialId } from "@/lib/site";
@@ -145,6 +145,15 @@ function CopyEmail() {
   );
 }
 
+/** Shared selected / idle look for every choice control in the form. */
+const choiceCls = (active: boolean) =>
+  cn(
+    "border transition-[color,border-color,background-color,box-shadow] duration-200",
+    active
+      ? "border-accent/70 bg-accent/[0.08] text-fg shadow-[0_0_0_3px_rgb(255_95_0/0.08)]"
+      : "border-line-2 bg-base/40 text-fg-2 hover:border-line-3 hover:text-fg",
+  );
+
 /** Optional single-choice pills: clicking the active one clears it. */
 function OptionalPills({
   label,
@@ -158,15 +167,22 @@ function OptionalPills({
   onChange: (v: string) => void;
 }) {
   return (
-    <fieldset className="flex flex-col gap-3">
-      <legend className="label mb-3 text-fg-3">
-        {label} <span className="normal-case tracking-normal">(optional)</span>
+    <fieldset>
+      <legend className="mb-3 flex w-full items-baseline justify-between gap-3">
+        <span className="label text-fg-3">{label}</span>
+        <span className="text-xs text-fg-3">Optional</span>
       </legend>
       <div className="flex flex-wrap gap-2">
         {options.map((o) => (
-          <FilterPill key={o} active={value === o} onClick={() => onChange(value === o ? "" : o)}>
+          <button
+            key={o}
+            type="button"
+            aria-pressed={value === o}
+            onClick={() => onChange(value === o ? "" : o)}
+            className={cn("h-9 rounded-full px-3.5 text-sm", choiceCls(value === o))}
+          >
             {o}
-          </FilterPill>
+          </button>
         ))}
       </div>
     </fieldset>
@@ -250,7 +266,7 @@ const ContactPage = () => {
       />
 
       {/* Hero + form */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-clip">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_8%_10%,rgb(255_95_0/0.14),transparent_70%),radial-gradient(ellipse_40%_50%_at_95%_60%,rgb(255_95_0/0.07),transparent_70%)]"
@@ -297,11 +313,15 @@ const ContactPage = () => {
           </div>
 
           <div id="message" className="relative h-fit scroll-mt-28 animate-rise [animation-delay:200ms]">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -inset-px rounded-[29px] bg-gradient-to-b from-accent/40 via-line-2/40 to-transparent"
-            />
-            <div className="relative rounded-[28px] bg-surface p-6 shadow-[0_40px_100px_-50px_rgb(255_95_0/0.45)] md:p-9">
+            <div className="relative overflow-hidden rounded-[28px] border border-line-2 bg-surface/85 p-6 shadow-[0_40px_90px_-45px_rgb(0_0_0/0.9)] backdrop-blur-xl md:p-9">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent"
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgb(255_95_0/0.08),transparent_70%)]"
+              />
               {mutation.isSuccess ? (
                 <div className="flex flex-col items-start gap-6 py-6">
                   <span className="flex size-14 animate-rise items-center justify-center rounded-full bg-live/10">
@@ -329,8 +349,8 @@ const ContactPage = () => {
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={submit} noValidate className="flex flex-col gap-7">
-                  <div className="flex flex-col gap-2">
+                <form onSubmit={submit} noValidate className="relative flex flex-col gap-7">
+                  <div className="flex flex-col gap-2 border-b border-line-2 pb-6">
                     <h2 className="text-h3 font-medium">Tell me what's on your mind.</h2>
                     <p className="text-sm text-fg-2">
                       No perfectly written brief needed. Give me the context and we'll take it from there.
@@ -338,7 +358,7 @@ const ContactPage = () => {
                   </div>
                   <fieldset>
                     <legend className="label mb-3 text-fg-3">What are you reaching out about?</legend>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {TOPICS.map((t) => {
                         const Icon = TOPIC_ICONS[t.id];
                         const active = topic.id === t.id;
@@ -349,17 +369,28 @@ const ContactPage = () => {
                             aria-pressed={active}
                             onClick={() => setTopic(t)}
                             className={cn(
-                              "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm transition-[color,border-color,background-color] duration-200",
-                              active
-                                ? "border-accent bg-accent/[0.12] text-fg"
-                                : "border-line-2 text-fg-2 hover:border-line-3 hover:text-fg",
+                              "flex min-h-12 items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm leading-tight sm:px-3",
+                              choiceCls(active),
                             )}
                           >
-                            <Icon
+                            <span
+                              className={cn(
+                                "flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                active ? "bg-accent text-fg-inverse" : "bg-surface-2 text-fg-3",
+                              )}
+                            >
+                              <Icon aria-hidden className="size-3.5" />
+                            </span>
+                            <span className="min-w-0 flex-1">{t.label}</span>
+                            <span
                               aria-hidden
-                              className={cn("size-4", active ? "text-accent" : "text-fg-3")}
-                            />
-                            {t.label}
+                              className={cn(
+                                "hidden size-4 shrink-0 items-center justify-center rounded-full border sm:flex",
+                                active ? "border-accent" : "border-line-3",
+                              )}
+                            >
+                              {active && <span className="size-2 rounded-full bg-accent" />}
+                            </span>
                           </button>
                         );
                       })}
@@ -389,7 +420,8 @@ const ContactPage = () => {
                     />
                   </div>
                   <Field
-                    label="Company / organisation (optional)"
+                    label="Company or organisation"
+                    optional
                     name="company"
                     value={form.company}
                     onChange={set("company")}
@@ -400,7 +432,7 @@ const ContactPage = () => {
                   {topic.kind === "build" && (
                     <div
                       key="build"
-                      className="flex animate-rise flex-col gap-6 rounded-2xl border border-line-2 p-5 [animation-duration:300ms]"
+                      className="flex animate-rise flex-col gap-7 [animation-duration:300ms]"
                     >
                       <OptionalPills
                         label="Estimated budget"
@@ -422,7 +454,8 @@ const ContactPage = () => {
                       className="grid animate-rise gap-4 [animation-duration:300ms] grid-cols-1 sm:grid-cols-2"
                     >
                       <Field
-                        label="Event date (optional)"
+                        label="Event date"
+                        optional
                         name="eventDate"
                         value={form.eventDate}
                         onChange={set("eventDate")}
@@ -430,7 +463,8 @@ const ContactPage = () => {
                         maxLength={60}
                       />
                       <Field
-                        label="Expected audience (optional)"
+                        label="Expected audience"
+                        optional
                         name="audience"
                         value={form.audience}
                         onChange={set("audience")}
