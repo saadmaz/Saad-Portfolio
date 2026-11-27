@@ -89,7 +89,7 @@ const SchoolPage = () => {
         band={<span className="truncate">Saad Mazhar · Education · {name}</span>}
       >
         <nav aria-label="Breadcrumb" className="animate-rise font-mono text-meta text-fg-3">
-          <Link to="/education" className="inline-flex items-center gap-1.5 hover:text-fg">
+          <Link to="/education" className="tap inline-flex items-center gap-1.5 hover:text-fg">
             <ArrowLeft aria-hidden className="size-3.5" />
             All education
           </Link>
@@ -112,7 +112,7 @@ const SchoolPage = () => {
                 href={edu.school_website_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                className="tap inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
               >
                 {edu.school_website_url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
                 <ArrowUpRight aria-hidden className="size-4" />

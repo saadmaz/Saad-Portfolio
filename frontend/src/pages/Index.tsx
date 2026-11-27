@@ -12,11 +12,13 @@ import type { Event } from "@/types";
 import { ToolsMarquee } from "@/components/ToolsMarquee";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
-import { useBlogPosts } from "@/hooks/useBlog";
+import { useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
+import { BlogCarousel, CarouselArrows } from "@/components/article/BlogCarousel";
+import { useCarousel } from "@/hooks/useCarousel";
 import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
-import { featuredPosts, readingMinutesOf } from "@/lib/article-core";
+import { articleTypeLabel, featuredPosts } from "@/lib/article-core";
 import { CONTACT } from "@/lib/site";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { PAGE_SEO, BASE_URL, homeSchemas } from "@/lib/seo-content";
@@ -416,9 +418,11 @@ function Certifications() {
 
 function Writing() {
   const { data = [] } = useBlogPosts();
-  // Featured picks (CMS order) lead; the latest posts fill the remaining slots.
+  const { settings } = useBlogSettings();
+  const carousel = useCarousel();
+  // Featured picks (CMS order) lead, then every other post, newest first.
   const featured = featuredPosts(data);
-  const posts = [...featured, ...data.filter((p) => !featured.includes(p))].slice(0, 3);
+  const posts = [...featured, ...data.filter((p) => !featured.includes(p))];
   if (posts.length === 0) return null;
   return (
     <section className="section screen theme-orange border-t-0" aria-labelledby="writing-heading">
@@ -431,26 +435,22 @@ function Writing() {
             title="Notes from"
             soft="the build"
             action={
-              <Button to="/blog" variant="ghost">
-                All writing
-              </Button>
+              <div className="flex items-center gap-5">
+                <Button to="/blog" variant="ghost">
+                  All writing
+                </Button>
+                <CarouselArrows carousel={carousel} label="articles" />
+              </div>
             }
           />
         </Reveal>
-        <div className="border-b border-line-2">
-          {posts.map((p) => (
-            <Row
-              key={p.id}
-              to={`/blog/${p.slug || p.id}`}
-              lead={monthYear(p.publishedAt || p.date)}
-              title={p.title}
-              trail={[p.featured ? "Featured" : p.category, `${readingMinutesOf(p)} min`]
-                .filter(Boolean)
-                .join(" · ")}
-            />
-          ))}
-        </div>
       </div>
+      <BlogCarousel
+        carousel={carousel}
+        posts={posts}
+        wpm={settings.readingWpm}
+        typeOf={(p) => articleTypeLabel(p.articleType, settings.articleTypes)}
+      />
     </section>
   );
 }

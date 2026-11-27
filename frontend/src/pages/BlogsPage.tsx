@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { ArrowUpRight, ChevronDown, Mail, Search, X } from "lucide-react";
+import { ChevronDown, Mail, Search, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { SEO } from "@/components/SEO";
@@ -17,16 +17,14 @@ import {
   Skeleton,
   Tag,
 } from "@/components/ui";
-import { ArticleCard } from "@/components/article/ArticleParts";
+import { BlogCard, FeaturedPostCard } from "@/components/article/BlogCard";
 import { useBlogPosts, useBlogSettings, useSeries } from "@/hooks/useBlog";
 import {
-  articlePath,
   articleTypeLabel,
   blogSchema,
   CATEGORY_MIN_POSTS,
   categoriesOf,
   featuredPosts,
-  publishedAtOf,
   readingMinutesOf,
   seriesParts,
   slugify,
@@ -61,27 +59,6 @@ function lastUpdated(posts: BlogPost[]) {
   const times = posts.map((p) => Date.parse(updatedAtOf(p) ?? "") || 0);
   const max = Math.max(0, ...times);
   return max ? new Date(max).toISOString() : "";
-}
-
-/** The newest post as a small card in the hero, so writing shows on the first screen. */
-function LatestPeek({ post, wpm, typeLabel }: { post: BlogPost; wpm: number; typeLabel?: string }) {
-  return (
-    <Link
-      to={articlePath(post)}
-      className="group flex max-w-[360px] flex-col gap-3 rounded-card border border-line-2 bg-surface/70 p-6 backdrop-blur-sm transition-colors hover:border-accent"
-    >
-      <span className="label text-accent">Latest</span>
-      <span className="text-h4 font-medium transition-colors group-hover:text-accent">{post.title}</span>
-      <span className="font-mono text-meta text-fg-3">
-        {[typeLabel || post.category, monthYear(publishedAtOf(post)), `${readingMinutesOf(post, wpm)} min`]
-          .filter(Boolean)
-          .join(" · ")}
-      </span>
-      <span className="mt-1 inline-flex items-center gap-1.5 text-sm text-fg-2 group-hover:text-fg">
-        Read it <ArrowUpRight aria-hidden className="size-4" />
-      </span>
-    </Link>
-  );
 }
 
 const BlogsPage = () => {
@@ -132,11 +109,10 @@ const BlogsPage = () => {
       (!tag || p.tags?.includes(tag)) &&
       matches(p, q),
   );
-  const featured = filtering ? [] : featuredPosts(data).slice(0, 3);
-  // Without featured picks, the latest post leads the page.
-  const lead = filtering ? [] : featured.length ? featured : data.slice(0, 1);
-  const leadIds = new Set(lead.map((p) => p.id));
-  const list = filtered.filter((p) => !leadIds.has(p.id));
+  const featured = filtering ? [] : featuredPosts(data);
+  // The top featured pick (or, without one, the latest post) leads; everything else is in the library.
+  const lead = filtering ? null : (featured[0] ?? data[0] ?? null);
+  const list = filtered.filter((p) => p.id !== lead?.id);
 
   if (categorySlug && !isLoading && !category) return <NotFound />;
 
@@ -160,7 +136,6 @@ const BlogsPage = () => {
       value: categoryPosts.reduce((n, p) => n + readingMinutesOf(p, settings.readingWpm), 0),
     },
   ].filter((s) => s.value > 0);
-  const latest = data[0];
 
   return (
     <Layout>
@@ -205,7 +180,7 @@ const BlogsPage = () => {
           </span>
         }
       >
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div>
           <div className="max-w-[760px]">
             <div className="animate-rise">
               <Eyebrow>{category ? "Blog · Topic" : "Blog"}</Eyebrow>
@@ -241,11 +216,6 @@ const BlogsPage = () => {
               </dl>
             )}
           </div>
-          {latest && !category && (
-            <div className="hidden animate-rise [animation-delay:550ms] lg:block">
-              <LatestPeek post={latest} wpm={settings.readingWpm} typeLabel={typeOf(latest)} />
-            </div>
-          )}
         </div>
       </PageHero>
 
@@ -261,7 +231,7 @@ const BlogsPage = () => {
         </section>
       ) : (
         <>
-          {lead.length > 0 && (
+          {lead && (
             <section className="section border-t-0" aria-labelledby="start-here">
               <div className="wrap">
                 <Reveal>
@@ -273,27 +243,12 @@ const BlogsPage = () => {
                   />
                 </Reveal>
                 <Reveal>
-                  <div
-                    className={cn(
-                      "grid gap-10",
-                      lead.length > 1 && "lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]",
-                    )}
-                  >
-                    <ArticleCard
-                      post={lead[0]}
-                      wpm={settings.readingWpm}
-                      typeLabel={typeOf(lead[0])}
-                      priority
-                      large
-                    />
-                    {lead.length > 1 && (
-                      <div className="flex flex-col gap-10">
-                        {lead.slice(1).map((p) => (
-                          <ArticleCard key={p.id} post={p} wpm={settings.readingWpm} typeLabel={typeOf(p)} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <FeaturedPostCard
+                    post={lead}
+                    wpm={settings.readingWpm}
+                    typeLabel={typeOf(lead)}
+                    label={featured.length ? "Featured" : "Latest"}
+                  />
                 </Reveal>
               </div>
             </section>
@@ -335,16 +290,16 @@ const BlogsPage = () => {
             </section>
           )}
 
-          <section className={cn("section", !lead.length && "border-t-0")} aria-labelledby="all-writing">
+          <section className={cn("section", !lead && "border-t-0")} aria-labelledby="all-writing">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="all-writing" label="Library" title="All" soft="writing" />
               </Reveal>
 
               {/* One filter bar: search, topics as tabs, type as a select. */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 rounded-[28px] border border-line bg-surface/50 p-4 backdrop-blur md:p-5">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                  <div className="relative w-full md:max-w-sm">
+                  <div className="relative w-full md:flex-1">
                     <Search
                       aria-hidden
                       className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-fg-3"
@@ -355,7 +310,7 @@ const BlogsPage = () => {
                       onChange={(e) => setParam("q", e.target.value)}
                       placeholder="Search articles"
                       aria-label="Search articles"
-                      className="h-11 w-full rounded-full border border-line-2 bg-surface pl-11 pr-4 text-fg placeholder:text-fg-3 focus:border-accent focus:outline-none"
+                      className="h-12 w-full rounded-full border border-line-2 bg-base pl-11 pr-4 text-fg placeholder:text-fg-3 focus:border-accent focus:outline-none"
                     />
                   </div>
                   {types.length > 1 && (
@@ -364,7 +319,7 @@ const BlogsPage = () => {
                       <select
                         value={type}
                         onChange={(e) => setParam("type", e.target.value)}
-                        className="h-11 w-full appearance-none rounded-full border border-line-2 bg-surface pl-4 pr-10 text-fg focus:border-accent focus:outline-none"
+                        className="h-12 w-full appearance-none rounded-full border border-line-2 bg-base pl-4 pr-10 text-fg focus:border-accent focus:outline-none"
                       >
                         <option value="">All types</option>
                         {types.map((t) => (
@@ -382,10 +337,14 @@ const BlogsPage = () => {
                 </div>
 
                 {categories.length > 1 && (
-                  <nav aria-label="Topics" className="flex flex-wrap gap-2">
+                  <nav
+                    aria-label="Topics"
+                    className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:px-0 [&::-webkit-scrollbar]:hidden"
+                  >
                     <Link
                       to={{ pathname: "/blog", search: params.toString() }}
                       aria-current={!categorySlug ? "page" : undefined}
+                      className="shrink-0"
                     >
                       <Tag active={!categorySlug}>All</Tag>
                     </Link>
@@ -394,6 +353,7 @@ const BlogsPage = () => {
                         key={c.slug}
                         to={{ pathname: `/blog/category/${c.slug}`, search: params.toString() }}
                         aria-current={categorySlug === c.slug ? "page" : undefined}
+                        className="shrink-0"
                       >
                         <Tag active={categorySlug === c.slug}>{c.label}</Tag>
                       </Link>
@@ -407,7 +367,7 @@ const BlogsPage = () => {
                       type="button"
                       aria-expanded={topicsOpen || !!tag}
                       onClick={() => setTopicsOpen((o) => !o)}
-                      className="inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                      className="tap inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
                     >
                       Browse by tag ({tags.length})
                       <ChevronDown
@@ -435,7 +395,7 @@ const BlogsPage = () => {
                   <button
                     type="button"
                     onClick={() => setParams(new URLSearchParams(), { replace: true })}
-                    className="inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                    className="tap inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
                   >
                     <X aria-hidden className="size-4" /> Clear filters
                   </button>
@@ -452,9 +412,9 @@ const BlogsPage = () => {
               {list.length === 0 ? (
                 filtering && <Empty>No articles match these filters.</Empty>
               ) : (
-                <div className="mt-6 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {list.slice(0, visible).map((p) => (
-                    <ArticleCard key={p.id} post={p} wpm={settings.readingWpm} typeLabel={typeOf(p)} />
+                    <BlogCard key={p.id} post={p} wpm={settings.readingWpm} typeLabel={typeOf(p)} />
                   ))}
                 </div>
               )}

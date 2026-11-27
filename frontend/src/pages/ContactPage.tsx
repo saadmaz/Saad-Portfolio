@@ -649,7 +649,7 @@ const ContactPage = () => {
             className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-meta text-fg-2"
           >
             {MORE_LINKS.map((l) => (
-              <Link key={l.to} to={l.to} className="hover:text-accent">
+              <Link key={l.to} to={l.to} className="tap hover:text-accent">
                 {l.label} →
               </Link>
             ))}

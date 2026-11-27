@@ -79,7 +79,7 @@ const CertificateDetailPage = () => {
         </div>
       </PageHero>
 
-      <section className="wrap grid gap-12 pb-24 md:grid-cols-[1fr_360px]">
+      <section className="wrap grid grid-cols-1 gap-12 pb-24 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="flex flex-col gap-5 rounded-[24px] border border-line bg-surface p-5 md:p-8">
           {/* The CSP blocks embedded PDFs (object-src 'none'), so this is a drawn certificate; the PDF opens in a tab. */}
           <CertPaper cert={cert} color={color} />

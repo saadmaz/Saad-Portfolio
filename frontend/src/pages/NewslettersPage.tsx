@@ -17,7 +17,7 @@ import {
   SectionHeader,
   Skeleton,
 } from "@/components/ui";
-import { ArticleCard } from "@/components/article/ArticleParts";
+import { BlogCard } from "@/components/article/BlogCard";
 import { SubscribeForm } from "@/components/SubscribeForm";
 import { useNewsletters } from "@/hooks/useContent";
 import { useBlogPosts } from "@/hooks/useBlog";
@@ -282,10 +282,10 @@ const NewslettersPage = () => {
                   }
                 />
               </Reveal>
-              <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.slice(0, 3).map((p, i) => (
                   <Reveal key={p.id} delay={i * 80}>
-                    <ArticleCard post={p} wpm={READING_WPM} />
+                    <BlogCard post={p} wpm={READING_WPM} />
                   </Reveal>
                 ))}
               </div>

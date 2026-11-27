@@ -80,7 +80,7 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
                     .filter((l) => !(hidePubs && l.to === "/publications"))
                     .map((l) =>
                       l.to ? (
-                        <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
+                        <Link key={l.label} to={l.to} className="tap text-sm text-fg hover:text-accent">
                           {l.label}
                         </Link>
                       ) : (
@@ -88,7 +88,7 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
                           key={l.label}
                           href={l.href}
                           download={l.download}
-                          className="text-sm text-fg hover:text-accent"
+                          className="tap text-sm text-fg hover:text-accent"
                         >
                           {l.label}
                         </a>
@@ -100,11 +100,11 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
           </div>
         </div>
 
-        {/* Sized off the container's width (text is ~5.5em wide) so it spans the footer. */}
+        {/* Sized off the container's width (text is ~5.7em wide) so it spans the footer. */}
         <div className="mt-10 w-full [container-type:inline-size]">
           <p
             aria-hidden
-            className="select-none whitespace-nowrap text-center text-[calc(100cqi/5.6)] font-medium leading-[0.8] tracking-[-0.06em] text-fg/[0.06]"
+            className="select-none whitespace-nowrap text-center text-[calc(100cqi/5.8)] font-medium leading-[0.8] tracking-[-0.045em] text-[color-mix(in_srgb,rgb(var(--fg))_6%,rgb(var(--bg)))]"
           >
             Saad Mazhar
           </p>

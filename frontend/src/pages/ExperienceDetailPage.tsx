@@ -161,7 +161,7 @@ function RoleJourney({ company }: { company: Company }) {
                 </span>
               </div>
               {r.description && (
-                <p className="mt-4 whitespace-pre-line text-body-l text-fg-2">
+                <p className="mt-4 whitespace-pre-line text-body-l text-fg-2 [overflow-wrap:anywhere]">
                   <Linkified text={r.description} />
                 </p>
               )}
@@ -310,7 +310,7 @@ const ExperienceDetailPage = () => {
       {/* 1 · Hero */}
       <PageHero ambient band={<span className="truncate">Saad Mazhar · Experience · {company.name}</span>}>
         <nav aria-label="Breadcrumb" className="animate-rise font-mono text-meta text-fg-3">
-          <Link to="/experience" className="inline-flex items-center gap-1.5 hover:text-fg">
+          <Link to="/experience" className="tap inline-flex items-center gap-1.5 hover:text-fg">
             <ArrowLeft aria-hidden className="size-3.5" />
             All experience
           </Link>
@@ -411,7 +411,7 @@ const ExperienceDetailPage = () => {
         {/* 3 · Overview */}
         {company.description && (
           <section className="section theme-orange border-t-0" aria-labelledby="overview">
-            <div className="wrap grid gap-10 md:grid-cols-[280px_1fr] md:gap-20">
+            <div className="wrap grid grid-cols-1 gap-10 md:grid-cols-[280px_minmax(0,1fr)] md:gap-20">
               <Reveal>
                 <SectionHeader counted id="overview" label="Overview" title="The" soft="story" />
               </Reveal>
@@ -480,7 +480,7 @@ const ExperienceDetailPage = () => {
 
         {/* 5 · Role journey */}
         <section className="section" aria-labelledby="journey">
-          <div className="wrap grid gap-12 md:grid-cols-[280px_1fr] md:gap-20">
+          <div className="wrap grid grid-cols-1 gap-12 md:grid-cols-[280px_minmax(0,1fr)] md:gap-20">
             <Reveal className="md:sticky md:top-32 md:self-start">
               <SectionHeader
                 counted

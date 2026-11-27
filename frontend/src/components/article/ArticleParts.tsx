@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
-import { Media } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import { fullDate, monthYear } from "@/lib/format";
-import { articlePath, coverOf, readingMinutesOf, type SeriesPosition } from "@/lib/article-core";
-import type { ArticleSource, Author, BlogPost, BlogSeries, ImageAsset } from "@/types";
+import { fullDate } from "@/lib/format";
+import { articlePath, readingMinutesOf, type SeriesPosition } from "@/lib/article-core";
+import type { ArticleSource, Author, BlogPost, BlogSeries } from "@/types";
 import { authorLinks } from "@/lib/authors";
 import { resizedUrl } from "@/lib/images";
 
@@ -242,62 +241,6 @@ export function AuthorCard({ author, className }: { author: Author; className?: 
         )}
       </div>
     </aside>
-  );
-}
-
-/** Thumbnail card for article listings. */
-export function ArticleCard({
-  post,
-  wpm,
-  typeLabel,
-  priority,
-  large,
-}: {
-  post: BlogPost;
-  wpm: number;
-  typeLabel?: string;
-  priority?: boolean;
-  large?: boolean;
-}) {
-  const cover = coverOf(post);
-  return (
-    <Link to={articlePath(post)} className="group flex flex-col gap-5">
-      <Media
-        asset={cover as ImageAsset | null}
-        alt={cover?.alt || ""}
-        natural
-        sizes={
-          large
-            ? "(min-width: 1024px) 760px, 100vw"
-            : "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-        }
-        priority={priority}
-      />
-      <div className="flex flex-col gap-3">
-        <span className="font-mono text-meta text-fg-3">
-          {[
-            typeLabel || post.category,
-            monthYear(post.publishedAt || post.date),
-            `${readingMinutesOf(post, wpm)} min`,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </span>
-        <h3
-          className={cn(
-            "font-medium transition-colors group-hover:text-accent",
-            large ? "text-h2" : "text-h4",
-          )}
-        >
-          {post.title}
-        </h3>
-        {(post.subtitle || post.excerpt) && (
-          <p className={cn("text-fg-2", !large && "line-clamp-3 text-[0.9375rem]")}>
-            {post.subtitle || post.excerpt}
-          </p>
-        )}
-      </div>
-    </Link>
   );
 }
 

@@ -329,7 +329,7 @@ const ProjectDetailPage = () => {
                 href={c.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-fg underline-offset-4 hover:text-accent hover:underline"
+                className="tap text-fg underline-offset-4 hover:text-accent hover:underline"
               >
                 {c.name}
               </a>
@@ -434,7 +434,7 @@ const ProjectDetailPage = () => {
         }
       >
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-mono text-meta text-fg-3">
-          <Link to="/projects" className="inline-flex items-center gap-1.5 hover:text-fg">
+          <Link to="/projects" className="tap inline-flex items-center gap-1.5 hover:text-fg">
             <ArrowLeft aria-hidden className="size-3.5" />
             All projects
           </Link>
@@ -543,7 +543,7 @@ const ProjectDetailPage = () => {
                       <Link
                         key={s}
                         to="/skills"
-                        className="underline-offset-4 hover:text-accent hover:underline"
+                        className="tap underline-offset-4 hover:text-accent hover:underline"
                       >
                         {s}
                       </Link>

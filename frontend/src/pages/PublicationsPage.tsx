@@ -147,7 +147,7 @@ function PubCard({ pub, large }: { pub: Publication; large?: boolean }) {
             href={pub.pdf}
             target="_blank"
             rel="noopener"
-            className="inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+            className="tap inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
           >
             <FileText aria-hidden className="size-4" /> PDF
           </a>
