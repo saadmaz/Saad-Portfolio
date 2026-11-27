@@ -1,8 +1,9 @@
 /**
  * Google credentials without firebase-admin (which can't run on Cloudflare):
- *   - accessToken(): an OAuth token for the Firestore REST API, minted from
- *     the service account (FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY) and
- *     cached per isolate until shortly before it expires;
+ *   - accessToken(): an OAuth token minted from the service account
+ *     (FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY) for one scope (Firestore by
+ *     default; GA4 / Search Console read-only for reports), cached per scope and
+ *     isolate until shortly before it expires;
  *   - verifyIdToken(): checks a Firebase Auth ID token's signature, issuer,
  *     audience and expiry against Google's published keys.
  *
@@ -13,14 +14,15 @@
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
-const SCOPE = "https://www.googleapis.com/auth/datastore";
+const DATASTORE_SCOPE = "https://www.googleapis.com/auth/datastore";
 const SECURETOKEN_JWKS = new URL(
   "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com",
 );
 
-let cached: { token: string; expiresAt: number } | null = null;
+const cache = new Map<string, { token: string; expiresAt: number }>();
 
-export async function accessToken(now = Date.now()): Promise<string> {
+export async function accessToken(now = Date.now(), scope = DATASTORE_SCOPE): Promise<string> {
+  const cached = cache.get(scope);
   if (cached && cached.expiresAt - 60_000 > now) return cached.token;
   const email = process.env.FIREBASE_CLIENT_EMAIL ?? "";
   const pem = (process.env.FIREBASE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
@@ -28,7 +30,7 @@ export async function accessToken(now = Date.now()): Promise<string> {
 
   const key = await importPKCS8(pem, "RS256");
   const iat = Math.floor(now / 1000);
-  const assertion = await new SignJWT({ scope: SCOPE })
+  const assertion = await new SignJWT({ scope })
     .setProtectedHeader({ alg: "RS256", typ: "JWT" })
     .setIssuer(email)
     .setSubject(email)
@@ -44,7 +46,7 @@ export async function accessToken(now = Date.now()): Promise<string> {
   });
   if (!res.ok) throw new Error(`Google token exchange failed (${res.status})`);
   const data = (await res.json()) as { access_token: string; expires_in: number };
-  cached = { token: data.access_token, expiresAt: now + data.expires_in * 1000 };
+  cache.set(scope, { token: data.access_token, expiresAt: now + data.expires_in * 1000 });
   return data.access_token;
 }
 
