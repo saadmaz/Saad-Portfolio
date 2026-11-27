@@ -753,26 +753,60 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Sign-off */}
-      <section aria-label="Get in touch" className="section screen theme-orange border-t-0">
-        <Reveal className="wrap flex flex-col items-center gap-8 text-center">
-          <p className="max-w-[820px] text-h1 font-medium">
-            Made something interesting? <span className="soft">I'd love to hear about it.</span>
-          </p>
-          <Button href="#message" size="lg">
-            Drop me a message
-          </Button>
-          <nav
-            aria-label="More about Saad"
-            className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-meta text-fg-2"
-          >
-            {MORE_LINKS.map((l) => (
-              <Link key={l.to} to={l.to} className="tap hover:text-accent">
-                {l.label} →
-              </Link>
-            ))}
-          </nav>
-        </Reveal>
+      {/* Sign-off card */}
+      <section aria-labelledby="signoff-heading" className="section screen border-t-0">
+        <div className="wrap">
+          <Reveal className="theme-orange relative overflow-hidden rounded-[32px] bg-[linear-gradient(135deg,#ff7a26_0%,#ff5f00_50%,#e04e00_100%)] px-6 py-16 text-center shadow-[0_50px_100px_-40px_rgb(255_95_0/0.45)] md:px-12 md:py-24">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_70%_at_100%_0%,rgb(255_255_255/0.22),transparent_70%),radial-gradient(ellipse_45%_60%_at_0%_100%,rgb(0_0_0/0.14),transparent_70%)]"
+            />
+            <div className="relative mx-auto flex max-w-[760px] flex-col items-center gap-6">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[rgb(17_17_19/0.2)] bg-[rgb(255_255_255/0.18)] px-3.5 py-1.5 text-sm font-medium backdrop-blur">
+                <PenLine aria-hidden className="size-4" /> Replies {replyTime}
+              </span>
+              <h2
+                id="signoff-heading"
+                className="text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.04em]"
+              >
+                Made something interesting?
+              </h2>
+              <p className="max-w-[600px] text-body-l text-fg-2">
+                I'd love to hear about it. A rough idea, a finished product or just a question, my inbox is
+                open.
+              </p>
+              <div className="mt-2 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
+                <a
+                  href="#message"
+                  className="group inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-[rgb(17_17_19)] px-7 font-medium text-[#fff] transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  Drop me a message
+                  <ArrowUpRight
+                    aria-hidden
+                    className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
+                </a>
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-[rgb(17_17_19/0.25)] bg-[rgb(255_255_255/0.15)] px-7 font-medium transition-colors hover:bg-[rgb(255_255_255/0.28)]"
+                >
+                  <Mail aria-hidden className="size-4" />
+                  {CONTACT.email}
+                </a>
+              </div>
+              <nav
+                aria-label="More about Saad"
+                className="mt-2 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-meta text-fg-2"
+              >
+                {MORE_LINKS.map((l) => (
+                  <Link key={l.to} to={l.to} className="tap underline-offset-4 hover:text-fg hover:underline">
+                    {l.label} →
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </Reveal>
+        </div>
       </section>
     </Layout>
   );
