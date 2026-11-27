@@ -402,7 +402,7 @@ const ContactPage = () => {
                   href={CONTACT.bookingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-meta text-fg-2 hover:text-fg"
+                  className="tap font-mono text-meta text-fg-2 hover:text-fg"
                 >
                   Or book a 30-min call →
                 </a>

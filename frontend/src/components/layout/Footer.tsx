@@ -80,7 +80,7 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
                     .filter((l) => !(hidePubs && l.to === "/publications"))
                     .map((l) =>
                       l.to ? (
-                        <Link key={l.label} to={l.to} className="text-sm text-fg hover:text-accent">
+                        <Link key={l.label} to={l.to} className="tap text-sm text-fg hover:text-accent">
                           {l.label}
                         </Link>
                       ) : (
@@ -88,7 +88,7 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
                           key={l.label}
                           href={l.href}
                           download={l.download}
-                          className="text-sm text-fg hover:text-accent"
+                          className="tap text-sm text-fg hover:text-accent"
                         >
                           {l.label}
                         </a>

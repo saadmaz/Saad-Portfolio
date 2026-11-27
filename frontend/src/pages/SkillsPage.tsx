@@ -312,7 +312,7 @@ function MoreButton({ open, hidden, onClick }: { open: boolean; hidden: number; 
       type="button"
       onClick={onClick}
       aria-expanded={open}
-      className="self-start rounded-full px-1 font-mono text-meta text-fg-3 underline-offset-4 transition-colors hover:text-accent hover:underline"
+      className="tap self-start rounded-full px-1 font-mono text-meta text-fg-3 underline-offset-4 transition-colors hover:text-accent hover:underline"
     >
       {open ? "Show less" : `+${hidden} more`}
     </button>

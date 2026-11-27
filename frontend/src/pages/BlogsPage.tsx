@@ -367,7 +367,7 @@ const BlogsPage = () => {
                       type="button"
                       aria-expanded={topicsOpen || !!tag}
                       onClick={() => setTopicsOpen((o) => !o)}
-                      className="inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                      className="tap inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
                     >
                       Browse by tag ({tags.length})
                       <ChevronDown
@@ -395,7 +395,7 @@ const BlogsPage = () => {
                   <button
                     type="button"
                     onClick={() => setParams(new URLSearchParams(), { replace: true })}
-                    className="inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                    className="tap inline-flex w-fit items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
                   >
                     <X aria-hidden className="size-4" /> Clear filters
                   </button>

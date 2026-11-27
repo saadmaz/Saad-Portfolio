@@ -310,7 +310,7 @@ const ExperienceDetailPage = () => {
       {/* 1 · Hero */}
       <PageHero ambient band={<span className="truncate">Saad Mazhar · Experience · {company.name}</span>}>
         <nav aria-label="Breadcrumb" className="animate-rise font-mono text-meta text-fg-3">
-          <Link to="/experience" className="inline-flex items-center gap-1.5 hover:text-fg">
+          <Link to="/experience" className="tap inline-flex items-center gap-1.5 hover:text-fg">
             <ArrowLeft aria-hidden className="size-3.5" />
             All experience
           </Link>

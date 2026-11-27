@@ -171,7 +171,7 @@ function Entry({ edu: e }: { edu: Education }) {
             {schoolSlugOf(e) && (
               <Link
                 to={`/education/${schoolSlugOf(e)}`}
-                className="inline-flex items-center gap-1 text-sm text-fg-2 underline-offset-4 hover:text-accent hover:underline"
+                className="tap inline-flex items-center gap-1 text-sm text-fg-2 underline-offset-4 hover:text-accent hover:underline"
               >
                 More on {schoolNameOf(e)} <ArrowUpRight aria-hidden className="size-3.5" />
               </Link>

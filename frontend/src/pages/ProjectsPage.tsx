@@ -453,7 +453,7 @@ const ProjectsPage = () => {
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
+                className="tap inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg"
               >
                 <X aria-hidden className="size-4" /> Clear filters
               </button>

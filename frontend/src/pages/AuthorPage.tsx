@@ -80,7 +80,7 @@ function Credentials({
         })}
       </ul>
       {more && (
-        <Link to={more.to} className="inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg">
+        <Link to={more.to} className="tap inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg">
           {more.label} <ArrowUpRight aria-hidden className="size-4" />
         </Link>
       )}
