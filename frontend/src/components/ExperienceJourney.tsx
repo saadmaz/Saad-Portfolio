@@ -232,7 +232,7 @@ export function ExperienceJourney({ companies }: { companies: Company[] }) {
           return (
             <li
               key={c.key}
-              className="group/stop grid grid-cols-[64px_1fr] items-start gap-5 md:grid-cols-2 md:items-center md:gap-16"
+              className="group/stop grid grid-cols-[64px_minmax(0,1fr)] items-start gap-5 md:grid-cols-2 md:items-center md:gap-16"
             >
               <div
                 ref={(el) => {

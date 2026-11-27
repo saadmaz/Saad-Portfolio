@@ -222,7 +222,7 @@ const EventsPage = () => {
             <Reveal>
               <SectionHeader id="featured" label="Featured" title="Biggest" soft="rooms" />
             </Reveal>
-            <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 md:gap-6">
               {featured.map((e, i) => (
                 <Reveal key={e.id} delay={i * 100} className={i === 0 ? "md:row-span-2" : undefined}>
                   <Feature event={e} big={i === 0} />
@@ -269,7 +269,7 @@ const EventsPage = () => {
                     </span>
                     <div className="h-px flex-1 bg-line-2" aria-hidden="true" />
                   </div>
-                  <div className="grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-x-6 gap-y-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {list.map((e, i) => (
                       <Reveal key={e.id} delay={(i % 3) * 80}>
                         <EventCard event={e} />

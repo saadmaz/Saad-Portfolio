@@ -55,7 +55,7 @@ export function CertificationsShowcase({ certs }: { certs: Certificate[] }) {
   const issuers = new Set(certs.map((c) => c.issuer?.trim()).filter(Boolean)).size;
 
   return (
-    <div ref={ref} className="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-5">
+    <div ref={ref} className="grid gap-4 grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-5">
       {/* By field */}
       <div className="flex flex-col rounded-media border border-line bg-surface/60 p-5 md:p-7">
         <p className="label text-fg-3">By field</p>

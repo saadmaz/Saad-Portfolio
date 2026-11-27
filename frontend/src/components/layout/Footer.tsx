@@ -45,7 +45,7 @@ export function Footer({ hideSubscribe = false }: { hideSubscribe?: boolean }) {
       <div className="wrap pb-6 pt-10 md:pt-14">
         <div className="w-full">
           {!hideSubscribe && (
-            <div className="grid items-center gap-4 rounded-2xl border border-line bg-surface/40 p-4 md:grid-cols-[minmax(0,1fr)_380px] md:gap-8 md:p-5">
+            <div className="grid items-center gap-4 rounded-2xl border border-line bg-surface/40 p-4 grid-cols-1 md:grid-cols-[minmax(0,1fr)_380px] md:gap-8 md:p-5">
               <div className="flex flex-col gap-1.5">
                 <p className="text-h4 font-medium">Notes from the build</p>
                 <p className="text-sm text-fg-2">

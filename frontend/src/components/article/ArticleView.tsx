@@ -141,7 +141,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
       />
 
       {/* Rail · article · contents. The fixed side columns keep the contents list readable. */}
-      <div className="wrap relative grid gap-x-10 py-10 md:py-16 xl:grid-cols-[64px_minmax(0,1fr)_240px] xl:gap-x-12">
+      <div className="wrap relative grid gap-x-10 py-10 md:py-16 grid-cols-1 xl:grid-cols-[64px_minmax(0,1fr)_240px] xl:gap-x-12">
         <ArticleRail
           target={articleRef}
           url={url}
@@ -268,7 +268,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
                 }
               />
             </Reveal>
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p, i) => (
                 <li key={p.id}>
                   <RelatedCard post={p} wpm={settings.readingWpm} delay={i * 100} />
@@ -285,7 +285,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
             <Link
               to={articlePath(nextUp)}
               rel={adjacent.next ? "next" : "prev"}
-              className="group grid items-center gap-6 overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-colors hover:border-accent/40 md:grid-cols-[1fr_380px] md:p-3"
+              className="group grid items-center gap-6 overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-colors hover:border-accent/40 grid-cols-1 md:grid-cols-[minmax(0,1fr)_380px] md:p-3"
             >
               <div className="flex flex-col gap-4 p-5 md:p-8">
                 <span className="label text-fg-3">{adjacent.next ? "Next article" : "Previous article"}</span>

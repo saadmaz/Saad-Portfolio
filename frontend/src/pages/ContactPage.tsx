@@ -250,7 +250,7 @@ const ContactPage = () => {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_10%_20%,rgb(255_95_0/0.14),transparent_70%)]"
         />
-        <div className="wrap relative grid gap-16 pb-16 pt-12 lg:grid-cols-[1fr_560px] lg:gap-24 lg:pb-8 lg:pt-2">
+        <div className="wrap relative grid gap-16 pb-16 pt-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_560px] lg:gap-24 lg:pb-8 lg:pt-2">
           <div className="flex flex-col gap-8">
             <div className="animate-rise">
               <Eyebrow>Contact</Eyebrow>
@@ -376,7 +376,7 @@ const ContactPage = () => {
                     })}
                   </div>
                 </fieldset>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                   <Field
                     label="Your name"
                     name="name"
@@ -427,7 +427,7 @@ const ContactPage = () => {
                 {topic.kind === "event" && (
                   <div
                     key="event"
-                    className="grid animate-rise gap-4 [animation-duration:300ms] sm:grid-cols-2"
+                    className="grid animate-rise gap-4 [animation-duration:300ms] grid-cols-1 sm:grid-cols-2"
                   >
                     <Field
                       label="Event date (optional)"
@@ -507,7 +507,7 @@ const ContactPage = () => {
             A few things I spend my time doing. Not an exhaustive list, though. I'm open to interesting ideas.
           </p>
         </Reveal>
-        <ul className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {CONTACT_SERVICES.map((s, i) => (
             <li key={s.title}>
               <Reveal delay={i * 80} className="h-full">
@@ -547,7 +547,7 @@ const ContactPage = () => {
             aria-hidden
             className="absolute left-0 right-0 top-[14px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1400ms] ease-out group-data-[in=true]:scale-x-100 md:block"
           />
-          <ol className="relative grid gap-10 md:grid-cols-3">
+          <ol className="relative grid gap-10 grid-cols-1 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="flex flex-col gap-4">
                 <span className="flex size-8 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
@@ -593,7 +593,7 @@ const ContactPage = () => {
             Find me <span className="soft">around the internet.</span>
           </h2>
         </Reveal>
-        <ul className="mt-10 grid border-b border-line-2 md:grid-cols-2 md:gap-x-12">
+        <ul className="mt-10 grid border-b border-line-2 grid-cols-1 md:grid-cols-2 md:gap-x-12">
           {ELSEWHERE.map(({ id, note }) => {
             const s = SOCIALS.find((x) => x.id === id);
             if (!s) return null;

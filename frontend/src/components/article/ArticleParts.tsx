@@ -183,7 +183,7 @@ export function SeriesNav({
         ))}
       </ol>
       {(position.previous || position.next) && (
-        <div className="mt-5 grid gap-3 border-t border-line pt-5 sm:grid-cols-2">
+        <div className="mt-5 grid gap-3 border-t border-line pt-5 grid-cols-1 sm:grid-cols-2">
           {position.previous ? (
             <Link to={articlePath(position.previous)} className="group flex flex-col gap-1">
               <span className="label flex items-center gap-1.5 text-fg-3">

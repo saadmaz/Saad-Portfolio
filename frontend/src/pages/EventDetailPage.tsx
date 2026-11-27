@@ -105,7 +105,7 @@ const EventDetailPage = () => {
         </section>
       )}
 
-      <section className="wrap grid gap-14 py-20 md:grid-cols-[minmax(0,1fr)_280px] md:gap-24">
+      <section className="wrap grid gap-14 py-20 grid-cols-1 md:grid-cols-[minmax(0,1fr)_280px] md:gap-24">
         <article className="flex max-w-prose flex-col gap-8">
           <span className="label text-accent">About</span>
           <p className="whitespace-pre-line text-body-l text-fg-2">{event.description}</p>
@@ -134,7 +134,7 @@ const EventDetailPage = () => {
           <h2 id="highlights" className="label mb-6 text-fg-3">
             Highlights
           </h2>
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {event.highlights.map((h, i) => (
               <li key={h}>
                 <Reveal
@@ -161,7 +161,7 @@ const EventDetailPage = () => {
       )}
 
       {(newer || older) && (
-        <nav className="wrap grid gap-4 border-t border-line-2 py-10 sm:grid-cols-2" aria-label="More events">
+        <nav className="wrap grid gap-4 border-t border-line-2 py-10 grid-cols-1 sm:grid-cols-2" aria-label="More events">
           {older ? (
             <Link to={eventPath(older)} className="group flex flex-col gap-2">
               <span className="label inline-flex items-center gap-2 text-fg-3">
@@ -189,7 +189,7 @@ const EventDetailPage = () => {
         <section className="section">
           <div className="wrap">
             <Eyebrow>{event.role ? `More as ${event.role.toLowerCase()}` : "More on stage"}</Eyebrow>
-            <div className="mt-10 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-x-6 gap-y-14 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {more.map((e) => (
                 <EventCard key={e.id} event={e} />
               ))}
