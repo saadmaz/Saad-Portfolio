@@ -193,9 +193,11 @@ const EventDetailPage = () => {
         <section className="section screen border-t-0">
           <div className="wrap">
             <Eyebrow>{event.role ? `More as ${event.role.toLowerCase()}` : "More on stage"}</Eyebrow>
-            <div className="mt-10 grid gap-x-6 gap-y-14 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="swipe-row mt-10 grid-cols-1 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-14 lg:grid-cols-3">
               {more.map((e) => (
-                <EventCard key={e.id} event={e} />
+                <div key={e.id} className="swipe-item">
+                  <EventCard event={e} />
+                </div>
               ))}
             </div>
           </div>

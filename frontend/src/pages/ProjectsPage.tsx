@@ -392,7 +392,8 @@ const ProjectsPage = () => {
             )}
             {groups.map((g) => {
               const open = expanded.has(g.id);
-              const items = open ? g.items : g.items.slice(0, GROUP_PREVIEW);
+              // Phones swipe through the whole group; wider screens preview GROUP_PREVIEW.
+              const items = g.items;
               return (
                 <section
                   key={g.id}
@@ -410,9 +411,9 @@ const ProjectsPage = () => {
                       />
                       <p className="-mt-4 mb-10 max-w-[580px] text-fg-2">{g.intro}</p>
                     </Reveal>
-                    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                      {items.map((p) => (
-                        <li key={p.id}>
+                    <ul className="swipe-row grid-cols-1 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                      {items.map((p, i) => (
+                        <li key={p.id} className={cn("swipe-item", !open && i >= GROUP_PREVIEW && "sm:hidden")}>
                           <Reveal className="h-full">
                             <ProjectCard project={p} />
                           </Reveal>
@@ -420,7 +421,7 @@ const ProjectsPage = () => {
                       ))}
                     </ul>
                     {g.items.length > GROUP_PREVIEW && (
-                      <div className="mt-10 flex justify-center">
+                      <div className="mt-10 hidden justify-center sm:flex">
                         <Button
                           variant="secondary"
                           icon={false}

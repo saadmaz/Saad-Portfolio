@@ -627,9 +627,9 @@ const ProjectDetailPage = () => {
                 All projects →
               </Link>
             </div>
-            <ul className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="swipe-row grid-cols-1 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {related.slice(0, 3).map((r) => (
-                <li key={r.id}>
+                <li key={r.id} className="swipe-item">
                   <ProjectCard project={r} />
                 </li>
               ))}

@@ -155,9 +155,9 @@ const ExperiencePage = () => {
                     soft="founded"
                   />
                 </Reveal>
-                <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <ul className="swipe-row grid-cols-1 sm:gap-6 md:grid-cols-2">
                   {ventures.map((v) => (
-                    <li key={v.name}>
+                    <li key={v.name} className="swipe-item">
                       <Reveal className="h-full">
                         <article className="flex h-full flex-col gap-5 rounded-[22px] border border-line bg-surface/50 p-6 md:p-8">
                           <div className="flex items-center gap-3.5">

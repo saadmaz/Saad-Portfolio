@@ -260,7 +260,7 @@ const EventsPage = () => {
                     aria-hidden
                     className="absolute -left-[51px] top-3 hidden size-4 rounded-full border-2 border-accent bg-base md:block"
                   />
-                  <div className="mb-10 flex items-center gap-4">
+                  <div className="mb-6 flex items-center gap-4 sm:mb-10">
                     <h2 id={`events-${year}`} className="text-h2 font-medium tabular-nums">
                       {year}
                     </h2>
@@ -269,9 +269,9 @@ const EventsPage = () => {
                     </span>
                     <div className="h-px flex-1 bg-line-2" aria-hidden="true" />
                   </div>
-                  <div className="grid gap-x-6 gap-y-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="swipe-row grid-cols-1 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 lg:grid-cols-3">
                     {list.map((e, i) => (
-                      <Reveal key={e.id} delay={(i % 3) * 80}>
+                      <Reveal key={e.id} delay={(i % 3) * 80} className="swipe-item">
                         <EventCard event={e} />
                       </Reveal>
                     ))}
@@ -291,7 +291,7 @@ const EventsPage = () => {
             </Reveal>
             <div className="columns-2 gap-3 md:columns-3 lg:columns-4 [&>*]:mb-3">
               {photos.map(({ e, src }, i) => (
-                <Reveal key={src} delay={(i % 4) * 60} className="break-inside-avoid">
+                <Reveal key={src} delay={(i % 4) * 60} className={cn("break-inside-avoid", i >= 8 && "max-sm:hidden")}>
                   <Link to={eventPath(e)} className="group relative block overflow-hidden rounded-card">
                     <img
                       src={src}

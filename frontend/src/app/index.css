@@ -137,6 +137,17 @@
 }
 
 @layer components {
+  /* Phones: a list becomes a sideways-swipe row (next card peeks in). sm+: the
+     element's own grid classes take over again. Pair with .swipe-item. */
+  .swipe-row {
+    @apply -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0;
+  }
+  .swipe-row::-webkit-scrollbar {
+    display: none;
+  }
+  .swipe-item {
+    @apply w-[82%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none;
+  }
   /* Grows a small text link's hit area to >=24px (WCAG 2.5.8) without moving layout. */
   .tap {
     position: relative;
