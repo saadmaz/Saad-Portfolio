@@ -255,7 +255,7 @@ const ContactPage = () => {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_8%_10%,rgb(255_95_0/0.14),transparent_70%),radial-gradient(ellipse_40%_50%_at_95%_60%,rgb(255_95_0/0.07),transparent_70%)]"
         />
-        <div className="wrap relative grid gap-12 pb-20 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-20 lg:pb-28 lg:pt-16">
+        <div className="wrap relative grid gap-12 pb-20 pt-10 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-20 lg:pb-28 lg:pt-16">
           <div className="flex flex-col gap-8 lg:sticky lg:top-32 lg:self-start">
             <div className="animate-rise">
               <Eyebrow>Contact</Eyebrow>
@@ -278,7 +278,7 @@ const ContactPage = () => {
               <p className="text-body-l text-fg">{CONTACT_INTRO[0]}</p>
               <p className="text-fg-2">{CONTACT_INTRO[1]}</p>
             </div>
-            <div className="grid max-w-[560px] animate-rise gap-3 [animation-delay:450ms] sm:grid-cols-[1.4fr_1fr]">
+            <div className="grid max-w-[560px] animate-rise gap-3 [animation-delay:450ms] grid-cols-1 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
               <div className="flex flex-col gap-3 rounded-[20px] border border-line-2 bg-surface/50 p-5 backdrop-blur">
                 <span className="label text-fg-3">Write to me</span>
                 <CopyEmail />
@@ -365,7 +365,7 @@ const ContactPage = () => {
                       })}
                     </div>
                   </fieldset>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                     <Field
                       label="Your name"
                       name="name"
@@ -419,7 +419,7 @@ const ContactPage = () => {
                   {topic.kind === "event" && (
                     <div
                       key="event"
-                      className="grid animate-rise gap-4 [animation-duration:300ms] sm:grid-cols-2"
+                      className="grid animate-rise gap-4 [animation-duration:300ms] grid-cols-1 sm:grid-cols-2"
                     >
                       <Field
                         label="Event date (optional)"
@@ -505,7 +505,7 @@ const ContactPage = () => {
             A few things I spend my time doing. Not an exhaustive list, though. I'm open to interesting ideas.
           </p>
         </Reveal>
-        <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <ul className="mt-12 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
           {CONTACT_SERVICES.map((s, i) => {
             const Icon = SERVICE_ICONS[i] ?? Hammer;
             const feature = i < 2;
@@ -568,7 +568,7 @@ const ContactPage = () => {
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgb(255_95_0/0.35),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.12),transparent_60%)]"
           />
-          <div className="relative grid gap-8 p-8 md:grid-cols-[1fr_auto] md:items-center md:p-14">
+          <div className="relative grid gap-8 p-8 grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-14">
             <div className="flex flex-col gap-4">
               <span className="label inline-flex items-center gap-2 text-accent">
                 <CalendarDays aria-hidden className="size-4" /> Free · 30 minutes
@@ -602,7 +602,7 @@ const ContactPage = () => {
             aria-hidden
             className="absolute left-0 right-0 top-[18px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1400ms] ease-out group-data-[in=true]:scale-x-100 md:block"
           />
-          <ol className="relative grid gap-10 md:grid-cols-3">
+          <ol className="relative grid gap-10 grid-cols-1 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="flex flex-col gap-4">
                 <span className="flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
@@ -620,7 +620,7 @@ const ContactPage = () => {
 
       {/* FAQ */}
       <section aria-labelledby="faq-heading" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
+        <div className="grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
           <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
             <Eyebrow index="03">FAQ</Eyebrow>
             <h2 id="faq-heading" className="text-h1 font-medium">
@@ -656,7 +656,7 @@ const ContactPage = () => {
             Find me <span className="soft">around the internet.</span>
           </h2>
         </Reveal>
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-12 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           {ELSEWHERE.map(({ id, note }, i) => {
             const s = SOCIALS.find((x) => x.id === id);
             if (!s) return null;

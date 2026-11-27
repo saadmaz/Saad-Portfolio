@@ -539,7 +539,7 @@ const ExperienceDetailPage = () => {
                   soft={`shipped at ${company.name}`}
                 />
               </Reveal>
-              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {linked.map((p, i) => (
                   <li key={p.id}>
                     <Reveal delay={i * 100} className="h-full">
@@ -588,7 +588,7 @@ const ExperienceDetailPage = () => {
               <Reveal>
                 <SectionHeader counted id="resources" label="Documents & links" title="Read" soft="more" />
               </Reveal>
-              <ul className="grid gap-3 md:grid-cols-2">
+              <ul className="grid gap-3 grid-cols-1 md:grid-cols-2">
                 {files.map((m, i) => {
                   const Icon = MEDIA_ICON[m.media_type] ?? Link2;
                   return (

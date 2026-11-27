@@ -180,7 +180,7 @@ export function ProjectFeature({ project }: { project: Project }) {
   return (
     <Link
       to={`/projects/${project.slug}`}
-      className="group grid overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-[border-color,background-color] duration-300 hover:border-line-3 hover:bg-surface/70 md:grid-cols-[1.35fr_1fr] md:p-3"
+      className="group grid overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-[border-color,background-color] duration-300 hover:border-line-3 hover:bg-surface/70 grid-cols-1 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:p-3"
     >
       {img ? (
         <Media

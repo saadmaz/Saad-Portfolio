@@ -231,7 +231,7 @@ const ProjectsPage = () => {
       />
 
       <PageHero ambient className="mb-0" band={<span className="truncate">Saad Mazhar · Projects</span>}>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div className="grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="max-w-[760px]">
             <div className="animate-rise">
               <Eyebrow>Projects</Eyebrow>

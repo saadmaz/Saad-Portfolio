@@ -202,7 +202,7 @@ const AboutPage = () => {
 
       {/* 1 · Hero */}
       <PageHero ambient band={<span className="truncate">Saad Mazhar · About</span>}>
-        <div className="grid items-center gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16">
+        <div className="grid items-center gap-12 grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16">
           <div className="flex flex-col gap-8">
             <div className="animate-rise">
               <Eyebrow>About</Eyebrow>
@@ -262,7 +262,7 @@ const AboutPage = () => {
               <Mark_>selling it for three</Mark_>.
             </p>
           </Reveal>
-          <Reveal className="mt-10 grid max-w-[1000px] gap-6 text-body-l text-fg-2 md:grid-cols-2">
+          <Reveal className="mt-10 grid max-w-[1000px] gap-6 text-body-l text-fg-2 grid-cols-1 md:grid-cols-2">
             <p>
               Outside the code I host and speak at tech events across Sri Lanka, from small meetups to packed
               summits.
@@ -429,7 +429,7 @@ const AboutPage = () => {
               />
             </Reveal>
             {events.length > 0 && (
-              <ul className="mb-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mb-12 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {events.slice(0, 3).map((e, i) => (
                   <li key={e.id}>
                     <Reveal delay={i * 90}>
@@ -440,7 +440,7 @@ const AboutPage = () => {
               </ul>
             )}
             {beyond.length > 0 && (
-              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {beyond.map((b, i) => {
                   const inner = (
                     <>
@@ -493,7 +493,7 @@ const AboutPage = () => {
                 soft={languages.length === 3 ? "three" : String(languages.length)}
               />
             </Reveal>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {languages.map((l, i) => {
                 const lvl = languageLevel(l.level ?? "");
                 const breakdown = (
@@ -529,7 +529,7 @@ const AboutPage = () => {
                       {breakdown.length > 0 && (
                         <dl className="flex flex-col gap-2.5 border-t border-line pt-4">
                           {breakdown.map(([k, v], si) => (
-                            <div key={k} className="grid grid-cols-[72px_1fr_36px] items-center gap-3">
+                            <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)_36px] items-center gap-3">
                               <dt className="label text-fg-3">{k}</dt>
                               <dd className="h-1 overflow-hidden rounded-full bg-line-2">
                                 <span
@@ -564,7 +564,7 @@ const AboutPage = () => {
             <Reveal>
               <SectionHeader id="recognition" label="Recognition" title="Awards" soft="& honours" />
             </Reveal>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {sortedAwards.map((a, i) => {
                 const inner = (
                   <>
@@ -606,7 +606,7 @@ const AboutPage = () => {
             <Reveal>
               <SectionHeader id="now" label="Now" title="What I’m" soft="up to" />
             </Reveal>
-            <ul className="grid gap-4 md:grid-cols-3">
+            <ul className="grid gap-4 grid-cols-1 md:grid-cols-3">
               {now.map((n, i) => (
                 <li key={n.label}>
                   <Reveal

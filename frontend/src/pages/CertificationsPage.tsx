@@ -227,7 +227,7 @@ const CertificationsPage = () => {
                 soft="that count most"
               />
             </Reveal>
-            <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {headline.map((c, i) => (
                 <li key={c.id}>
                   <Reveal delay={i * 100} className="h-full">
@@ -378,7 +378,7 @@ const CertificationsPage = () => {
               {shown.length === 0 ? (
                 <p className="mt-10 text-fg-3">Nothing matches that search.</p>
               ) : (
-                <ul key={category + q + sort} className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <ul key={category + q + sort} className="mt-8 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {shown.map((c, i) => {
                     const color = colorOf(c);
                     return (
