@@ -24,14 +24,12 @@ import {
   useCertificates,
   useEducation,
   useEvents,
-  useExperience,
   useHackathons,
   useLanguages,
   useOrganizations,
   useVolunteer,
 } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
-import { normalizeExperience } from "@/lib/experience";
 import { range, year } from "@/lib/format";
 import { schoolNameOf, schoolSlugOf } from "@/lib/schools";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
@@ -99,6 +97,10 @@ function eduPeriod(e: Education) {
 const eduTitle = (e: Education) =>
   [e.degree, e.field_of_study ?? e.fieldOfStudy].filter(Boolean).join(", ").trim() || schoolNameOf(e);
 
+/** The year I started writing software; drives both the story and the "Years building" stat. */
+const CODING_SINCE = 2021;
+const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+
 const AboutPage = () => {
   const { data: education = [] } = useEducation();
   const { data: awards = [] } = useAwards();
@@ -106,20 +108,14 @@ const AboutPage = () => {
   const { data: volunteer = [] } = useVolunteer();
   const { data: organizations = [] } = useOrganizations();
   const { data: hackathons = [] } = useHackathons();
-  const { data: experience = [] } = useExperience();
   const { data: projects = [] } = useProjects();
   const { data: events = [] } = useEvents();
   const { data: certs = [] } = useCertificates();
   const { data: settings } = useAboutSettings();
 
-  const companies = useMemo(() => normalizeExperience(experience), [experience]);
-
-  const firstYear = Math.min(
-    new Date().getFullYear(),
-    ...companies.flatMap((c) => c.roles.map((r) => (r.start ? new Date(r.start).getFullYear() : Infinity))),
-  );
+  const yearsBuilding = new Date().getFullYear() - CODING_SINCE;
   const stats = [
-    { value: new Date().getFullYear() - firstYear, label: "Years building", suffix: "+" },
+    { value: yearsBuilding, label: "Years building", suffix: "+" },
     { value: projects.length, label: "Products shipped" },
     { value: events.length, label: "Stages & events" },
     { value: certs.length, label: "Certifications" },
@@ -283,7 +279,9 @@ const AboutPage = () => {
                     <span className="flex size-11 items-center justify-center rounded-[14px] bg-accent/[0.12] text-accent transition-colors group-hover:bg-accent group-hover:text-fg-inverse">
                       <t.icon aria-hidden className="size-5" />
                     </span>
-                    <h3 className="text-[1.0625rem] font-medium leading-snug tracking-[-0.02em] sm:text-[1.25rem]">{t.title}</h3>
+                    <h3 className="text-[1.0625rem] font-medium leading-snug tracking-[-0.02em] sm:text-[1.25rem]">
+                      {t.title}
+                    </h3>
                     <p className="text-sm text-fg-2 sm:text-base">{t.body}</p>
                   </div>
                 </Reveal>
@@ -302,8 +300,8 @@ const AboutPage = () => {
           <Reveal>
             <p className="max-w-[1000px] text-[clamp(1.6rem,3.4vw,3rem)] font-medium leading-[1.2] tracking-[-0.025em]">
               I’m a computer science undergraduate and the founder of <Mark_>TankSudda</Mark_> and{" "}
-              <Mark_>Stopwash</Mark_>. I’ve been writing software for five years and{" "}
-              <Mark_>selling it for three</Mark_>.
+              <Mark_>Stopwash</Mark_>. I’ve been writing software for {WORDS[yearsBuilding] ?? yearsBuilding}{" "}
+              years and <Mark_>selling it for three</Mark_>.
             </p>
           </Reveal>
           <Reveal className="mt-8 grid max-w-[1000px] grid-cols-1 gap-6 text-body-l text-fg-2 md:mt-10 md:grid-cols-2">
