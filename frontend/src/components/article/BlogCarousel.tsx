@@ -1,31 +1,56 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import type { Carousel } from "@/hooks/useCarousel";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { BlogPost } from "@/types";
 import { BlogCard } from "./BlogCard";
 
+const ARROW =
+  "flex size-11 items-center justify-center rounded-full bg-fg text-[rgb(var(--bg))] transition-[transform,opacity] hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-25";
+
+/** Prev/next buttons; hidden when every card already fits. */
+export function CarouselArrows({ carousel, label }: { carousel: Carousel; label: string }) {
+  const { atStart, atEnd, step } = carousel;
+  if (atStart && atEnd) return null;
+  return (
+    <div className="flex gap-2.5" role="group" aria-label={`${label} controls`}>
+      <button
+        type="button"
+        onClick={() => step(-1)}
+        disabled={atStart}
+        aria-label={`Previous ${label}`}
+        className={ARROW}
+      >
+        <ArrowLeft aria-hidden className="size-5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => step(1)}
+        disabled={atEnd}
+        aria-label={`Next ${label}`}
+        className={ARROW}
+      >
+        <ArrowRight aria-hidden className="size-5" />
+      </button>
+    </div>
+  );
+}
+
 /**
- * A horizontal row of blog cards that only moves when asked: prev/next buttons,
- * swipe, trackpad, or mouse drag. Cards snap into place.
+ * A horizontal row of blog cards that only moves when asked: arrows, swipe, trackpad,
+ * or mouse drag. Cards snap into place; the first card lines up with the page content.
  */
 export function BlogCarousel({
   posts,
   wpm,
   typeOf,
+  carousel,
 }: {
   posts: BlogPost[];
   wpm: number;
   typeOf?: (p: BlogPost) => string | undefined;
+  carousel: Carousel;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-
-  const update = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    setAtStart(el.scrollLeft <= 4);
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
-  }, []);
+  const { ref, update } = carousel;
 
   useEffect(() => {
     const el = ref.current;
@@ -77,60 +102,25 @@ export function BlogCarousel({
       window.removeEventListener("pointerup", onUp);
       el.removeEventListener("click", onClick, true);
     };
-  }, [update, posts.length]);
-
-  const step = (dir: 1 | -1) => {
-    const el = ref.current;
-    const card = el?.firstElementChild as HTMLElement | null;
-    if (!el || !card) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: reduce ? "auto" : "smooth" });
-  };
-
-  const arrow =
-    "flex size-12 items-center justify-center rounded-full bg-fg text-[rgb(var(--bg))] transition-[transform,opacity] hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-25";
+  }, [ref, update, posts.length]);
 
   return (
-    <div>
-      <div
-        ref={ref}
-        role="region"
-        aria-label="Latest writing"
-        className="flex cursor-grab select-none snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto overscroll-x-contain px-5 py-4 [scrollbar-width:none] active:cursor-grabbing sm:scroll-px-8 sm:px-8 lg:scroll-px-12 lg:px-12 [&::-webkit-scrollbar]:hidden"
-      >
-        {posts.map((p) => (
-          <BlogCard
-            key={p.id}
-            post={p}
-            wpm={wpm}
-            typeLabel={typeOf?.(p)}
-            className="w-[280px] shrink-0 snap-start sm:w-[320px] lg:w-[340px]"
-          />
-        ))}
-      </div>
-      {!(atStart && atEnd) && (
-        <div className="wrap mt-4 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => step(-1)}
-            disabled={atStart}
-            aria-label="Previous articles"
-            className={arrow}
-          >
-            <ArrowLeft aria-hidden className="size-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => step(1)}
-            disabled={atEnd}
-            aria-label="Next articles"
-            className={arrow}
-          >
-            <ArrowRight aria-hidden className="size-5" />
-          </button>
-        </div>
-      )}
+    <div
+      ref={ref}
+      role="region"
+      aria-label="Latest writing"
+      // Side padding = the .wrap gutter, growing with the centred 1200px column on wide screens.
+      className="flex cursor-grab select-none snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto overscroll-x-contain px-5 pb-6 pt-2 [scrollbar-width:none] active:cursor-grabbing sm:scroll-px-8 sm:px-8 lg:scroll-px-[max(3rem,calc((100%-81rem)/2+3rem))] lg:px-[max(3rem,calc((100%-81rem)/2+3rem))] [&::-webkit-scrollbar]:hidden"
+    >
+      {posts.map((p) => (
+        <BlogCard
+          key={p.id}
+          post={p}
+          wpm={wpm}
+          typeLabel={typeOf?.(p)}
+          className="aspect-[5/7] w-[280px] shrink-0 snap-start sm:aspect-[3/4] sm:w-[320px] lg:w-[340px]"
+        />
+      ))}
     </div>
   );
 }

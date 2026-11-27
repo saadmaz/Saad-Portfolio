@@ -13,7 +13,8 @@ import { ToolsMarquee } from "@/components/ToolsMarquee";
 import { CertificationsShowcase } from "@/components/CertificationsShowcase";
 import { useFeaturedProjects, useProjects } from "@/hooks/useProjects";
 import { useBlogPosts, useBlogSettings } from "@/hooks/useBlog";
-import { BlogCarousel } from "@/components/article/BlogCarousel";
+import { BlogCarousel, CarouselArrows } from "@/components/article/BlogCarousel";
+import { useCarousel } from "@/hooks/useCarousel";
 import { useCertificates, useEvents, useExperience, useSkills } from "@/hooks/useContent";
 import { normalizeExperience, companyPeriod } from "@/lib/experience";
 import { monthYear } from "@/lib/format";
@@ -418,6 +419,7 @@ function Certifications() {
 function Writing() {
   const { data = [] } = useBlogPosts();
   const { settings } = useBlogSettings();
+  const carousel = useCarousel();
   // Featured picks (CMS order) lead, then every other post, newest first.
   const featured = featuredPosts(data);
   const posts = [...featured, ...data.filter((p) => !featured.includes(p))];
@@ -433,14 +435,18 @@ function Writing() {
             title="Notes from"
             soft="the build"
             action={
-              <Button to="/blog" variant="ghost">
-                All writing
-              </Button>
+              <div className="flex items-center gap-5">
+                <Button to="/blog" variant="ghost">
+                  All writing
+                </Button>
+                <CarouselArrows carousel={carousel} label="articles" />
+              </div>
             }
           />
         </Reveal>
       </div>
       <BlogCarousel
+        carousel={carousel}
         posts={posts}
         wpm={settings.readingWpm}
         typeOf={(p) => articleTypeLabel(p.articleType, settings.articleTypes)}
