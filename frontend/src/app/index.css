@@ -164,7 +164,7 @@
     content: counter(section, decimal-leading-zero);
   }
   .section {
-    @apply border-t border-line py-24 md:py-32;
+    @apply border-t border-line py-16 sm:py-24 md:py-32;
   }
   /* Homepage sections: one full viewport each from tablet up, content centred.
      Top padding clears the fixed header. */
@@ -1117,10 +1117,20 @@
   animation: flow-comet var(--flow-ms) var(--flow-ease) forwards;
 }
 @keyframes flow-comet {
-  0% { left: 0; opacity: 0; }
-  8% { opacity: 1; }
-  88% { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
 }
 .flow__dot {
   transition:
@@ -1151,8 +1161,14 @@
   animation: flow-ping 1.3s ease-out var(--d, 0ms) both;
 }
 @keyframes flow-ping {
-  0% { transform: scale(1); opacity: 0.75; }
-  100% { transform: scale(2.2); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
 }
 .flow__body {
   opacity: 0;
@@ -1170,8 +1186,14 @@
   filter: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .flow__comet { display: none; }
+  .flow__comet {
+    display: none;
+  }
   .flow__dot,
-  .flow__body { transition: none; }
-  .flow[data-in="true"] .flow__dot::after { animation: none; }
+  .flow__body {
+    transition: none;
+  }
+  .flow[data-in="true"] .flow__dot::after {
+    animation: none;
+  }
 }
