@@ -19,6 +19,7 @@
   /* Hairline colour channel (lines are this at low opacity). */
   --ink: 255 255 255;
   color-scheme: dark;
+  --tint: 100%;
 }
 
 /* Orange island: near-black text, white takes over as the accent (numbers,
@@ -38,6 +39,7 @@
   color-scheme: light;
   background-color: rgb(var(--bg));
   color: rgb(var(--fg));
+  --tint: 40%;
 }
 
 /* Contact: pieces rise in one after another once the section is in view. */
@@ -107,6 +109,7 @@
   color: rgb(var(--fg));
   /* Deeper green so "live" status text stays readable on white. */
   --live: 21 128 61;
+  --tint: 58%;
 }
 
 @layer base {
@@ -925,6 +928,7 @@
   /* Re-apply text colour: children otherwise inherit the computed colour of a light/orange band. */
   color: rgb(var(--fg));
   color-scheme: dark;
+  --tint: 100%;
 }
 
 /* Blog card: full-bleed cover at rest; on hover/focus the cover shrinks to a banner and the

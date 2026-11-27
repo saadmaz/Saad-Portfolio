@@ -32,7 +32,7 @@ import { certificatePath } from "@/lib/paths";
 import { skillKey, skillUsage, type SkillUsage } from "@/lib/skillUsage";
 import { skillLink } from "@/lib/skill-links.js";
 import { PAGE_SEO, BASE_URL } from "@/lib/seo-content";
-import { cn } from "@/lib/utils";
+import { cn, tint } from "@/lib/utils";
 import type { Skill } from "@/types";
 
 /** Levels as colours: orange for daily drivers down to slate for what I'm learning. */
@@ -236,7 +236,7 @@ function SkillPanel({ skill, usage, onClose }: { skill: Item; usage?: SkillUsage
           <dl className="mt-6 grid grid-cols-2 gap-3">
             <div className="rounded-card border border-line bg-surface/60 p-4">
               <dt className="label text-fg-3">Level</dt>
-              <dd className="mt-2 font-medium" style={{ color: lvl.color }}>
+              <dd className="mt-2 font-medium" style={{ color: tint(lvl.color) }}>
                 {lvl.label}
               </dd>
             </div>
@@ -537,13 +537,13 @@ const SkillsPage = () => {
                           className="inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-sm transition-colors"
                           style={
                             on
-                              ? { background: l.color, borderColor: l.color, color: "white" }
+                              ? { background: l.color, borderColor: l.color, color: "rgb(17 17 19)" }
                               : { borderColor: `${l.color}66` }
                           }
                         >
                           <span
                             className="size-2 rounded-full"
-                            style={{ background: on ? "white" : l.color }}
+                            style={{ background: on ? "rgb(17 17 19)" : l.color }}
                           />
                           {l.label}
                         </button>
@@ -602,7 +602,7 @@ const SkillsPage = () => {
                           <span className="w-full truncate text-[15px] font-medium">{s.name}</span>
                           <span
                             className="font-mono text-[11px] uppercase tracking-wider"
-                            style={{ color: lvl.color }}
+                            style={{ color: tint(lvl.color) }}
                           >
                             {lvl.label}
                           </span>
@@ -691,7 +691,7 @@ const SkillsPage = () => {
                     className="group flex flex-col gap-5 rounded-[22px] border border-line-2 bg-surface/50 p-6"
                   >
                     <div className="flex items-baseline justify-between gap-4">
-                      <h3 className="text-h3 font-medium" style={{ color: l.color }}>
+                      <h3 className="text-h3 font-medium" style={{ color: tint(l.color) }}>
                         {l.label}
                       </h3>
                       <span className="font-mono text-meta text-fg-3">{list.length}</span>
