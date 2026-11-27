@@ -5,10 +5,13 @@ import { Footer } from "./Footer";
 export function Layout({
   children,
   hideFooterSubscribe = false,
+  hideFooter = false,
 }: {
   children: ReactNode;
   /** For pages that already have their own subscribe block. */
   hideFooterSubscribe?: boolean;
+  /** For single-screen pages such as the 404. */
+  hideFooter?: boolean;
 }) {
   return (
     <div id="top" className="flex min-h-screen flex-col">
@@ -23,7 +26,7 @@ export function Layout({
       <main id="main-content" className="min-h-[100svh] flex-1 pt-[72px] lg:pt-[88px]">
         {children}
       </main>
-      <Footer hideSubscribe={hideFooterSubscribe} />
+      {!hideFooter && <Footer hideSubscribe={hideFooterSubscribe} />}
     </div>
   );
 }
