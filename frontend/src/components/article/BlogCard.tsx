@@ -72,14 +72,28 @@ export function BlogCard({ post, wpm, typeLabel, priority, className }: CardProp
   const cover = coverOf(post);
   const { minutes, date, kind, blurb } = facts(post, wpm, typeLabel);
   return (
-    <Link to={articlePath(post)} className={cn("blog-card theme-dark", className)} draggable={false}>
+    <Link
+      to={articlePath(post)}
+      className={cn("blog-card theme-dark aspect-[3/4]", className)}
+      draggable={false}
+    >
       <div className="blog-card__media">
+        {/* Covers are designed graphics: show them whole, over a blurred copy that fills the card. */}
+        {cover && (
+          <Media
+            asset={cover as ImageAsset}
+            alt=""
+            sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+            className="absolute inset-0 size-full scale-125 rounded-none border-0 opacity-90 blur-2xl saturate-150"
+          />
+        )}
         <Media
           asset={cover as ImageAsset | null}
           alt=""
           sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
           priority={priority}
-          className="size-full rounded-none border-0"
+          className="absolute inset-0 size-full rounded-none border-0 bg-transparent"
+          imgClassName="object-contain object-top"
         />
         <div aria-hidden className="blog-card__scrim" />
       </div>
