@@ -142,7 +142,7 @@ function CopyEmail() {
 }
 
 const TILE =
-  "group relative flex min-h-[116px] flex-col justify-between gap-6 md:min-h-[140px] md:gap-8 overflow-hidden rounded-[24px] border p-6 transition-[transform,border-color,background-color] duration-300 hover:-translate-y-1 md:p-7";
+  "group relative flex min-h-[116px] flex-col justify-between gap-6 md:min-h-[clamp(108px,15svh,140px)] md:gap-[clamp(16px,3svh,32px)] overflow-hidden rounded-[24px] border p-6 transition-[transform,border-color,background-color] duration-300 hover:-translate-y-1";
 const TILE_TITLE = "block text-[1.25rem] font-medium leading-tight tracking-[-0.02em] lg:text-[1.5rem]";
 
 /** Full-screen opener: a big promise, then three ways to reach me. */
@@ -177,7 +177,7 @@ function ContactHero({
         className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.045)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.045)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_35%,black,transparent)]"
       />
 
-      <div className="wrap relative flex flex-1 flex-col justify-center pb-12 pt-[112px] lg:pt-[128px]">
+      <div className="wrap relative flex flex-1 flex-col justify-center pb-[clamp(20px,4svh,48px)] pt-[clamp(96px,12svh,124px)]">
         <div className="flex animate-rise flex-wrap items-center justify-between gap-4">
           <Eyebrow>Contact</Eyebrow>
           <span className="inline-flex items-center gap-2.5 rounded-full border border-line-2 bg-surface/60 px-4 py-2 text-sm backdrop-blur">
@@ -194,7 +194,7 @@ function ContactHero({
 
         <h1
           id="contact-hero-heading"
-          className="mt-[clamp(20px,4svh,48px)] text-[clamp(3.25rem,min(12vw,15svh),10.5rem)] font-medium leading-[0.92] tracking-[-0.055em]"
+          className="mt-[clamp(20px,4svh,48px)] text-[clamp(3.25rem,min(12vw,13svh),10.5rem)] font-medium leading-[0.92] tracking-[-0.055em]"
         >
           <span className="block">
             <RisingWords text="Have an idea?" />
@@ -205,11 +205,11 @@ function ContactHero({
           </span>
         </h1>
 
-        <p className="mt-[clamp(16px,3svh,32px)] max-w-[600px] animate-rise text-body-l text-fg-2 [animation-delay:350ms]">
+        <p className="mt-[clamp(16px,3svh,32px)] max-w-[720px] animate-rise text-body-l text-fg-2 [animation-delay:350ms]">
           {CONTACT_INTRO[0]}
         </p>
 
-        <div className="mt-[clamp(24px,5svh,56px)] grid animate-rise grid-cols-1 gap-3 [animation-delay:450ms] md:grid-cols-3">
+        <div className="mt-[clamp(20px,4svh,56px)] grid animate-rise grid-cols-1 gap-3 [animation-delay:450ms] md:grid-cols-3">
           <a href="#message" className={cn(TILE, "border-accent bg-accent text-fg-inverse")}>
             <span className="flex items-center justify-between">
               <PenLine aria-hidden className="size-5" />
@@ -365,7 +365,7 @@ const ContactPage = () => {
       <section
         id="message"
         aria-labelledby="message-heading"
-        className="section theme-light scroll-mt-0 border-t-0"
+        className="section screen theme-light scroll-mt-0 border-t-0"
       >
         <div className="wrap grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:gap-20">
           <Reveal className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
@@ -574,7 +574,7 @@ const ContactPage = () => {
       </section>
 
       {/* What can we work on? */}
-      <section aria-labelledby="help-heading" className="section border-t-0">
+      <section aria-labelledby="help-heading" className="section screen border-t-0">
         <div className="wrap">
           <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -648,7 +648,7 @@ const ContactPage = () => {
       </section>
 
       {/* Booking band */}
-      <section aria-labelledby="call-heading" className="section theme-orange border-t-0">
+      <section aria-labelledby="call-heading" className="section screen theme-orange border-t-0">
         <Reveal className="wrap grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <div className="flex flex-col gap-5">
             <span className="label inline-flex items-center gap-2 text-fg">
@@ -669,7 +669,7 @@ const ContactPage = () => {
       </section>
 
       {/* How it works */}
-      <section aria-labelledby="process-heading" className="section theme-light border-t-0">
+      <section aria-labelledby="process-heading" className="section screen theme-light border-t-0">
         <div className="wrap">
           <Reveal>
             <Eyebrow index="03">How it works</Eyebrow>
@@ -701,7 +701,7 @@ const ContactPage = () => {
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="faq-heading" className="section border-t-0">
+      <section aria-labelledby="faq-heading" className="section screen border-t-0">
         <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
           <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
             <Eyebrow index="04">FAQ</Eyebrow>
@@ -731,7 +731,7 @@ const ContactPage = () => {
       </section>
 
       {/* Sign-off */}
-      <section aria-label="Get in touch" className="section theme-orange border-t-0">
+      <section aria-label="Get in touch" className="section screen theme-orange border-t-0">
         <Reveal className="wrap flex flex-col items-center gap-8 text-center">
           <p className="max-w-[820px] text-h1 font-medium">
             Made something interesting? <span className="soft">I'd love to hear about it.</span>
