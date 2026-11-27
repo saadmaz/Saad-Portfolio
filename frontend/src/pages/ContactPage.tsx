@@ -393,7 +393,7 @@ const ContactPage = () => {
           </Reveal>
 
           <div className="relative h-fit">
-            <div className="relative overflow-hidden rounded-[28px] border border-line-2 bg-surface p-6 shadow-[0_30px_80px_-40px_rgb(0_0_0/0.35)] md:p-9">
+            <div className="relative overflow-hidden rounded-[28px] border border-line-2 bg-surface p-5 shadow-[0_30px_80px_-40px_rgb(0_0_0/0.35)] sm:p-6 md:p-9">
               <span
                 aria-hidden
                 className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent"
@@ -428,7 +428,7 @@ const ContactPage = () => {
                 <form onSubmit={submit} noValidate className="relative flex flex-col gap-7">
                   <fieldset>
                     <legend className="label mb-3 text-fg-3">What are you reaching out about?</legend>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {TOPICS.map((t) => {
                         const Icon = TOPIC_ICONS[t.id];
                         const active = topic.id === t.id;
@@ -439,7 +439,7 @@ const ContactPage = () => {
                             aria-pressed={active}
                             onClick={() => setTopic(t)}
                             className={cn(
-                              "flex min-h-12 items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm leading-tight sm:px-3",
+                              "flex min-h-12 items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm leading-tight [overflow-wrap:anywhere]",
                               choiceCls(active),
                             )}
                           >
@@ -455,7 +455,7 @@ const ContactPage = () => {
                             <span
                               aria-hidden
                               className={cn(
-                                "hidden size-4 shrink-0 items-center justify-center rounded-full border sm:flex",
+                                "flex size-4 shrink-0 items-center justify-center rounded-full border",
                                 active ? "border-accent" : "border-line-3",
                               )}
                             >
