@@ -156,7 +156,7 @@ See `frontend/.env.example`. Server-only (Cloudflare Pages secrets, never `VITE_
 | `ANALYTICS_SALT` (≥16 chars) | Analytics, 404 log, reactions |
 | `REACTIONS_SALT` | Optional separate reactions key |
 | `PUBLIC_SITE_URL` | Optional preview-link origin override |
-| `GA4_PROPERTY_ID`, `GA4_SERVICE_ACCOUNT_EMAIL`, `GSC_SITE_URL`, `GSC_SERVICE_ACCOUNT_EMAIL` | Reserved for GA4/Search Console reporting (see §8) |
+| `GA4_PROPERTY_ID`, `GSC_SITE_URL` | GA4 / Search Console reports in the CMS (see §8) |
 
 Scheduler: the cron Worker in `workers/scheduler` calls the endpoint every 10 minutes.
 Its secret `CRON_SECRET` must match the one on the Pages project.
@@ -201,12 +201,20 @@ First-party counters are live once `ANALYTICS_SALT` is set: views, unique visito
 scroll depth buckets, referrer hosts. The CMS shows them with a 30-day chart and
 never fills gaps with estimates.
 
-GA4 is already collecting via the existing gtag snippet. **Pulling GA4 or Search
-Console data into the CMS is not implemented**: the status endpoint reports
-whether credentials are configured, and the analytics page links the
-author to those dashboards. Adding it means a server-side provider in
-`server/_lib/` using the GA4 Data API / Search Console API with a service account
-(the variables in §5), exposed through `api/admin?action=…`.
+GA4 and Search Console reports (last 28 days) come from `server/_lib/insights.ts`
+through `api/admin?action=ga4-report` and `?action=gsc-report`, cached for 30
+minutes per isolate. They reuse the Firebase service account, so setup is:
+
+1. In the service account's Google Cloud project, enable the **Google Analytics
+   Data API** and the **Search Console API**.
+2. Add `FIREBASE_CLIENT_EMAIL` as a **Viewer** on the GA4 property (Admin →
+   Property access management) and as a **Restricted** user on the Search
+   Console property (Settings → Users and permissions).
+3. Set `GA4_PROPERTY_ID` (the numeric property ID, not the `G-` measurement ID)
+   and `GSC_SITE_URL` (`sc-domain:saadmaz.com` or `https://www.saadmaz.com/`).
+
+If Google refuses (API disabled, no access), the endpoint returns 502 with
+Google's message, and the CMS shows it on the panel.
 
 ## 9. Deployment & migration
 

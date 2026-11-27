@@ -5,6 +5,8 @@
  *   POST rebuild       { reason? } → RebuildResult              queue a production rebuild
  *   POST run-scheduler             → SchedulerSummary            publish due posts now
  *   GET  status                    → integration + job status    (no secrets, only booleans)
+ *   GET  ga4-report                → Ga4Report                   last 28 days from the GA4 Data API
+ *   GET  gsc-report                → GscReport                   last 28 days from Search Console
  *
  * Every action requires a Firebase ID token for ADMIN_EMAIL (see _lib/auth.ts)
  * and is only callable cross-origin from ADMIN_ORIGINS.
@@ -14,6 +16,7 @@ import type { ApiRequest, ApiResponse } from "./_lib/adapter.js";
 import { requireAdmin } from "./_lib/auth.js";
 import { adminDb, hasAdminCredentials } from "./_lib/firebase.js";
 import { adminCors, createRateLimiter, jsonBody } from "./_lib/http.js";
+import { ga4Configured, ga4Report, GoogleApiError, gscConfigured, gscReport } from "./_lib/insights.js";
 import { PREVIEW_TTL_MS, previewSecret, signPreviewToken } from "./_lib/preview-token.js";
 import { triggerRebuild } from "./_lib/rebuild.js";
 import { runScheduler } from "./_lib/scheduler.js";
@@ -21,13 +24,14 @@ import { BASE_URL } from "../src/lib/seo-content.js";
 
 const limited = createRateLimiter({ windowMs: 60_000, max: 60 });
 const POST_ID_RE = /^[A-Za-z0-9_-]{1,128}$/;
+const GET_ACTIONS = new Set(["status", "ga4-report", "gsc-report"]);
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (adminCors(req, res)) return;
   res.setHeader("Cache-Control", "no-store");
 
   const action = String(req.query.action ?? "");
-  const method = action === "status" ? "GET" : "POST";
+  const method = GET_ACTIONS.has(action) ? "GET" : "POST";
   if (req.method !== method) {
     res.setHeader("Allow", `${method}, OPTIONS`);
     return res.status(405).json({ error: "Method not allowed" });
@@ -77,10 +81,23 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
           rebuild: rebuild.exists ? rebuild.data() : null,
         });
       }
+      case "ga4-report": {
+        if (!ga4Configured())
+          return res
+            .status(409)
+            .json({ error: "GA4_PROPERTY_ID is not set on the site (numeric property ID)" });
+        return res.status(200).json(await ga4Report());
+      }
+      case "gsc-report": {
+        if (!gscConfigured()) return res.status(409).json({ error: "GSC_SITE_URL is not set on the site" });
+        return res.status(200).json(await gscReport());
+      }
       default:
         return res.status(404).json({ error: "Unknown action" });
     }
   } catch (err) {
+    // Google's own message ("permission denied", "API not enabled"…) tells the author what to fix.
+    if (err instanceof GoogleApiError) return res.status(502).json({ error: `Google: ${err.message}` });
     console.error(`[admin] ${action} failed:`, err);
     return res.status(500).json({ error: "Request failed" });
   }
@@ -98,7 +115,7 @@ export function integrationStatus(env: NodeJS.ProcessEnv = process.env) {
     previewSecret: (env.PREVIEW_SECRET ?? "").length >= 32,
     cronSecret: (env.CRON_SECRET ?? "").length >= 16,
     analyticsSalt: (env.ANALYTICS_SALT ?? "").length >= 16,
-    ga4: !!(env.GA4_PROPERTY_ID && env.GA4_SERVICE_ACCOUNT_EMAIL),
-    searchConsole: !!(env.GSC_SITE_URL && env.GSC_SERVICE_ACCOUNT_EMAIL),
+    ga4: ga4Configured(env),
+    searchConsole: gscConfigured(env),
   };
 }
