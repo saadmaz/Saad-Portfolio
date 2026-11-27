@@ -113,7 +113,7 @@ const CertificateDetailPage = () => {
       </section>
 
       {related.length > 0 && (
-        <section className="section">
+        <section className="section screen">
           <div className="wrap">
             <Eyebrow>More in {cert.category || cert.issuer}</Eyebrow>
             <ul className="mt-10 grid gap-5 grid-cols-1 md:grid-cols-3">

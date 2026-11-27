@@ -410,7 +410,7 @@ const ExperienceDetailPage = () => {
       <div className="counted">
         {/* 3 · Overview */}
         {company.description && (
-          <section className="section theme-orange border-t-0" aria-labelledby="overview">
+          <section className="section screen theme-orange border-t-0" aria-labelledby="overview">
             <div className="wrap grid grid-cols-1 gap-10 md:grid-cols-[280px_minmax(0,1fr)] md:gap-20">
               <Reveal>
                 <SectionHeader counted id="overview" label="Overview" title="The" soft="story" />
@@ -426,7 +426,7 @@ const ExperienceDetailPage = () => {
 
         {/* 4 · What I did */}
         {(cards.length > 0 || achievementsAsText) && (
-          <section className="section theme-light border-t-0" aria-labelledby="what-i-did">
+          <section className="section screen theme-light border-t-0" aria-labelledby="what-i-did">
             <div className="wrap">
               <Reveal>
                 <SectionHeader
@@ -479,7 +479,7 @@ const ExperienceDetailPage = () => {
         )}
 
         {/* 5 · Role journey */}
-        <section className="section" aria-labelledby="journey">
+        <section className="section screen" aria-labelledby="journey">
           <div className="wrap grid grid-cols-1 gap-12 md:grid-cols-[280px_minmax(0,1fr)] md:gap-20">
             <Reveal className="md:sticky md:top-32 md:self-start">
               <SectionHeader
@@ -496,7 +496,7 @@ const ExperienceDetailPage = () => {
 
         {/* 6 · Tech & tools */}
         {skills.length > 0 && (
-          <section className="section theme-light border-t-0" aria-labelledby="tools">
+          <section className="section screen theme-light border-t-0" aria-labelledby="tools">
             <div className="wrap">
               <Reveal>
                 <SectionHeader counted id="tools" label="Tech & tools" title="What I" soft="worked with" />
@@ -528,7 +528,7 @@ const ExperienceDetailPage = () => {
 
         {/* 7 · Projects */}
         {linked.length > 0 && (
-          <section className="section" aria-labelledby="company-projects">
+          <section className="section screen" aria-labelledby="company-projects">
             <div className="wrap">
               <Reveal>
                 <SectionHeader
@@ -583,7 +583,7 @@ const ExperienceDetailPage = () => {
 
         {/* Documents */}
         {files.length > 0 && (
-          <section className="section" aria-labelledby="resources">
+          <section className="section screen" aria-labelledby="resources">
             <div className="wrap">
               <Reveal>
                 <SectionHeader counted id="resources" label="Documents & links" title="Read" soft="more" />
@@ -634,7 +634,7 @@ const ExperienceDetailPage = () => {
 
       {/* 10 · Next company */}
       {next && next.slug !== company.slug && (
-        <section className="section">
+        <section className="section screen">
           <div className="wrap">
             <Link
               to={`/experience/${next.slug}`}

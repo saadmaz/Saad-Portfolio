@@ -613,7 +613,7 @@ const ProjectDetailPage = () => {
       )}
 
       {related.length > 0 && (
-        <section className="section" aria-labelledby="related-heading">
+        <section className="section screen" aria-labelledby="related-heading">
           <div className="wrap">
             <div className="mb-10 flex items-end justify-between gap-6">
               <h2 id="related-heading" className="text-h1 font-medium">
@@ -635,7 +635,7 @@ const ProjectDetailPage = () => {
       )}
 
       {showNext && (
-        <section className="section">
+        <section className="section screen">
           <div className="wrap">
             <Link
               to={`/projects/${next.slug}`}

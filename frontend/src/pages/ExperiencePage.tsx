@@ -137,7 +137,7 @@ const ExperiencePage = () => {
           <Skeleton className="h-64 w-full rounded-card" />
         </div>
       ) : companies.length === 0 ? (
-        <section className="section border-t-0">
+        <section className="section screen border-t-0">
           <div className="wrap">
             <Empty>Experience will appear here soon.</Empty>
           </div>
@@ -145,7 +145,7 @@ const ExperiencePage = () => {
       ) : (
         <>
           {ventures.length > 0 && (
-            <section className="section border-t-0" aria-labelledby="ventures">
+            <section className="section screen border-t-0" aria-labelledby="ventures">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader
@@ -221,7 +221,7 @@ const ExperiencePage = () => {
             </section>
           )}
 
-          <section className="section" aria-labelledby="journey">
+          <section className="section screen" aria-labelledby="journey">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="journey" label="Journey" title="The road" soft="so far" />

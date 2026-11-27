@@ -450,7 +450,7 @@ const SkillsPage = () => {
 
       {/* 2 · Daily drivers */}
       {experts.length > 0 && (
-        <section className="section theme-orange border-t-0" aria-labelledby="drivers">
+        <section className="section screen theme-orange border-t-0" aria-labelledby="drivers">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="drivers" label="Daily drivers" title="What I reach for" soft="every day" />
@@ -485,7 +485,7 @@ const SkillsPage = () => {
       )}
 
       {/* 3 · Explorer */}
-      <section className="section theme-light border-t-0" aria-labelledby="explorer">
+      <section className="section screen theme-light border-t-0" aria-labelledby="explorer">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="explorer" label="Explorer" title="The whole" soft="toolbox" />
@@ -623,7 +623,7 @@ const SkillsPage = () => {
 
       {/* 4 · How the stack grew */}
       {byYear.length > 1 && (
-        <section className="section border-t-0" aria-labelledby="timeline">
+        <section className="section screen border-t-0" aria-labelledby="timeline">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="timeline" label="Timeline" title="How the stack" soft="grew" />
@@ -675,7 +675,7 @@ const SkillsPage = () => {
 
       {/* 5 · Level map */}
       {items.length > 0 && (
-        <section className="section theme-light border-t-0" aria-labelledby="levels">
+        <section className="section screen theme-light border-t-0" aria-labelledby="levels">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="levels" label="Level map" title="Where I’m" soft="strongest" />
@@ -742,7 +742,7 @@ const SkillsPage = () => {
       )}
 
       {/* 6 · Proof */}
-      <section className="section border-t-0" aria-labelledby="proof">
+      <section className="section screen border-t-0" aria-labelledby="proof">
         <div className="wrap flex flex-col gap-12">
           {certs.length > 0 && (
             <Reveal className="flex flex-col gap-8">
