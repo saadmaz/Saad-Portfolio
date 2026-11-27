@@ -232,7 +232,7 @@ const ProjectDetailPage = () => {
     add(
       "features",
       "Features",
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid gap-3 grid-cols-1 sm:grid-cols-2">
         {project.features.map((f) => (
           <li
             key={f}
@@ -508,7 +508,7 @@ const ProjectDetailPage = () => {
         </section>
       )}
 
-      <div className="wrap grid gap-14 py-20 md:grid-cols-[240px_1fr] md:gap-16 md:py-28 lg:grid-cols-[260px_1fr] lg:gap-24">
+      <div className="wrap grid gap-14 py-20 grid-cols-1 md:grid-cols-[240px_minmax(0,1fr)] md:gap-16 md:py-28 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-24">
         <aside className="flex flex-col gap-6 md:sticky md:top-28 md:max-h-[calc(100svh-8rem)] md:self-start md:overflow-y-auto md:[scrollbar-width:none]">
           {navSections.length > 1 && <SectionNav sections={navSections} />}
           {stack.length > 0 && (
@@ -623,7 +623,7 @@ const ProjectDetailPage = () => {
                 All projects →
               </Link>
             </div>
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {related.slice(0, 3).map((r) => (
                 <li key={r.id}>
                   <ProjectCard project={r} />
@@ -639,7 +639,7 @@ const ProjectDetailPage = () => {
           <div className="wrap">
             <Link
               to={`/projects/${next.slug}`}
-              className="group grid items-center gap-6 overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-colors hover:border-line-3 hover:bg-surface/70 md:grid-cols-[1fr_360px] md:p-3"
+              className="group grid items-center gap-6 overflow-hidden rounded-[28px] border border-line bg-surface/40 p-2 transition-colors hover:border-line-3 hover:bg-surface/70 grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] md:p-3"
             >
               <div className="flex flex-col gap-4 p-5 md:p-8">
                 <span className="label text-fg-3">Next project</span>

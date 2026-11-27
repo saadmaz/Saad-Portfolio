@@ -172,7 +172,7 @@ const NewslettersPage = () => {
       />
 
       <PageHero ambient className="mb-0" band={<span className="truncate">Saad Mazhar · Newsletter</span>}>
-        <div className="relative grid gap-12 lg:grid-cols-[1fr_440px] lg:items-end lg:gap-20">
+        <div className="relative grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-end lg:gap-20">
           <div className="max-w-[680px]">
             <div className="animate-rise">
               <Eyebrow>Newsletter</Eyebrow>
@@ -217,7 +217,7 @@ const NewslettersPage = () => {
           <Reveal>
             <SectionHeader id="series" label="Two series" title="Pick" soft="your lane" />
           </Reveal>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             {SERIES.map((s, i) => {
               const count = data.filter((n) => seriesOf(n).id === s.id).length;
               const active = series === s.id;
@@ -282,7 +282,7 @@ const NewslettersPage = () => {
                   }
                 />
               </Reveal>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.slice(0, 3).map((p, i) => (
                   <Reveal key={p.id} delay={i * 80}>
                     <BlogCard post={p} wpm={READING_WPM} />
@@ -305,7 +305,7 @@ const NewslettersPage = () => {
                     href={latest.content_url}
                     target="_blank"
                     rel="noopener"
-                    className="group grid gap-8 rounded-media border border-line bg-surface/50 p-5 transition-colors hover:border-accent/40 md:grid-cols-[1.1fr_1fr] md:items-center md:p-8"
+                    className="group grid gap-8 rounded-media border border-line bg-surface/50 p-5 transition-colors hover:border-accent/40 grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:items-center md:p-8"
                   >
                     <IssueCover issue={latest} className="aspect-video" />
                     <span className="flex flex-col gap-4">
@@ -366,7 +366,7 @@ const NewslettersPage = () => {
                               href={n.content_url}
                               target="_blank"
                               rel="noopener"
-                              className="group grid grid-cols-[96px_1fr] items-center gap-5 py-5 sm:grid-cols-[140px_1fr_auto]"
+                              className="group grid grid-cols-[96px_minmax(0,1fr)] items-center gap-5 py-5 sm:grid-cols-[140px_minmax(0,1fr)_auto]"
                             >
                               <IssueCover issue={n} className="aspect-[4/3]" />
                               <span className="flex min-w-0 flex-col gap-1.5">

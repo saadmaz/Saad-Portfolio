@@ -116,7 +116,7 @@ const CertificateDetailPage = () => {
         <section className="section">
           <div className="wrap">
             <Eyebrow>More in {cert.category || cert.issuer}</Eyebrow>
-            <ul className="mt-10 grid gap-5 md:grid-cols-3">
+            <ul className="mt-10 grid gap-5 grid-cols-1 md:grid-cols-3">
               {related.map((c) => (
                 <li key={c.id}>
                   <Link to={certificatePath(c)} className="block h-full">

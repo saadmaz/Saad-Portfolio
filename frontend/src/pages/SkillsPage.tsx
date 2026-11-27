@@ -680,7 +680,7 @@ const SkillsPage = () => {
             <Reveal>
               <SectionHeader id="levels" label="Level map" title="Where I’m" soft="strongest" />
             </Reveal>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               {LEVELS.map((l, li) => {
                 const list = items.filter((s) => s.level === l.key);
                 const pct = items.length ? list.length / items.length : 0;

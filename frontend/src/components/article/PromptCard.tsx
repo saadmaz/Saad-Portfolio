@@ -139,7 +139,7 @@ export function PromptCard({ prompt, hosts }: { prompt: ArticlePrompt; hosts: Pr
               Fill in what applies to you. Blank fields keep their placeholder. Nothing you type leaves this
               page.
             </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="mt-3 grid gap-3 grid-cols-1 sm:grid-cols-2">
               {prompt.variables.map((v) => (
                 <VariableInput
                   key={v}

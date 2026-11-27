@@ -138,7 +138,7 @@ export function FeaturedPostCard({
   return (
     <Link
       to={articlePath(post)}
-      className="theme-dark group grid overflow-hidden rounded-[28px] border border-line bg-surface p-2.5 transition-[border-color,box-shadow] duration-300 hover:border-accent/50 hover:shadow-[0_30px_80px_-30px_rgb(0_0_0/0.8)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
+      className="theme-dark group grid overflow-hidden rounded-[28px] border border-line bg-surface p-2.5 transition-[border-color,box-shadow] duration-300 hover:border-accent/50 hover:shadow-[0_30px_80px_-30px_rgb(0_0_0/0.8)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
     >
       <div className="relative aspect-[16/10] overflow-hidden rounded-[20px] lg:aspect-auto lg:min-h-[380px]">
         <Media

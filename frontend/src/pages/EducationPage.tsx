@@ -194,7 +194,7 @@ function Entry({ edu: e }: { edu: Education }) {
 
         {qualifications.length > 0 && (
           <Block label="Qualifications">
-            <div className="grid gap-3 lg:grid-cols-2">
+            <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
               {qualifications.map((q) => (
                 <div
                   key={q.title}
@@ -222,7 +222,7 @@ function Entry({ edu: e }: { edu: Education }) {
 
         {roles.length > 0 && (
           <Block label="Leadership & societies">
-            <ul className="grid border-t border-line sm:grid-cols-2 sm:gap-x-8">
+            <ul className="grid border-t border-line grid-cols-1 sm:grid-cols-2 sm:gap-x-8">
               {roles.map((r) => (
                 <li
                   key={`${r.role}-${r.org}`}
@@ -241,7 +241,7 @@ function Entry({ edu: e }: { edu: Education }) {
 
         {projects.length > 0 && (
           <Block label="Projects">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
               {projects.map((pr) => {
                 const inner = (
                   <>

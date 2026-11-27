@@ -372,7 +372,7 @@ const PublicationsPage = () => {
                 </div>
               )}
               {tab !== "patent" && shown.length > 0 && (
-                <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 md:gap-6">
                   {shown.map((p, i) => (
                     <Reveal key={p.id} delay={(i % 2) * 80} className="h-full">
                       <PubCard pub={p} />
@@ -392,7 +392,7 @@ const PublicationsPage = () => {
                 <Reveal>
                   <SectionHeader id="patents" label="Patents" title="Inventions" soft="on file" />
                 </Reveal>
-                <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 md:gap-6">
                   {patents.map((p, i) => (
                     <Reveal key={p.id} delay={(i % 2) * 80} className="h-full">
                       <PatentCard patent={p} />

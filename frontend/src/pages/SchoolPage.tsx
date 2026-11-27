@@ -124,7 +124,7 @@ const SchoolPage = () => {
 
       {(paragraphs.length > 0 || roles.length > 0) && (
         <section className="section border-t-0" aria-labelledby="story">
-          <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+          <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
             {paragraphs.length > 0 && (
               <Reveal>
                 <SectionHeader id="story" label="Overview" title="My time" soft="there" />
@@ -159,7 +159,7 @@ const SchoolPage = () => {
             <Reveal>
               <SectionHeader id="honours" label="Honours" title="Recognition" soft="along the way" />
             </Reveal>
-            <ul className="grid gap-4 md:grid-cols-2">
+            <ul className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {content.honours.map((h) => (
                 <li
                   key={h.award_title}
@@ -231,7 +231,7 @@ const SchoolPage = () => {
             <Reveal>
               <SectionHeader id="service" label="Service" title="Clubs &" soft="volunteering" />
             </Reveal>
-            <ul className="grid gap-4 md:grid-cols-2">
+            <ul className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {content.volunteer.map((v) => (
                 <li
                   key={v.id}

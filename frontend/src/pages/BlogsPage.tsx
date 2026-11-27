@@ -260,7 +260,7 @@ const BlogsPage = () => {
                 <Reveal>
                   <SectionHeader id="series" label="Series" title="Read it" soft="in order" />
                 </Reveal>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                   {series.map(({ series: s, parts }) => (
                     <Reveal key={s.id}>
                       <Link
@@ -412,7 +412,7 @@ const BlogsPage = () => {
               {list.length === 0 ? (
                 filtering && <Empty>No articles match these filters.</Empty>
               ) : (
-                <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {list.slice(0, visible).map((p) => (
                     <BlogCard key={p.id} post={p} wpm={settings.readingWpm} typeLabel={typeOf(p)} />
                   ))}

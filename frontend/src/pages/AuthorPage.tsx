@@ -220,7 +220,7 @@ const AuthorPage = () => {
       />
 
       <PageHero ambient className="mb-0" band={<span className="truncate">Saad Mazhar · Author</span>}>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div className="grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div className="max-w-[720px]">
             <div className="flex items-center gap-5 animate-rise">
               {author.avatar && (
@@ -341,7 +341,7 @@ const AuthorPage = () => {
           {articles.length === 0 ? (
             <Empty>No published articles yet.</Empty>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((p) => (
                 <BlogCard
                   key={p.id}
@@ -361,7 +361,7 @@ const AuthorPage = () => {
             <Reveal>
               <SectionHeader id="credentials" label="Credentials" title="Why trust" soft="this author" />
             </Reveal>
-            <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               <Credentials
                 label="Currently"
                 items={current.slice(0, 4).map((c) => ({
