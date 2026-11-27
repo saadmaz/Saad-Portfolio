@@ -17,7 +17,7 @@ export const SERIES: {
   {
     id: "building-in-public",
     number: "01",
-    title: "Building in Public",
+    title: "Between Builds",
     label: "Projects",
     blurb: "The messy, exciting process of turning ideas into reality.",
     color: "#ff5f00",
@@ -25,7 +25,7 @@ export const SERIES: {
   {
     id: "ai-and-technology",
     number: "02",
-    title: "AI & Technology",
+    title: "Beyond the Prompt",
     label: "AI",
     blurb: "Less hype. More real-world AI.",
     color: "#2fbf71",
@@ -33,7 +33,7 @@ export const SERIES: {
   {
     id: "startups",
     number: "03",
-    title: "Startups",
+    title: "Founder Files",
     label: "Business",
     blurb: "Stories, lessons and realities of building businesses.",
     color: "#3b82f6",
@@ -41,7 +41,7 @@ export const SERIES: {
   {
     id: "personal-branding",
     number: "04",
-    title: "Personal Branding",
+    title: "The Visibility Playbook",
     label: "Growth",
     blurb: "Building your presence beyond a LinkedIn page.",
     color: "#e8488a",
@@ -49,7 +49,7 @@ export const SERIES: {
   {
     id: "ai-tutorials",
     number: "05",
-    title: "AI Tutorials",
+    title: "Better With AI",
     label: "Practical AI",
     blurb: "Practical ways to work smarter with AI.",
     color: "#8b5cf6",
@@ -57,7 +57,7 @@ export const SERIES: {
   {
     id: "tech-news",
     number: "06",
-    title: "Tech News",
+    title: "Tech Radar",
     label: "News",
     blurb: "What's happening. What's changing. What matters.",
     color: "#f5b700",
