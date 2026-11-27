@@ -950,14 +950,10 @@
 .blog-card__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(0 0 0 / 0.2) 0%,
-    transparent 22%,
-    transparent 40%,
-    rgb(0 0 0 / 0.35) 58%,
-    rgb(0 0 0 / 0.78) 100%
-  );
+  /* Brand glow from the bottom corner over the blurred cover, darkening only behind the text. */
+  background:
+    radial-gradient(120% 55% at 0% 100%, rgb(255 95 0 / 0.38), transparent 70%),
+    linear-gradient(180deg, transparent 0%, transparent 38%, rgb(0 0 0 / 0.3) 55%, rgb(0 0 0 / 0.72) 100%);
   transition: opacity 0.4s ease;
 }
 .blog-card__front {
@@ -966,7 +962,8 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
   padding: 18px;
   color: #fff;
   transition:
@@ -1028,6 +1025,27 @@
   .blog-card__back {
     opacity: 1;
     transform: none;
+  }
+}
+/* At rest the cover (16:9 across the full width) melts into the blurred fill below it. */
+.blog-card__cover img {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 calc(100cqw * 0.5625 - 56px),
+    transparent calc(100cqw * 0.5625)
+  );
+  mask-image: linear-gradient(180deg, #000 calc(100cqw * 0.5625 - 56px), transparent calc(100cqw * 0.5625));
+}
+@media (hover: hover) {
+  .blog-card:is(:hover, :focus-visible) .blog-card__cover img {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+@media (hover: none) {
+  .blog-card__cover img {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
 /* Only the excerpt gives way when the panel is short; narrow cards trim it, then drop it. */

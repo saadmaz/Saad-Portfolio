@@ -84,7 +84,7 @@ export function BlogCard({ post, wpm, typeLabel, priority, className }: CardProp
             asset={cover as ImageAsset}
             alt=""
             sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-            className="absolute inset-0 size-full scale-125 rounded-none border-0 opacity-90 blur-2xl saturate-150"
+            className="absolute inset-0 size-full scale-125 rounded-none border-0 blur-2xl brightness-110 saturate-200"
           />
         )}
         <Media
@@ -92,7 +92,7 @@ export function BlogCard({ post, wpm, typeLabel, priority, className }: CardProp
           alt=""
           sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
           priority={priority}
-          className="absolute inset-0 size-full rounded-none border-0 bg-transparent"
+          className="blog-card__cover absolute inset-0 size-full rounded-none border-0 bg-transparent"
           imgClassName="object-contain object-top"
         />
         <div aria-hidden className="blog-card__scrim" />
@@ -100,14 +100,17 @@ export function BlogCard({ post, wpm, typeLabel, priority, className }: CardProp
 
       {/* Resting face: decorative, the details panel below carries the accessible text. */}
       <div aria-hidden className="blog-card__front">
-        <span className="w-fit rounded-full border border-white/20 bg-black/30 px-3 py-1 font-mono text-[11px] uppercase tracking-wider backdrop-blur-md">
-          {kind}
-        </span>
-        <div className="flex flex-col gap-3">
-          <p className="line-clamp-3 text-h4 font-medium leading-snug">{post.title}</p>
-          <p className="font-mono text-meta text-white/70">
-            {date} · {minutes} min read
-          </p>
+        <div className="flex items-center gap-2.5">
+          <span className="rounded-full bg-accent px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-wider text-white">
+            {kind}
+          </span>
+          <span className="font-mono text-meta text-white/75">
+            {date} · {minutes} min
+          </span>
+        </div>
+        <p className="line-clamp-2 text-h4 font-medium leading-snug">{post.title}</p>
+        {blurb && <p className="blog-card__blurb line-clamp-2 text-sm text-white/70">{blurb}</p>}
+        <div className="mt-1">
           <ReadPill glass />
         </div>
       </div>
