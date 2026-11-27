@@ -37,6 +37,7 @@ import {
   SITE_NAME,
   BASE_URL,
   CONTACT_FAQ,
+  CONTACT_INTRO,
   CONTACT_SERVICES,
   categoryDescriptionOf,
   eventDescriptionOf,
@@ -1112,21 +1113,22 @@ function staticBody(routePath, data) {
       );
     case "/contact":
       return [
-        `<p>Product builds, startup collaborations, speaking and hosting. Tell me what you're working on and I'll reply within a day.</p>`,
-        `<p>Email: <a href="mailto:hello@saadmaz.com">hello@saadmaz.com</a> · <a href="https://calendly.com/saadmaz/30min">Book a 30-minute call</a></p>`,
-        `<p>Based in Colombo, Sri Lanka.</p>`,
+        ...CONTACT_INTRO.map((p) => `<p>${escape(p)}</p>`),
+        `<p>Email: <a href="mailto:hello@saadmaz.com">hello@saadmaz.com</a> · <a href="https://calendly.com/saadmaz/30min">Book a free 30-minute call</a></p>`,
+        `<p>Based in Colombo, Sri Lanka. Happy to work with people everywhere. I aim to reply within one working day.</p>`,
         section(
-          "What I can help with",
+          "What can we work on?",
           CONTACT_SERVICES.map((s) => `<h3>${escape(s.title)}</h3>\n<p>${escape(s.body)}</p>`).join("\n"),
         ),
         section(
-          "Frequently asked questions",
+          "A few things you might be wondering",
           CONTACT_FAQ.map(({ q, a }) => `<h3>${escape(q)}</h3>\n<p>${escape(a)}</p>`).join("\n"),
         ),
         section(
-          "Elsewhere",
+          "Find me around the internet",
           list(PERSON_SCHEMA.sameAs, (u) => `<a href="${escape(u)}">${escape(u)}</a>`),
         ),
+        `<p>More about me: <a href="/about">About</a> · <a href="/projects">Projects</a> · <a href="/experience">Experience</a> · <a href="/blog">Blog</a></p>`,
       ].join("\n");
     default:
       return "";
@@ -1153,8 +1155,8 @@ function staticCard(routePath, data) {
     },
     "/contact": {
       eyebrow: "Contact",
-      title: "Let's build",
-      soft: "something good.",
+      title: "Got something",
+      soft: "brewing?",
       meta: "hello@saadmaz.com",
       visual: { kind: "portrait" },
     },
