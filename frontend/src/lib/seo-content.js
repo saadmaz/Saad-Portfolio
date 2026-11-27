@@ -225,10 +225,11 @@ export const PAGE_SEO = {
       "Thoughts and tutorials from Saad Mazhar on AI tools, full-stack development, and the Sri Lanka tech ecosystem.",
   },
   "/contact": {
-    title: "Contact | Hire a Developer",
-    h1: "Contact Saad Mazhar",
+    title: "Contact",
+    fullTitle: "Contact Saad Mazhar | Projects, AI & Collaborations",
+    h1: "Got something brewing?",
     description:
-      "Get in touch with Saad Mazhar. Available for freelance projects, collaborations, speaking engagements, and consulting - based in Colombo, Sri Lanka.",
+      "Have a project, startup idea or collaboration in mind? Get in touch with Saad Mazhar, a developer and technology entrepreneur based in Colombo, Sri Lanka.",
   },
   "/experience": {
     title: "Work Experience",
@@ -279,18 +280,31 @@ export const PAGE_SEO = {
  * the same thing. Only facts the site already states elsewhere (the enquiry
  * types and budgets on the form, reply time, the booking link).
  */
+export const CONTACT_INTRO = [
+  "A project, a slightly crazy idea, a collaboration, or just something you think we'd have fun working on? I'm always up for interesting conversations.",
+  "Whether you're looking to build a product, explore AI, work on a startup, or have me speak or host an event, I'd love to hear about it.",
+];
+
 export const CONTACT_SERVICES = [
   {
-    title: "Product builds",
-    body: "Web apps and MVPs built end to end: React and TypeScript on the front, APIs, databases and deployment behind it.",
+    title: "Building products",
+    body: "From an early-stage idea to a working product. Web applications, SaaS platforms, MVPs, internal tools and the systems that keep businesses running.",
   },
   {
-    title: "AI integration",
-    body: "Adding AI features to an existing product, or building an AI-powered tool around a real workflow.",
+    title: "AI & automation",
+    body: "Making AI actually useful. From integrating AI into existing products to building intelligent workflows, agents and automation systems that solve real problems.",
   },
   {
-    title: "Speaking and hosting",
-    body: "Talks, panels and hosting for tech, startup and community events in Sri Lanka and online.",
+    title: "Startups & collaborations",
+    body: "Have an idea you're exploring? Building something interesting? Looking for a technical collaborator or someone to bounce ideas around with? Let's talk.",
+  },
+  {
+    title: "Speaking, hosting & events",
+    body: "Tech talks, panel discussions, startup events, workshops and MC engagements. I enjoy being part of conversations that bring people and ideas together.",
+  },
+  {
+    title: "Business & technology consulting",
+    body: "Need a second opinion on a technical decision, product direction, digital transformation or how technology could improve your operations? Happy to help.",
   },
 ];
 
@@ -321,23 +335,31 @@ export const CONTACT_PAGE_SCHEMA = {
 
 export const CONTACT_FAQ = [
   {
-    q: "What kind of work do you take on?",
-    a: "Product builds, AI integrations, startup collaborations, and speaking or hosting. If it's something else, send it anyway and I'll tell you honestly if I'm the right fit.",
+    q: "What kind of projects do you take on?",
+    a: "I work on web applications, SaaS products, AI integrations, business systems and early-stage product ideas. I'm also open to startup collaborations, consulting, speaking and hosting opportunities. If your idea doesn't fit neatly into one of these, reach out anyway.",
   },
   {
-    q: "How quickly will you reply?",
-    a: "Within a day. Messages from the form go straight to my inbox.",
+    q: "Do you work with international clients?",
+    a: "Absolutely. I'm based in Colombo, Sri Lanka, but I'm happy working with people and teams across different time zones.",
   },
   {
-    q: "What budgets do you work with?",
-    a: "Projects range from under $2k to $10k+. If you're not sure yet, pick \"Not sure\" and we'll scope it together.",
+    q: "How much do projects typically cost?",
+    a: "It depends on what we're building. Smaller projects might start below $2,000, while more involved products and systems can go beyond $10,000. I'd rather understand the problem before throwing a number at it. If you have a budget in mind, include it in your message.",
   },
   {
-    q: "Can we talk before writing anything up?",
-    a: "Yes. Book a free 30-minute call and we'll go through the idea, timeline and budget.",
+    q: "How long does it take to get started?",
+    a: "That depends on the project, the scope and my current commitments. Once I understand what you're looking for, we can talk about availability and a realistic timeline.",
   },
   {
-    q: "Where are you based?",
-    a: "Colombo, Sri Lanka. I work with clients and teams remotely as well as in person.",
+    q: "Can we have a conversation before committing to anything?",
+    a: "Of course. Book a free 30-minute introductory call, no commitment required. We can talk through the idea, figure out whether we're a good fit and see where to go from there.",
+  },
+  {
+    q: "What if I just have an idea and don't know where to start?",
+    a: "That's completely fine. You don't need a technical specification or a finished business plan. Tell me what you're thinking, and we can work through it together.",
+  },
+  {
+    q: "How quickly will you respond?",
+    a: "I aim to reply within one working day. If I'm tied up with something, it might take a little longer, but I won't leave you wondering.",
   },
 ];

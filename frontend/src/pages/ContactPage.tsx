@@ -3,13 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 import {
   ArrowUpRight,
   Bot,
+  Briefcase,
+  CalendarDays,
   Check,
   CheckCircle2,
   Copy,
   Hammer,
-  Mic,
   MessageCircle,
-  Sparkles,
+  Mic,
+  PenLine,
+  Rocket,
   type LucideIcon,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -17,9 +20,16 @@ import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Field, FilterPill, Reveal, RisingWords } from "@/components/ui";
 import { useContactMutation, useContactSettings, useEvents } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
-import { CONTACT } from "@/lib/site";
-import { SocialLinks } from "@/components/brand/SocialLinks";
-import { PAGE_SEO, BASE_URL, CONTACT_FAQ, CONTACT_PAGE_SCHEMA, CONTACT_SERVICES } from "@/lib/seo-content";
+import { CONTACT, SOCIALS, type SocialId } from "@/lib/site";
+import { SocialIcon } from "@/components/brand/SocialLinks";
+import {
+  PAGE_SEO,
+  BASE_URL,
+  CONTACT_FAQ,
+  CONTACT_INTRO,
+  CONTACT_PAGE_SCHEMA,
+  CONTACT_SERVICES,
+} from "@/lib/seo-content";
 import { copyText } from "@/lib/clipboard";
 import { eventStats } from "@/lib/eventStats";
 import {
@@ -47,8 +57,9 @@ const FAQ_SCHEMA = {
 const TOPIC_ICONS: Record<Topic["id"], LucideIcon> = {
   build: Hammer,
   ai: Bot,
+  startup: Rocket,
   speaking: Mic,
-  hosting: Sparkles,
+  consulting: Briefcase,
   other: MessageCircle,
 };
 
@@ -59,7 +70,7 @@ const STATUS: Record<
   available: {
     dot: "bg-live shadow-[0_0_10px_rgb(74_222_128/0.7)]",
     text: "text-live",
-    fallback: "Available for new projects",
+    fallback: "Open to interesting projects",
   },
   limited: {
     dot: "bg-[#f5a524] shadow-[0_0_10px_rgb(245_165_36/0.7)]",
@@ -73,6 +84,21 @@ const STEPS = [
   { title: "I reply", body: "A real answer from me, not an autoresponder." },
   { title: "Short call", body: "15–30 minutes to understand the goal, constraints and timeline." },
   { title: "Plan & go", body: "A clear proposal for builds, or a confirmed brief for events." },
+];
+
+/** Profiles listed on this page, with a line on what each is for. Facebook stays in the footer only. */
+const ELSEWHERE: { id: SocialId; note: string }[] = [
+  { id: "linkedin", note: "Work, projects and professional updates" },
+  { id: "github", note: "Things I've built and experimented with" },
+  { id: "instagram", note: "A little more of everyday life" },
+  { id: "x", note: "Random thoughts and conversations" },
+];
+
+const MORE_LINKS = [
+  { to: "/about", label: "About" },
+  { to: "/projects", label: "Projects" },
+  { to: "/experience", label: "Experience" },
+  { to: "/blog", label: "Blog" },
 ];
 
 /** Live clock for Colombo so visitors know when a reply is likely. */
@@ -116,14 +142,42 @@ function CopyEmail() {
   );
 }
 
-const EMPTY = { name: "", email: "", message: "", website: "", eventDate: "", audience: "" };
+/** Optional single-choice pills: clicking the active one clears it. */
+function OptionalPills({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <fieldset className="flex flex-col gap-3">
+      <legend className="label mb-3 text-fg-3">
+        {label} <span className="normal-case tracking-normal">(optional)</span>
+      </legend>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => (
+          <FilterPill key={o} active={value === o} onClick={() => onChange(value === o ? "" : o)}>
+            {o}
+          </FilterPill>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+const EMPTY = { name: "", email: "", company: "", message: "", website: "", eventDate: "", audience: "" };
 
 const ContactPage = () => {
   const { search } = useLocation();
   const [topic, setTopic] = useState<Topic>(() => topicFromQuery(search));
   const [form, setForm] = useState(EMPTY);
-  const [budget, setBudget] = useState(BUDGETS[3]);
-  const [timeline, setTimeline] = useState(TIMELINES[3]);
+  const [budget, setBudget] = useState("");
+  const [timeline, setTimeline] = useState("");
   const [errors, setErrors] = useState<Partial<Record<"name" | "email" | "message", string>>>({});
   const mutation = useContactMutation();
   const { data: settings } = useContactSettings();
@@ -134,7 +188,7 @@ const ContactPage = () => {
   useEffect(() => setTopic(topicFromQuery(search)), [search]);
 
   const status = STATUS[settings?.status ?? "available"];
-  const replyTime = settings?.reply_time?.trim() || "within a day";
+  const replyTime = settings?.reply_time?.trim() || "within one working day";
   const ev = eventStats(events);
 
   const set = (k: keyof typeof EMPTY) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -149,6 +203,7 @@ const ContactPage = () => {
     if (Object.keys(next).length) return;
     const { subject, message } = composeMessage({
       topic,
+      company: form.company,
       budget,
       timeline,
       eventDate: form.eventDate,
@@ -157,25 +212,34 @@ const ContactPage = () => {
     });
     mutation.mutate(
       { name: form.name, email: form.email, website: form.website, subject, message },
-      { onSuccess: () => setForm(EMPTY) },
+      {
+        onSuccess: () => {
+          setForm(EMPTY);
+          setBudget("");
+          setTimeline("");
+        },
+      },
     );
   };
 
+  /** Where each "What can we work on?" card points, with a line of proof. Same order as CONTACT_SERVICES. */
   const proof = [
     { to: "/projects", meta: projects.length ? `${projects.length} projects shipped` : "See projects" },
     { to: "/projects", meta: "AI tools & integrations" },
+    { to: "/experience", meta: "Companies I've started" },
     {
       to: "/events",
       meta: ev.count
         ? `${ev.count} events${ev.audience ? ` · ${ev.audience.toLocaleString("en-US")}+ people` : ""}`
         : "See events",
     },
+    { to: "/about", meta: "More about me" },
   ];
 
   return (
     <Layout>
       <SEO
-        title={PAGE_SEO["/contact"].title}
+        fullTitle={PAGE_SEO["/contact"].fullTitle}
         description={PAGE_SEO["/contact"].description}
         url={`${BASE_URL}/contact`}
         structuredData={[FAQ_SCHEMA, CONTACT_PAGE_SCHEMA]}
@@ -192,18 +256,18 @@ const ContactPage = () => {
               <Eyebrow>Contact</Eyebrow>
             </div>
             <h1 className="text-display-m font-medium xl:text-display-l">
-              <RisingWords text="Let’s build" />{" "}
-              <RisingWords text="something good." from={2} className="soft" />
+              <RisingWords text="Got something" /> <RisingWords text="brewing?" from={2} className="soft" />
             </h1>
             <span className="inline-flex w-fit animate-rise items-center gap-2.5 rounded-full border border-line-2 bg-surface/60 px-4 py-2 text-sm [animation-delay:250ms]">
-              <span aria-hidden className={cn("size-2 rounded-full", status.dot)} />
+              <span aria-hidden className={cn("size-2 animate-pulse rounded-full", status.dot)} />
               <span className={status.text}>{settings?.message?.trim() || status.fallback}</span>
               <span className="text-fg-3">· replies {replyTime}</span>
             </span>
-            <p className="max-w-[520px] animate-rise text-body-l text-fg-2 [animation-delay:350ms]">
-              Product builds, AI integrations, speaking and hosting. Tell me what you’re working on and I’ll
-              get back to you {replyTime}.
-            </p>
+            <div className="flex max-w-[540px] animate-rise flex-col gap-4 text-body-l text-fg-2 [animation-delay:350ms]">
+              {CONTACT_INTRO.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+            </div>
             <dl className="animate-rise border-b border-line-2 [animation-delay:450ms]">
               {[
                 ["Email", <CopyEmail key="e" />],
@@ -217,10 +281,11 @@ const ContactPage = () => {
                   "Based in",
                   <span key="l">
                     {CONTACT.location}
-                    <span className="ml-2 font-mono text-meta text-fg-3">{time} local</span>
+                    <span className="ml-2 font-mono text-meta text-fg-3">
+                      {time} local · working globally
+                    </span>
                   </span>,
                 ],
-                ["Elsewhere", <SocialLinks key="s" size="sm" />],
               ].map(([k, v]) => (
                 <div
                   key={k as string}
@@ -231,14 +296,34 @@ const ContactPage = () => {
                 </div>
               ))}
             </dl>
+            <div className="flex animate-rise flex-col gap-4 rounded-[20px] border border-line-2 bg-surface/60 p-6 [animation-delay:550ms] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex gap-4">
+                <CalendarDays aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
+                <div>
+                  <h2 className="font-medium">Prefer a conversation?</h2>
+                  <p className="mt-1 text-sm text-fg-2">
+                    Sometimes it's easier to talk things through than type out a whole brief. Grab a free
+                    30-minute slot and let's figure out what you're working on.
+                  </p>
+                </div>
+              </div>
+              <Button href={CONTACT.bookingUrl} variant="secondary" className="shrink-0">
+                Book a call
+              </Button>
+            </div>
           </div>
 
-          <div className="h-fit animate-rise rounded-[28px] border border-line bg-surface p-6 [animation-delay:200ms] md:p-10">
+          <div
+            id="message"
+            className="h-fit scroll-mt-28 animate-rise rounded-[28px] border border-line bg-surface p-6 [animation-delay:200ms] md:p-10"
+          >
             {mutation.isSuccess ? (
               <div className="flex flex-col items-start gap-6 py-6">
                 <CheckCircle2 aria-hidden className="size-12 animate-rise text-live" />
-                <h2 className="text-h2 font-medium">Message sent.</h2>
-                <p className="text-fg-2">Thanks for reaching out. Here’s what happens next:</p>
+                <h2 className="text-h2 font-medium">That's on its way!</h2>
+                <p className="text-fg-2">
+                  Thanks for reaching out. I'll get back to you {replyTime}. Here's what happens next:
+                </p>
                 <ol className="flex flex-col gap-3">
                   {STEPS.map((s, i) => (
                     <li key={s.title} className="flex gap-3">
@@ -247,7 +332,7 @@ const ContactPage = () => {
                       </span>
                       <span>
                         <span className="font-medium">{s.title}</span>
-                        <span className="text-fg-2"> {i === 0 ? `${replyTime}.` : `- ${s.body}`}</span>
+                        <span className="text-fg-2"> - {s.body}</span>
                       </span>
                     </li>
                   ))}
@@ -258,9 +343,15 @@ const ContactPage = () => {
               </div>
             ) : (
               <form onSubmit={submit} noValidate className="flex flex-col gap-6">
-                <h2 className="text-h3 font-medium">What can I help with?</h2>
+                <div className="flex flex-col gap-2">
+                  <h2 className="text-h3 font-medium">Tell me what's on your mind.</h2>
+                  <p className="text-sm text-fg-2">
+                    You don't need a perfectly written brief or a fully figured-out plan. Just give me the
+                    context, and we'll take it from there.
+                  </p>
+                </div>
                 <fieldset>
-                  <legend className="sr-only">Topic</legend>
+                  <legend className="label mb-3 text-fg-3">What are you reaching out about?</legend>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {TOPICS.map((t) => {
                       const Icon = TOPIC_ICONS[t.id];
@@ -272,10 +363,10 @@ const ContactPage = () => {
                           aria-pressed={active}
                           onClick={() => setTopic(t)}
                           className={cn(
-                            "flex flex-col items-start gap-3 rounded-2xl border p-4 text-left text-sm transition-colors",
+                            "flex flex-col items-start gap-3 rounded-2xl border p-4 text-left text-sm transition-[color,border-color,background-color,transform] duration-200 active:scale-[0.98]",
                             active
                               ? "border-accent bg-accent/[0.08] text-fg"
-                              : "border-line-2 text-fg-2 hover:border-fg/30 hover:text-fg",
+                              : "border-line-2 text-fg-2 hover:-translate-y-0.5 hover:border-fg/30 hover:text-fg",
                           )}
                         >
                           <Icon aria-hidden className={cn("size-5", active ? "text-accent" : "text-fg-3")} />
@@ -287,7 +378,7 @@ const ContactPage = () => {
                 </fieldset>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field
-                    label="Name"
+                    label="Your name"
                     name="name"
                     value={form.name}
                     onChange={set("name")}
@@ -297,7 +388,7 @@ const ContactPage = () => {
                     error={errors.name}
                   />
                   <Field
-                    label="Email"
+                    label="Email address"
                     name="email"
                     type="email"
                     value={form.email}
@@ -308,27 +399,29 @@ const ContactPage = () => {
                     error={errors.email}
                   />
                 </div>
+                <Field
+                  label="Company / organisation (optional)"
+                  name="company"
+                  value={form.company}
+                  onChange={set("company")}
+                  placeholder="Where you're from, if it helps"
+                  autoComplete="organization"
+                  maxLength={120}
+                />
                 {topic.kind === "build" && (
                   <div key="build" className="flex animate-rise flex-col gap-6 [animation-duration:300ms]">
-                    {[
-                      ["Budget", BUDGETS, budget, setBudget],
-                      ["Timeline", TIMELINES, timeline, setTimeline],
-                    ].map(([label, opts, value, setter]) => (
-                      <fieldset key={label as string} className="flex flex-col gap-3">
-                        <legend className="label mb-3 text-fg-3">{label as string}</legend>
-                        <div className="flex flex-wrap gap-2">
-                          {(opts as string[]).map((o) => (
-                            <FilterPill
-                              key={o}
-                              active={value === o}
-                              onClick={() => (setter as (v: string) => void)(o)}
-                            >
-                              {o}
-                            </FilterPill>
-                          ))}
-                        </div>
-                      </fieldset>
-                    ))}
+                    <OptionalPills
+                      label="Estimated budget"
+                      options={BUDGETS}
+                      value={budget}
+                      onChange={setBudget}
+                    />
+                    <OptionalPills
+                      label="Expected timeline"
+                      options={TIMELINES}
+                      value={timeline}
+                      onChange={setTimeline}
+                    />
                   </div>
                 )}
                 {topic.kind === "event" && (
@@ -337,15 +430,15 @@ const ContactPage = () => {
                     className="grid animate-rise gap-4 [animation-duration:300ms] sm:grid-cols-2"
                   >
                     <Field
-                      label="Event date"
+                      label="Event date (optional)"
                       name="eventDate"
                       value={form.eventDate}
                       onChange={set("eventDate")}
-                      placeholder="e.g. 14 March 2026"
+                      placeholder="e.g. 14 March 2027"
                       maxLength={60}
                     />
                     <Field
-                      label="Expected audience"
+                      label="Expected audience (optional)"
                       name="audience"
                       value={form.audience}
                       onChange={set("audience")}
@@ -356,14 +449,14 @@ const ContactPage = () => {
                 )}
                 <div className="flex flex-col gap-2">
                   <Field
-                    label={topic.kind === "event" ? "About the event" : "Details"}
+                    label="Tell me a little more"
                     name="message"
                     value={form.message}
                     onChange={set("message")}
                     placeholder={
                       topic.kind === "event"
-                        ? "The event, the format and what you need from me"
-                        : "What you’re building, where it’s at and what you need"
+                        ? "The event, the format and what you'd like from me"
+                        : "I've been thinking about…"
                     }
                     multiline
                     maxLength={MESSAGE_MAX}
@@ -396,16 +489,8 @@ const ContactPage = () => {
                   </p>
                 )}
                 <Button type="submit" size="lg" className="w-full" disabled={mutation.isPending}>
-                  {mutation.isPending ? "Sending…" : "Send message"}
+                  {mutation.isPending ? "Sending…" : "Send it my way"}
                 </Button>
-                <a
-                  href={CONTACT.bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap font-mono text-meta text-fg-2 hover:text-fg"
-                >
-                  Or book a 30-min call →
-                </a>
               </form>
             )}
           </div>
@@ -414,23 +499,30 @@ const ContactPage = () => {
 
       <section aria-labelledby="help-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
         <Reveal>
-          <Eyebrow>What I can help with</Eyebrow>
+          <Eyebrow index="01">What I can help with</Eyebrow>
           <h2 id="help-heading" className="mt-6 max-w-[720px] text-h2 font-medium">
-            Hire a full-stack developer <span className="soft">who has shipped his own products.</span>
+            What can we <span className="soft">work on?</span>
           </h2>
+          <p className="mt-4 max-w-[620px] text-body-l text-fg-2">
+            A few things I spend my time doing. Not an exhaustive list, though. I'm open to interesting ideas.
+          </p>
         </Reveal>
-        <ul className="mt-10 grid gap-6 md:grid-cols-3">
+        <ul className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {CONTACT_SERVICES.map((s, i) => (
             <li key={s.title}>
-              <Reveal delay={i * 100} className="h-full">
+              <Reveal delay={i * 80} className="h-full">
                 <Link
                   to={proof[i]?.to ?? "/projects"}
-                  className="group flex h-full flex-col gap-3 rounded-[20px] border border-line bg-surface p-6 transition-colors hover:border-accent/50"
+                  className="group flex h-full flex-col gap-3 rounded-[20px] border border-line bg-surface p-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
                 >
                   <span className="flex items-start justify-between gap-4">
-                    <h3 className="text-h3 font-medium group-hover:text-accent">{s.title}</h3>
-                    <ArrowUpRight aria-hidden className="size-5 shrink-0 text-fg-3 group-hover:text-accent" />
+                    <span className="font-mono text-meta text-accent">{String(i + 1).padStart(2, "0")}</span>
+                    <ArrowUpRight
+                      aria-hidden
+                      className="size-5 shrink-0 text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                    />
                   </span>
+                  <h3 className="text-h3 font-medium group-hover:text-accent">{s.title}</h3>
                   <p className="text-fg-2">{s.body}</p>
                   {proof[i] && (
                     <span className="mt-auto pt-4 font-mono text-meta text-fg-3">{proof[i].meta}</span>
@@ -444,7 +536,7 @@ const ContactPage = () => {
 
       <section aria-labelledby="process-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
         <Reveal>
-          <Eyebrow>How it works</Eyebrow>
+          <Eyebrow index="02">How it works</Eyebrow>
           <h2 id="process-heading" className="mt-6 text-h2 font-medium">
             From hello <span className="soft">to kickoff</span>
           </h2>
@@ -472,9 +564,9 @@ const ContactPage = () => {
       </section>
 
       <section aria-labelledby="faq-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
-        <Eyebrow>FAQ</Eyebrow>
+        <Eyebrow index="03">FAQ</Eyebrow>
         <h2 id="faq-heading" className="mt-6 text-h2 font-medium">
-          Before you <span className="soft">get in touch</span>
+          A few things <span className="soft">you might be wondering</span>
         </h2>
         <div className="mt-10 max-w-[820px] border-b border-line-2">
           {CONTACT_FAQ.map(({ q, a }, i) => (
@@ -492,6 +584,77 @@ const ContactPage = () => {
             </details>
           ))}
         </div>
+      </section>
+
+      <section aria-labelledby="elsewhere-heading" className="wrap border-t border-line-2 py-16 lg:py-24">
+        <Reveal>
+          <Eyebrow index="04">Around the internet</Eyebrow>
+          <h2 id="elsewhere-heading" className="mt-6 text-h2 font-medium">
+            Find me <span className="soft">around the internet.</span>
+          </h2>
+        </Reveal>
+        <ul className="mt-10 grid border-b border-line-2 md:grid-cols-2 md:gap-x-12">
+          {ELSEWHERE.map(({ id, note }) => {
+            const s = SOCIALS.find((x) => x.id === id);
+            if (!s) return null;
+            return (
+              <li key={id} className="border-t border-line-2">
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 py-5"
+                >
+                  <SocialIcon id={id} className="text-fg-3 transition-colors group-hover:text-accent" />
+                  <span className="flex flex-1 flex-col">
+                    <span className="font-medium group-hover:text-accent">
+                      {s.label}
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </span>
+                    <span className="text-sm text-fg-2">{note}</span>
+                  </span>
+                  <ArrowUpRight
+                    aria-hidden
+                    className="size-5 text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                  />
+                </a>
+              </li>
+            );
+          })}
+          <li className="border-t border-line-2">
+            <Link to="/blog" className="group flex items-center gap-4 py-5">
+              <PenLine
+                aria-hidden
+                className="size-[18px] text-fg-3 transition-colors group-hover:text-accent"
+              />
+              <span className="flex flex-1 flex-col">
+                <span className="font-medium group-hover:text-accent">Blog</span>
+                <span className="text-sm text-fg-2">
+                  Longer thoughts on technology, startups and building things
+                </span>
+              </span>
+              <ArrowUpRight
+                aria-hidden
+                className="size-5 text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+              />
+            </Link>
+          </li>
+        </ul>
+        <Reveal className="mt-16 flex flex-col gap-4">
+          <p className="text-h3 font-medium">
+            Made something interesting? <span className="soft">I'd love to hear about it.</span>
+          </p>
+          <nav
+            aria-label="More about Saad"
+            className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-meta text-fg-2"
+          >
+            {MORE_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="tap hover:text-accent">
+                {l.label} →
+              </Link>
+            ))}
+          </nav>
+        </Reveal>
       </section>
     </Layout>
   );
