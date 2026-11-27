@@ -9,8 +9,22 @@
 
 import { hmac, safeEqual, sha256 } from "./http.js";
 
-export const SERIES = ["founder", "cse"] as const;
+/** Same ids as SERIES in src/lib/newsletter.ts (a test keeps them in sync). */
+export const SERIES = [
+  "building-in-public",
+  "ai-and-technology",
+  "startups",
+  "personal-branding",
+  "ai-tutorials",
+  "tech-news",
+] as const;
 export type Series = (typeof SERIES)[number];
+
+/** Topic ids from before the six series, still sent by cached pages. */
+const LEGACY: Record<string, Series[]> = {
+  founder: ["building-in-public", "startups", "personal-branding"],
+  cse: ["ai-and-technology", "ai-tutorials", "tech-news"],
+};
 
 export const CONFIRM_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -26,7 +40,7 @@ export function validateSubscribe(
   const email = typeof b.email === "string" ? b.email.trim().toLowerCase() : "";
   if (!EMAIL_RE.test(email) || email.length > 254)
     return { ok: false, error: "Please enter a valid email address." };
-  const raw = Array.isArray(b.topics) ? b.topics : [];
+  const raw = (Array.isArray(b.topics) ? b.topics : []).flatMap((t) => LEGACY[String(t)] ?? [t]);
   const topics = SERIES.filter((s) => raw.includes(s));
   return { ok: true, value: { email, topics: topics.length ? topics : [...SERIES] } };
 }

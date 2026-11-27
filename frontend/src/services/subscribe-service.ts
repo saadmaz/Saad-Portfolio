@@ -3,7 +3,13 @@
  * The browser never touches the `subscribers` collection directly.
  */
 
-export type NewsletterSeries = "founder" | "cse";
+export type NewsletterSeries =
+  | "building-in-public"
+  | "ai-and-technology"
+  | "startups"
+  | "personal-branding"
+  | "ai-tutorials"
+  | "tech-news";
 
 type Body =
   | { action: "subscribe"; email: string; topics: NewsletterSeries[]; website?: string; source?: string }

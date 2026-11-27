@@ -56,6 +56,7 @@ export interface SeriesPosition<T> {
   previous: T | null;
   next: T | null;
 }
+export function seriesKicker(series: Pick<BlogSeries, "order" | "label"> | null | undefined): string;
 export function seriesParts<T extends PostLike>(
   series: Pick<BlogSeries, "id" | "postIds"> | null | undefined,
   livePostsById: Map<string, T>,

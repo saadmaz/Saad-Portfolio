@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Empty, Media, PageHeader, Skeleton } from "@/components/ui";
 import { useBlogPosts, useBlogSettings, useSeries } from "@/hooks/useBlog";
-import { articlePath, readingMinutesOf, seriesParts } from "@/lib/article-core";
+import { articlePath, readingMinutesOf, seriesKicker, seriesParts } from "@/lib/article-core";
 import { BASE_URL } from "@/lib/seo-content";
 import NotFound from "./NotFound";
 
@@ -56,7 +56,7 @@ const SeriesPage = () => {
         ]}
       />
       <PageHeader
-        label={`Series · ${parts.length} parts · ${minutes} min`}
+        label={[seriesKicker(series) || "Series", `${parts.length} parts`, `${minutes} min`].join(" · ")}
         title={series.title}
         intro={series.description}
       />

@@ -26,6 +26,7 @@ import {
   categoriesOf,
   featuredPosts,
   readingMinutesOf,
+  seriesKicker,
   seriesParts,
   slugify,
   stripHtml,
@@ -97,7 +98,8 @@ const BlogsPage = () => {
     const byId = new Map(data.map((p) => [p.id, p]));
     return allSeries
       .map((s) => ({ series: s, parts: seriesParts(s, byId) }))
-      .filter((s) => s.parts.length > 0);
+      .filter((s) => s.parts.length > 0)
+      .sort((a, b) => (a.series.order ?? 99) - (b.series.order ?? 99));
   }, [allSeries, data]);
 
   const typeOf = (p: BlogPost) => articleTypeLabel(p.articleType, settings.articleTypes);
@@ -268,7 +270,9 @@ const BlogsPage = () => {
                         className="group flex h-full flex-col gap-4 rounded-card border border-line-2 bg-surface p-6 transition-colors hover:border-accent"
                       >
                         <span className="label text-fg-3">
-                          {parts.length} {parts.length === 1 ? "part" : "parts"}
+                          {[seriesKicker(s), `${parts.length} ${parts.length === 1 ? "part" : "parts"}`]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </span>
                         <span className="text-h4 font-medium transition-colors group-hover:text-accent">
                           {s.title}

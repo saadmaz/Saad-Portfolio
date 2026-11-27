@@ -215,14 +215,14 @@ const NewslettersPage = () => {
       <section className="section screen theme-light border-t-0" aria-labelledby="series">
         <div className="wrap">
           <Reveal>
-            <SectionHeader id="series" label="Two series" title="Pick" soft="your lane" />
+            <SectionHeader id="series" label="Six series" title="Pick" soft="your lane" />
           </Reveal>
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {SERIES.map((s, i) => {
               const count = data.filter((n) => seriesOf(n).id === s.id).length;
               const active = series === s.id;
               return (
-                <Reveal key={s.id} delay={i * 100}>
+                <Reveal key={s.id} delay={(i % 3) * 100}>
                   <button
                     type="button"
                     aria-pressed={active}
@@ -238,15 +238,14 @@ const NewslettersPage = () => {
                       background: `radial-gradient(ellipse at 100% 0%, ${s.color}26, transparent 60%)`,
                     }}
                   >
-                    <span className="flex items-center justify-between gap-4">
-                      <span className="flex items-center gap-2.5">
+                    <span className="flex items-center justify-between gap-4 font-mono text-meta text-fg-3">
+                      <span className="flex items-center gap-2.5 uppercase">
                         <span aria-hidden className="size-2.5 rounded-full" style={{ background: s.color }} />
-                        <span className="text-h3 font-medium">{s.label}</span>
+                        {s.number} / {s.title}
                       </span>
-                      <span className="font-mono text-meta text-fg-3">
-                        {count ? `${count} issue${count > 1 ? "s" : ""}` : "Coming soon"}
-                      </span>
+                      <span>{count ? `${count} issue${count > 1 ? "s" : ""}` : "Coming soon"}</span>
                     </span>
+                    <span className="text-h3 font-medium">{s.label}</span>
                     <span className="max-w-[440px] text-fg-2">{s.blurb}</span>
                     {data.length > 0 && (
                       <span className="mt-auto pt-2 font-mono text-meta text-fg-3 group-hover:text-fg">

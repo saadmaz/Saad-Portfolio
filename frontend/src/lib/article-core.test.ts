@@ -20,6 +20,7 @@ import {
   demoteH1,
   sameText,
   resolveRedirect,
+  seriesKicker,
   seriesParts,
   seriesPosition,
   slugify,
@@ -202,6 +203,14 @@ describe("seriesPosition", () => {
       ["moved", post({ id: "moved", seriesId: "other" })],
     ]);
     expect(seriesParts({ id: "s", postIds: ["a", "moved"] }, live).map((p) => p.id)).toEqual(["a", "b", "c"]);
+  });
+});
+
+describe("seriesKicker", () => {
+  it("joins the padded order and label, skipping what's missing", () => {
+    expect(seriesKicker({ order: 1, label: "Projects" })).toBe("01 / Projects");
+    expect(seriesKicker({ label: "News" })).toBe("News");
+    expect(seriesKicker({})).toBe("");
   });
 });
 
