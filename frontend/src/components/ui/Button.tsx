@@ -2,6 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { internalPath, isExternalHref } from "@/lib/siteLinks";
 
 type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
@@ -68,14 +69,15 @@ export function Button({
     </>
   );
 
-  if (to)
+  const route = to ?? (href && !download ? internalPath(href) : null);
+  if (route)
     return (
-      <Link to={to} className={cls}>
+      <Link to={route} className={cls}>
         {content}
       </Link>
     );
   if (href) {
-    const external = /^https?:/.test(href);
+    const external = isExternalHref(href);
     return (
       <a
         href={href}
