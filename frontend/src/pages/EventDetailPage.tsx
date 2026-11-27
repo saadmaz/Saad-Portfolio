@@ -186,7 +186,7 @@ const EventDetailPage = () => {
       )}
 
       {more.length > 0 && (
-        <section className="section">
+        <section className="section screen">
           <div className="wrap">
             <Eyebrow>{event.role ? `More as ${event.role.toLowerCase()}` : "More on stage"}</Eyebrow>
             <div className="mt-10 grid gap-x-6 gap-y-14 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

@@ -301,7 +301,7 @@ const PublicationsPage = () => {
           <Skeleton className="h-64 w-full rounded-media" />
         </div>
       ) : empty ? (
-        <section className="section border-t-0">
+        <section className="section screen border-t-0">
           <div className="wrap flex flex-col items-start gap-6">
             <Empty>Publications will appear here soon.</Empty>
             <Button to="/blog" variant="secondary">
@@ -312,7 +312,7 @@ const PublicationsPage = () => {
       ) : (
         <>
           {featured && tab === "all" && !tag && (
-            <section className="section border-t-0" aria-labelledby="featured">
+            <section className="section screen border-t-0" aria-labelledby="featured">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="featured" label="Featured" title="Start" soft="here" />
@@ -324,7 +324,7 @@ const PublicationsPage = () => {
             </section>
           )}
 
-          <section className="section border-t-0" aria-labelledby="all-work">
+          <section className="section screen border-t-0" aria-labelledby="all-work">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="all-work" label="Library" title="Everything" soft="on record" />
@@ -387,7 +387,7 @@ const PublicationsPage = () => {
           </section>
 
           {showPatents && (
-            <section className="section border-t-0" aria-labelledby="patents">
+            <section className="section screen border-t-0" aria-labelledby="patents">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="patents" label="Patents" title="Inventions" soft="on file" />

@@ -397,7 +397,7 @@ const ProjectsPage = () => {
                 <section
                   key={g.id}
                   id={g.id}
-                  className="section scroll-mt-40"
+                  className="section screen scroll-mt-40"
                   aria-labelledby={`${g.id}-title`}
                 >
                   <div className="wrap">

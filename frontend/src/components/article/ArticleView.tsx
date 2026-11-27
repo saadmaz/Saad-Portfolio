@@ -253,7 +253,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
       )}
 
       {related.length > 0 && (
-        <section className="section border-t-0" aria-labelledby="related-heading">
+        <section className="section screen border-t-0" aria-labelledby="related-heading">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -280,7 +280,7 @@ export function ArticleView({ post, livePosts, preview = false }: ArticleViewPro
       )}
 
       {!series && !preview && nextUp && (
-        <section className="section">
+        <section className="section screen">
           <div className="wrap">
             <Link
               to={articlePath(nextUp)}

@@ -217,7 +217,7 @@ const CertificationsPage = () => {
 
       {/* 2 · Headline credentials */}
       {headline.length > 0 && (
-        <section className="section theme-orange border-t-0" aria-labelledby="headline">
+        <section className="section screen theme-orange border-t-0" aria-labelledby="headline">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -248,7 +248,7 @@ const CertificationsPage = () => {
 
       {/* 3 · Learning map */}
       {categories.length > 1 && (
-        <section className="section theme-light border-t-0" aria-labelledby="areas">
+        <section className="section screen theme-light border-t-0" aria-labelledby="areas">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="areas" label="Learning map" title="Where the" soft="hours went" />
@@ -288,7 +288,7 @@ const CertificationsPage = () => {
       )}
 
       {/* 4 · Library */}
-      <section ref={library} className="section border-t-0" aria-labelledby="library">
+      <section ref={library} className="section screen border-t-0" aria-labelledby="library">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="library" label="Library" title="Every" soft="credential" />
@@ -435,7 +435,7 @@ const CertificationsPage = () => {
 
       {/* 5 · Skills earned */}
       {cloud.length > 4 && (
-        <section className="section theme-light border-t-0" aria-labelledby="earned">
+        <section className="section screen theme-light border-t-0" aria-labelledby="earned">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="earned" label="Skills earned" title="What all that" soft="added up to" />
@@ -478,7 +478,7 @@ const CertificationsPage = () => {
 
       {/* 6 · Pace by year */}
       {byYear.length > 1 && (
-        <section className="section border-t-0" aria-labelledby="pace">
+        <section className="section screen border-t-0" aria-labelledby="pace">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="pace" label="Pace" title="Certificates" soft="by year" />

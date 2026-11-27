@@ -224,7 +224,7 @@ const BlogsPage = () => {
           <Skeleton className="h-80 w-full rounded-media" />
         </div>
       ) : data.length === 0 ? (
-        <section className="section border-t-0">
+        <section className="section screen border-t-0">
           <div className="wrap">
             <Empty>Posts will appear here soon.</Empty>
           </div>
@@ -232,7 +232,7 @@ const BlogsPage = () => {
       ) : (
         <>
           {lead && (
-            <section className="section border-t-0" aria-labelledby="start-here">
+            <section className="section screen border-t-0" aria-labelledby="start-here">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader
@@ -255,7 +255,7 @@ const BlogsPage = () => {
           )}
 
           {series.length > 0 && !filtering && (
-            <section className="section" aria-labelledby="series">
+            <section className="section screen" aria-labelledby="series">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="series" label="Series" title="Read it" soft="in order" />
@@ -290,7 +290,7 @@ const BlogsPage = () => {
             </section>
           )}
 
-          <section className={cn("section", !lead && "border-t-0")} aria-labelledby="all-writing">
+          <section className={cn("section screen", !lead && "border-t-0")} aria-labelledby="all-writing">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="all-writing" label="Library" title="All" soft="writing" />

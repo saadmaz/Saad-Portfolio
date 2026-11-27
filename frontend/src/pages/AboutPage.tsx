@@ -250,7 +250,7 @@ const AboutPage = () => {
       </PageHero>
 
       {/* 2 · My story */}
-      <section className="section theme-orange border-t-0" aria-labelledby="story">
+      <section className="section screen theme-orange border-t-0" aria-labelledby="story">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="story" label="My story" title="How I" soft="got here" />
@@ -274,7 +274,7 @@ const AboutPage = () => {
 
       {/* 3 · Journey */}
       {moments.length > 0 && (
-        <section className="section border-t-0" aria-labelledby="journey">
+        <section className="section screen border-t-0" aria-labelledby="journey">
           <div className="wrap grid grid-cols-1 gap-12 md:grid-cols-[300px_minmax(0,1fr)] md:gap-20">
             <div className="flex flex-col gap-8 md:sticky md:top-32 md:self-start">
               <Reveal>
@@ -377,7 +377,7 @@ const AboutPage = () => {
 
       {/* 4 · What drives me */}
       {values.length > 0 && (
-        <section className="section theme-light border-t-0" aria-labelledby="values">
+        <section className="section screen theme-light border-t-0" aria-labelledby="values">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="values" label="What drives me" title="How I" soft="work" />
@@ -409,7 +409,7 @@ const AboutPage = () => {
       {/* 5 · Beyond the code */}
       {(beyond.length > 0 || events.length > 0) && (
         <section
-          className={cn("section border-t-0", values.length ? "" : "theme-light")}
+          className={cn("section screen border-t-0", values.length ? "" : "theme-light")}
           aria-labelledby="beyond"
         >
           <div className="wrap">
@@ -483,7 +483,7 @@ const AboutPage = () => {
 
       {/* 6 · Languages */}
       {languages.length > 0 && (
-        <section className="section" aria-labelledby="languages">
+        <section className="section screen" aria-labelledby="languages">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -559,7 +559,7 @@ const AboutPage = () => {
 
       {/* 7 · Recognition */}
       {sortedAwards.length > 0 && (
-        <section className="section theme-orange border-t-0" aria-labelledby="recognition">
+        <section className="section screen theme-orange border-t-0" aria-labelledby="recognition">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="recognition" label="Recognition" title="Awards" soft="& honours" />
@@ -601,7 +601,7 @@ const AboutPage = () => {
 
       {/* 8 · Now */}
       {now.length > 0 && (
-        <section className="section border-t-0" aria-labelledby="now">
+        <section className="section screen border-t-0" aria-labelledby="now">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="now" label="Now" title="What I’m" soft="up to" />

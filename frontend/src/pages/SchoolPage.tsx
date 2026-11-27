@@ -123,7 +123,7 @@ const SchoolPage = () => {
       </PageHero>
 
       {(paragraphs.length > 0 || roles.length > 0) && (
-        <section className="section border-t-0" aria-labelledby="story">
+        <section className="section screen border-t-0" aria-labelledby="story">
           <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
             {paragraphs.length > 0 && (
               <Reveal>
@@ -154,7 +154,7 @@ const SchoolPage = () => {
       )}
 
       {(content.honours.length > 0 || content.awards.length > 0) && (
-        <section className="section" aria-labelledby="honours">
+        <section className="section screen" aria-labelledby="honours">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="honours" label="Honours" title="Recognition" soft="along the way" />
@@ -194,7 +194,7 @@ const SchoolPage = () => {
       )}
 
       {content.events.length > 0 && (
-        <section className="section" aria-labelledby="events">
+        <section className="section screen" aria-labelledby="events">
           <div className="wrap">
             <Reveal>
               <SectionHeader
@@ -226,7 +226,7 @@ const SchoolPage = () => {
       )}
 
       {content.volunteer.length > 0 && (
-        <section className="section" aria-labelledby="service">
+        <section className="section screen" aria-labelledby="service">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="service" label="Service" title="Clubs &" soft="volunteering" />
@@ -248,7 +248,7 @@ const SchoolPage = () => {
       )}
 
       {content.projects.length > 0 && (
-        <section className="section" aria-labelledby="built">
+        <section className="section screen" aria-labelledby="built">
           <div className="wrap">
             <Reveal>
               <SectionHeader id="built" label="Projects" title="Built for the" soft="school community" />

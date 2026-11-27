@@ -212,7 +212,7 @@ const NewslettersPage = () => {
       <LinkAction />
 
       {/* Series */}
-      <section className="section border-t-0" aria-labelledby="series">
+      <section className="section screen border-t-0" aria-labelledby="series">
         <div className="wrap">
           <Reveal>
             <SectionHeader id="series" label="Two series" title="Pick" soft="your lane" />
@@ -267,7 +267,7 @@ const NewslettersPage = () => {
         </div>
       ) : data.length === 0 ? (
         posts.length > 0 && (
-          <section className="section border-t-0" aria-labelledby="meanwhile">
+          <section className="section screen border-t-0" aria-labelledby="meanwhile">
             <div className="wrap">
               <Reveal>
                 <SectionHeader
@@ -295,7 +295,7 @@ const NewslettersPage = () => {
       ) : (
         <>
           {latest && series === "all" && !tag && (
-            <section className="section border-t-0" aria-labelledby="latest">
+            <section className="section screen border-t-0" aria-labelledby="latest">
               <div className="wrap">
                 <Reveal>
                   <SectionHeader id="latest" label="Latest issue" title="Fresh" soft="off the press" />
@@ -328,7 +328,7 @@ const NewslettersPage = () => {
             </section>
           )}
 
-          <section className="section border-t-0" aria-labelledby="archive">
+          <section className="section screen border-t-0" aria-labelledby="archive">
             <div className="wrap">
               <Reveal>
                 <SectionHeader id="archive" label="Archive" title="Every" soft="issue" />
@@ -401,7 +401,7 @@ const NewslettersPage = () => {
         </>
       )}
 
-      <section className="section theme-orange relative overflow-hidden" aria-labelledby="subscribe-cta">
+      <section className="section screen theme-orange relative overflow-hidden" aria-labelledby="subscribe-cta">
         <div className="wrap flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
           <h2 id="subscribe-cta" className="max-w-[560px] text-display-m font-medium">
             Don’t miss <span className="font-light text-fg-2">the next one.</span>

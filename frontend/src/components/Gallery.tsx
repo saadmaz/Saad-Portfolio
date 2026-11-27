@@ -84,7 +84,7 @@ export function Gallery({
   const single = images.length === 1;
 
   return (
-    <section className="section" aria-labelledby="gallery-heading">
+    <section className="section screen" aria-labelledby="gallery-heading">
       <div className="wrap">
         <div className="flex items-end justify-between gap-6">
           <div className="flex flex-col gap-6">
