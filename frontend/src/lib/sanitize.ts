@@ -15,6 +15,7 @@
 
 import DOMPurify from "dompurify";
 import { demoteH1 } from "./article-core";
+import { internalPath, isExternalHref } from "./siteLinks";
 
 const FORBID_TAGS = [
   "style",
@@ -46,7 +47,11 @@ function installHooks() {
   DOMPurify.addHook("afterSanitizeAttributes", (node) => {
     if (node.tagName === "A") {
       const href = node.getAttribute("href") ?? "";
-      if (/^https?:\/\//i.test(href) && !href.startsWith(window.location.origin)) {
+      const path = internalPath(href);
+      if (path) {
+        node.setAttribute("href", path);
+        node.removeAttribute("target");
+      } else if (isExternalHref(href)) {
         node.setAttribute("target", "_blank");
         node.setAttribute("rel", "noopener noreferrer");
       } else if (node.getAttribute("target") === "_blank") {
