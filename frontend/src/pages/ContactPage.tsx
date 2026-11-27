@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  ArrowDown,
   ArrowUpRight,
   Bot,
   Briefcase,
@@ -9,8 +10,10 @@ import {
   CheckCircle2,
   Copy,
   Hammer,
+  Mail,
   MessageCircle,
   Mic,
+  PenLine,
   Rocket,
   type LucideIcon,
 } from "lucide-react";
@@ -30,13 +33,7 @@ import {
 } from "@/lib/seo-content";
 import { copyText } from "@/lib/clipboard";
 import { eventStats } from "@/lib/eventStats";
-import {
-  MESSAGE_MAX,
-  TOPICS,
-  composeMessage,
-  topicFromQuery,
-  type Topic,
-} from "@/lib/contactForm";
+import { MESSAGE_MAX, TOPICS, composeMessage, topicFromQuery, type Topic } from "@/lib/contactForm";
 import { cn } from "@/lib/utils";
 import type { ContactSettings } from "@/types";
 
@@ -106,13 +103,10 @@ function useColomboTime() {
   return now;
 }
 
-function CopyEmail() {
+function CopyEmailButton({ className }: { className?: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <span className="inline-flex items-center gap-3">
-      <a href={`mailto:${CONTACT.email}`} className="hover:text-accent">
-        {CONTACT.email}
-      </a>
+    <>
       <button
         type="button"
         onClick={async () => {
@@ -122,14 +116,162 @@ function CopyEmail() {
           }
         }}
         aria-label={copied ? "Email copied" : "Copy email address"}
-        className="inline-flex size-8 items-center justify-center rounded-full border border-line-2 text-fg-3 transition-colors hover:border-accent hover:text-accent"
+        className={cn(
+          "inline-flex size-8 items-center justify-center rounded-full border border-line-2 text-fg-3 transition-colors hover:border-accent hover:text-accent",
+          className,
+        )}
       >
         {copied ? <Check className="size-3.5 text-live" /> : <Copy className="size-3.5" />}
       </button>
       <span aria-live="polite" className="sr-only">
         {copied ? "Copied" : ""}
       </span>
+    </>
+  );
+}
+
+function CopyEmail() {
+  return (
+    <span className="inline-flex items-center gap-3">
+      <a href={`mailto:${CONTACT.email}`} className="hover:text-accent">
+        {CONTACT.email}
+      </a>
+      <CopyEmailButton />
     </span>
+  );
+}
+
+const TILE =
+  "group relative flex min-h-[116px] flex-col justify-between gap-6 md:min-h-[140px] md:gap-8 overflow-hidden rounded-[24px] border p-6 transition-[transform,border-color,background-color] duration-300 hover:-translate-y-1 md:p-7";
+const TILE_TITLE = "block text-[1.25rem] font-medium leading-tight tracking-[-0.02em] lg:text-[1.5rem]";
+
+/** Full-screen opener: a big promise, then three ways to reach me. */
+function ContactHero({
+  status,
+  statusLabel,
+  replyTime,
+  time,
+}: {
+  status: (typeof STATUS)[keyof typeof STATUS];
+  statusLabel: string;
+  replyTime: string;
+  time: string;
+}) {
+  const facts = [
+    { label: "Colombo time", value: time, mono: true },
+    { label: "Replies", value: replyTime.charAt(0).toUpperCase() + replyTime.slice(1) },
+    { label: "Based in", value: "Colombo, Sri Lanka" },
+    { label: "Working with", value: "Teams worldwide" },
+  ];
+  return (
+    <section
+      aria-labelledby="contact-hero-heading"
+      className="relative -mt-[72px] flex min-h-[100svh] flex-col overflow-clip lg:-mt-[88px]"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_15%,rgb(255_95_0/0.18),transparent_70%),radial-gradient(ellipse_45%_50%_at_0%_100%,rgb(255_95_0/0.10),transparent_70%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgb(var(--ink)/0.045)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink)/0.045)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_35%,black,transparent)]"
+      />
+
+      <div className="wrap relative flex flex-1 flex-col justify-center pb-12 pt-[112px] lg:pt-[128px]">
+        <div className="flex animate-rise flex-wrap items-center justify-between gap-4">
+          <Eyebrow>Contact</Eyebrow>
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-line-2 bg-surface/60 px-4 py-2 text-sm backdrop-blur">
+            <span className="relative flex size-2">
+              <span
+                aria-hidden
+                className={cn("absolute inset-0 animate-ping rounded-full opacity-60", status.dot)}
+              />
+              <span aria-hidden className={cn("relative size-2 rounded-full", status.dot)} />
+            </span>
+            <span className={status.text}>{statusLabel}</span>
+          </span>
+        </div>
+
+        <h1
+          id="contact-hero-heading"
+          className="mt-[clamp(20px,4svh,48px)] text-[clamp(3.25rem,min(12vw,15svh),10.5rem)] font-medium leading-[0.92] tracking-[-0.055em]"
+        >
+          <span className="block">
+            <RisingWords text="Have an idea?" />
+          </span>
+          <span className="block">
+            <RisingWords text="Let's" from={3} />{" "}
+            <RisingWords text="build it." from={4} className="font-light text-accent" />
+          </span>
+        </h1>
+
+        <p className="mt-[clamp(16px,3svh,32px)] max-w-[600px] animate-rise text-body-l text-fg-2 [animation-delay:350ms]">
+          {CONTACT_INTRO[0]}
+        </p>
+
+        <div className="mt-[clamp(24px,5svh,56px)] grid animate-rise grid-cols-1 gap-3 [animation-delay:450ms] md:grid-cols-3">
+          <a href="#message" className={cn(TILE, "border-accent bg-accent text-fg-inverse")}>
+            <span className="flex items-center justify-between">
+              <PenLine aria-hidden className="size-5" />
+              <ArrowDown
+                aria-hidden
+                className="size-5 transition-transform duration-300 group-hover:translate-y-1"
+              />
+            </span>
+            <span>
+              <span className={TILE_TITLE}>Send a message</span>
+              <span className="mt-1.5 block text-sm opacity-80">Takes about two minutes</span>
+            </span>
+          </a>
+          <a
+            href={CONTACT.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(TILE, "border-line-2 bg-surface/60 backdrop-blur hover:border-accent/60")}
+          >
+            <span className="flex items-center justify-between">
+              <CalendarDays aria-hidden className="size-5 text-accent" />
+              <ArrowUpRight
+                aria-hidden
+                className="size-5 text-fg-3 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+              />
+            </span>
+            <span>
+              <span className={TILE_TITLE}>
+                Book a 30-min call<span className="sr-only"> (opens in a new tab)</span>
+              </span>
+              <span className="mt-1.5 block text-sm text-fg-2">Free · pick a time that suits you</span>
+            </span>
+          </a>
+          <div className={cn(TILE, "border-line-2 bg-surface/60 backdrop-blur hover:border-accent/60")}>
+            <span className="flex items-center justify-between">
+              <Mail aria-hidden className="size-5 text-accent" />
+              <CopyEmailButton className="relative z-10" />
+            </span>
+            <span>
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className={cn(TILE_TITLE, "after:absolute after:inset-0 group-hover:text-accent")}
+              >
+                {CONTACT.email}
+              </a>
+              <span className="mt-1.5 block text-sm text-fg-2">Or copy it and write when you're ready</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative shrink-0 border-t border-line bg-base/60 backdrop-blur-sm">
+        <dl className="wrap grid grid-cols-2 gap-x-6 gap-y-5 py-[clamp(16px,3svh,28px)] md:grid-cols-4">
+          {facts.map((f) => (
+            <div key={f.label} className="flex flex-col gap-1.5">
+              <dt className="label text-fg-3">{f.label}</dt>
+              <dd className={cn("font-medium", f.mono && "font-mono tabular-nums")}>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
   );
 }
 
@@ -212,62 +354,45 @@ const ContactPage = () => {
         breadcrumbs={[{ name: "Contact", url: `${BASE_URL}/contact` }]}
       />
 
-      {/* Hero + form */}
-      <section className="relative overflow-clip">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_8%_10%,rgb(255_95_0/0.14),transparent_70%),radial-gradient(ellipse_40%_50%_at_95%_60%,rgb(255_95_0/0.07),transparent_70%)]"
-        />
-        <div className="wrap relative grid gap-12 pb-20 pt-10 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-20 lg:pb-28 lg:pt-16">
-          <div className="flex flex-col gap-8 lg:sticky lg:top-32 lg:self-start">
-            <div className="animate-rise">
-              <Eyebrow>Contact</Eyebrow>
-            </div>
-            <h1 className="text-display-m font-medium">
-              <RisingWords text="Got something" /> <RisingWords text="brewing?" from={2} className="soft" />
-            </h1>
-            <span className="inline-flex w-fit animate-rise items-center gap-2.5 rounded-full border border-line-2 bg-surface/60 px-4 py-2 text-sm backdrop-blur [animation-delay:250ms]">
-              <span className="relative flex size-2">
-                <span
-                  aria-hidden
-                  className={cn("absolute inset-0 animate-ping rounded-full opacity-60", status.dot)}
-                />
-                <span aria-hidden className={cn("relative size-2 rounded-full", status.dot)} />
-              </span>
-              <span className={status.text}>{settings?.message?.trim() || status.fallback}</span>
-              <span className="text-fg-3">· replies {replyTime}</span>
-            </span>
-            <div className="flex max-w-[520px] animate-rise flex-col gap-4 [animation-delay:350ms]">
-              <p className="text-body-l text-fg">{CONTACT_INTRO[0]}</p>
-              <p className="text-fg-2">{CONTACT_INTRO[1]}</p>
-            </div>
-            <div className="grid max-w-[560px] animate-rise gap-3 [animation-delay:450ms] grid-cols-1 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-              <div className="flex flex-col gap-3 rounded-[20px] border border-line-2 bg-surface/50 p-5 backdrop-blur">
-                <span className="label text-fg-3">Write to me</span>
-                <CopyEmail />
-                <a href={CONTACT.phoneHref} className="tap w-fit text-sm text-fg-2 hover:text-accent">
-                  {CONTACT.phone}
-                </a>
-              </div>
-              <div className="flex flex-col gap-1 rounded-[20px] border border-line-2 bg-surface/50 p-5 backdrop-blur">
-                <span className="label text-fg-3">Colombo time</span>
-                <span className="mt-2 font-mono text-[1.75rem] leading-none tracking-tight tabular-nums">
-                  {time}
-                </span>
-                <span className="mt-1 text-sm text-fg-2">Sri Lanka · working globally</span>
-              </div>
-            </div>
-          </div>
+      <ContactHero
+        status={status}
+        statusLabel={settings?.message?.trim() || status.fallback}
+        replyTime={replyTime}
+        time={time}
+      />
 
-          <div id="message" className="relative h-fit scroll-mt-28 animate-rise [animation-delay:200ms]">
-            <div className="relative overflow-hidden rounded-[28px] border border-line-2 bg-surface/85 p-6 shadow-[0_40px_90px_-45px_rgb(0_0_0/0.9)] backdrop-blur-xl md:p-9">
+      {/* Message form */}
+      <section
+        id="message"
+        aria-labelledby="message-heading"
+        className="section theme-light scroll-mt-0 border-t-0"
+      >
+        <div className="wrap grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:gap-20">
+          <Reveal className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
+            <Eyebrow index="01">Send a message</Eyebrow>
+            <h2 id="message-heading" className="text-h1 font-medium">
+              Tell me what's <span className="soft">on your mind.</span>
+            </h2>
+            <p className="max-w-[460px] text-fg-2">{CONTACT_INTRO[1]}</p>
+            <ul className="mt-2 flex flex-col gap-3 border-t border-line-2 pt-6">
+              {[`Replies ${replyTime}`, "No perfectly written brief needed", "No mailing lists, ever"].map(
+                (t) => (
+                  <li key={t} className="flex items-center gap-3 text-fg-2">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent/[0.12] text-accent">
+                      <Check aria-hidden className="size-3.5" />
+                    </span>
+                    {t}
+                  </li>
+                ),
+              )}
+            </ul>
+          </Reveal>
+
+          <div className="relative h-fit">
+            <div className="relative overflow-hidden rounded-[28px] border border-line-2 bg-surface p-6 shadow-[0_30px_80px_-40px_rgb(0_0_0/0.35)] md:p-9">
               <span
                 aria-hidden
                 className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent"
-              />
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgb(255_95_0/0.08),transparent_70%)]"
               />
               {mutation.isSuccess ? (
                 <div className="flex flex-col items-start gap-6 py-6">
@@ -297,12 +422,6 @@ const ContactPage = () => {
                 </div>
               ) : (
                 <form onSubmit={submit} noValidate className="relative flex flex-col gap-7">
-                  <div className="flex flex-col gap-2 border-b border-line-2 pb-6">
-                    <h2 className="text-h3 font-medium">Tell me what's on your mind.</h2>
-                    <p className="text-sm text-fg-2">
-                      No perfectly written brief needed. Give me the context and we'll take it from there.
-                    </p>
-                  </div>
                   <fieldset>
                     <legend className="label mb-3 text-fg-3">What are you reaching out about?</legend>
                     <div className="grid grid-cols-2 gap-2">
@@ -455,136 +574,137 @@ const ContactPage = () => {
       </section>
 
       {/* What can we work on? */}
-      <section aria-labelledby="help-heading" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <Eyebrow index="01">What I can help with</Eyebrow>
-            <h2 id="help-heading" className="mt-6 text-h1 font-medium">
-              What can we <span className="soft">work on?</span>
-            </h2>
-          </div>
-          <p className="max-w-[400px] text-fg-2">
-            A few things I spend my time doing. Not an exhaustive list, though. I'm open to interesting ideas.
-          </p>
-        </Reveal>
-        <ul className="mt-12 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
-          {CONTACT_SERVICES.map((s, i) => {
-            const Icon = SERVICE_ICONS[i] ?? Hammer;
-            const feature = i < 2;
-            return (
-              <li
-                key={s.title}
-                className={cn(
-                  feature ? "lg:col-span-3" : "lg:col-span-2",
-                  i === 4 && "md:col-span-2 lg:col-span-2",
-                )}
-              >
-                <Reveal delay={i * 70} className="h-full">
-                  <Link
-                    to={proof[i]?.to ?? "/projects"}
-                    className={cn(
-                      "group relative flex h-full flex-col gap-4 overflow-hidden rounded-[24px] border border-line bg-surface p-7 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50",
-                      feature && "lg:min-h-[300px] lg:p-9",
-                    )}
-                  >
-                    {feature && (
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_100%_0%,rgb(255_95_0/0.12),transparent_70%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-                      />
-                    )}
-                    <span className="relative flex items-center justify-between">
-                      <span className="flex size-11 items-center justify-center rounded-2xl border border-line-2 bg-surface-2 text-accent">
-                        <Icon aria-hidden className="size-5" />
-                      </span>
-                      <span className="font-mono text-meta text-fg-3">{String(i + 1).padStart(2, "0")}</span>
-                    </span>
-                    <h3
+      <section aria-labelledby="help-heading" className="section border-t-0">
+        <div className="wrap">
+          <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <Eyebrow index="02">What I can help with</Eyebrow>
+              <h2 id="help-heading" className="mt-6 text-h1 font-medium">
+                What can we <span className="soft">work on?</span>
+              </h2>
+            </div>
+            <p className="max-w-[400px] text-fg-2">
+              A few things I spend my time doing. Not an exhaustive list, though. I'm open to interesting
+              ideas.
+            </p>
+          </Reveal>
+          <ul className="mt-12 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+            {CONTACT_SERVICES.map((s, i) => {
+              const Icon = SERVICE_ICONS[i] ?? Hammer;
+              const feature = i < 2;
+              return (
+                <li
+                  key={s.title}
+                  className={cn(
+                    feature ? "lg:col-span-3" : "lg:col-span-2",
+                    i === 4 && "md:col-span-2 lg:col-span-2",
+                  )}
+                >
+                  <Reveal delay={i * 70} className="h-full">
+                    <Link
+                      to={proof[i]?.to ?? "/projects"}
                       className={cn(
-                        "relative mt-2 font-medium group-hover:text-accent",
-                        feature ? "text-h2" : "text-h3",
+                        "group relative flex h-full flex-col gap-4 overflow-hidden rounded-[24px] border border-line bg-surface p-7 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50",
+                        feature && "lg:min-h-[300px] lg:p-9",
                       )}
                     >
-                      {s.title}
-                    </h3>
-                    <p className="relative text-fg-2">{s.body}</p>
-                    <span className="relative mt-auto flex items-center justify-between gap-4 border-t border-line-2 pt-4 font-mono text-meta text-fg-3">
-                      {proof[i]?.meta}
-                      <ArrowUpRight
-                        aria-hidden
-                        className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
-                      />
-                    </span>
-                  </Link>
-                </Reveal>
-              </li>
-            );
-          })}
-        </ul>
+                      {feature && (
+                        <span
+                          aria-hidden
+                          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_100%_0%,rgb(255_95_0/0.12),transparent_70%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                        />
+                      )}
+                      <span className="relative flex items-center justify-between">
+                        <span className="flex size-11 items-center justify-center rounded-2xl border border-line-2 bg-surface-2 text-accent">
+                          <Icon aria-hidden className="size-5" />
+                        </span>
+                        <span className="font-mono text-meta text-fg-3">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                      </span>
+                      <h3
+                        className={cn(
+                          "relative mt-2 font-medium group-hover:text-accent",
+                          feature ? "text-h2" : "text-h3",
+                        )}
+                      >
+                        {s.title}
+                      </h3>
+                      <p className="relative text-fg-2">{s.body}</p>
+                      <span className="relative mt-auto flex items-center justify-between gap-4 border-t border-line-2 pt-4 font-mono text-meta text-fg-3">
+                        {proof[i]?.meta}
+                        <ArrowUpRight
+                          aria-hidden
+                          className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                        />
+                      </span>
+                    </Link>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </section>
 
       {/* Booking band */}
-      <section aria-labelledby="call-heading" className="wrap pb-20 lg:pb-28">
-        <Reveal className="relative overflow-hidden rounded-[32px] border border-line bg-surface">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgb(255_95_0/0.35),transparent_55%),radial-gradient(ellipse_at_0%_100%,rgb(255_95_0/0.12),transparent_60%)]"
-          />
-          <div className="relative grid gap-8 p-8 grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-14">
-            <div className="flex flex-col gap-4">
-              <span className="label inline-flex items-center gap-2 text-accent">
-                <CalendarDays aria-hidden className="size-4" /> Free · 30 minutes
-              </span>
-              <h2 id="call-heading" className="text-h1 font-medium">
-                Prefer a <span className="soft">conversation?</span>
-              </h2>
-              <p className="max-w-[520px] text-fg-2">
-                Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and
-                let's figure out what you're working on.
-              </p>
-            </div>
-            <Button href={CONTACT.bookingUrl} size="lg" className="w-full md:w-auto">
-              Book a call
-            </Button>
+      <section aria-labelledby="call-heading" className="section theme-orange border-t-0">
+        <Reveal className="wrap grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <div className="flex flex-col gap-5">
+            <span className="label inline-flex items-center gap-2 text-fg">
+              <CalendarDays aria-hidden className="size-4" /> Free · 30 minutes
+            </span>
+            <h2 id="call-heading" className="text-display-m font-medium">
+              Prefer a <span className="soft">conversation?</span>
+            </h2>
+            <p className="max-w-[560px] text-body-l text-fg-2">
+              Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and let's
+              figure out what you're working on.
+            </p>
           </div>
+          <Button href={CONTACT.bookingUrl} size="lg" className="w-full md:w-auto">
+            Book a call
+          </Button>
         </Reveal>
       </section>
 
       {/* How it works */}
-      <section aria-labelledby="process-heading" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <Reveal>
-          <Eyebrow index="02">How it works</Eyebrow>
-          <h2 id="process-heading" className="mt-6 text-h1 font-medium">
-            From hello <span className="soft">to kickoff</span>
-          </h2>
-        </Reveal>
-        <Reveal className="group relative mt-14">
-          <span aria-hidden className="absolute left-0 right-0 top-[19px] hidden h-px bg-line-2 md:block" />
-          <span
-            aria-hidden
-            className="absolute left-0 right-0 top-[18px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1400ms] ease-out group-data-[in=true]:scale-x-100 md:block"
-          />
-          <ol className="relative grid gap-10 grid-cols-1 md:grid-cols-3">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="flex flex-col gap-4">
-                <span className="flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-h3 font-medium">{s.title}</h3>
-                <p className="max-w-[320px] text-fg-2">
-                  {i === 0 ? `${s.body} Usually ${replyTime}.` : s.body}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+      <section aria-labelledby="process-heading" className="section theme-light border-t-0">
+        <div className="wrap">
+          <Reveal>
+            <Eyebrow index="03">How it works</Eyebrow>
+            <h2 id="process-heading" className="mt-6 text-h1 font-medium">
+              From hello <span className="soft">to kickoff</span>
+            </h2>
+          </Reveal>
+          <Reveal className="group relative mt-14">
+            <span aria-hidden className="absolute left-0 right-0 top-[19px] hidden h-px bg-line-2 md:block" />
+            <span
+              aria-hidden
+              className="absolute left-0 right-0 top-[18px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1400ms] ease-out group-data-[in=true]:scale-x-100 md:block"
+            />
+            <ol className="relative grid gap-10 grid-cols-1 md:grid-cols-3">
+              {STEPS.map((s, i) => (
+                <li key={s.title} className="flex flex-col gap-4">
+                  <span className="flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="text-h3 font-medium">{s.title}</h3>
+                  <p className="max-w-[320px] text-fg-2">
+                    {i === 0 ? `${s.body} Usually ${replyTime}.` : s.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        </div>
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="faq-heading" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <div className="grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
+      <section aria-labelledby="faq-heading" className="section border-t-0">
+        <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
           <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
-            <Eyebrow index="03">FAQ</Eyebrow>
+            <Eyebrow index="04">FAQ</Eyebrow>
             <h2 id="faq-heading" className="text-h1 font-medium">
               A few things <span className="soft">you might be wondering</span>
             </h2>
@@ -611,8 +731,8 @@ const ContactPage = () => {
       </section>
 
       {/* Sign-off */}
-      <section aria-label="Get in touch" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <Reveal className="flex flex-col items-center gap-8 text-center">
+      <section aria-label="Get in touch" className="section theme-orange border-t-0">
+        <Reveal className="wrap flex flex-col items-center gap-8 text-center">
           <p className="max-w-[820px] text-h1 font-medium">
             Made something interesting? <span className="soft">I'd love to hear about it.</span>
           </p>
