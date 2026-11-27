@@ -645,31 +645,37 @@ const ContactPage = () => {
       {/* Booking card */}
       <section aria-labelledby="call-heading" className="section screen theme-light border-t-0">
         <div className="wrap">
-          <Reveal className="theme-dark relative overflow-hidden rounded-[32px] border border-line-2 bg-[linear-gradient(135deg,#1d1612_0%,#17171a_55%,#222226_100%)] px-6 py-16 text-center shadow-[0_50px_100px_-40px_rgb(0_0_0/0.45)] md:px-12 md:py-24">
+          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(140deg,#ff8a3d_0%,#ff5f00_42%,#d94a00_100%)] px-6 py-12 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.55),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
+            {/* Fine grid texture, faded toward the edges. */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_70%_at_0%_0%,rgb(255_95_0/0.28),transparent_70%),radial-gradient(ellipse_45%_60%_at_100%_100%,rgb(255_95_0/0.12),transparent_70%)]"
+              className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgb(17_17_19/0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(17_17_19/0.07)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(ellipse_75%_80%_at_50%_45%,black,transparent)]"
             />
-            <div className="relative mx-auto flex max-w-[760px] flex-col items-center gap-6">
-              <span className="inline-flex items-center gap-2 rounded-full border border-line-3 bg-surface/60 px-3.5 py-1.5 text-sm font-medium backdrop-blur">
-                <CalendarDays aria-hidden className="size-4 text-accent" /> Free · 30 minutes
+            {/* Soft light from the top, depth at the bottom corners. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_50%_0%,rgb(255_255_255/0.28),transparent_70%),radial-gradient(ellipse_40%_60%_at_100%_100%,rgb(17_17_19/0.18),transparent_70%)]"
+            />
+            <div className="relative mx-auto flex max-w-[640px] flex-col items-center gap-5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[rgb(17_17_19/0.15)] bg-[rgb(255_255_255/0.22)] px-3.5 py-1.5 text-sm font-medium shadow-[inset_0_1px_0_rgb(255_255_255/0.4)] backdrop-blur">
+                <CalendarDays aria-hidden className="size-4" /> Free · 30 minutes
               </span>
               <h2
                 id="call-heading"
-                className="text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.04em]"
+                className="text-[clamp(2.25rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
               >
                 Prefer a conversation?
               </h2>
-              <p className="max-w-[600px] text-body-l text-fg-2">
+              <p className="max-w-[520px] text-body-l text-fg-2">
                 Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and
                 let's figure out what you're working on.
               </p>
-              <div className="mt-2 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
+              <div className="mt-1 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
                 <a
                   href={CONTACT.bookingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-[#fff] px-7 font-medium text-[rgb(17_17_19)] transition-transform duration-200 hover:-translate-y-0.5"
+                  className="group inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[rgb(17_17_19)] px-6 font-medium text-[#fff] shadow-[0_12px_24px_-10px_rgb(17_17_19/0.6)] transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   Book a call
                   <ArrowUpRight
@@ -680,12 +686,12 @@ const ContactPage = () => {
                 </a>
                 <a
                   href="#message"
-                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-line-3 bg-surface/50 px-7 font-medium text-fg backdrop-blur transition-colors hover:border-accent/60"
+                  className="inline-flex h-12 items-center justify-center gap-2.5 rounded-full border border-[rgb(17_17_19/0.18)] bg-[rgb(255_255_255/0.2)] px-6 font-medium shadow-[inset_0_1px_0_rgb(255_255_255/0.35)] backdrop-blur transition-colors hover:bg-[rgb(255_255_255/0.32)]"
                 >
                   Or send a message
                 </a>
               </div>
-              <p className="text-sm text-fg-3">No prep needed. Pick any time that suits you.</p>
+              <p className="text-sm text-fg-2">No prep needed. Pick any time that suits you.</p>
             </div>
           </Reveal>
         </div>
