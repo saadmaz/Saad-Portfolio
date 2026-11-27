@@ -47,6 +47,7 @@ import { isCompanyPageIndexable, isEventIndexable, isProjectIndexable } from "..
 import { PROJECT_GROUPS, projectGroupOf, projectsFaq } from "../src/lib/projectGroups.js";
 import { authorFaq, authorTopics } from "../src/lib/authorFaq.js";
 import { sameOrg } from "../src/lib/orgName.js";
+import { experienceFaq, venturesFrom } from "../src/lib/ventures.js";
 import {
   isSchoolPageIndexable,
   rolesOf,
@@ -1021,8 +1022,33 @@ function staticBody(routePath, data) {
       ].join("\n");
     case "/education":
       return educationHtml(data.education);
-    case "/experience":
-      return experienceHtml(data.experience);
+    case "/experience": {
+      // Same sections as ExperiencePage.tsx.
+      const { ventures, faq } = experienceData(data);
+      return [
+        ventures.length &&
+          section(
+            "Companies I founded",
+            list(
+              ventures,
+              (v) =>
+                `<a href="${escape(v.path)}">${escape(v.name)}</a> - ${escape(joinMeta(v.role, v.period, v.summary))}${
+                  v.projects.length
+                    ? ` Built: ${v.projects.map((pr) => `<a href="/projects/${escape(pr.slug)}">${escape(pr.title)}</a>`).join(", ")}.`
+                    : ""
+                }`,
+            ),
+          ),
+        experienceHtml(data.experience),
+        faq.length &&
+          section(
+            "FAQ",
+            faq.map((f) => `<h3>${escape(f.question)}</h3>\n<p>${escape(f.answer)}</p>`).join("\n"),
+          ),
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
     case "/events":
       return list(data.events, eventLine);
     case "/skills":
@@ -1215,14 +1241,16 @@ function prerenderStaticRoutes(shell, data) {
                 ? [...pageSchemas(routePath, title), publicationsSchema(data.publications)]
                 : routePath === "/events" && data.events.length
                   ? [...pageSchemas(routePath, title), ...eventsSchemas(data.events)]
-                  : routePath === "/projects" && data.projects.some(isProjectIndexable)
-                    ? [...pageSchemas(routePath, title), ...projectsIndexSchemas(data.projects)]
-                    : routePath === "/blog" && data.posts.length
-                      ? [
-                          ...pageSchemas(routePath, title),
-                          blogIndexSchema(data.posts, title, `${BASE_URL}/blog`),
-                        ]
-                      : pageSchemas(routePath, title);
+                  : routePath === "/experience" && data.experience.length
+                    ? [...pageSchemas(routePath, title), ...experienceSchemas(data)]
+                    : routePath === "/projects" && data.projects.some(isProjectIndexable)
+                      ? [...pageSchemas(routePath, title), ...projectsIndexSchemas(data.projects)]
+                      : routePath === "/blog" && data.posts.length
+                        ? [
+                            ...pageSchemas(routePath, title),
+                            blogIndexSchema(data.posts, title, `${BASE_URL}/blog`),
+                          ]
+                        : pageSchemas(routePath, title);
     writeRoute(
       routePath,
       injectContent(shell, {
@@ -1473,6 +1501,71 @@ function prerenderPosts(shell, posts, data, { noIndex = false } = {}) {
       { listed: !noIndex },
     );
   }
+}
+
+/** Companies as the venture helper reads them (same mapping as ExperiencePage.tsx). */
+function experienceData(data) {
+  const inputs = experienceCompanies(data.experience).map((c) => {
+    const first = c.docs[0];
+    return {
+      name: c.name,
+      role: first.roles?.[0]?.role_title ?? first.position ?? "",
+      period: expPeriod(first),
+      summary: stripHtml(first.description || first.roles?.[0]?.description || ""),
+      url: first.company_url || first.companyUrl || "",
+      logo: first.company_logo || first.companyLogo || "",
+      path: `/experience/${c.slug}`,
+      ids: c.docs.map((d) => String(d.id)),
+      current: !!(first.is_current ?? first.isCurrent ?? first.roles?.some((r) => r.role_is_current)),
+    };
+  });
+  const ventures = venturesFrom(inputs, data.projects);
+  return { inputs, ventures, faq: experienceFaq(ventures, inputs) };
+}
+
+/** ItemList of roles, each venture with its founder, and the FAQ (same as ExperiencePage.tsx). */
+function experienceSchemas(data) {
+  const { inputs, ventures, faq } = experienceData(data);
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Saad Mazhar's work experience",
+      url: `${BASE_URL}/experience`,
+      itemListElement: inputs.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "OrganizationRole",
+          roleName: c.role || undefined,
+          member: PERSON_REF,
+          memberOf: { "@type": "Organization", name: c.name, ...(c.url ? { url: c.url } : {}) },
+          url: `${BASE_URL}${c.path}`,
+        },
+      })),
+    },
+    ...ventures.map((v) => ({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: v.name,
+      ...(v.url ? { url: v.url, sameAs: [v.url] } : {}),
+      founder: PERSON_REF,
+      subjectOf: { "@type": "WebPage", url: `${BASE_URL}${v.path}` },
+    })),
+    ...(faq.length
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((f) => ({
+              "@type": "Question",
+              name: f.question,
+              acceptedAnswer: { "@type": "Answer", text: f.answer },
+            })),
+          },
+        ]
+      : []),
+  ];
 }
 
 /** ItemList of indexable projects plus the generated FAQ (same text as the page). */
