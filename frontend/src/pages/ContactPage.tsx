@@ -11,7 +11,6 @@ import {
   Hammer,
   MessageCircle,
   Mic,
-  PenLine,
   Rocket,
   type LucideIcon,
 } from "lucide-react";
@@ -20,8 +19,7 @@ import { SEO } from "@/components/SEO";
 import { Button, Eyebrow, Field, Reveal, RisingWords } from "@/components/ui";
 import { useContactMutation, useContactSettings, useEvents } from "@/hooks/useContent";
 import { useProjects } from "@/hooks/useProjects";
-import { CONTACT, SOCIALS, type SocialId } from "@/lib/site";
-import { SocialIcon } from "@/components/brand/SocialLinks";
+import { CONTACT } from "@/lib/site";
 import {
   PAGE_SEO,
   BASE_URL,
@@ -33,9 +31,7 @@ import {
 import { copyText } from "@/lib/clipboard";
 import { eventStats } from "@/lib/eventStats";
 import {
-  BUDGETS,
   MESSAGE_MAX,
-  TIMELINES,
   TOPICS,
   composeMessage,
   topicFromQuery,
@@ -84,14 +80,6 @@ const STEPS = [
   { title: "I reply", body: "A real answer from me, not an autoresponder." },
   { title: "Short call", body: "15–30 minutes to understand the goal, constraints and timeline." },
   { title: "Plan & go", body: "A clear proposal for builds, or a confirmed brief for events." },
-];
-
-/** Profiles listed on this page, with a line on what each is for. Facebook stays in the footer only. */
-const ELSEWHERE: { id: SocialId; note: string }[] = [
-  { id: "linkedin", note: "Work, projects and professional updates" },
-  { id: "github", note: "Things I've built and experimented with" },
-  { id: "instagram", note: "A little more of everyday life" },
-  { id: "x", note: "Random thoughts and conversations" },
 ];
 
 /** Card icons, same order as CONTACT_SERVICES. */
@@ -154,49 +142,12 @@ const choiceCls = (active: boolean) =>
       : "border-line-2 bg-base/40 text-fg-2 hover:border-line-3 hover:text-fg",
   );
 
-/** Optional single-choice pills: clicking the active one clears it. */
-function OptionalPills({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: string[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <fieldset>
-      <legend className="mb-3 flex w-full items-baseline justify-between gap-3">
-        <span className="label text-fg-3">{label}</span>
-        <span className="text-xs text-fg-3">Optional</span>
-      </legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o}
-            type="button"
-            aria-pressed={value === o}
-            onClick={() => onChange(value === o ? "" : o)}
-            className={cn("h-9 rounded-full px-3.5 text-sm", choiceCls(value === o))}
-          >
-            {o}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 const EMPTY = { name: "", email: "", company: "", message: "", website: "", eventDate: "", audience: "" };
 
 const ContactPage = () => {
   const { search } = useLocation();
   const [topic, setTopic] = useState<Topic>(() => topicFromQuery(search));
   const [form, setForm] = useState(EMPTY);
-  const [budget, setBudget] = useState("");
-  const [timeline, setTimeline] = useState("");
   const [errors, setErrors] = useState<Partial<Record<"name" | "email" | "message", string>>>({});
   const mutation = useContactMutation();
   const { data: settings } = useContactSettings();
@@ -223,8 +174,6 @@ const ContactPage = () => {
     const { subject, message } = composeMessage({
       topic,
       company: form.company,
-      budget,
-      timeline,
       eventDate: form.eventDate,
       audience: form.audience,
       message: form.message,
@@ -234,8 +183,6 @@ const ContactPage = () => {
       {
         onSuccess: () => {
           setForm(EMPTY);
-          setBudget("");
-          setTimeline("");
         },
       },
     );
@@ -429,25 +376,6 @@ const ContactPage = () => {
                     autoComplete="organization"
                     maxLength={120}
                   />
-                  {topic.kind === "build" && (
-                    <div
-                      key="build"
-                      className="flex animate-rise flex-col gap-7 [animation-duration:300ms]"
-                    >
-                      <OptionalPills
-                        label="Estimated budget"
-                        options={BUDGETS}
-                        value={budget}
-                        onChange={setBudget}
-                      />
-                      <OptionalPills
-                        label="Expected timeline"
-                        options={TIMELINES}
-                        value={timeline}
-                        onChange={setTimeline}
-                      />
-                    </div>
-                  )}
                   {topic.kind === "event" && (
                     <div
                       key="event"
@@ -682,77 +610,9 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Around the internet + sign-off */}
-      <section aria-labelledby="elsewhere-heading" className="wrap border-t border-line-2 py-20 lg:py-28">
-        <Reveal>
-          <Eyebrow index="04">Around the internet</Eyebrow>
-          <h2 id="elsewhere-heading" className="mt-6 text-h1 font-medium">
-            Find me <span className="soft">around the internet.</span>
-          </h2>
-        </Reveal>
-        <ul className="mt-12 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-          {ELSEWHERE.map(({ id, note }, i) => {
-            const s = SOCIALS.find((x) => x.id === id);
-            if (!s) return null;
-            return (
-              <li key={id}>
-                <Reveal delay={i * 60} className="h-full">
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex h-full flex-col gap-6 rounded-[20px] border border-line bg-surface p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
-                  >
-                    <span className="flex items-center justify-between">
-                      <SocialIcon
-                        id={id}
-                        className="size-5 text-fg-2 transition-colors group-hover:text-accent"
-                      />
-                      <ArrowUpRight
-                        aria-hidden
-                        className="size-4 text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
-                      />
-                    </span>
-                    <span className="flex flex-col gap-1">
-                      <span className="font-medium">
-                        {s.label}
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </span>
-                      <span className="text-sm text-fg-2">{note}</span>
-                    </span>
-                  </a>
-                </Reveal>
-              </li>
-            );
-          })}
-          <li>
-            <Reveal delay={ELSEWHERE.length * 60} className="h-full">
-              <Link
-                to="/blog"
-                className="group flex h-full flex-col gap-6 rounded-[20px] border border-line bg-surface p-5 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/50"
-              >
-                <span className="flex items-center justify-between">
-                  <PenLine
-                    aria-hidden
-                    className="size-5 text-fg-2 transition-colors group-hover:text-accent"
-                  />
-                  <ArrowUpRight
-                    aria-hidden
-                    className="size-4 text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
-                  />
-                </span>
-                <span className="flex flex-col gap-1">
-                  <span className="font-medium">Blog</span>
-                  <span className="text-sm text-fg-2">
-                    Longer thoughts on technology, startups and building things
-                  </span>
-                </span>
-              </Link>
-            </Reveal>
-          </li>
-        </ul>
-
-        <Reveal className="mt-24 flex flex-col items-center gap-8 text-center">
+      {/* Sign-off */}
+      <section aria-label="Get in touch" className="wrap border-t border-line-2 py-20 lg:py-28">
+        <Reveal className="flex flex-col items-center gap-8 text-center">
           <p className="max-w-[820px] text-h1 font-medium">
             Made something interesting? <span className="soft">I'd love to hear about it.</span>
           </p>
