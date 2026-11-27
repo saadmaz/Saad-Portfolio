@@ -706,22 +706,29 @@ const ContactPage = () => {
               From hello <span className="soft">to kickoff</span>
             </h2>
           </Reveal>
-          <Reveal className="group relative mt-14">
+          <Reveal className="flow group relative mt-14">
             <span aria-hidden className="absolute left-0 right-0 top-[19px] hidden h-px bg-line-2 md:block" />
             <span
               aria-hidden
-              className="absolute left-0 right-0 top-[18px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1400ms] ease-out group-data-[in=true]:scale-x-100 md:block"
+              className="absolute left-0 right-0 top-[18px] hidden h-[3px] origin-left scale-x-0 rounded-full bg-accent transition-transform duration-[1800ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-data-[in=true]:scale-x-100 md:block"
             />
+            <span aria-hidden className="flow__comet hidden md:block" />
             <ol className="relative grid gap-10 grid-cols-1 md:grid-cols-3">
               {STEPS.map((s, i) => (
-                <li key={s.title} className="flex flex-col gap-4">
-                  <span className="flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
+                <li
+                  key={s.title}
+                  className="flex flex-col gap-4"
+                  style={{ ["--d" as string]: `${[80, 720, 1100][i] ?? 0}ms` }}
+                >
+                  <span className="flow__dot relative flex size-10 items-center justify-center rounded-full border-2 border-accent bg-base font-mono text-meta text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-h3 font-medium">{s.title}</h3>
-                  <p className="max-w-[320px] text-fg-2">
-                    {i === 0 ? `${s.body} Usually ${replyTime}.` : s.body}
-                  </p>
+                  <div className="flow__body flex flex-col gap-4">
+                    <h3 className="text-h3 font-medium">{s.title}</h3>
+                    <p className="max-w-[320px] text-fg-2">
+                      {i === 0 ? `${s.body} Usually ${replyTime}.` : s.body}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ol>
@@ -762,29 +769,29 @@ const ContactPage = () => {
       {/* Sign-off card */}
       <section aria-labelledby="signoff-heading" className="section screen border-t-0">
         <div className="wrap">
-          <Reveal className="theme-orange relative overflow-hidden rounded-[32px] bg-[linear-gradient(135deg,#ff7a26_0%,#ff5f00_50%,#e04e00_100%)] px-6 py-16 text-center shadow-[0_50px_100px_-40px_rgb(255_95_0/0.45)] md:px-12 md:py-24">
+          <Reveal className="theme-orange relative mx-auto max-w-[980px] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#ff7a26_0%,#ff5f00_50%,#e04e00_100%)] px-6 py-12 text-center shadow-[0_40px_80px_-30px_rgb(255_95_0/0.5),inset_0_1px_0_rgb(255_255_255/0.4)] ring-1 ring-[rgb(255_255_255/0.2)] md:px-14 md:py-16">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_70%_at_100%_0%,rgb(255_255_255/0.22),transparent_70%),radial-gradient(ellipse_45%_60%_at_0%_100%,rgb(0_0_0/0.14),transparent_70%)]"
             />
-            <div className="relative mx-auto flex max-w-[760px] flex-col items-center gap-6">
+            <div className="relative mx-auto flex max-w-[640px] flex-col items-center gap-5">
               <span className="inline-flex items-center gap-2 rounded-full border border-[rgb(17_17_19/0.2)] bg-[rgb(255_255_255/0.18)] px-3.5 py-1.5 text-sm font-medium backdrop-blur">
                 <PenLine aria-hidden className="size-4" /> Replies {replyTime}
               </span>
               <h2
                 id="signoff-heading"
-                className="text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.04em]"
+                className="text-[clamp(2.25rem,4.6vw,3.75rem)] font-semibold leading-[1.04] tracking-[-0.04em]"
               >
                 Made something interesting?
               </h2>
-              <p className="max-w-[600px] text-body-l text-fg-2">
+              <p className="max-w-[520px] text-body-l text-fg-2">
                 I'd love to hear about it. A rough idea, a finished product or just a question, my inbox is
                 open.
               </p>
-              <div className="mt-2 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
+              <div className="mt-1 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
                 <a
                   href="#message"
-                  className="group inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-[rgb(17_17_19)] px-7 font-medium text-[#fff] transition-transform duration-200 hover:-translate-y-0.5"
+                  className="group inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[rgb(17_17_19)] px-6 font-medium text-[#fff] transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   Drop me a message
                   <ArrowUpRight
@@ -794,7 +801,7 @@ const ContactPage = () => {
                 </a>
                 <a
                   href={`mailto:${CONTACT.email}`}
-                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-[rgb(17_17_19/0.25)] bg-[rgb(255_255_255/0.15)] px-7 font-medium transition-colors hover:bg-[rgb(255_255_255/0.28)]"
+                  className="inline-flex h-12 items-center justify-center gap-2.5 rounded-full border border-[rgb(17_17_19/0.25)] bg-[rgb(255_255_255/0.15)] px-6 font-medium transition-colors hover:bg-[rgb(255_255_255/0.28)]"
                 >
                   <Mail aria-hidden className="size-4" />
                   {CONTACT.email}
