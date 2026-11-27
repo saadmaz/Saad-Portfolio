@@ -1091,46 +1091,60 @@
   }
 }
 
-/* ── "How it works" flow: the line draws, a light travels along it, and each
-   step lights up (dot, ring pulse, then copy) as the light reaches it.
-   --d per step is when the light arrives (matches the eased fill). ── */
+/* ── "How it works" flow: the line draws in once, then a light streak travels it
+   on a loop; each step's dot glows and ripples as the streak passes.
+   --d: when the first draw reaches a step. --t: when the looping streak does. ── */
 .flow {
   --flow-ms: 1800ms;
   --flow-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --loop: 5s;
+  --loop-start: calc(var(--flow-ms) + 400ms);
 }
 .flow__comet {
   position: absolute;
-  top: 14px;
+  top: 18px;
   left: 0;
-  width: 10px;
-  height: 10px;
+  width: 110px;
+  height: 3px;
   border-radius: 9999px;
-  background: #ffd9bf;
-  box-shadow:
-    0 0 10px 3px rgb(255 95 0 / 0.9),
-    0 0 34px 12px rgb(255 95 0 / 0.4);
-  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgb(255 160 100 / 0.9) 75%, #fff4ec);
+  box-shadow: 0 0 14px 2px rgb(255 95 0 / 0.55);
+  transform: translateX(-100%);
   opacity: 0;
   pointer-events: none;
 }
+.flow__comet::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: #fff4ec;
+  box-shadow:
+    0 0 10px 3px rgb(255 95 0 / 0.9),
+    0 0 30px 10px rgb(255 95 0 / 0.35);
+  transform: translateY(-50%);
+}
 .flow[data-in="true"] .flow__comet {
-  animation: flow-comet var(--flow-ms) var(--flow-ease) forwards;
+  animation:
+    flow-comet var(--flow-ms) var(--flow-ease) forwards,
+    flow-travel var(--loop) linear var(--loop-start) infinite;
 }
 @keyframes flow-comet {
-  0% {
-    left: 0;
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  88% {
-    opacity: 1;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
+  0% { left: 0; opacity: 0; }
+  8% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+/* Travels during the first 72% of each loop, then rests out of sight. */
+@keyframes flow-travel {
+  0% { left: 0; opacity: 0; }
+  5% { opacity: 1; }
+  68% { opacity: 1; }
+  72% { left: 100%; opacity: 0; }
+  100% { left: 100%; opacity: 0; }
 }
 .flow__dot {
   transition:
@@ -1154,20 +1168,35 @@
   color: rgb(var(--fg-inverse));
   box-shadow:
     0 0 0 6px rgb(255 95 0 / 0.14),
-    0 0 28px rgb(255 95 0 / 0.55);
+    0 0 28px rgb(255 95 0 / 0.5);
   transform: scale(1.08);
+  animation: flow-glow var(--loop) ease-out calc(var(--loop-start) + var(--t, 0ms)) infinite;
 }
 .flow[data-in="true"] .flow__dot::after {
-  animation: flow-ping 1.3s ease-out var(--d, 0ms) both;
+  animation:
+    flow-ping 1.3s ease-out var(--d, 0ms) both,
+    flow-ripple var(--loop) ease-out calc(var(--loop-start) + var(--t, 0ms)) infinite;
 }
 @keyframes flow-ping {
+  0% { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes flow-ripple {
+  0% { transform: scale(1); opacity: 0.6; }
+  22% { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+@keyframes flow-glow {
   0% {
-    transform: scale(1);
-    opacity: 0.75;
+    box-shadow:
+      0 0 0 8px rgb(255 95 0 / 0.26),
+      0 0 40px rgb(255 95 0 / 0.85);
   }
+  25%,
   100% {
-    transform: scale(2.2);
-    opacity: 0;
+    box-shadow:
+      0 0 0 6px rgb(255 95 0 / 0.14),
+      0 0 28px rgb(255 95 0 / 0.5);
   }
 }
 .flow__body {
@@ -1186,14 +1215,9 @@
   filter: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .flow__comet {
-    display: none;
-  }
+  .flow__comet { display: none; }
   .flow__dot,
-  .flow__body {
-    transition: none;
-  }
-  .flow[data-in="true"] .flow__dot::after {
-    animation: none;
-  }
+  .flow__body { transition: none; }
+  .flow[data-in="true"] .flow__dot,
+  .flow[data-in="true"] .flow__dot::after { animation: none; }
 }
