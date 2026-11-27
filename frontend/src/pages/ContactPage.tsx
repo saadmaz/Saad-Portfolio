@@ -622,12 +622,7 @@ const ContactPage = () => {
                           {String(i + 1).padStart(2, "0")}
                         </span>
                       </span>
-                      <h3
-                        className={cn(
-                          "relative font-medium group-hover:text-accent",
-                          "text-h3",
-                        )}
-                      >
+                      <h3 className={cn("relative font-medium group-hover:text-accent", "text-h3")}>
                         {s.title}
                       </h3>
                       <p className="relative text-[15px] leading-relaxed text-fg-2">{s.body}</p>
@@ -647,29 +642,57 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Booking band */}
-      <section aria-labelledby="call-heading" className="section screen theme-orange border-t-0">
-        <Reveal className="wrap grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-          <div className="flex flex-col gap-5">
-            <span className="label inline-flex items-center gap-2 text-fg">
-              <CalendarDays aria-hidden className="size-4" /> Free · 30 minutes
-            </span>
-            <h2 id="call-heading" className="text-display-m font-medium">
-              Prefer a <span className="soft">conversation?</span>
-            </h2>
-            <p className="max-w-[560px] text-body-l text-fg-2">
-              Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and let's
-              figure out what you're working on.
-            </p>
-          </div>
-          <Button href={CONTACT.bookingUrl} size="lg" className="w-full md:w-auto">
-            Book a call
-          </Button>
-        </Reveal>
+      {/* Booking card */}
+      <section aria-labelledby="call-heading" className="section screen theme-light border-t-0">
+        <div className="wrap">
+          <Reveal className="theme-dark relative overflow-hidden rounded-[32px] border border-line-2 bg-[linear-gradient(135deg,#1d1612_0%,#17171a_55%,#222226_100%)] px-6 py-16 text-center shadow-[0_50px_100px_-40px_rgb(0_0_0/0.45)] md:px-12 md:py-24">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_70%_at_0%_0%,rgb(255_95_0/0.28),transparent_70%),radial-gradient(ellipse_45%_60%_at_100%_100%,rgb(255_95_0/0.12),transparent_70%)]"
+            />
+            <div className="relative mx-auto flex max-w-[760px] flex-col items-center gap-6">
+              <span className="inline-flex items-center gap-2 rounded-full border border-line-3 bg-surface/60 px-3.5 py-1.5 text-sm font-medium backdrop-blur">
+                <CalendarDays aria-hidden className="size-4 text-accent" /> Free · 30 minutes
+              </span>
+              <h2
+                id="call-heading"
+                className="text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.04em]"
+              >
+                Prefer a conversation?
+              </h2>
+              <p className="max-w-[600px] text-body-l text-fg-2">
+                Sometimes it's easier to talk things through than type out a whole brief. Grab a slot and
+                let's figure out what you're working on.
+              </p>
+              <div className="mt-2 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row">
+                <a
+                  href={CONTACT.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-[#fff] px-7 font-medium text-[rgb(17_17_19)] transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  Book a call
+                  <ArrowUpRight
+                    aria-hidden
+                    className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+                <a
+                  href="#message"
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-line-3 bg-surface/50 px-7 font-medium text-fg backdrop-blur transition-colors hover:border-accent/60"
+                >
+                  Or send a message
+                </a>
+              </div>
+              <p className="text-sm text-fg-3">No prep needed. Pick any time that suits you.</p>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       {/* How it works */}
-      <section aria-labelledby="process-heading" className="section screen theme-light border-t-0">
+      <section aria-labelledby="process-heading" className="section screen border-t-0">
         <div className="wrap">
           <Reveal>
             <Eyebrow index="03">How it works</Eyebrow>
@@ -701,7 +724,7 @@ const ContactPage = () => {
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="faq-heading" className="section screen border-t-0">
+      <section aria-labelledby="faq-heading" className="section screen theme-light border-t-0">
         <div className="wrap grid gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-20">
           <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
             <Eyebrow index="04">FAQ</Eyebrow>
