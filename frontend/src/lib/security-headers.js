@@ -64,6 +64,8 @@ export const HEADER_RULES = [
   { path: "/icons/*", headers: IMAGES },
   { path: "/Certificates/*", headers: IMAGES },
   { path: "/Logo/*", headers: IMAGES },
+  // Email-signature images, loaded by mail clients from www.saadmaz.com/email/.
+  { path: "/email/*", headers: { ...IMAGES, ...NOINDEX } },
   { path: "/favicon.ico", headers: { "Cache-Control": "public, max-age=3600, must-revalidate" } },
   { path: "/apple-touch-icon.png", headers: { "Cache-Control": "public, max-age=3600, must-revalidate" } },
   { path: "/site.webmanifest", headers: { "Cache-Control": "public, max-age=3600, must-revalidate" } },
