@@ -7,7 +7,9 @@ export function internalPath(href: string): string | null {
   if (!/^https?:\/\//i.test(href)) return null;
   try {
     const url = new URL(href);
-    const sameOrigin = typeof window !== "undefined" && url.origin === window.location.origin;
+    // globalThis, not window: this module is also typechecked without DOM types (tsconfig.api.json).
+    const here = (globalThis as { location?: { origin: string } }).location;
+    const sameOrigin = !!here && url.origin === here.origin;
     if (!OWN_HOST.test(url.hostname) && !sameOrigin) return null;
     return `${url.pathname}${url.search}${url.hash}` || "/";
   } catch {
